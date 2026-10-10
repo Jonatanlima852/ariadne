@@ -55,8 +55,10 @@ status e timestamps. Para metadados e falhas explícitas, devolva `TaskResult`.
 Exceções são convertidas para os erros do contrato.
 
 Classes que implementam `Agent.handle`, `BdiAgent` e `LlmAgent` usam o mesmo
-executor. Veja [bdi.py](../examples/bdi.py), que declara um agente BDI com dois
-planos e deixa o SDK selecionar o de menor custo. Agentes maiores podem ser
+executor. Veja [bdi.py](../examples/bdi.py), que declara um agente BDI sem
+subclasse, com dois planos e seleção de menor custo. A [referência BDI](bdi.md)
+explica `Input`, `Plan` e planejamento genérico; [meeting.py](../examples/meeting.py)
+aplica a mesma interface a agendas. Agentes maiores podem ser
 importados de módulos instalados ou vizinhos ao arquivo do experimento.
 
 Nomes/IDs de agentes devem ser únicos no cenário. A tarefa solicita uma
@@ -66,7 +68,7 @@ ou `AGENT_ID` globais.
 
 O backend local herda o ambiente do terminal e não carrega `.env`
 automaticamente. Para agentes LLM, exporte as variáveis necessárias, incluindo
-`OPENAI_API_KEY`, antes de executar. Os quatro exemplos incluídos não usam LLM.
+`OPENAI_API_KEY`, antes de executar. Os exemplos em `examples/` não usam LLM.
 
 ## Dependências entre tarefas
 

@@ -46,6 +46,8 @@ Cada arquivo declara agentes e tarefas. O executor inicia o runtime Go e os
 agentes em processos locais, salva logs e resultados e encerra os processos.
 Veja o [guia de experimentos](docs/experiments.md), incluindo recuperação,
 BDI e repetição com evidências brutas para avaliação separada.
+A [API BDI declarativa](docs/bdi.md) permite definir agentes com `Input` e `Plan`,
+sem subclasses, e oferece planejamento por busca genérica no SDK.
 
 O [estudo logístico](studies/logistics/README.md) já usa essa interface:
 `./tg run studies/logistics/experiment.py` executa BDI por padrão.

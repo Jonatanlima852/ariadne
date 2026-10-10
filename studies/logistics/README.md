@@ -85,8 +85,10 @@ Campanhas interrompidas informam no JSON quantas observações estavam previstas
 e quantas execuções foram registradas. Observações que nem chegaram a iniciar
 não entram nas taxas; essa incompletude fica explicitada no relatório.
 
-O avaliador compartilha regras e planejador com o BDI; a otimalidade agregada
-inclui rejeições corretas. Preserve a revisão do avaliador para reproduzir
+O BDI declara entradas e um plano em [bdi.py](bdi.py), usando a busca genérica
+do SDK por meio de [planning.py](planning.py). O avaliador conserva sua busca
+de referência em `domain.py`; as regras de domínio ainda são compartilhadas.
+A otimalidade agregada inclui rejeições corretas. Preserve a revisão do avaliador para reproduzir
 uma análise. Tokens nos resultados podem não incluir tentativas que falharam
 antes de retornar metadados.
 

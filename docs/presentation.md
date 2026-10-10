@@ -87,7 +87,9 @@ acadêmico tenha esses títulos ou já esteja completo.
   logístico selecionado. BDI recebe missão estruturada; LLM interpreta linguagem
   natural. As entradas e responsabilidades devem acompanhar a comparação.
 - **O avaliador é independente?** A checagem é separada da resposta LLM,
-  mas compartilha regras e planejador de referência com o BDI.
+  mas compartilha regras de domínio com o BDI. A execução atual usa a busca do
+  SDK e a avaliação mantém uma busca de referência; na coleta histórica, ambas
+  usavam o mesmo planejador.
 - **A latência exibida mede overhead?** O resumo do executor inclui prontidão e
   execução do cliente; a duração do workflow tem outro escopo. Nenhuma delas,
   isoladamente, é uma comparação controlada com e sem runtime.

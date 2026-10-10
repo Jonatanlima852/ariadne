@@ -39,9 +39,9 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 - Dependências instaladas por alguns Dockerfiles não seguem os locks locais.
 - Os resultados logísticos publicados cobrem oito casos, duas repetições e um
   modelo. Não estabelecem generalização para outros domínios ou modelos.
-- O avaliador logístico compartilha regras e o planejador de referência com o
-  BDI. Sua verificação é separada da resposta LLM, mas não é uma implementação
-  totalmente independente do planejador simbólico.
+- O avaliador logístico compartilha regras de domínio com o BDI. A execução
+  declarativa usa a busca genérica do SDK; a avaliação preserva uma busca de
+  referência separada. Isso não torna o oráculo totalmente independente.
 
 ## Direções de evolução
 

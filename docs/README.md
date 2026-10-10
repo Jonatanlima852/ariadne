@@ -16,6 +16,8 @@ do repositório, salvo indicação explícita.
 
 ## Guias e referência
 
+- [BDI declarativo e planejamento](bdi.md): entradas, planos, seleção e busca genérica no SDK.
+
 - [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,
   execução local pelo runtime Go e evidências brutas para avaliação separada.
 - [Estudo logístico](../studies/logistics/README.md): descrição das três estratégias,

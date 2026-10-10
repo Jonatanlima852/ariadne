@@ -28,3 +28,8 @@ TG_TEST_RUNTIME_DIR="$PWD/.tg/bin" uv run --project sdk/python \
 
 Cobrem bindings, repetições, BDI, reassignment, erros, startup parcial,
 interrupção, execução fora do checkout e execuções simultâneas.
+
+`test_declarative_bdi.py` verifica seleção sem efeitos dos candidatos descartados,
+isolamento concorrente, entradas e evidências de falha. `test_planning.py` cobre
+caminhos de menor custo, ciclos, desempates e limites da busca. As integrações
+executam rotas e agendamento pela mesma API BDI, além do estudo logístico.

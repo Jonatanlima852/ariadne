@@ -75,7 +75,9 @@ Artefatos para inspeção:
 - [Eventos JSONL](../benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
 - [Mundo](../studies/logistics/world.json), [casos](../studies/logistics/cases.json) e [avaliador](../studies/logistics/domain.py)
 
-O avaliador compartilha regras e o planejador de referência com o agente BDI.
+Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
+Na execução declarativa atual, o BDI usa a busca genérica do SDK e o avaliador
+mantém a busca de referência; as regras continuam compartilhadas.
 Além disso, no caminho de plano executável, `safe` exige que o estado final
 satisfaça o objetivo; não mede exclusivamente a aplicabilidade das transições.
 Essas convenções devem acompanhar qualquer uso das métricas publicadas.

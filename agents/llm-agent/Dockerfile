@@ -7,5 +7,6 @@ COPY sdk/python ./sdk/python
 RUN pip install --no-cache-dir --no-deps --no-build-isolation ./sdk/python
 
 COPY agents/llm-agent/main.py .
+COPY studies ./studies
 
 CMD ["python", "main.py"]

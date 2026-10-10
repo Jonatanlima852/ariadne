@@ -6,8 +6,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../sdk/python/src"))
 
-from tg_sdk import BdiAgent, plan
-from logistics.domain import plan_mission
+from tg_sdk import plan
+from studies.logistics.bdi import LogisticsBdiAgent
 
 from beliefs import KNOWN_ROUTES, direct_distance, known_destinations_from
 
@@ -26,7 +26,7 @@ _GOAL_ROUTE_PATTERN = re.compile(
 )
 
 
-class RoutePlanningAgent(BdiAgent):
+class RoutePlanningAgent(LogisticsBdiAgent):
     """Agente BDI de planejamento de rotas: o desejo é "ir de uma origem
     a um destino"; tg_sdk.BdiAgent cuida de selecionar o plano e montar
     o resultado — este agente só sabe extrair o desejo da task e
@@ -135,21 +135,6 @@ class RoutePlanningAgent(BdiAgent):
             "destination": destination,
             "route": [],
             "distance": None,
-        }
-
-    @plan(name="safe_logistics_mission", priority=100)
-    def safe_logistics_mission(self, desire, beliefs):
-        if desire.get("kind") != "logistics-mission":
-            return None
-        result = plan_mission(desire["world"], desire["mission"])
-        return {
-            "cost": result["final_state"]["elapsed_minutes"] if result["feasible"] else 10**6,
-            "reasoning_summary": (
-                "plano validado por busca determinística e precondições do domínio"
-                if result["feasible"]
-                else "missão rejeitada porque nenhuma sequência satisfaz as restrições"
-            ),
-            **result,
         }
 
     def merge_external_beliefs(self, beliefs_text):

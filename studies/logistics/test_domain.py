@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from logistics.domain import evaluate_plan, plan_mission
+from studies.logistics.domain import evaluate_plan, plan_mission
 
 
 ROOT = Path(__file__).resolve().parent

@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir --no-deps --no-build-isolation ./sdk/python
 COPY agents/bdi-agent/beliefs.py .
 COPY agents/bdi-agent/plans.py .
 COPY agents/bdi-agent/main.py .
-COPY logistics ./logistics
+COPY studies ./studies
 
 CMD ["python", "main.py"]

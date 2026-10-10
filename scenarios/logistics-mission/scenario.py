@@ -9,14 +9,14 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
-from benchmarks.logistics import run_hybrid
-from logistics import evaluate_plan
+from studies.logistics.legacy import run_hybrid
+from studies.logistics import evaluate_plan
 from tg_sdk import Scenario
 
 
 def main():
-    world = json.loads((ROOT / "logistics/world.json").read_text())
-    cases = json.loads((ROOT / "logistics/cases.json").read_text())
+    world = json.loads((ROOT / "studies/logistics/world.json").read_text())
+    cases = json.loads((ROOT / "studies/logistics/cases.json").read_text())
     case = next(item for item in cases if item["id"] == "avoid-contamination")
     address = os.getenv("ORCHESTRATOR_ADDR", "localhost:54052")
 

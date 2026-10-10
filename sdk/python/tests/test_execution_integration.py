@@ -74,6 +74,19 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertEqual(result["output"], {"route": ["A", "B", "D"]})
         self.assertEqual(result["steps"]["step_1"]["result"]["metadata"]["selected_plan"], "via_b")
 
+    def test_logistics_package_runs_outside_checkout_and_can_be_inspected_offline(self):
+        from unittest.mock import patch
+        with patch.dict(os.environ, {"LOGISTICS_STRATEGY": "bdi-only", "LOGISTICS_CASE": "avoid-contamination"}):
+            run = self.execute(ROOT / "studies/logistics/experiment.py")
+        manifest = json.loads((run / "manifest.json").read_text())
+        self.assertEqual(manifest["metadata"]["case"]["id"], "avoid-contamination")
+        self.assertTrue(json.loads((run / "result.json").read_text())["output"]["feasible"])
+        for command in ("status", "logs"):
+            response = subprocess.run([sys.executable, "-m", "tg_sdk", command, "--output", str(run.parent)],
+                                      capture_output=True, text=True, cwd=self.directory, timeout=10)
+            self.assertEqual(response.returncode, 0, response.stderr)
+            self.assertIn("COMPLETED", response.stdout)
+
     def test_domain_exception_is_preserved_as_failed_result(self):
         source = self.directory / "failure.py"
         source.write_text(

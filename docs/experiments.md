@@ -11,6 +11,9 @@ No checkout, use Go compatível com `runtime/go.mod` e uv. Não é necessário
 Docker neste caminho. A primeira execução prepara o ambiente Python do SDK
 e compila os serviços Go; pode precisar baixar dependências.
 
+O [estudo logístico](../studies/logistics/README.md) usa essa mesma interface
+para BDI, LLM e híbrido, com coleta e avaliação offline em comandos separados.
+
 O exemplo completo [echo.py](../examples/echo.py) contém:
 
 ```python
@@ -149,6 +152,11 @@ no resumo inclui o ciclo operacional. Nenhuma é, isoladamente, uma medição
 controlada de overhead. A ferramenta não gera gráficos, CSV agregado ou
 métricas de qualidade. Os runners históricos de benchmark continuam separados.
 
+`Scenario(metadata={...})` permite preservar configuração de domínio no
+manifesto. Esses dados não são injetados nos payloads dos agentes. Arquivos de
+experimento podem pertencer a pacotes Python com `__init__.py`; o loader resolve
+a raiz do pacote também ao executar fora do checkout.
+
 O manifesto não é um snapshot completo de dependências, módulos importados e
 datasets externos. Preserve esses artefatos e a revisão do código para uma
 campanha acadêmica. Um processo encerrado à força pode ter entrada registrada
@@ -169,10 +177,19 @@ os binários em `.tg/bin` e usa o cache Go. `--runtime-dir` evita a compilação
 
 Esta versão oferece o backend de processos locais. Não conecta a execução
 declarativa a um cluster externo nem gera contêineres; os fluxos Docker antigos
-continuam disponíveis. `./tg status`, `logs` e `stop` ainda são os comandos do
-launcher Docker: para este backend use os arquivos no diretório informado e
-Ctrl+C no processo supervisor. Execuções locais não alteram o ponteiro `latest`
-do launcher Docker. O Inspector pode listar o resultado de workflow salvo;
-a exploração dos novos logs por agente e das repetições usa os arquivos brutos.
+continuam disponíveis. `./tg status` e `./tg logs` reconhecem ambos os backends,
+por ID ou caminho da execução. Sem argumento, usam a última execução iniciada
+no diretório compartilhado. Para processos locais, logs mostram as últimas
+100 linhas de cada arquivo `.log`/`.jsonl` e funcionam após o encerramento.
+`stop` continua controlando Docker; para interromper processos locais, use
+Ctrl+C no supervisor.
+
+O shell usa `.tg/runs` deste checkout mesmo quando invocado de outro diretório.
+`TG_RUNS_DIR` muda essa raiz. Para uma execução com `--output` personalizado,
+passe seu caminho a `status`/`logs` ou configure a mesma raiz. A CLI instalada
+também oferece `tg status --output PASTA` e `tg logs --output PASTA --tail 50`,
+com consulta offline das evidências salvas de ambos os backends.
+O Inspector pode listar o resultado de workflow salvo; a exploração dos logs
+por agente e das repetições usa os arquivos brutos.
 
 [Índice](README.md) · [Desenvolvimento](development.md)

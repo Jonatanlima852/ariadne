@@ -25,7 +25,7 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `clients/submit-task/` | [Cliente de tarefa simples](../clients/submit-task/main.py) |
 | `scenarios/` | Scripts de integração e topologias |
 | `examples/` | Entradas didáticas e demo heterogênea |
-| `logistics/` | [Regras e planejamento](../logistics/domain.py), mundo e dataset |
+| `studies/logistics/` | [Estudo declarativo](../studies/logistics/README.md), agentes, domínio, dataset e avaliação offline |
 | `benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `experiments/` | Extração de métricas e resultados locais |
 | `infra/` | Compose básico |
@@ -60,7 +60,7 @@ As verificações Python estão separadas por responsabilidade:
 
 ```sh
 uv run --directory sdk/python --with pytest python -m pytest tests -q
-python3 -m unittest logistics.test_domain
+python3 -m unittest studies.logistics.test_domain
 python3 -m unittest discover -s experiments/scripts -p 'test_*.py'
 sh scripts/check-contract-freeze.sh
 uv run --directory sdk/python python -m unittest discover -s ../../scripts/launcher -p 'test_*.py'

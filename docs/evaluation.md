@@ -73,7 +73,7 @@ Artefatos para inspeção:
 - [Sumário CSV](../benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
 - [Gráfico registrado](../benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
 - [Eventos JSONL](../benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
-- [Mundo](../logistics/world.json), [casos](../logistics/cases.json) e [avaliador](../logistics/domain.py)
+- [Mundo](../studies/logistics/world.json), [casos](../studies/logistics/cases.json) e [avaliador](../studies/logistics/domain.py)
 
 O avaliador compartilha regras e o planejador de referência com o agente BDI.
 Além disso, no caminho de plano executável, `safe` exige que o estado final
@@ -87,6 +87,23 @@ brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
 em código separado. O [guia de experimentos](experiments.md) descreve os
 arquivos, os escopos de duração e a reutilização de estado entre repetições.
 Os runners históricos abaixo mantêm seu comportamento e artefatos publicados.
+
+O caminho atual do estudo está em [studies/logistics](../studies/logistics/README.md):
+
+```sh
+./tg run studies/logistics/experiment.py
+uv run --project sdk/python python -m studies.logistics.campaign
+python3 -m studies.logistics.evaluate .tg/campaigns/logistics-ID
+```
+
+Os dois primeiros comandos usam BDI por padrão. O guia do estudo explica
+como selecionar LLM/híbrido e exportar as credenciais. Substitua `logistics-ID`
+pelo diretório informado na coleta. A avaliação usa os dados preservados nos
+manifestos e escreve em uma pasta nova; não inicia agentes. No novo caminho,
+todas as estratégias usam workflows, portanto os escopos de latência diferem
+da campanha histórica. Consistência fica indefinida quando há uma só observação.
+
+### Runners históricos
 
 Os cenários de demonstração podem ser executados via `./tg scenario NOME`,
 com dados isolados em `.tg/runs/`. Os comandos abaixo continuam usando os

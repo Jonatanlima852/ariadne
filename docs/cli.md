@@ -2,8 +2,10 @@
 
 `./tg run arquivo.py` e `./tg check arquivo.py` oferecem o novo caminho de
 [experimentos declarativos](experiments.md), com Go e uv. A referência abaixo
-descreve o launcher Docker existente; seus comandos `status`, `logs` e `stop`
-se aplicam somente às execuções Docker.
+descreve principalmente o launcher Docker. `status` e `logs` reconhecem também
+execuções locais, por ID ou caminho, sem exigir Docker ou uv para ler os arquivos.
+O ponteiro de última execução é compartilhado. Para processos locais, `logs`
+mostra até 100 linhas por arquivo; `stop` ainda se aplica somente a Docker.
 
 `tg` é um script shell na raiz do repositório. Localiza os arquivos a partir
 de seu próprio diretório e pode ser chamado por caminho absoluto. Reutiliza

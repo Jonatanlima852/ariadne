@@ -1,5 +1,9 @@
 # Missão logística LLM + BDI
 
+Este guia mantém o cenário Docker histórico. Para a interface declarativa
+atual e avaliação separada da execução, use o
+[estudo em studies/logistics](../../studies/logistics/README.md).
+
 O exemplo recebe linguagem natural, usa a LLM somente para extrair as
 restrições e entrega a missão estruturada ao agente BDI. O BDI encontra uma
 sequência determinística e um simulador do domínio confirma precondições,

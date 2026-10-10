@@ -47,6 +47,11 @@ agentes em processos locais, salva logs e resultados e encerra os processos.
 Veja o [guia de experimentos](docs/experiments.md), incluindo recuperação,
 BDI e repetição com evidências brutas para avaliação separada.
 
+O [estudo logístico](studies/logistics/README.md) já usa essa interface:
+`./tg run studies/logistics/experiment.py` executa BDI por padrão.
+Depois, `./tg status` e `./tg logs` consultam a execução. LLM/híbrido,
+campanhas e avaliação offline estão documentados no guia do estudo.
+
 ### Demonstração via Docker
 
 Com Docker e Docker Compose >=2.24.4, a demonstração básica executa uma tarefa

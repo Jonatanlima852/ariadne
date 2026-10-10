@@ -10,10 +10,12 @@ import (
 
 	pb "tg/runtime/gen/go/contract/v1"
 	"tg/runtime/services/internal/events"
+	"tg/runtime/services/internal/startup"
 	"tg/runtime/services/orchestrator/internal/server"
 )
 
 func main() {
+	startup.ConfigureLogging()
 	addr := os.Getenv("ORCHESTRATOR_ADDR")
 	if addr == "" {
 		addr = ":50052"
@@ -53,6 +55,10 @@ func main() {
 	pb.RegisterOrchestratorServiceServer(grpcServer, server.New(registryAddr, logger, executionTimeout))
 
 	slog.Info("orchestrator service started", "addr", addr, "registry", registryAddr, "execution_timeout", executionTimeout)
+	if err := startup.Ready(lis.Addr().String()); err != nil {
+		slog.Error("failed to publish address", "err", err)
+		os.Exit(1)
+	}
 	if err := grpcServer.Serve(lis); err != nil {
 		slog.Error("server stopped", "err", err)
 		os.Exit(1)

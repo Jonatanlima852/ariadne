@@ -8,11 +8,13 @@ import (
 
 	"google.golang.org/grpc"
 	pb "tg/runtime/gen/go/contract/v1"
+	"tg/runtime/services/internal/startup"
 	"tg/runtime/services/registry/internal/server"
 	"tg/runtime/services/registry/internal/store"
 )
 
 func main() {
+	startup.ConfigureLogging()
 	addr := os.Getenv("REGISTRY_ADDR")
 	if addr == "" {
 		addr = ":50051"
@@ -48,6 +50,10 @@ func main() {
 		"suspected_timeout", suspectedTimeout,
 		"dead_timeout", deadTimeout,
 	)
+	if err := startup.Ready(lis.Addr().String()); err != nil {
+		slog.Error("failed to publish address", "err", err)
+		os.Exit(1)
+	}
 	if err := grpcServer.Serve(lis); err != nil {
 		slog.Error("server stopped", "err", err)
 		os.Exit(1)

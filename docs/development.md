@@ -73,6 +73,12 @@ reais são os [cenários](scenarios.md), executados separadamente.
 
 ## Escrever lógica de agente
 
+Para autoria declarativa e execução gerenciada em processos locais, comece
+por [experimentos em um arquivo](experiments.md). `Agent(handler=...)` e
+`Agent.handle()` podem devolver um dicionário, que o SDK adapta ao contrato.
+`start()`/`stop()` oferecem lifecycle explícito; `run()` permanece bloqueante.
+O registro ocorre depois de iniciar o endpoint gRPC.
+
 Para novos agentes, a API principal é `Agent.handle(task)`, com `Task` e
 `TaskResult` do SDK. Exemplo de lógica local, sem iniciar serviços:
 

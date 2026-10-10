@@ -16,6 +16,9 @@ do repositório, salvo indicação explícita.
 
 ## Guias e referência
 
+- [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,
+  execução local pelo runtime Go e evidências brutas para avaliação separada.
+
 - [Primeira execução](quickstart.md): requisitos, comandos Docker, resultado e diagnóstico.
 - [Executor tg](cli.md): comandos, isolamento, prazos e arquivos de resultado.
 - [Execução manual](manual-execution.md): Compose básico e cliente no host.

@@ -1,5 +1,10 @@
 # Referência do executor `tg`
 
+`./tg run arquivo.py` e `./tg check arquivo.py` oferecem o novo caminho de
+[experimentos declarativos](experiments.md), com Go e uv. A referência abaixo
+descreve o launcher Docker existente; seus comandos `status`, `logs` e `stop`
+se aplicam somente às execuções Docker.
+
 `tg` é um script shell na raiz do repositório. Localiza os arquivos a partir
 de seu próprio diretório e pode ser chamado por caminho absoluto. Reutiliza
 topologias e scripts de cenários, executando o cliente Python em contêiner.

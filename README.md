@@ -25,6 +25,7 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 
 | Quero… | Comece aqui |
 |---|---|
+| Declarar agentes e cenário em um arquivo | [Experimentos declarativos](docs/experiments.md) |
 | Experimentar sem chave de LLM | [Primeira execução](docs/quickstart.md) |
 | Entender como funciona | [Arquitetura e conceitos](docs/architecture.md) |
 | Explorar cooperação, falhas e mensagens | [Catálogo de cenários](docs/scenarios.md) |
@@ -33,6 +34,20 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 | Apresentar o projeto ou explorar resultados | [Roteiro de apresentação](docs/presentation.md) e [visualizador local](tools/inspector/README.md) |
 
 ## Primeira experiência
+
+Para explorar a nova interface de autoria, com **Go e uv** no host:
+
+```sh
+./tg run examples/echo.py
+./tg run examples/workflow.py
+```
+
+Cada arquivo declara agentes e tarefas. O executor inicia o runtime Go e os
+agentes em processos locais, salva logs e resultados e encerra os processos.
+Veja o [guia de experimentos](docs/experiments.md), incluindo recuperação,
+BDI e repetição com evidências brutas para avaliação separada.
+
+### Demonstração via Docker
 
 Com Docker e Docker Compose >=2.24.4, a demonstração básica executa uma tarefa
 `echo` pelo Registry, Orchestrator e agente mock, sem chave de LLM nem

@@ -82,6 +82,12 @@ Essas convenções devem acompanhar qualquer uso das métricas publicadas.
 
 ## Executar uma nova campanha
 
+Na interface declarativa, `./tg run arquivo.py --repeat N` preserva as amostras
+brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
+em código separado. O [guia de experimentos](experiments.md) descreve os
+arquivos, os escopos de duração e a reutilização de estado entre repetições.
+Os runners históricos abaixo mantêm seu comportamento e artefatos publicados.
+
 Os cenários de demonstração podem ser executados via `./tg scenario NOME`,
 com dados isolados em `.tg/runs/`. Os comandos abaixo continuam usando os
 runners específicos de benchmark, com os requisitos e limitações próprios.

@@ -25,12 +25,21 @@ from tg_sdk.scenario import Scenario
 SERVICES = ("registry", "orchestrator", "messaging")
 
 
+def import_roots(source):
+    """Permite descrições em pacotes Python sem sys.path no experimento."""
+    directory = Path(source).resolve().parent
+    root = directory
+    while (root / "__init__.py").is_file():
+        root = root.parent
+    return list(dict.fromkeys((str(directory), str(root))))
+
+
 def load_scenario(source):
     """Carrega a variável pública `scenario`; não invoca callbacks de execução."""
     source = Path(source).resolve(strict=True)
     previous_path = sys.path[:]
     try:
-        sys.path.insert(0, str(source.parent))
+        sys.path[:0] = import_roots(source)
         namespace = runpy.run_path(str(source), run_name="__tg_experiment__")
     finally:
         sys.path[:] = previous_path
@@ -45,6 +54,7 @@ def load_scenario(source):
     if any(not agent.capabilities for agent in scenario.agents):
         raise ValueError("each agent must declare capabilities")
     steps = scenario.definition()
+    json.dumps(scenario.metadata, allow_nan=False)
     capabilities = {capability for agent in scenario.agents for capability in agent.capabilities}
     missing = {capability for step in steps for capability in step["capabilities"]} - capabilities
     if missing:
@@ -169,6 +179,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         "source": str(source), "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
         "python": sys.version, "platform": platform.platform(), "contract_version": "1.0.0",
         "repeat": repeat, "ready_timeout_seconds": ready_timeout, "rpc_timeout_seconds": task_timeout,
+        "metadata": scenario.metadata,
         "agents": [{"agent_id": agent.agent_id, "capabilities": agent.capabilities}
                    for agent in scenario.agents], "steps": definition,
     }
@@ -179,6 +190,10 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
     (directory / "status").write_text("RUNNING\n")
     (directory / "environment").write_text("starting\n")
     write_json(directory / "summary.json", summary)
+    (directory / "backend").write_text("local-processes\n")
+    latest = directory.parent.parent / f"latest.{directory.name}"
+    latest.write_text(directory.name + "\n")
+    latest.replace(directory.parent.parent / "latest")
     events.emit("EXPERIMENT_STARTED")
     try:
         if runtime_source is not None:

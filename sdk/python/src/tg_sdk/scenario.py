@@ -235,12 +235,14 @@ class Scenario:
         *,
         agents=None,
         tasks=None,
+        metadata=None,
         entry_capability=None,
         orchestrator_stub=None,
     ):
         self.name = name
         self.agents = tuple(agents or ())
         self.tasks = None if tasks is None else tuple(tasks)
+        self.metadata = dict(metadata or {})
         self.entry_capability = entry_capability
         self.trace_id = str(uuid.uuid4())
         self._channel = None

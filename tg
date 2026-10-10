@@ -3,7 +3,9 @@
 set -eu
 TG_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 export TG_ROOT
-STATE="$TG_ROOT/.tg"
+RUNS=${TG_RUNS_DIR:-"$TG_ROOT/.tg/runs"}
+case "$RUNS" in /*) ;; *) RUNS="$PWD/$RUNS" ;; esac
+STATE=$(dirname -- "$RUNS")
 
 die() { printf 'Erro: %s\n' "$*" >&2; exit 1; }
 help() {
@@ -116,14 +118,25 @@ doctor() (
 
 load_run() {
     run_id=${1:-latest}
+    case "$run_id" in
+        */*)
+            [ "$command" != stop ] || die 'Use o ID para encerrar uma execução Docker.'
+            [ -d "$run_id" ] || die "Execução não encontrada: $run_id"
+            run_dir=$(CDPATH= cd -- "$run_id" && pwd)
+            run_id=${run_dir##*/}
+            ;;
+        *) run_dir= ;;
+    esac
     if [ "$run_id" = latest ]; then
-        [ -f "$STATE/latest" ] || die 'Nenhuma execução registrada. Comece com ./tg demo.'
+        [ -f "$STATE/latest" ] || die 'Nenhuma execução registrada. Use ./tg run ou ./tg demo.'
         run_id=$(cat "$STATE/latest")
     fi
     case "$run_id" in tg-*) ;; *) die 'Identificador de execução inválido.' ;; esac
     case "$run_id" in *[!a-zA-Z0-9-]*) die 'Identificador de execução inválido.' ;; esac
-    run_dir="$STATE/runs/$run_id"
-    [ -f "$run_dir/control.yaml" ] && [ -f "$run_dir/scenario" ] || die "Execução não encontrada: $run_id"
+    run_dir=${run_dir:-"$RUNS/$run_id"}
+    [ -f "$run_dir/status" ] && [ -f "$run_dir/scenario" ] || die "Execução não encontrada: $run_id"
+    backend=local-processes
+    if [ -f "$run_dir/control.yaml" ]; then backend=docker; fi
     project=$(printf '%s' "$run_id" | tr '[:upper:]' '[:lower:]')
 }
 
@@ -203,8 +216,8 @@ run_scenario() {
     timeout_value TG_READY_TIMEOUT "$TG_READY_TIMEOUT"
     timeout_value TG_SCENARIO_TIMEOUT "$TG_SCENARIO_TIMEOUT"
     export TG_READY_TIMEOUT TG_SCENARIO_TIMEOUT
-    mkdir -p "$STATE/runs"
-    run_dir=$(mktemp -d "$STATE/runs/tg-$(date -u +%Y%m%d-%H%M%S)-XXXXXX")
+    mkdir -p "$RUNS"
+    run_dir=$(mktemp -d "$RUNS/tg-$(date -u +%Y%m%d-%H%M%S)-XXXXXX")
     run_id=${run_dir##*/}
     project=$(printf '%s' "$run_id" | tr '[:upper:]' '[:lower:]')
     TG_RUN_DIR=$run_dir
@@ -249,7 +262,8 @@ case "$command" in
     run)
         command -v uv >/dev/null 2>&1 || die 'uv é necessário para executar arquivos Python.'
         TG_RUNTIME_SOURCE="$TG_ROOT/runtime"
-        export TG_RUNTIME_SOURCE
+        TG_RUNS_DIR="$RUNS"
+        export TG_RUNTIME_SOURCE TG_RUNS_DIR
         exec uv run --project "$TG_ROOT/sdk/python" python -m tg_sdk run "$@"
         ;;
     check)
@@ -272,8 +286,16 @@ case "$command" in
         [ "$#" -le 1 ] || die "Uso: ./tg $command [execução]"
         load_run "${1:-latest}"
         case "$command" in
-            status) printf 'Execução: %s\nCenário: %s\nEstado: %s\nAmbiente: %s\nResultados: %s\n' "$run_id" "$(cat "$run_dir/scenario")" "$(cat "$run_dir/status")" "$(cat "$run_dir/environment")" "$run_dir" ;;
+            status) printf 'Execução: %s\nBackend: %s\nCenário: %s\nEstado: %s\nAmbiente: %s\nResultados: %s\n' "$run_id" "$backend" "$(cat "$run_dir/scenario")" "$(cat "$run_dir/status")" "$(cat "$run_dir/environment")" "$run_dir" ;;
             logs)
+                if [ "$backend" = local-processes ]; then
+                    for log in "$run_dir"/*.log "$run_dir"/*.jsonl; do
+                        [ -f "$log" ] || continue
+                        printf '\n%s\n' "${log##*/}"
+                        tail -n 100 "$log"
+                    done
+                    exit 0
+                fi
                 for log in runner.log services.log; do
                     if [ -f "$run_dir/$log" ]; then printf '\n%s\n' "$log"; cat "$run_dir/$log"; fi
                 done
@@ -283,6 +305,7 @@ case "$command" in
                 ;;
             stop)
                 if [ "$(cat "$run_dir/environment")" = stopped ]; then printf 'Ambiente já encerrado; resultados preservados.\n'; exit 0; fi
+                [ "$backend" = docker ] || die 'Para interromper processos locais, use Ctrl+C no terminal que executa ./tg run.'
                 check_tools
                 if [ "$(cat "$run_dir/status")" = RUNNING ]; then
                     : > "$run_dir/stop-requested"

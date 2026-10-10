@@ -64,7 +64,7 @@ class LauncherTests(unittest.TestCase):
         docker.chmod(0o755)
         self.calls = self.root / "calls.jsonl"
         self.env = {**os.environ, "PATH": f"{self.bin}:{os.environ['PATH']}", "FAKE_CALLS": str(self.calls)}
-        for key in ("TG_ENV_FILE", "TG_READY_TIMEOUT", "TG_SCENARIO_TIMEOUT"):
+        for key in ("TG_ENV_FILE", "TG_READY_TIMEOUT", "TG_SCENARIO_TIMEOUT", "TG_RUNS_DIR"):
             self.env.pop(key, None)
 
     def command(self, *args, **extra):
@@ -79,6 +79,34 @@ class LauncherTests(unittest.TestCase):
 
     def test_help_does_not_require_docker(self):
         self.assertEqual(self.command("help").returncode, 0)
+        self.assertFalse(self.calls.exists())
+
+    def test_local_status_and_logs_work_offline_by_latest_id_and_path(self):
+        directory = self.root / ".tg/runs/tg-local"
+        directory.mkdir(parents=True)
+        for name, value in {"status": "FAILED", "scenario": "logistics", "environment": "stopped",
+                            "backend": "local-processes", "agent-1.jsonl": '{"type":"AGENT_ERROR"}',
+                            "execution.jsonl": '{"type":"EXPERIMENT_FINISHED"}'}.items():
+            (directory / name).write_text(value + "\n")
+        (self.root / ".tg/latest").write_text(directory.name + "\n")
+        for identifier in ((), (directory.name,), (str(directory),)):
+            status = self.command("status", *identifier, FAKE_DAEMON_FAIL="1")
+            self.assertEqual(status.returncode, 0, status.stderr)
+            self.assertIn("Backend: local-processes", status.stdout)
+            self.assertIn("Estado: FAILED", status.stdout)
+            logs = self.command("logs", *identifier, FAKE_DAEMON_FAIL="1")
+            self.assertEqual(logs.returncode, 0, logs.stderr)
+            self.assertIn("AGENT_ERROR", logs.stdout)
+        self.assertFalse(self.calls.exists())
+
+    def test_local_stop_does_not_call_docker(self):
+        directory = self.root / ".tg/runs/tg-active-local"
+        directory.mkdir(parents=True)
+        for name, value in {"status": "RUNNING", "scenario": "test", "environment": "running"}.items():
+            (directory / name).write_text(value + "\n")
+        stopped = self.command("stop", directory.name)
+        self.assertNotEqual(stopped.returncode, 0)
+        self.assertIn("Ctrl+C", stopped.stderr)
         self.assertFalse(self.calls.exists())
 
     def test_doctor_is_read_only_and_checks_compose_version(self):

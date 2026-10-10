@@ -24,8 +24,8 @@ def main():
     for signum in (signal.SIGINT, signal.SIGTERM):
         signal.signal(signum, lambda *_: stopped.set())
 
-    from tg_sdk.execution import load_scenario
-    sys.path.insert(0, str(args.source.resolve().parent))
+    from tg_sdk.execution import import_roots, load_scenario
+    sys.path[:0] = import_roots(args.source)
     scenario = load_scenario(args.source)
     agent = scenario.agents[args.index]
     agent.host, agent.port, agent.registry_addr = "127.0.0.1", 0, args.registry

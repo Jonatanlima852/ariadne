@@ -1,6 +1,8 @@
 import logging
 import os
 import threading
+import time
+from collections.abc import Mapping
 from concurrent import futures
 
 import grpc
@@ -20,8 +22,20 @@ class _AgentServicer(contract_pb2_grpc.AgentServiceServicer):
 
     def ExecuteTask(self, request, context):
         self._agent._task_started()
+        started = time.perf_counter()
+        started_at = timestamp_pb2.Timestamp()
+        started_at.GetCurrentTime()
         try:
+            if self._agent.event_sink:
+                self._agent.event_sink("AGENT_TASK_STARTED", request.task)
             result = self._agent._execute_contract_task(request.task)
+            result.started_at.CopyFrom(started_at)
+            if self._agent.event_sink:
+                self._agent.event_sink(
+                    "AGENT_TASK_FINISHED", request.task, result=result,
+                    duration_ms=(time.perf_counter() - started) * 1000,
+                    caller_active=context.is_active(),
+                )
             return contract_pb2.ExecuteTaskResponse(result=result)
         finally:
             self._agent._task_finished()
@@ -31,16 +45,24 @@ class Agent:
     """Classe base para agentes do TG Runtime.
 
     Cuida do registro no Registry e do servidor gRPC do AgentService.
-    Subclasses implementam apenas execute_task com a lógica de negócio.
+    Use handler ou implemente handle com a lógica de negócio. execute_task
+    permanece disponível para subclasses legadas que usam protobuf.
     """
 
-    def __init__(self, agent_id, name, capabilities, host, port, registry_addr,
+    def __init__(self, agent_id=None, name=None, capabilities=None,
+                 host="127.0.0.1", port=0, registry_addr="localhost:50051",
                  runtime="python-sdk", contract_version="1.0.0",
-                 heartbeat_interval_seconds=None, reported_load=None):
-        self.agent_id = agent_id
-        self.name = name
-        self.capabilities = capabilities
+                 heartbeat_interval_seconds=None, reported_load=None, handler=None,
+                 listen_host="[::]"):
+        self.name = name or getattr(type(self), "default_name", type(self).__name__)
+        self.agent_id = agent_id or getattr(type(self), "default_agent_id", self.name)
+        self.capabilities = list(capabilities if capabilities is not None else getattr(type(self), "capabilities", ()))
+        self._handler = handler
+        self._server = None
+        self._registered = False
+        self.event_sink = None
         self.host = host
+        self.listen_host = listen_host
         self.port = port
         self.registry_addr = registry_addr
         self.runtime = runtime
@@ -95,22 +117,30 @@ class Agent:
         """
         raise NotImplementedError("subclasses devem implementar execute_task")
 
-    def handle(self, task: Task) -> TaskResult:
+    def handle(self, task: Task) -> TaskResult | Mapping:
         """Hook público para agentes novos baseados nos modelos do SDK.
 
         Agentes existentes podem continuar sobrescrevendo ``execute_task`` com
         mensagens protobuf. Novos agentes devem preferir ``handle``.
         """
-        raise NotImplementedError("subclasses devem implementar handle")
+        if self._handler is None:
+            raise NotImplementedError("declare handler ou implemente handle")
+        return self._handler(task)
 
     def _execute_contract_task(self, raw_task):
         """Adapta o contrato gRPC para APIs novas ou legadas do agente."""
         try:
-            if type(self).handle is not Agent.handle:
+            if self._handler is not None or type(self).handle is not Agent.handle:
                 result = self.handle(Task.from_proto(raw_task))
             else:
                 result = self.execute_task(raw_task)
 
+            if isinstance(result, Mapping):
+                result = TaskResult(
+                    task_id=raw_task.task_id, agent_id=self.agent_id,
+                    status="TASK_STATUS_COMPLETED", output=result,
+                    trace=Task.from_proto(raw_task).trace,
+                )
             if isinstance(result, TaskResult):
                 return result.to_proto()
             if isinstance(result, contract_pb2.TaskResult):
@@ -176,14 +206,15 @@ class Agent:
         )
 
     def register(self):
-        channel = grpc.insecure_channel(self.registry_addr)
-        stub = contract_pb2_grpc.RegistryServiceStub(channel)
-        resp = stub.RegisterAgent(
-            contract_pb2.RegisterAgentRequest(agent=self.build_descriptor())
-        )
+        with grpc.insecure_channel(self.registry_addr) as channel:
+            stub = contract_pb2_grpc.RegistryServiceStub(channel)
+            resp = stub.RegisterAgent(
+                contract_pb2.RegisterAgentRequest(agent=self.build_descriptor()), timeout=5,
+            )
         if not resp.success:
             raise RuntimeError(f"registration failed: {resp.message}")
         log.info("agent_id=%s registered with registry addr=%s", self.agent_id, self.registry_addr)
+        self._registered = True
 
     def _task_started(self):
         with self._task_count_lock:
@@ -216,7 +247,7 @@ class Agent:
                         else (1.0 if task_count else 0.0)
                     ),
                 )
-            )
+            ), timeout=5,
         )
         if not response.success:
             raise RuntimeError("heartbeat rejected by registry")
@@ -264,18 +295,59 @@ class Agent:
             self._heartbeat_thread.join(timeout=self.heartbeat_interval_seconds + 1)
         self._heartbeat_thread = None
 
-    def serve(self):
+    def _start_server(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
         contract_pb2_grpc.add_AgentServiceServicer_to_server(_AgentServicer(self), server)
-        server.add_insecure_port(f"[::]:{self.port}")
+        self.port = server.add_insecure_port(f"{self.listen_host}:{self.port}")
+        if not self.port:
+            raise RuntimeError("não foi possível abrir a porta do agente")
         server.start()
+        self._server = server
         log.info("agent_id=%s service started port=%d", self.agent_id, self.port)
-        server.wait_for_termination()
+
+    def start(self):
+        """Inicia o endpoint antes de anunciar o agente; não bloqueia."""
+        if self._server is not None:
+            return self
+        if not self.capabilities:
+            raise ValueError("agent must declare at least one capability")
+        try:
+            self._start_server()
+            self.register()
+            with grpc.insecure_channel(self.registry_addr) as channel:
+                self.heartbeat(contract_pb2_grpc.RegistryServiceStub(channel))
+            self.start_heartbeat()
+        except BaseException:
+            self.stop()
+            raise
+        return self
+
+    def stop(self, grace=1):
+        """Interrompe heartbeat, remove registro e encerra o endpoint."""
+        self.stop_heartbeat()
+        if self._registered:
+            try:
+                with grpc.insecure_channel(self.registry_addr) as channel:
+                    contract_pb2_grpc.RegistryServiceStub(channel).UnregisterAgent(
+                        contract_pb2.UnregisterAgentRequest(agent_id=self.agent_id), timeout=2,
+                    )
+            except grpc.RpcError:
+                log.warning("could not unregister agent_id=%s", self.agent_id)
+            self._registered = False
+        if self._server is not None:
+            self._server.stop(grace).wait(timeout=grace + 1)
+            self._server = None
+
+    def serve(self):
+        self._start_server()
+        try:
+            self._server.wait_for_termination()
+        finally:
+            self.stop()
 
     def run(self):
-        self.register()
-        self.start_heartbeat()
+        self.start()
         try:
-            self.serve()
+            self._server.wait_for_termination()
         finally:
-            self.stop_heartbeat()
+            self.stop()

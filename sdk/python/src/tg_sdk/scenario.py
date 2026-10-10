@@ -230,19 +230,21 @@ class Scenario:
 
     def __init__(
         self,
-        name,
+        name="experiment",
         orchestrator_addr="localhost:50052",
         *,
         agents=None,
+        tasks=None,
         entry_capability=None,
         orchestrator_stub=None,
     ):
         self.name = name
         self.agents = tuple(agents or ())
+        self.tasks = None if tasks is None else tuple(tasks)
         self.entry_capability = entry_capability
         self.trace_id = str(uuid.uuid4())
         self._channel = None
-        if orchestrator_stub is None:
+        if orchestrator_stub is None and self.tasks is None:
             self._channel = grpc.insecure_channel(orchestrator_addr)
             orchestrator_stub = contract_pb2_grpc.OrchestratorServiceStub(
                 self._channel
@@ -251,6 +253,11 @@ class Scenario:
         self.results = {}
         self.workflows = {}
         self.events = []
+
+    def definition(self):
+        """Compila o cenário declarativo sem abrir conexões ou iniciar agentes."""
+        from tg_sdk.experiment import compile_steps
+        return compile_steps(self.tasks)
 
     def _event(self, event_type, step, **details):
         self.events.append({
@@ -350,6 +357,7 @@ class Scenario:
         workflow_id=None,
         task_type="WORKFLOW",
         payload=None,
+        rpc_timeout=None,
     ):
         request = self._workflow_request(
             goal, steps=steps, final_step_id=final_step_id,
@@ -357,7 +365,8 @@ class Scenario:
         )
         root_task_id = request.root_task.task_id
         self._event("WORKFLOW_SUBMITTED", "workflow", task_id=root_task_id)
-        response = self._stub.SubmitWorkflow(request)
+        options = {} if rpc_timeout is None else {"timeout": rpc_timeout}
+        response = self._stub.SubmitWorkflow(request, **options)
         if response.HasField("error") and response.error.message:
             self._event(
                 "WORKFLOW_REJECTED", "workflow", task_id=root_task_id,

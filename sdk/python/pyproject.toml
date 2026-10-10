@@ -10,6 +10,9 @@ dependencies = [
     "pydantic==2.13.4",
 ]
 
+[project.scripts]
+tg = "tg_sdk.__main__:main"
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"

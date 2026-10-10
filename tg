@@ -11,6 +11,8 @@ help() {
 TG Runtime — executar, observar e encerrar cenários
 
   ./tg help
+  ./tg run arquivo.py [opções]     executa uma descrição local (Go e uv)
+  ./tg check arquivo.py            valida a descrição sem iniciar serviços
   ./tg doctor [cenário]             verifica Docker e configuração, sem iniciar
   ./tg demo [--keep]                tarefa básica, sem LLM
   ./tg scenario [nome] [--keep]     lista ou executa os cenários abaixo
@@ -244,6 +246,16 @@ run_scenario() {
 command=${1:-help}
 [ "$#" -eq 0 ] || shift
 case "$command" in
+    run)
+        command -v uv >/dev/null 2>&1 || die 'uv é necessário para executar arquivos Python.'
+        TG_RUNTIME_SOURCE="$TG_ROOT/runtime"
+        export TG_RUNTIME_SOURCE
+        exec uv run --project "$TG_ROOT/sdk/python" python -m tg_sdk run "$@"
+        ;;
+    check)
+        command -v uv >/dev/null 2>&1 || die 'uv é necessário para validar arquivos Python.'
+        exec uv run --project "$TG_ROOT/sdk/python" python -m tg_sdk check "$@"
+        ;;
     help|-h|--help) help ;;
     doctor) [ "$#" -le 1 ] || die 'Uso: ./tg doctor [cenário]'; doctor "${1:-demo}" ;;
     demo|scenario)

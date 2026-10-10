@@ -1,28 +1,13 @@
-"""Planejamento simbólico do estudo logístico."""
-from tg_sdk import BdiAgent, plan
-from .domain import plan_mission
+"""Declaração reutilizável; o SDK administra o ciclo do agente."""
+from tg_sdk import BdiAgent, Input, Plan
+from .planning import plan_mission
 
 
-class LogisticsBdiAgent(BdiAgent):
-    capabilities = ["logistics-execution"]
-    default_agent_id = "bdi-agent-01"
-
-    def desire(self, task):
-        if task.payload.get("mission") and task.payload.get("world"):
-            return {"kind": "logistics-mission", "mission": task.payload["mission"], "world": task.payload["world"]}
-        return None
-
-    @plan(name="safe_logistics_mission", priority=100)
-    def safe_logistics_mission(self, desire, beliefs):
-        if desire.get("kind") != "logistics-mission":
-            return None
-        result = plan_mission(desire["world"], desire["mission"])
-        return {
-            "cost": result["final_state"]["elapsed_minutes"] if result["feasible"] else 10**6,
-            "reasoning_summary": (
-                "plano validado por busca determinística e precondições do domínio"
-                if result["feasible"]
-                else "missão rejeitada porque nenhuma sequência satisfaz as restrições"
-            ),
-            **result,
-        }
+def logistics_agent(**options):
+    configuration = dict(
+        name="logistics", agent_id="bdi-agent-01",
+        capabilities=["logistics-execution"],
+        beliefs=Input("world"), desire=Input("mission"),
+        plans=[Plan("safe_logistics_mission", execute=plan_mission)],
+    )
+    return BdiAgent(**(configuration | options))

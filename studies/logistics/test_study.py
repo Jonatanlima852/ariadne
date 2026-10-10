@@ -80,6 +80,21 @@ class StudyTests(unittest.TestCase):
             if strategy == "hybrid":
                 self.assertEqual(steps[1]["input_bindings"][0]["source_path"], "output.mission")
 
+    def test_sdk_planner_matches_reference_on_all_cases_and_variations(self):
+        from tg_sdk import Task
+        from studies.logistics.bdi import logistics_agent
+        agent = logistics_agent()
+        world = load_world()
+        for case in load_cases():
+            for deadline in (1, case["mission"]["deadline_minutes"], 30):
+                with self.subTest(case=case["id"], deadline=deadline):
+                    mission = {**case["mission"], "deadline_minutes": deadline}
+                    result = agent.handle(Task(task_id="test", goal=case["request"],
+                                               payload={"world": world, "mission": mission}))
+                    self.assertEqual(result.status, "TASK_STATUS_COMPLETED")
+                    self.assertEqual(result.output, plan_mission(world, mission))
+                    self.assertEqual(result.metadata["selected_plan"], "safe_logistics_mission")
+
     def test_llm_adapter_preserves_structured_plan_and_interpretation(self):
         from tg_sdk import Task
         from studies.logistics.llm import LogisticsLlmAgent
@@ -96,16 +111,20 @@ class StudyTests(unittest.TestCase):
 
     def test_legacy_agents_reuse_moved_implementations(self):
         from tg_sdk import Task
-        from studies.logistics.bdi import LogisticsBdiAgent
+        from tg_sdk import BdiAgent
         from studies.logistics.llm import LogisticsLlmAgent
         root = Path(__file__).resolve().parents[2]
         with patch.object(sys, "path", [str(root / "agents/bdi-agent"), *sys.path]):
             namespace = runpy.run_path(str(root / "agents/bdi-agent/main.py"))
         agent_class = namespace["RoutePlanningAgent"]
-        self.assertTrue(issubclass(agent_class, LogisticsBdiAgent))
+        self.assertTrue(issubclass(agent_class, BdiAgent))
         result = agent_class().handle(Task(task_id="route", goal="Ir de A para D",
                                          payload={"origin": "A", "destination": "D"}))
         self.assertEqual(result.output["route"], ["A", "B", "D"])
+        case, world = load_case("avoid-contamination"), load_world()
+        result = agent_class().handle(Task(task_id="logistics", goal=case["request"],
+                                           payload={"mission": case["mission"], "world": world}))
+        self.assertEqual(result.output, plan_mission(world, case["mission"]))
         llm_class = runpy.run_path(str(root / "agents/llm-agent/main.py"))["PlannerExplainerAgent"]
         self.assertTrue(issubclass(llm_class, LogisticsLlmAgent))
         agent = llm_class(openai_client=FakeClient())

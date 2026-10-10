@@ -6,8 +6,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../sdk/python/src"))
 
-from tg_sdk import plan
-from studies.logistics.bdi import LogisticsBdiAgent
+from tg_sdk import BdiAgent, plan
+from studies.logistics.planning import plan_mission
 
 from beliefs import KNOWN_ROUTES, direct_distance, known_destinations_from
 
@@ -26,7 +26,7 @@ _GOAL_ROUTE_PATTERN = re.compile(
 )
 
 
-class RoutePlanningAgent(LogisticsBdiAgent):
+class RoutePlanningAgent(BdiAgent):
     """Agente BDI de planejamento de rotas: o desejo é "ir de uma origem
     a um destino"; tg_sdk.BdiAgent cuida de selecionar o plano e montar
     o resultado — este agente só sabe extrair o desejo da task e
@@ -70,6 +70,12 @@ class RoutePlanningAgent(LogisticsBdiAgent):
                 return {"kind": "route", "origin": match.group("origin"), "destination": match.group("destination")}
 
         return None
+
+    @plan(name="safe_logistics_mission", priority=100)
+    def safe_logistics_mission(self, desire, beliefs):
+        if desire.get("kind") != "logistics-mission":
+            return None
+        return plan_mission(desire["world"], desire["mission"])
 
     @plan(name="direct_route")
     def direct_route(self, desire, beliefs):

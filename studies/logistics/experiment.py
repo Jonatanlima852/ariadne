@@ -1,7 +1,7 @@
 """LOGISTICS_STRATEGY=bdi-only ./tg run studies/logistics/experiment.py"""
 import os
 from tg_sdk import Scenario, Step
-from studies.logistics.bdi import LogisticsBdiAgent
+from studies.logistics.bdi import logistics_agent
 from studies.logistics.data import load_case, load_world
 
 case = load_case(os.getenv("LOGISTICS_CASE", "avoid-contamination"))
@@ -9,7 +9,7 @@ world = load_world()
 strategy = os.getenv("LOGISTICS_STRATEGY", "bdi-only")
 
 if strategy == "bdi-only":
-    agents = [LogisticsBdiAgent()]
+    agents = [logistics_agent()]
     tasks = [Step("logistics-execution", case["request"], name="execute",
                   payload={"world": world, "mission": case["mission"]})]
 elif strategy in ("llm-only", "hybrid"):
@@ -18,7 +18,7 @@ elif strategy in ("llm-only", "hybrid"):
     if strategy == "llm-only":
         tasks = [Step("logistics-plan", case["request"], name="plan", payload={"world": world})]
     else:
-        agents.append(LogisticsBdiAgent())
+        agents.append(logistics_agent())
         interpret = Step("logistics-interpret", case["request"], name="interpret")
         tasks = [interpret, Step("logistics-execution", "Planeje a missão estruturada", name="execute",
                                  payload={"world": world, "mission": interpret.output["mission"]})]

@@ -68,11 +68,19 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertTrue((run / "agent-1.jsonl").is_file())
         self.assertTrue((run / "agent-2.jsonl").is_file())
 
-    def test_bdi_subclass_uses_same_executor(self):
+    def test_declarative_bdi_uses_same_executor(self):
         run = self.execute(ROOT / "examples/bdi.py")
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["output"], {"route": ["A", "B", "D"]})
         self.assertEqual(result["steps"]["step_1"]["result"]["metadata"]["selected_plan"], "via_b")
+
+    def test_meeting_uses_same_bdi_interface_through_runtime(self):
+        run = self.execute(ROOT / "examples/meeting.py")
+        result = json.loads((run / "result.json").read_text())
+        self.assertEqual(result["output"]["start"], 12)
+        metadata = result["steps"]["step_1"]["result"]["metadata"]
+        self.assertEqual(metadata["selected_plan"], "start_12")
+        self.assertEqual(len(metadata["evaluated_plans"]), 10)
 
     def test_logistics_package_runs_outside_checkout_and_can_be_inspected_offline(self):
         from unittest.mock import patch

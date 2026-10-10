@@ -1,6 +1,8 @@
 from tg_sdk.agent import Agent
 from tg_sdk.message import Message, MessagingClient
 from tg_sdk.bdi import BdiAgent, plan
+from tg_sdk.plans import Input, Plan
+from tg_sdk.planning import SearchProblem, SearchResult, SearchLimitExceeded, uniform_cost_search
 from tg_sdk.models import Task, TaskResult
 from tg_sdk.experiment import Step
 from tg_sdk.scenario import (
@@ -26,6 +28,12 @@ def __getattr__(name):
 __all__ = [
     "Agent",
     "BdiAgent",
+    "Input",
+    "Plan",
+    "SearchProblem",
+    "SearchResult",
+    "SearchLimitExceeded",
+    "uniform_cost_search",
     "LlmAgent",
     "LlmValidationError",
     "Message",

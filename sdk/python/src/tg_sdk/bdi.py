@@ -1,5 +1,9 @@
+from collections.abc import Mapping
+from copy import deepcopy
+
 from tg_sdk.agent import Agent
 from tg_sdk.models import Task, TaskResult
+from tg_sdk.plans import Input, InputError, Plan, checked_cost, resolve_input
 
 
 def plan(_method=None, *, name=None, priority=0):
@@ -17,7 +21,14 @@ def plan(_method=None, *, name=None, priority=0):
 
 
 class BdiAgent(Agent):
-    """Classe base para agentes que raciocinam no estilo BDI
+    """Agente BDI declarativo, ou classe base para a API histórica.
+
+    Prefira BdiAgent(beliefs=Input('world'), desire=Input('mission'),
+    plans=[Plan('solve', execute=solve)], ...). Callbacks recebem
+    (beliefs, desire); apenas o plano selecionado é executado. Entradas são
+    cópias por tarefa, sem revisão persistente de crenças ou loop autônomo.
+
+    A API histórica de subclasses raciocina no estilo BDI
     (Beliefs, Desires, Intentions).
 
     Generaliza o ciclo comum a esse tipo de agente — extrair o desejo da
@@ -34,15 +45,86 @@ class BdiAgent(Agent):
                        se a task não contiver as informações necessárias
     """
 
-    def __init__(self, *args, beliefs=None, plan_library=None, **kwargs):
+    def __init__(self, *args, beliefs=None, desire=None, plans=None, plan_library=None, **kwargs):
+        if plans is not None and plan_library is not None:
+            raise ValueError("use plans or legacy plan_library, not both")
+        if plans is None and desire is not None:
+            raise ValueError("declarative desire requires plans")
         super().__init__(*args, **kwargs)
+        self.plans = tuple(plans) if plans is not None else None
+        if self.plans is not None:
+            if not self.plans or any(not isinstance(item, Plan) for item in self.plans):
+                raise ValueError("plans must contain at least one Plan")
+            if len({item.name for item in self.plans}) != len(self.plans):
+                raise ValueError("plan names must be unique")
+        self._desire_source = Input() if desire is None else desire
         declared_beliefs = getattr(type(self), "beliefs", {})
         self.beliefs = (
             dict(declared_beliefs)
             if beliefs is None and isinstance(declared_beliefs, dict)
             else (declared_beliefs if beliefs is None else beliefs)
         )
-        self.plan_library = list(plan_library or self._declared_plans())
+        self.plan_library = (
+            [] if self.plans is not None
+            else list(self._declared_plans() if plan_library is None else plan_library)
+        )
+
+    def _handle_declared(self, task):
+        # Não escrever crenças recebidas em self: tarefas podem ser concorrentes.
+        try:
+            beliefs = resolve_input(self.beliefs, task)
+            desire = resolve_input(self._desire_source, task)
+        except InputError as exc:
+            return self._failed_result(task, "ERROR_CODE_INVALID_TASK", str(exc), False)
+
+        candidates, evaluated = [], []
+        for index, candidate in enumerate(self.plans):
+            try:
+                applicable = candidate.when is None or bool(candidate.when(beliefs, desire))
+                cost = None
+                if applicable and candidate.cost is not None:
+                    cost = checked_cost(candidate.cost(beliefs, desire) if callable(candidate.cost) else candidate.cost)
+            except Exception as exc:
+                evaluated.append({"name": candidate.name, "error": str(exc)})
+                return self._declared_failure(task, exc, evaluated, "evaluation")
+            evaluated.append({"name": candidate.name, "applicable": applicable,
+                              "cost": cost, "priority": candidate.priority})
+            if applicable:
+                candidates.append(((cost is None, cost if cost is not None else 0,
+                                    -candidate.priority, index), candidate))
+
+        if not candidates:
+            result = self._failed_result(task, "ERROR_CODE_EXECUTION_FAILED",
+                                         "nenhum plano da biblioteca se aplica a esse desejo", False)
+            result.metadata.update({"evaluated_plans": evaluated})
+            return result
+
+        _, selected = min(candidates, key=lambda item: item[0])
+        # Avaliação e efeitos são fases distintas. Nenhum outro execute é chamado.
+        try:
+            output = selected.execute(deepcopy(beliefs), deepcopy(desire))
+            if not isinstance(output, Mapping):
+                raise TypeError(f"plan {selected.name!r} must return a Mapping")
+        except Exception as exc:
+            return self._declared_failure(task, exc, evaluated, "execution", selected.name)
+        return self._completed_result(task, {
+            "name": selected.name,
+            "reasoning_summary": "plano selecionado por custo, prioridade e ordem de declaração",
+            "output": dict(output),
+        }, evaluated)
+
+    def _declared_failure(self, task, error, evaluated, phase, selected=None):
+        code = ("ERROR_CODE_INVALID_TASK" if isinstance(error, ValueError)
+                else "ERROR_CODE_TIMEOUT" if isinstance(error, TimeoutError)
+                else "ERROR_CODE_EXECUTION_FAILED")
+        result = self._failed_result(task, code, str(error) or type(error).__name__, isinstance(error, TimeoutError))
+        result.metadata.update({"evaluated_plans": evaluated, "failure_phase": phase,
+                                "error_type": type(error).__name__})
+        if selected is not None:
+            result.metadata["selected_plan"] = selected
+        if task.bdi.get("intention_id"):
+            result.metadata["intention_id"] = task.bdi["intention_id"]
+        return result
 
     def _declared_plans(self):
         declared = []
@@ -167,6 +249,8 @@ class BdiAgent(Agent):
         return selected
 
     def handle(self, task: Task) -> TaskResult:
+        if self.plans is not None:
+            return self._handle_declared(task)
         self._apply_external_bdi(task)
 
         # Subclasses novas implementam desire(); as antigas continuam

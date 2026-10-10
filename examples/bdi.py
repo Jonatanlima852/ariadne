@@ -1,23 +1,10 @@
-"""./tg run examples/bdi.py — classes especializadas usam o mesmo executor."""
-from tg_sdk import BdiAgent, Scenario, Step, plan
-
-
-class RouteAgent(BdiAgent):
-    capabilities = ["route"]
-
-    def desire(self, task):
-        return task.goal
-
-    @plan
-    def direct(self, desire, beliefs):
-        return {"cost": 30, "route": ["A", "D"]}
-
-    @plan
-    def via_b(self, desire, beliefs):
-        return {"cost": 25, "route": ["A", "B", "D"]}
-
+"""./tg run examples/bdi.py — só o plano escolhido é executado."""
+from tg_sdk import BdiAgent, Plan, Scenario, Step
 
 scenario = Scenario(
-    agents=[RouteAgent()],
-    tasks=[Step(capability="route", goal="Ir de A para D")],
+    agents=[BdiAgent(name="routes", capabilities=["route"], plans=[
+        Plan("direct", cost=30, execute=lambda beliefs, desire: {"route": ["A", "D"]}),
+        Plan("via_b", cost=25, execute=lambda beliefs, desire: {"route": ["A", "B", "D"]}),
+    ])],
+    tasks=[Step("route", "Ir de A para D")],
 )

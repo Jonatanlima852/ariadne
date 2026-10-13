@@ -22,8 +22,8 @@ recebe somente o payload declarado. Para escolher caso e estratégia:
 
 ```sh
 LOGISTICS_CASE=impossible-deadline ./tg run studies/logistics/experiment.py
-LOGISTICS_STRATEGY=hybrid ./tg run studies/logistics/experiment.py
-LOGISTICS_STRATEGY=llm-only ./tg run studies/logistics/experiment.py
+TG_SDK_EXTRAS=llm LOGISTICS_STRATEGY=hybrid ./tg run studies/logistics/experiment.py
+TG_SDK_EXTRAS=llm LOGISTICS_STRATEGY=llm-only ./tg run studies/logistics/experiment.py
 ```
 
 As estratégias com LLM exigem `OPENAI_API_KEY` exportada e acesso ao modelo
@@ -47,7 +47,7 @@ uv run --project sdk/python python -m studies.logistics.campaign
 Para comparar as três estratégias, com chamadas LLM reais:
 
 ```sh
-uv run --project sdk/python python -m studies.logistics.campaign \
+uv run --project sdk/python --extra llm python -m studies.logistics.campaign \
   --strategies bdi-only llm-only hybrid --repeat 2
 ```
 
@@ -94,13 +94,14 @@ antes de retornar metadados.
 
 Todas as estratégias novas usam workflows. Suas latências não têm exatamente
 o mesmo escopo das tarefas simples do benchmark histórico. Os resultados em
-`benchmarks/results/logistics-20261004T-final-v2` permanecem intactos. Os runners
+`studies/benchmarks/results/logistics-20261004T-final-v2` preservam os conteúdos
+da coleta histórica, antes localizada em `benchmarks/results/`. Os runners
 antigos continuam disponíveis para reprodução histórica.
 
 ## Verificar
 
 ```sh
-uv run --project sdk/python python -m unittest \
+uv run --project sdk/python --extra llm python -m unittest \
   studies.logistics.test_domain studies.logistics.test_study -q
 ```
 
@@ -109,3 +110,7 @@ e cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
 experimental de uma LLM real.
 
 [Avaliação do TCC](../../docs/evaluation.md) · [Interface declarativa](../../docs/experiments.md)
+
+A coleta usa `tg_sdk.campaign`, compartilhado com outros estudos. Execuções
+registram revisão, pacotes e hashes de mundo/casos; a avaliação registra seu
+código e hashes das evidências. Veja [proveniência](../../docs/consolidation.md).

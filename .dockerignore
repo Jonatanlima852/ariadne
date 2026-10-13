@@ -8,8 +8,8 @@
 **/node_modules
 runtime/bin
 runtime/.cache
-experiments/results/*.jsonl
-experiments/results/*.csv
+studies/runtime_metrics/results/*.jsonl
+studies/runtime_metrics/results/*.csv
 docs
 internal-notes
 *.md

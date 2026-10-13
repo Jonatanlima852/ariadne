@@ -2,7 +2,7 @@
 import json
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
-from tg_sdk import LlmAgent, Prompt, llm_capability
+from tg_sdk import LlmAgent, LlmCapability, Prompt, llm_capability
 
 
 class LogisticsAction(BaseModel):
@@ -57,41 +57,51 @@ def normalize_logistics_plan(plan):
     }
 
 
+def logistics_plan(goal, context):
+    return Prompt(
+        system=(
+            "You are the sole planner for a logistics robot. Produce a complete "
+            "executable action sequence from the supplied world JSON and natural "
+            "request. Respect graph edges, energy, elapsed minutes, forbidden and "
+            "required locations, the locked F door, package/key locations, final "
+            "battery and deadline. MOVE uses origin/destination; other actions use "
+            "location. Never invent an edge. If no valid sequence exists, set "
+            "feasible=false and return no actions. Do not assume an external "
+            "validator or symbolic planner will repair your answer."
+        ),
+        user=(
+            f"Natural request: {goal}\n"
+            f"World JSON: {json.dumps(context.get('world'), sort_keys=True)}"
+        ),
+    )
+
+def logistics_interpret(goal, context):
+    return Prompt(
+        system=(
+            "Extract the logistics mission literally. Valid locations are A through "
+            "H. Do not plan actions and do not weaken constraints. Percent battery "
+            "maps to minimum_final_battery. If no forbidden/required places are "
+            "stated, use empty lists. Return the explicit destination and deadline."
+        ),
+        user=goal,
+    )
+
+
+def logistics_llm_agent(**options):
+    configuration = dict(name="logistics-llm", agent_id="llm-agent-01", handlers=[
+        LlmCapability("logistics-plan", logistics_plan, LogisticsPlan, normalize_logistics_plan),
+        LlmCapability("logistics-interpret", logistics_interpret, LogisticsInterpretation),
+    ])
+    return LlmAgent(**(configuration | options))
+
+
 class LogisticsLlmAgent(LlmAgent):
+    """Adaptador para os agentes Docker históricos."""
     capabilities = ["logistics-plan", "logistics-interpret"]
     default_agent_id = "llm-agent-01"
-
-    @llm_capability(
-        "logistics-plan",
-        output_schema=LogisticsPlan,
-        result_mapper=normalize_logistics_plan,
-    )
-    def logistics_plan(self, goal, context):
-        return Prompt(
-            system=(
-                "You are the sole planner for a logistics robot. Produce a complete "
-                "executable action sequence from the supplied world JSON and natural "
-                "request. Respect graph edges, energy, elapsed minutes, forbidden and "
-                "required locations, the locked F door, package/key locations, final "
-                "battery and deadline. MOVE uses origin/destination; other actions use "
-                "location. Never invent an edge. If no valid sequence exists, set "
-                "feasible=false and return no actions. Do not assume an external "
-                "validator or symbolic planner will repair your answer."
-            ),
-            user=(
-                f"Natural request: {goal}\n"
-                f"World JSON: {json.dumps(context.get('world'), sort_keys=True)}"
-            ),
-        )
-
-    @llm_capability("logistics-interpret", output_schema=LogisticsInterpretation)
-    def logistics_interpret(self, goal, context):
-        return Prompt(
-            system=(
-                "Extract the logistics mission literally. Valid locations are A through "
-                "H. Do not plan actions and do not weaken constraints. Percent battery "
-                "maps to minimum_final_battery. If no forbidden/required places are "
-                "stated, use empty lists. Return the explicit destination and deadline."
-            ),
-            user=goal,
-        )
+    logistics_plan = staticmethod(llm_capability(
+        "logistics-plan", output_schema=LogisticsPlan, result_mapper=normalize_logistics_plan,
+    )(logistics_plan))
+    logistics_interpret = staticmethod(llm_capability(
+        "logistics-interpret", output_schema=LogisticsInterpretation,
+    )(logistics_interpret))

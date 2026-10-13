@@ -114,8 +114,8 @@ class StudyTests(unittest.TestCase):
         from tg_sdk import BdiAgent
         from studies.logistics.llm import LogisticsLlmAgent
         root = Path(__file__).resolve().parents[2]
-        with patch.object(sys, "path", [str(root / "agents/bdi-agent"), *sys.path]):
-            namespace = runpy.run_path(str(root / "agents/bdi-agent/main.py"))
+        with patch.object(sys, "path", [str(root / "examples/support/agents/bdi-agent"), *sys.path]):
+            namespace = runpy.run_path(str(root / "examples/support/agents/bdi-agent/main.py"))
         agent_class = namespace["RoutePlanningAgent"]
         self.assertTrue(issubclass(agent_class, BdiAgent))
         result = agent_class().handle(Task(task_id="route", goal="Ir de A para D",
@@ -125,7 +125,7 @@ class StudyTests(unittest.TestCase):
         result = agent_class().handle(Task(task_id="logistics", goal=case["request"],
                                            payload={"mission": case["mission"], "world": world}))
         self.assertEqual(result.output, plan_mission(world, case["mission"]))
-        llm_class = runpy.run_path(str(root / "agents/llm-agent/main.py"))["PlannerExplainerAgent"]
+        llm_class = runpy.run_path(str(root / "examples/support/agents/llm-agent/main.py"))["PlannerExplainerAgent"]
         self.assertTrue(issubclass(llm_class, LogisticsLlmAgent))
         agent = llm_class(openai_client=FakeClient())
         self.assertEqual(set(agent._handlers), {"explanation", "task-decomposition", "logistics-plan", "logistics-interpret"})
@@ -144,6 +144,7 @@ class StudyTests(unittest.TestCase):
                 "with patch.dict(os.environ, {'LOGISTICS_STRATEGY':'hybrid', 'LOGISTICS_CASE':'avoid-contamination', 'LLM_MODEL':'test-only'}), "
                 "patch('openai.OpenAI', return_value=FakeClient()):\n"
                 f"    scenario = load_scenario({str(experiment)!r})\n"
+                "    scenario.agents[0]._openai = FakeClient()\n"
             )
             run, summary = run_experiment(source, output_root=directory / "runs",
                                           runtime_dir=os.environ["TG_TEST_RUNTIME_DIR"])

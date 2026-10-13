@@ -13,8 +13,8 @@ if strategy == "bdi-only":
     tasks = [Step("logistics-execution", case["request"], name="execute",
                   payload={"world": world, "mission": case["mission"]})]
 elif strategy in ("llm-only", "hybrid"):
-    from studies.logistics.llm import LogisticsLlmAgent
-    agents = [LogisticsLlmAgent()]
+    from studies.logistics.llm import logistics_llm_agent
+    agents = [logistics_llm_agent()]
     if strategy == "llm-only":
         tasks = [Step("logistics-plan", case["request"], name="plan", payload={"world": world})]
     else:
@@ -27,6 +27,7 @@ else:
 
 scenario = Scenario(
     name=f"logistics-{strategy}-{case['id']}", agents=agents, tasks=tasks,
+    artifacts=["world.json", "cases.json"],
     metadata={"study": "logistics", "strategy": strategy, "case": case, "world": world,
               "model": getattr(agents[0], "model", None)},
 )

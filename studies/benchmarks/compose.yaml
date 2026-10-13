@@ -1,0 +1,160 @@
+name: tg-benchmarks
+
+x-mock: &mock
+  build:
+    context: ../..
+    dockerfile: examples/support/agents/mock-agent/Dockerfile
+  depends_on:
+    registry:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 60051), 2).close()"]
+    interval: 2s
+    timeout: 2s
+    retries: 20
+
+services:
+  registry:
+    build:
+      context: ../..
+      dockerfile: runtime/services/registry/Dockerfile
+    environment:
+      REGISTRY_ADDR: ":50051"
+      FAILURE_SCAN_INTERVAL: "1s"
+      SUSPECTED_TIMEOUT: "10s"
+      DEAD_TIMEOUT: "20s"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "50051"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  orchestrator:
+    build:
+      context: ../..
+      dockerfile: runtime/services/orchestrator/Dockerfile
+    ports:
+      - "${BENCHMARK_ORCHESTRATOR_PORT:-54052}:50052"
+    environment:
+      ORCHESTRATOR_ADDR: ":50052"
+      REGISTRY_ADDR: "registry:50051"
+      EXECUTION_TIMEOUT: "10s"
+      EVENTS_PATH: "/data/events.jsonl"
+    volumes:
+      - events_data:/data
+    depends_on:
+      registry:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "50052"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  basic-agent:
+    <<: *mock
+    environment:
+      AGENT_ID: "basic-agent"
+      AGENT_HOST: "basic-agent"
+      AGENT_PORT: "60051"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "benchmark-basic"
+      DELAY_MS: "30"
+      FAIL_RATE: "0"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+
+  policy-a:
+    <<: *mock
+    environment: &policy-a-env
+      AGENT_ID: "policy-a"
+      AGENT_HOST: "policy-a"
+      AGENT_PORT: "60051"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "benchmark-policy"
+      DELAY_MS: "30"
+      FAIL_RATE: "0"
+      REPORTED_LOAD: "0.7"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+
+  policy-b:
+    <<: *mock
+    environment:
+      <<: *policy-a-env
+      AGENT_ID: "policy-b"
+      AGENT_HOST: "policy-b"
+      REPORTED_LOAD: "0.1"
+
+  policy-c:
+    <<: *mock
+    environment:
+      <<: *policy-a-env
+      AGENT_ID: "policy-c"
+      AGENT_HOST: "policy-c"
+      REPORTED_LOAD: "0.4"
+
+  a-slow:
+    <<: *mock
+    environment:
+      AGENT_ID: "a-slow"
+      AGENT_HOST: "a-slow"
+      AGENT_PORT: "60051"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "benchmark-recovery"
+      DELAY_MS: "1000"
+      FAIL_RATE: "0"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+
+  b-healthy:
+    <<: *mock
+    environment:
+      AGENT_ID: "b-healthy"
+      AGENT_HOST: "b-healthy"
+      AGENT_PORT: "60051"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "benchmark-recovery"
+      DELAY_MS: "20"
+      FAIL_RATE: "0"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+
+  bdi-agent:
+    build:
+      context: ../..
+      dockerfile: examples/support/agents/bdi-agent/Dockerfile
+    environment:
+      AGENT_ID: "bdi-agent-01"
+      AGENT_HOST: "bdi-agent"
+      AGENT_PORT: "60054"
+      REGISTRY_ADDR: "registry:50051"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+    depends_on:
+      registry:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 60054), 2).close()"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  llm-agent:
+    build:
+      context: ../..
+      dockerfile: examples/support/agents/llm-agent/Dockerfile
+    environment:
+      AGENT_ID: "llm-agent-01"
+      AGENT_HOST: "llm-agent"
+      AGENT_PORT: "60056"
+      REGISTRY_ADDR: "registry:50051"
+      HEARTBEAT_INTERVAL_SECONDS: "1"
+      LLM_MODEL: "${LLM_MODEL:-gpt-5.6-luna}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}"
+    depends_on:
+      registry:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 60056), 2).close()"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+volumes:
+  events_data:

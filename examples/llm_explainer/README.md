@@ -1,9 +1,9 @@
 # Exemplo de explicação por LLM
 
-A capacidade de explicação está no [agente LLM](../../agents/llm-agent/main.py).
+A capacidade de explicação está no [agente LLM](../support/agents/llm-agent/main.py).
 Este diretório é um ponto de navegação, sem uma implementação separada.
 
-O [cenário de rota heterogênea](../../scenarios/heterogeneous-route/README.md)
+O [cenário de rota heterogênea](../docker/heterogeneous-route/README.md)
 mostra a LLM explicando o resultado produzido pelo BDI. Essa integração exige
 credencial e acesso ao modelo configurado. Os testes do SDK usam cliente falso.
 

@@ -8,6 +8,7 @@ import statistics
 import uuid
 
 from studies.logistics.domain import evaluate_plan, plan_mission
+from studies.evidence import analysis_provenance
 from studies.logistics.reporting import write_csv, write_chart
 
 
@@ -111,7 +112,9 @@ def main(argv=None):
             campaign_path = source / "campaign.json"
             if campaign_path.is_file():
                 campaign = json.loads(campaign_path.read_text())
-                planned = len(campaign["cases"]) * len(campaign["strategies"]) * campaign["repetitions"]
+                planned = campaign.get("planned_observations")
+                if planned is None:
+                    planned = len(campaign["cases"]) * len(campaign["strategies"]) * campaign["repetitions"]
                 campaigns.append({"source": str(source), "status": campaign["status"],
                                   "planned_observations": planned, "recorded_runs": len(found)})
     rows = [row for directory in dict.fromkeys(runs) for row in evaluate_run(directory)]
@@ -120,7 +123,9 @@ def main(argv=None):
     document = {"schema_version": 1, "generated_at": datetime.now(timezone.utc).isoformat(),
                 "sources": [str(path) for path in dict.fromkeys(runs)], "campaigns": campaigns,
                 "rows": rows, "summary": summaries,
-                "limitations": ["shared symbolic planner and evaluator", "correct rejections count as optimal",
+                "provenance": analysis_provenance(__file__, list(dict.fromkeys(runs)),
+                    [Path(__file__).with_name("domain.py"), Path(__file__).with_name("reporting.py")]),
+                "limitations": ["shared domain rules between planner and evaluator", "correct rejections count as optimal",
                                 "consistency requires at least two observations of the same case and world",
                                 "new workflow latencies are not identical to historical single-task measurements"]}
     if any(campaign["recorded_runs"] < campaign["planned_observations"] for campaign in campaigns):

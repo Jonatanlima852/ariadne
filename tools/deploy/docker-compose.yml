@@ -1,0 +1,112 @@
+services:
+
+  registry:
+    build:
+      context: ../..
+      dockerfile: runtime/services/registry/Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      REGISTRY_ADDR: ":50051"
+      FAILURE_SCAN_INTERVAL: "1s"
+      SUSPECTED_TIMEOUT: "10s"
+      DEAD_TIMEOUT: "20s"
+
+  orchestrator:
+    build:
+      context: ../..
+      dockerfile: runtime/services/orchestrator/Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      ORCHESTRATOR_ADDR: ":50052"
+      REGISTRY_ADDR: "registry:50051"
+      EVENTS_PATH: "/data/events.jsonl"
+    volumes:
+      - events_data:/data
+    depends_on:
+      - registry
+
+  messaging:
+    build:
+      context: ../..
+      dockerfile: runtime/services/messaging/Dockerfile
+    ports:
+      - "50053:50053"
+    environment:
+      MESSAGING_ADDR: ":50053"
+      EVENTS_PATH: "/data/message-events.jsonl"
+    volumes:
+      - events_data:/data
+
+  mock-agent:
+    build:
+      context: ../..
+      dockerfile: examples/support/agents/mock-agent/Dockerfile
+    ports:
+      - "60051:60051"
+    environment:
+      AGENT_ID: "mock-agent-01"
+      AGENT_HOST: "mock-agent"
+      AGENT_PORT: "60051"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "echo"
+      DELAY_MS: "100"
+      FAIL_RATE: "0.0"
+      HEARTBEAT_INTERVAL_SECONDS: "5"
+    depends_on:
+      - registry
+
+  client-runner:
+    profiles:
+      - client
+    build:
+      context: ../..
+      dockerfile: examples/support/clients/submit-task/Dockerfile
+    environment:
+      ORCHESTRATOR_ADDR: "orchestrator:50052"
+      TG_SDK_PATH: "/sdk"
+    depends_on:
+      - orchestrator
+    command: ["--goal", "Teste ponta a ponta", "--capability", "echo"]
+
+  llm-agent:
+    profiles:
+      - llm
+      - heterogeneous
+    build:
+      context: ../..
+      dockerfile: examples/support/agents/llm-agent/Dockerfile
+    ports:
+      - "60056:60056"
+    environment:
+      AGENT_ID: "llm-agent-01"
+      AGENT_HOST: "llm-agent"
+      AGENT_PORT: "60056"
+      REGISTRY_ADDR: "registry:50051"
+      HEARTBEAT_INTERVAL_SECONDS: "5"
+      LLM_MODEL: "${LLM_MODEL:-gpt-5.6-luna}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+    depends_on:
+      - registry
+
+  bdi-agent:
+    profiles:
+      - heterogeneous
+    build:
+      context: ../..
+      dockerfile: examples/support/agents/bdi-agent/Dockerfile
+    ports:
+      - "60054:60054"
+    environment:
+      AGENT_ID: "bdi-agent-01"
+      AGENT_HOST: "bdi-agent"
+      AGENT_PORT: "60054"
+      REGISTRY_ADDR: "registry:50051"
+      CAPABILITY: "route-planning"
+      HEARTBEAT_INTERVAL_SECONDS: "5"
+    depends_on:
+      - registry
+
+volumes:
+  events_data:

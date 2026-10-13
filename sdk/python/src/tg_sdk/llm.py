@@ -1,10 +1,14 @@
 import logging
 import os
 import time
+import threading
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from pydantic import BaseModel
+try:
+    from pydantic import BaseModel
+except ImportError as error:
+    raise ImportError("LLM support requires tg-sdk[llm]; in this checkout use uv sync --project sdk/python --extra llm") from error
 
 from tg_sdk.agent import Agent
 from tg_sdk.models import Task, TaskResult
@@ -20,6 +24,25 @@ class LlmValidationError(ValueError):
 class Prompt:
     system: str
     user: str
+
+
+@dataclass(frozen=True)
+class LlmCapability:
+    """Declara prompt(goal, payload), schema e mapeamento de uma capacidade."""
+    name: str
+    prompt: Any
+    output_schema: type[BaseModel]
+    result_mapper: Any = None
+
+    def __post_init__(self):
+        if not isinstance(self.name, str) or not self.name.strip():
+            raise ValueError("LLM capability requires a name")
+        if not callable(self.prompt) and not isinstance(self.prompt, Prompt):
+            raise TypeError("prompt must be Prompt or callable(goal, payload)")
+        if not isinstance(self.output_schema, type) or not issubclass(self.output_schema, BaseModel):
+            raise TypeError("output_schema must be a Pydantic BaseModel class")
+        if self.result_mapper is not None and not callable(self.result_mapper):
+            raise TypeError("result_mapper must be callable")
 
 
 def llm_capability(capability_id, *, output_schema, result_mapper=None):
@@ -94,15 +117,43 @@ class LlmAgent(Agent):
     runtime_name = "python-sdk-openai"
     model = "gpt-5.6-luna"
 
-    def __init__(self, model=None, openai_client=None, **kwargs):
+    def __init__(self, model=None, openai_client=None, handlers=None,
+                 prompt=None, output_schema=None, result_mapper=None, **kwargs):
         super().__init__(**kwargs)
         self.model = model or os.getenv("LLM_MODEL", type(self).model)
-        if openai_client is None:
-            from openai import OpenAI
-
-            openai_client = OpenAI()
         self._openai = openai_client
+        self._client_lock = threading.Lock()
         self._handlers = self._discover_handlers()
+        if prompt is not None or output_schema is not None:
+            if handlers is not None or len(self.capabilities) != 1:
+                raise ValueError("prompt/output_schema require exactly one capability and no handlers")
+            handlers = [LlmCapability(self.capabilities[0], prompt, output_schema, result_mapper)]
+        for declaration in handlers or ():
+            if not isinstance(declaration, LlmCapability):
+                raise TypeError("handlers must contain LlmCapability declarations")
+            if declaration.name in self._handlers:
+                raise ValueError(f"duplicate LLM capability: {declaration.name}")
+            handler = declaration.prompt
+            if isinstance(handler, Prompt):
+                handler = lambda goal, context, value=handler: value
+            self._handlers[declaration.name] = (handler, {
+                "output_schema": declaration.output_schema, "result_mapper": declaration.result_mapper,
+            })
+        if not self.capabilities:
+            self.capabilities = list(self._handlers)
+        if not self._handlers or set(self.capabilities) != set(self._handlers):
+            raise ValueError("declared capabilities must match LLM handlers")
+
+    def _client(self):
+        # Construir/validar uma descrição não exige credenciais nem clientes.
+        with self._client_lock:
+            if self._openai is None:
+                try:
+                    from openai import OpenAI
+                except ImportError as error:
+                    raise RuntimeError("install tg-sdk[llm] to execute LLM agents") from error
+                self._openai = OpenAI()
+            return self._openai
 
     def _discover_handlers(self):
         handlers = {}
@@ -138,7 +189,7 @@ class LlmAgent(Agent):
             if not isinstance(prompt, Prompt):
                 raise LlmValidationError("LLM capability handler must return Prompt")
 
-            response = self._openai.responses.parse(
+            response = self._client().responses.parse(
                 model=self.model,
                 input=[
                     {"role": "system", "content": prompt.system},

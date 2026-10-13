@@ -43,6 +43,8 @@ def compile_steps(tasks):
     """Traduz referências para o contrato de workflow já usado pelo runtime."""
     if not tasks or any(not isinstance(step, Step) for step in tasks):
         raise ValueError("scenario.tasks must contain at least one Step")
+    if len(tasks) > 10:
+        raise ValueError("workflow exceeds maximum of 10 steps")
     if len({id(step) for step in tasks}) != len(tasks):
         raise ValueError("the same Step cannot occur twice")
     names = {step: step.name or f"step_{i + 1}" for i, step in enumerate(tasks)}
@@ -52,8 +54,16 @@ def compile_steps(tasks):
         raise ValueError("step names must be simple identifiers")
     compiled = []
     for step in tasks:
-        if not step.capability or not isinstance(step.goal, str):
+        if not isinstance(step.capability, str) or not step.capability or not isinstance(step.goal, str):
             raise ValueError("each Step requires a capability and a string goal")
+        if step.capability == "task-decomposition":
+            raise ValueError("workflow steps cannot recursively request task-decomposition")
+        policy = str(step.selection_policy).upper().removeprefix("SELECTION_POLICY_")
+        if policy not in {"FIRST_AVAILABLE", "ROUND_ROBIN", "LEAST_LOADED", "RANDOM"}:
+            raise ValueError(f"unknown selection policy: {step.selection_policy}")
+        if any(isinstance(value, bool) or not isinstance(value, int)
+               for value in (step.deadline_ms, step.backoff_ms, step.max_attempts)):
+            raise ValueError("timeouts and retry counts must be integers")
         if step.deadline_ms < 0 or step.backoff_ms < 0 or step.max_attempts < 1:
             raise ValueError("invalid timeout or retry policy")
         dependencies = list(step.depends_on)
@@ -104,10 +114,10 @@ def compile_steps(tasks):
             "input_bindings": bindings, "deadline_ms": step.deadline_ms,
             "max_attempts": step.max_attempts, "backoff_ms": step.backoff_ms,
             "exclude_failed_agent": step.exclude_failed_agent,
-            "selection_policy": step.selection_policy,
+            "selection_policy": policy,
         })
     graph = {item["step_id"]: item["depends_on"] for item in compiled}
-    visited, active = set(), set()
+    visited, active, depths = set(), set(), {}
 
     def check(name):
         if name in active:
@@ -117,6 +127,9 @@ def compile_steps(tasks):
         active.add(name)
         for dependency in graph[name]:
             check(dependency)
+        depths[name] = 1 + max((depths[dependency] for dependency in graph[name]), default=0)
+        if depths[name] > 5:
+            raise ValueError("workflow exceeds maximum depth of 5")
         active.remove(name)
         visited.add(name)
 

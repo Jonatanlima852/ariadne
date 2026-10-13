@@ -20,7 +20,9 @@ import grpc
 from contract.v1 import contract_pb2 as pb, contract_pb2_grpc as rpc
 from tg_sdk.agent import Agent
 from tg_sdk.evidence import EventLog, utc_now, write_json
+from tg_sdk.provenance import capture
 from tg_sdk.scenario import Scenario
+from tg_sdk.client import RuntimeClient
 
 SERVICES = ("registry", "orchestrator", "messaging")
 
@@ -61,6 +63,15 @@ def load_scenario(source):
         raise ValueError("no declared agent provides: " + ", ".join(sorted(missing)))
     if scenario.name == "experiment":
         scenario.name = source.stem
+    artifacts = []
+    for value in (*scenario.artifacts, source):
+        path = Path(value)
+        path = (path if path.is_absolute() else source.parent / path).resolve(strict=True)
+        if not path.is_file() or path.name == ".env" or path.name.startswith(".env."):
+            raise ValueError(f"artifact must be a regular, non-credential file: {path}")
+        artifacts.append(path)
+    # Preserva a origem quando outro arquivo reutiliza uma descrição carregada.
+    scenario.artifacts = tuple(dict.fromkeys(artifacts))
     return scenario
 
 
@@ -163,10 +174,14 @@ def build_runtime(source, destination, processes):
 
 
 def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None,
-                   ready_timeout=30, task_timeout=60, repeat=1):
+                   ready_timeout=30, task_timeout=60, repeat=1, execution_id=None):
     source = Path(source).resolve(strict=True)
     scenario = load_scenario(source)
-    directory = Path(output_root).resolve() / ("tg-" + uuid.uuid4().hex)
+    provenance = capture(source, scenario.artifacts)
+    execution_id = execution_id or ("tg-" + uuid.uuid4().hex)
+    if not execution_id.startswith("tg-") or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in execution_id):
+        raise ValueError("invalid execution_id")
+    directory = Path(output_root).resolve() / execution_id
     directory.mkdir(parents=True)
     print(f"Experimento: {scenario.name}\nEvidências: {directory}", flush=True)
     events = EventLog(directory / "execution.jsonl", execution_id=directory.name)
@@ -180,6 +195,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         "python": sys.version, "platform": platform.platform(), "contract_version": "1.0.0",
         "repeat": repeat, "ready_timeout_seconds": ready_timeout, "rpc_timeout_seconds": task_timeout,
         "metadata": scenario.metadata,
+        "provenance": provenance,
         "agents": [{"agent_id": agent.agent_id, "capabilities": agent.capabilities}
                    for agent in scenario.agents], "steps": definition,
     }
@@ -247,7 +263,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         failed = False
         for sample in range(1, repeat + 1):
             processes.check()
-            with Scenario(scenario.name, addresses["orchestrator"]) as client:
+            with RuntimeClient(scenario.name, addresses["orchestrator"]) as client:
                 events.emit("SAMPLE_STARTED", sample=sample, trace_id=client.trace_id)
                 sample_start = time.perf_counter()
                 try:

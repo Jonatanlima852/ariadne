@@ -5,10 +5,11 @@ description = "Python SDK para agentes do TG Runtime"
 requires-python = ">=3.11"
 dependencies = [
     "grpcio",
-    "openai==2.50.0",
     "protobuf",
-    "pydantic==2.13.4",
 ]
+
+[project.optional-dependencies]
+llm = ["openai==2.50.0", "pydantic==2.13.4"]
 
 [project.scripts]
 tg = "tg_sdk.__main__:main"

@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from contract.v1 import contract_pb2
-from tg_sdk import Scenario, TaskResult
+from tg_sdk import RuntimeClient, TaskResult
 
 
 def response(*, task_id, agent_id, metadata=None, output=None):
@@ -105,7 +105,7 @@ class FakeAutomaticWorkflowOrchestrator:
 class ScenarioTests(unittest.TestCase):
 
     def test_ask_returns_automatically_planned_workflow(self):
-        scenario = Scenario(
+        scenario = RuntimeClient(
             "automatic", entry_capability="task-decomposition",
             orchestrator_stub=FakeAutomaticWorkflowOrchestrator(),
         )
@@ -125,7 +125,7 @@ class ScenarioTests(unittest.TestCase):
                 output={"answer": "ok"},
             )
         ])
-        scenario = Scenario(
+        scenario = RuntimeClient(
             "single-entry",
             entry_capability="task-decomposition",
             orchestrator_stub=stub,
@@ -153,7 +153,7 @@ class ScenarioTests(unittest.TestCase):
                 metadata={"selected_plan": "via_b"},
             ),
         ])
-        scenario = Scenario("heterogeneous", orchestrator_stub=stub)
+        scenario = RuntimeClient("heterogeneous", orchestrator_stub=stub)
         scenario.submit("decompose", goal="goal", capabilities=["decompose"])
         scenario.submit("route", goal="route", capabilities=["route"])
 
@@ -177,7 +177,7 @@ class ScenarioTests(unittest.TestCase):
         stub = FakeOrchestrator([
             response(task_id="one", agent_id="healthy")
         ])
-        scenario = Scenario("retry", orchestrator_stub=stub)
+        scenario = RuntimeClient("retry", orchestrator_stub=stub)
 
         scenario.submit(
             "recover",
@@ -201,14 +201,14 @@ class ScenarioTests(unittest.TestCase):
         )
 
     def test_run_requires_entry_capability(self):
-        scenario = Scenario("invalid", orchestrator_stub=FakeOrchestrator([]))
+        scenario = RuntimeClient("invalid", orchestrator_stub=FakeOrchestrator([]))
 
         with self.assertRaisesRegex(ValueError, "entry_capability"):
             scenario.run("goal")
 
     def test_submit_workflow_uses_python_values_and_returns_aggregate(self):
         stub = FakeWorkflowOrchestrator()
-        scenario = Scenario("workflow", orchestrator_stub=stub)
+        scenario = RuntimeClient("workflow", orchestrator_stub=stub)
 
         result = scenario.submit_workflow(
             "Execute duas etapas",
@@ -237,7 +237,7 @@ class ScenarioTests(unittest.TestCase):
 
     def test_async_workflow_start_get_and_cancel(self):
         stub = FakeWorkflowOrchestrator()
-        scenario = Scenario("async", orchestrator_stub=stub)
+        scenario = RuntimeClient("async", orchestrator_stub=stub)
         declaration = [{
             "step_id": "only", "goal": "work", "capabilities": ["echo"],
         }]

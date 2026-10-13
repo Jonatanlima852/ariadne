@@ -462,8 +462,12 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "grpcio" },
-    { name = "openai" },
     { name = "protobuf" },
+]
+
+[package.optional-dependencies]
+llm = [
+    { name = "openai" },
     { name = "pydantic" },
 ]
 
@@ -475,10 +479,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "grpcio" },
-    { name = "openai", specifier = "==2.50.0" },
+    { name = "openai", marker = "extra == 'llm'", specifier = "==2.50.0" },
     { name = "protobuf" },
-    { name = "pydantic", specifier = "==2.13.4" },
+    { name = "pydantic", marker = "extra == 'llm'", specifier = "==2.13.4" },
 ]
+provides-extras = ["llm"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "grpcio-tools" }]

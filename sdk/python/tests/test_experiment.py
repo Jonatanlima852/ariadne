@@ -110,3 +110,19 @@ class ExperimentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StaticContractTests(unittest.TestCase):
+    def test_go_workflow_limits_and_invalid_policies_fail_before_startup(self):
+        chain = [Step('echo', 'first')]
+        for _ in range(5):
+            chain.append(Step('echo', 'next', depends_on=(chain[-1],)))
+        for steps, message in (
+            ([Step('echo', 'x') for _ in range(11)], '10 steps'),
+            (chain, 'depth'),
+            ([Step('echo', 'x', selection_policy='typo')], 'selection policy'),
+            ([Step('echo', 'x', deadline_ms=1.5)], 'integers'),
+            ([Step('task-decomposition', 'x')], 'recursively'),
+        ):
+            with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                Scenario(tasks=steps).definition()

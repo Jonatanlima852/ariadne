@@ -5,8 +5,10 @@ from tg_sdk.plans import Input, Plan
 from tg_sdk.planning import SearchProblem, SearchResult, SearchLimitExceeded, uniform_cost_search
 from tg_sdk.models import Task, TaskResult
 from tg_sdk.experiment import Step
-from tg_sdk.scenario import (
-    Scenario,
+from tg_sdk.campaign import Campaign
+from tg_sdk.scenario import Scenario
+from tg_sdk.client import (
+    RuntimeClient,
     ScenarioReport,
     ScenarioResult,
     ScenarioWorkflowResult,
@@ -19,7 +21,7 @@ def __getattr__(name):
     Agentes determinísticos e BDI não precisam instalar OpenAI/Pydantic para
     importar o núcleo do SDK.
     """
-    if name in {"LlmAgent", "LlmValidationError", "Prompt", "llm_capability"}:
+    if name in {"LlmAgent", "LlmValidationError", "Prompt", "LlmCapability", "llm_capability"}:
         from tg_sdk import llm
 
         return getattr(llm, name)
@@ -35,11 +37,14 @@ __all__ = [
     "SearchLimitExceeded",
     "uniform_cost_search",
     "LlmAgent",
+    "LlmCapability",
     "LlmValidationError",
     "Message",
     "MessagingClient",
     "Prompt",
     "Scenario",
+    "Campaign",
+    "RuntimeClient",
     "ScenarioReport",
     "ScenarioResult",
     "ScenarioWorkflowResult",

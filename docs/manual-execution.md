@@ -25,9 +25,9 @@ docker compose version
 ## 1. Iniciar e conferir a prontidão
 
 ```sh
-docker compose -f infra/docker-compose.yml up --build -d
-docker compose -f infra/docker-compose.yml ps
-docker compose -f infra/docker-compose.yml logs --tail=50 registry orchestrator mock-agent
+docker compose -f tools/deploy/docker-compose.yml up --build -d
+docker compose -f tools/deploy/docker-compose.yml ps
+docker compose -f tools/deploy/docker-compose.yml logs --tail=50 registry orchestrator mock-agent
 ```
 
 O Compose básico inicia Registry, Orchestrator, Messaging e mock-agent.
@@ -39,7 +39,7 @@ consulta de logs se necessário.
 ## 2. Enviar a tarefa
 
 ```sh
-docker compose -f infra/docker-compose.yml --profile client run --build --rm client-runner \
+docker compose -f tools/deploy/docker-compose.yml --profile client run --build --rm client-runner \
   --goal "Teste ponta a ponta" --capability echo
 ```
 
@@ -61,9 +61,9 @@ diretas ao agente e não publica um `MessageEnvelope`.
 ## 3. Observar e encerrar
 
 ```sh
-docker compose -f infra/docker-compose.yml logs --tail=50 orchestrator mock-agent
-docker compose -f infra/docker-compose.yml exec -T orchestrator cat /data/events.jsonl
-docker compose -f infra/docker-compose.yml down
+docker compose -f tools/deploy/docker-compose.yml logs --tail=50 orchestrator mock-agent
+docker compose -f tools/deploy/docker-compose.yml exec -T orchestrator cat /data/events.jsonl
+docker compose -f tools/deploy/docker-compose.yml down
 ```
 
 `down` remove os contêineres e a rede deste projeto, preservando o volume de
@@ -79,7 +79,7 @@ seu histórico; use essa variante apenas para uma limpeza deliberada.
 | Porta já ocupada | Encerre a outra topologia que usa a porta; os cenários de workflow e falha têm portas próprias |
 | `UNAVAILABLE` | Confira `ps` e logs; aguarde os serviços e repita o envio |
 | `no compatible agent found` | Confira o registro do mock-agent e a capacidade `echo` |
-| Mock-agent encerrou ao iniciar | Com o Registry pronto, execute `docker compose -f infra/docker-compose.yml restart mock-agent` e confira o registro |
+| Mock-agent encerrou ao iniciar | Com o Registry pronto, execute `docker compose -f tools/deploy/docker-compose.yml restart mock-agent` e confira o registro |
 | Não há eventos no host | O Compose grava em `/data/events.jsonl`, no volume do contêiner |
 
 ## Cliente local, opcional
@@ -87,7 +87,7 @@ seu histórico; use essa variante apenas para uma limpeza deliberada.
 Com Python e `uv` disponíveis, mantendo o runtime iniciado:
 
 ```sh
-uv run --directory clients/submit-task python main.py \
+uv run --project sdk/python python main.py \
   --goal "Teste ponta a ponta" --capability echo
 ```
 
@@ -97,7 +97,7 @@ genérico ainda não exibe corretamente.
 
 ## Próxima experiência
 
-Execute o [workflow sequencial](../scenarios/workflow-sequential/README.md)
+Execute o [workflow sequencial](../examples/docker/workflow-sequential/README.md)
 para observar duas tarefas coordenadas, ou escolha outro caso no
 [catálogo de cenários](scenarios.md).
 

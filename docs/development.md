@@ -4,7 +4,7 @@
 
 | Atividade | Ferramentas |
 |---|---|
-| Demonstrações e cenários via `./tg` | Docker e Compose >=2.24.4 |
+| Cenários Docker via `./tg` | uv e Docker Compose >=2.24.4 |
 | SDK, scripts e cenários Python | uv e Python compatível com o projeto |
 | Compilar e testar o runtime localmente | Go 1.26.3 ou compatível com `runtime/go.mod` |
 | Regenerar contrato | Go, protoc, plugins Go, uv e grpcio-tools |
@@ -21,15 +21,15 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `proto/` | [Contrato](../proto/contract/v1/contract.proto), versão e checksum |
 | `runtime/` | Módulo Go, serviços e stubs gerados |
 | `sdk/python/` | [API pública](../sdk/python/src/tg_sdk/__init__.py) e testes |
-| `agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
-| `clients/submit-task/` | [Cliente de tarefa simples](../clients/submit-task/main.py) |
-| `scenarios/` | Scripts de integração e topologias |
+| `examples/support/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
+| `examples/support/clients/submit-task/` | [Cliente de tarefa simples](../examples/support/clients/submit-task/main.py) |
+| `examples/docker/` | Scripts de integração e topologias |
 | `examples/` | Entradas didáticas e demo heterogênea |
 | `studies/logistics/` | [Estudo declarativo](../studies/logistics/README.md), agentes, domínio, dataset e avaliação offline |
-| `benchmarks/` | Campanhas, resultados selecionados e gráficos |
-| `experiments/` | Extração de métricas e resultados locais |
-| `infra/` | Compose básico |
-| `scripts/launcher/` | [Executor e testes](../scripts/launcher/README.md) da entrada `./tg` |
+| `studies/benchmarks/` | Campanhas, resultados selecionados e gráficos |
+| `studies/runtime_metrics/` | Extração de métricas e resultados locais |
+| `tools/deploy/` | Compose básico |
+| `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./tg` |
 | `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
 | `docs/` | Documentação pública atual |
 | `internal-notes/` | Histórico interno de aprendizado; não é guia de uso |
@@ -42,34 +42,19 @@ Para workflows, acrescente o [engine](../runtime/services/orchestrator/internal/
 
 ## Preparar e verificar
 
-Os comandos abaixo podem instalar dependências e gerar caches de desenvolvimento.
-Parta da raiz. Para preparar o SDK:
+Para desenvolver e verificar tudo a partir da raiz:
 
 ```sh
-uv sync --directory sdk/python
+uv sync --project sdk/python --extra llm
+make verify
 ```
 
-Para compilar e testar Go, em um subshell dentro do módulo:
-
-```sh
-(cd runtime && go build ./...)
-(cd runtime && go test ./...)
-```
-
-As verificações Python estão separadas por responsabilidade:
-
-```sh
-uv run --directory sdk/python --with pytest python -m pytest tests -q
-python3 -m unittest studies.logistics.test_domain
-python3 -m unittest discover -s experiments/scripts -p 'test_*.py'
-sh scripts/check-contract-freeze.sh
-uv run --directory sdk/python python -m unittest discover -s ../../scripts/launcher -p 'test_*.py'
-```
-
-Os testes do SDK usam clientes falsos para LLM e não exigem chave. Integrações
-reais são os [cenários](scenarios.md), executados separadamente.
-`make test` roda apenas Go. Para alterações concorrentes no runtime, use também
-`go test -race ./...` dentro de `runtime/`, em ambiente com suporte ao race detector.
+A rotina cobre Go, SDK, integração real local, estudos, launcher, Inspector e
+instalação mínima sem dependências LLM. Usa clientes falsos para LLM e Docker;
+requer Go, uv e Node. `make test` é um alias; `make test-go` mantém a verificação
+isolada de Go. O [guia de consolidação](consolidation.md) descreve as opções.
+Para alterações concorrentes do runtime, execute também `go test -race ./...`
+dentro de `runtime/`.
 
 ## Escrever lógica de agente
 
@@ -116,9 +101,9 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 `execute_task()` com protobuf permanece como interface legada usada por alguns
 exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
 veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
-[agente de rotas](../agents/bdi-agent/main.py) usam a API histórica: seu custo
+[agente de rotas](../examples/support/agents/bdi-agent/main.py) usam a API histórica: seu custo
 é retornado no candidato, não no decorator. Para LLM, consulte os handlers
-`@llm_capability` do [agente LLM](../agents/llm-agent/main.py): recebem objetivo e
+`@llm_capability` do [agente LLM](../examples/support/agents/llm-agent/main.py): recebem objetivo e
 contexto e retornam `Prompt`, com schema de saída declarado no decorator.
 
 ## Alterações no contrato

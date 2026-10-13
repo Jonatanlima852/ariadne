@@ -68,7 +68,8 @@ ou `AGENT_ID` globais.
 
 O backend local herda o ambiente do terminal e não carrega `.env`
 automaticamente. Para agentes LLM, exporte as variáveis necessárias, incluindo
-`OPENAI_API_KEY`, antes de executar. Os exemplos em `examples/` não usam LLM.
+`OPENAI_API_KEY`, antes de executar. Os exemplos echo, BDI, workflow, recuperação e reunião não usam LLM.
+`examples/llm.py` exige o extra `llm` e usa o provedor apenas na execução.
 
 ## Dependências entre tarefas
 
@@ -159,8 +160,9 @@ manifesto. Esses dados não são injetados nos payloads dos agentes. Arquivos de
 experimento podem pertencer a pacotes Python com `__init__.py`; o loader resolve
 a raiz do pacote também ao executar fora do checkout.
 
-O manifesto não é um snapshot completo de dependências, módulos importados e
-datasets externos. Preserve esses artefatos e a revisão do código para uma
+O manifesto registra revisão Git, pacotes e hashes dos módulos carregados e
+arquivos declarados com `Scenario(artifacts=[...])`. A avaliação também registra
+sua proveniência. Isso identifica as entradas, mas não é um snapshot completo. Preserve esses artefatos e a revisão do código para uma
 campanha acadêmica. Um processo encerrado à força pode ter entrada registrada
 sem resultado; use os eventos de encerramento para interpretar esse caso.
 
@@ -195,3 +197,6 @@ O Inspector pode listar o resultado de workflow salvo; a exploração dos logs
 por agente e das repetições usa os arquivos brutos.
 
 [Índice](README.md) · [Desenvolvimento](development.md)
+
+Consulte [consolidação](consolidation.md) para LLM declarativo, `RuntimeClient`,
+`Campaign`, dependências opcionais e a verificação integrada.

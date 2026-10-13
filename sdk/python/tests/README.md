@@ -6,7 +6,7 @@ mensageria e chamadas de cenários. Não exigem serviços ativos ou chave de LLM
 Da raiz do repositório:
 
 ```sh
-uv run --directory sdk/python --with pytest python -m pytest tests -q
+uv run --directory sdk/python --extra llm --with pytest python -m pytest tests -q
 ```
 
 Para outras verificações e integrações, veja o
@@ -15,14 +15,14 @@ Para outras verificações e integrações, veja o
 As verificações novas de descrição e handler usam `unittest`:
 
 ```sh
-uv run --directory sdk/python python -m unittest discover -s tests -q
+uv run --directory sdk/python --extra llm python -m unittest discover -s tests -q
 ```
 
 Após preparar os binários com `./tg run examples/echo.py`, execute da raiz
 as integrações reais opt-in (abrem portas locais, sem LLM nem Docker):
 
 ```sh
-TG_TEST_RUNTIME_DIR="$PWD/.tg/bin" uv run --project sdk/python \
+TG_TEST_RUNTIME_DIR="$PWD/.tg/bin" uv run --project sdk/python --extra llm \
   python -m unittest discover -s sdk/python/tests -q
 ```
 

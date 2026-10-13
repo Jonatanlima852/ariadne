@@ -10,7 +10,7 @@ Consulte a [validação de versão](../runtime/contractversion/version.go).
 Para conferir o checksum sem compilar nem regenerar arquivos:
 
 ```sh
-sh scripts/check-contract-freeze.sh
+sh tools/check-contract-freeze.sh
 ```
 
 O pacote Python é versionado separadamente do contrato. Sua versão `0.1.0`
@@ -26,7 +26,7 @@ não altera o major protobuf anunciado pelos agentes.
 | `MessagingService` | `PublishMessage`, `StreamMessages` |
 
 `SubmitTaskResponse` pode conter `result`, `workflow_result` ou um erro
-operacional. A API `Scenario` do SDK distingue esses resultados. O cliente
+operacional. A API `RuntimeClient` do SDK distingue esses resultados. O cliente
 genérico de terminal atualmente só apresenta tarefas simples.
 
 Não há `WatchWorkflow` no contrato atual. O acompanhamento assíncrono usa

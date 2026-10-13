@@ -6,12 +6,14 @@ a demonstração e salva os resultados antes de encerrar o ambiente.
 ## Requisitos
 
 - Repositório clonado e terminal na raiz.
+- uv (ou `TG_PYTHON` apontando para um Python com o SDK instalado).
 - Docker em execução, com Docker Compose **2.24.4 ou superior**.
 - Shell POSIX: macOS/Linux; no Windows, use um ambiente como WSL com Docker.
 - Rede para baixar imagens e dependências na primeira construção.
 
-O cliente também roda em contêiner. Não é necessário instalar Python, Go, uv
-ou protoc no host, nem configurar chave de LLM para esta demonstração.
+O cliente da tarefa roda em contêiner. A CLI única usa Python pelo uv, que pode
+preparar esse ambiente na primeira execução. Go e protoc não são necessários
+no host para esta demonstração Docker, nem uma chave LLM.
 
 ## 1. Conferir o ambiente
 

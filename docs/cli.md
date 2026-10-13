@@ -3,20 +3,26 @@
 `./tg run arquivo.py` e `./tg check arquivo.py` oferecem o novo caminho de
 [experimentos declarativos](experiments.md), com Go e uv. A referência abaixo
 descreve principalmente o launcher Docker. `status` e `logs` reconhecem também
-execuções locais, por ID ou caminho, sem exigir Docker ou uv para ler os arquivos.
+execuções locais, por ID ou caminho, sem exigir Docker. A CLI usa Python com
+o SDK; o bootstrap pode preparar esse ambiente pelo uv.
 O ponteiro de última execução é compartilhado. Para processos locais, `logs`
 mostra até 100 linhas por arquivo; `stop` ainda se aplica somente a Docker.
 
-`tg` é um script shell na raiz do repositório. Localiza os arquivos a partir
-de seu próprio diretório e pode ser chamado por caminho absoluto. Reutiliza
-topologias e scripts de cenários, executando o cliente Python em contêiner.
-Docker e Compose >=2.24.4 são os requisitos.
+`./tg` é um bootstrap shell para a CLI Python, também instalada como `tg`.
+Os mesmos argumentos e comportamentos valem nas duas entradas. No checkout,
+uv prepara o SDK; `TG_PYTHON` seleciona um ambiente já instalado. Os comandos
+Docker exigem adicionalmente Docker Compose >=2.24.4 e usam o backend de
+`tools/launcher/`, com o cliente da tarefa em contêiner.
 
 ## Comandos
 
 | Comando | Comportamento |
 |---|---|
 | `./tg help` | Ajuda, sem exigir Docker |
+| `./tg run ARQUIVO.py` | Executa uma descrição local |
+| `./tg check ARQUIVO.py` | Valida entradas e limites estáticos |
+| `./tg campaign ARQUIVO.py` | Coleta uma matriz com execuções independentes |
+| `./tg verify` | Verificação integrada; use o extra `llm` |
 | `./tg doctor [cenário]` | Verifica ferramentas e configuração; padrão `demo` |
 | `./tg demo [--keep]` | Tarefa simples, com conclusão verificada |
 | `./tg scenario` | Lista os cenários disponíveis |
@@ -90,7 +96,7 @@ externo não altera retry, deadlines ou timeout de workflow dentro do runtime.
 custo no provedor. O arquivo de ambiente é escolhido nesta ordem:
 
 1. `TG_ENV_FILE`, se informado (caminho relativo à raiz ou absoluto).
-2. `scenarios/heterogeneous-route/.env`, apenas para o cenário de rota, se existir.
+2. `examples/docker/heterogeneous-route/.env`, apenas para o cenário de rota, se existir.
 3. `.env` na raiz, se existir.
 
 Também é possível fornecer `OPENAI_API_KEY` e `LLM_MODEL` pelo ambiente do
@@ -113,8 +119,11 @@ Cenários determinísticos não carregam `.env` pelo executor e não chamam LLM.
 `make down` continuam controlando o Compose básico manual, não execuções de
 `./tg`. Para estas, use `./tg logs` e `./tg stop`.
 
-Os scripts `benchmarks/run.sh` e `benchmarks/run-logistics.sh` continuam sendo
+Os scripts `studies/benchmarks/run.sh` e `studies/benchmarks/run-logistics.sh` continuam sendo
 os executores das campanhas. `tg` cobre demonstrações e cenários; não oferece
 um subcomando de benchmark nesta versão.
 
 [Primeira execução](quickstart.md) · [Índice](README.md)
+
+Veja [organização e reprodução](consolidation.md) para dependências opcionais,
+`Campaign`, proveniência e detalhes da implementação única da CLI.

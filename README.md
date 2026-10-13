@@ -72,7 +72,7 @@ topologia automaticamente. Use `./tg status` e `./tg logs` para inspecionar a
 
 O [guia de primeira execução](docs/quickstart.md) reúne os comandos, a
 verificação de prontidão, o resultado esperado e o encerramento do ambiente.
-Depois, o [workflow sequencial](scenarios/workflow-sequential/README.md)
+Depois, o [workflow sequencial](examples/docker/workflow-sequential/README.md)
 demonstra a coordenação de duas tarefas.
 
 Para ler os resultados visualmente, inicie a API e a interface conforme o
@@ -98,3 +98,12 @@ veja [escopo e limitações](docs/limitations.md).
 O [índice da documentação pública](docs/README.md) organiza os guias e a
 referência técnica. O [mapa do código](docs/development.md#mapa-do-repositório)
 indica os pontos de entrada da implementação. A licença é [Apache 2.0](LICENSE).
+
+## Organização e verificação
+
+O núcleo está em `proto/`, `runtime/` e `sdk/`. `examples/` reúne demonstrações;
+`studies/` reúne experimentos científicos e avaliações; `tools/` contém o suporte
+operacional. Veja [organização, autoria e reprodução](docs/consolidation.md).
+
+`make verify` executa as verificações de Go, Python, integração e ferramentas,
+sem chamadas LLM reais. A mesma rotina é executada pelo CI.

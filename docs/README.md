@@ -16,6 +16,8 @@ do repositório, salvo indicação explícita.
 
 ## Guias e referência
 
+- [Organização, autoria e reprodução](consolidation.md): mapa do código, cliente separado, LLM declarativo, campanhas, proveniência e verificação.
+
 - [BDI declarativo e planejamento](bdi.md): entradas, planos, seleção e busca genérica no SDK.
 
 - [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,

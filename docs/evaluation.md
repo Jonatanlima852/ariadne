@@ -16,9 +16,9 @@ eventos e resultados, sem recalcular métricas dos benchmarks.
 
 1. Leia a [arquitetura](architecture.md) e a separação entre runtime e agentes.
 2. Execute a [tarefa básica](quickstart.md) para conferir a integração.
-3. Observe [workflow](../scenarios/workflow-sequential/README.md) e
-   [reassignment](../scenarios/failure-reassignment/README.md) sem LLM.
-4. Execute a [rota heterogênea](../scenarios/heterogeneous-route/README.md),
+3. Observe [workflow](../examples/docker/workflow-sequential/README.md) e
+   [reassignment](../examples/docker/failure-reassignment/README.md) sem LLM.
+4. Execute a [rota heterogênea](../examples/docker/heterogeneous-route/README.md),
    caso haja credencial e acesso ao provedor.
 5. Consulte os resultados logísticos já registrados e suas limitações.
 
@@ -30,10 +30,10 @@ respostas com a execução publicada.
 
 | Pergunta | Onde conferir | Alcance |
 |---|---|---|
-| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../examples/demo_scenario/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
-| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../scenarios/failure-reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | Caso B do [runner A–E](../benchmarks/run.py) | Três agentes com carga reportada configurada |
-| O híbrido melhora propriedades do plano? | [Resultados logísticos](../benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
+| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../examples/client/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
+| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../examples/docker/failure-reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
+| Políticas alteram a distribuição? | Caso B do [runner A–E](../studies/benchmarks/run.py) | Três agentes com carga reportada configurada |
+| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
 Os testes automatizados verificam comportamentos específicos. Eles não
@@ -69,10 +69,10 @@ não demonstra que a LLM tenha produzido planos inseguros.
 
 Artefatos para inspeção:
 
-- [JSON de respostas e avaliações](../benchmarks/results/logistics-20261004T-final-v2/logistics-results.json)
-- [Sumário CSV](../benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
-- [Gráfico registrado](../benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
-- [Eventos JSONL](../benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
+- [JSON de respostas e avaliações](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json)
+- [Sumário CSV](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
+- [Gráfico registrado](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
+- [Eventos JSONL](../studies/benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
 - [Mundo](../studies/logistics/world.json), [casos](../studies/logistics/cases.json) e [avaliador](../studies/logistics/domain.py)
 
 Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
@@ -116,7 +116,7 @@ Requisitos: Docker/Compose, Python, uv e acesso ao modelo configurado. Crie
 permanecer local. Os scripts aceitam outro arquivo via `BENCHMARK_ENV_FILE`.
 
 ```sh
-./benchmarks/run.sh
+./studies/benchmarks/run.sh
 ```
 
 A suíte A–E mede execução básica, políticas, cooperação heterogênea,
@@ -124,11 +124,11 @@ recuperação e comparação de entrada estruturada com fluxo assistido por LLM.
 Os casos C, D e E têm uma amostra por execução padrão.
 
 ```sh
-LOGISTICS_REPETITIONS=2 ./benchmarks/run-logistics.sh
+LOGISTICS_REPETITIONS=2 ./studies/benchmarks/run-logistics.sh
 ```
 
 O segundo comando executa a comparação logística. Ambos usam
-`benchmarks/compose.yaml`, porta 54052 por padrão, criam uma pasta de resultados
+`studies/benchmarks/compose.yaml`, porta 54052 por padrão, criam uma pasta de resultados
 datada e encerram os contêineres ao sair.
 
 ### Isolar os eventos antes de medir
@@ -141,7 +141,7 @@ Após salvar dados anteriores e encerrar qualquer uso dessa topologia, uma
 limpeza deliberada do volume pode ser feita antes de uma campanha:
 
 ```sh
-docker compose --env-file .env -f benchmarks/compose.yaml down -v
+docker compose --env-file .env -f studies/benchmarks/compose.yaml down -v
 ```
 
 Esse comando apaga o volume da topologia de benchmarks. Para avaliação,

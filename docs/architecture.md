@@ -13,7 +13,7 @@ contrato. Cada agente implementa seu próprio raciocínio de domínio.
 | Messaging | Publicação e recebimento por destinatário, em memória | [messaging](../runtime/services/messaging/internal/server/server.go) |
 | SDK Python | Modelos, registro, servidor do agente, heartbeat e clientes | [tg_sdk](../sdk/python/src/tg_sdk/__init__.py) |
 | Agentes | Interpretação, planejamento de domínio e tarefas de teste | [catálogo](scenarios.md) |
-| Eventos e análise | Registro da execução e extração de métricas | [logger](../runtime/services/internal/events/logger.go), [métricas](../experiments/scripts/compute_metrics.py) |
+| Eventos e análise | Registro da execução e extração de métricas | [logger](../runtime/services/internal/events/logger.go), [métricas](../studies/runtime_metrics/compute_metrics.py) |
 
 O detector de falhas faz parte do processo Registry; não é um serviço separado.
 Registry e workflows armazenam estado em memória. Os eventos são arquivos JSONL.

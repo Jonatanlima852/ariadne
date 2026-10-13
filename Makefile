@@ -6,7 +6,7 @@
 PROTO_DIR      := proto
 GO_OUT_DIR     := runtime/gen/go
 PYTHON_OUT_DIR := sdk/python/src
-PROTO_INCLUDES = $(shell brew --prefix protobuf)/include
+PROTO_INCLUDES ?= $(shell pkg-config --variable=includedir protobuf 2>/dev/null || echo /usr/include)
 
 PROTO_FILES    := $(shell find $(PROTO_DIR) -name "*.proto")
 
@@ -51,7 +51,7 @@ proto: check-env
 
 .PHONY: contract-check
 contract-check:
-	@sh scripts/check-contract-freeze.sh
+	@sh tools/check-contract-freeze.sh
 
 # build — compila os servicos Go
 
@@ -60,17 +60,20 @@ build:
 	@echo "Compilando servicos Go..."
 	cd runtime && go build ./...
 
-# test — roda os testes Go
+# verify/test — verificação integrada sem chamadas LLM
 
-.PHONY: test
-test:
+.PHONY: verify test test-go
+verify test:
+	uv run --locked --project sdk/python --extra llm python tools/verify.py
+
+test-go:
 	cd runtime && go test ./...
 
 # up / down / logs — Docker Compose
 
 .PHONY: up demo doctor
 up:
-	docker compose -f infra/docker-compose.yml up --build -d
+	docker compose -f tools/deploy/docker-compose.yml up --build -d
 
 demo:
 	./tg demo
@@ -80,11 +83,11 @@ doctor:
 
 .PHONY: down
 down:
-	docker compose -f infra/docker-compose.yml down
+	docker compose -f tools/deploy/docker-compose.yml down
 
 .PHONY: logs
 logs:
-	docker compose -f infra/docker-compose.yml logs -f
+	docker compose -f tools/deploy/docker-compose.yml logs -f
 
 # help — lista todos os targets
 
@@ -96,7 +99,7 @@ help:
 	@echo "  make proto       Gera stubs Go e Python a partir dos .proto"
 	@echo "  make contract-check  Confere o contrato 1.0.0 congelado"
 	@echo "  make build       Compila os servicos Go"
-	@echo "  make test        Roda os testes Go"
+	@echo "  make verify      Verifica SDK, Go, estudos e ferramentas"
 	@echo "  make up          Sobe o sistema via Docker Compose"
 	@echo "  make demo        Executa ./tg demo com limpeza automatica"
 	@echo "  make doctor      Verifica Docker e configuracao via ./tg doctor"

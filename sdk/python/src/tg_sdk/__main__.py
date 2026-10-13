@@ -4,6 +4,7 @@ import argparse
 import os
 from pathlib import Path
 import signal
+import sys
 
 from tg_sdk.execution import load_scenario, run_experiment
 
@@ -35,17 +36,79 @@ def main(argv=None):
         inspect.add_argument("--output", type=Path, default=Path(os.getenv("TG_RUNS_DIR", ".tg/runs")))
         if command == "logs":
             inspect.add_argument("--tail", type=positive, default=100)
-    args = parser.parse_args(argv)
+    campaign = commands.add_parser("campaign", help="coleta uma matriz de experimentos sem avaliar resultados")
+    campaign.add_argument("file", type=Path)
+    campaign.add_argument("--output", type=Path, default=Path(".tg/campaigns"))
+    campaign.add_argument("--runtime-dir", type=Path, default=os.getenv("TG_RUNTIME_DIR"))
+    campaign.add_argument("--runtime-source", type=Path, default=os.getenv("TG_RUNTIME_SOURCE"))
+    from tg_sdk.docker import SCENARIOS
+    commands.add_parser("help", help="mostra os comandos disponíveis")
+    verify = commands.add_parser("verify", help="verifica SDK, runtime, estudos e ferramentas do checkout")
+    verify.add_argument("--unit-only", action="store_true")
+    verify.add_argument("--no-inspector", action="store_true")
+    doctor = commands.add_parser("doctor", help="verifica o backend Docker")
+    doctor.add_argument("scenario", nargs="?", default="demo", choices=SCENARIOS)
+    demo = commands.add_parser("demo", help="executa o exemplo Docker básico")
+    demo.add_argument("--keep", action="store_true")
+    scenario = commands.add_parser("scenario", help="lista ou executa exemplos Docker")
+    scenario.add_argument("scenario", nargs="?", choices=SCENARIOS)
+    scenario.add_argument("--keep", action="store_true")
+    stop = commands.add_parser("stop", help="encerra uma execução Docker ou consulta se já terminou")
+    stop.add_argument("identifier", nargs="?", default="latest")
+    stop.add_argument("--output", type=Path, default=Path(os.getenv("TG_RUNS_DIR", ".tg/runs")))
+    supplied = sys.argv[1:] if argv is None else argv
+    args = parser.parse_args(supplied or ["help"])
 
     def interrupt(*_):
         raise KeyboardInterrupt
 
     previous = signal.signal(signal.SIGTERM, interrupt)
     try:
-        if args.command in ("status", "logs"):
+        if args.command == "verify":
+            root = Path(os.getenv("TG_ROOT", Path(__file__).resolve().parents[4]))
+            script = root / "tools/verify.py"
+            if not script.is_file():
+                raise ValueError("verify requires a checkout; configure TG_ROOT")
+            options = [flag for flag, enabled in (("--unit-only", args.unit_only), ("--no-inspector", args.no_inspector)) if enabled]
+            os.execv(sys.executable, [sys.executable, str(script), *options])
+        if args.command == "help":
+            parser.print_help()
+            return 0
+        if args.command in ("doctor", "demo", "scenario"):
+            from tg_sdk.docker import command, SCENARIOS
+            if args.command == "scenario" and args.scenario is None:
+                print("Cenários: " + ", ".join(SCENARIOS))
+                return 0
+            options = [args.scenario] if args.command in ("doctor", "scenario") else []
+            if getattr(args, "keep", False):
+                options.append("--keep")
+            command(args.command, *options)
+        if args.command == "campaign":
+            from tg_sdk.campaign import load_campaign, run_campaign
+            _, summary = run_campaign(load_campaign(args.file), output_root=args.output,
+                                      runtime_dir=args.runtime_dir, runtime_source=args.runtime_source)
+            return {"COMPLETED": 0, "CANCELLED": 130}.get(summary["status"], 1)
+        if args.command in ("status", "logs", "stop"):
             from tg_sdk.runs import print_logs, print_status, resolve_run
             directory = resolve_run(args.identifier, args.output)
-            print_status(directory) if args.command == "status" else print_logs(directory, args.tail)
+            from tg_sdk.runs import backend
+            environment = (directory / "environment").read_text().strip() if (directory / "environment").is_file() else "unknown"
+            if args.command == "stop":
+                if environment == "stopped":
+                    print("Ambiente já encerrado; resultados preservados.")
+                    return 0
+                if backend(directory) != "docker":
+                    raise ValueError("Para interromper processos locais, use Ctrl+C no supervisor.")
+                from tg_sdk.docker import command
+                command("stop", directory)
+            elif args.command == "status":
+                print_status(directory)
+            else:
+                print_logs(directory, args.tail)
+                if backend(directory) == "docker" and environment != "stopped":
+                    from tg_sdk.docker import command
+                    sys.stdout.flush()
+                    command("logs-live", directory, replace=False)
             return 0
         if args.command == "check":
             scenario = load_scenario(args.file)

@@ -1,4 +1,4 @@
-name: tg-benchmarks
+name: ariadne-benchmarks
 
 x-mock: &mock
   build:

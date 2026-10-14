@@ -13,6 +13,12 @@ Para conferir o checksum sem compilar nem regenerar arquivos:
 sh tools/check-contract-freeze.sh
 ```
 
+A adoção do nome Ariadne alterou somente a opção de geração Go para
+`ariadne/runtime/gen/go/contract/v1;contractv1` e o comentário de identificação.
+Os stubs foram regenerados; a comparação dos descritores confirmou que campos,
+números, mensagens e RPCs permanecem iguais. O checksum foi atualizado para
+essa mudança de identidade, mantendo a versão de comunicação `1.0.0`.
+
 O pacote Python é versionado separadamente do contrato. Sua versão `0.1.0`
 não altera o major protobuf anunciado pelos agentes.
 

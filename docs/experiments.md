@@ -17,19 +17,19 @@ para BDI, LLM e híbrido, com coleta e avaliação offline em comandos separados
 O exemplo completo [echo.py](../examples/echo.py) contém:
 
 ```python
-from tg_sdk import Agent, Scenario, Step
+from ariadne_sdk import Agent, Scenario, Step
 
 scenario = Scenario(
     agents=[Agent(name="echo", capabilities=["echo"], handler=lambda task: {"text": task.goal})],
-    tasks=[Step(capability="echo", goal="Olá, TG!")],
+    tasks=[Step(capability="echo", goal="Olá, Ariadne!")],
 )
 ```
 
 Execute da raiz:
 
 ```sh
-./tg check examples/echo.py
-./tg run examples/echo.py
+./ariadne check examples/echo.py
+./ariadne run examples/echo.py
 ```
 
 `check` importa o arquivo e verifica a descrição sem iniciar serviços. Declare
@@ -43,7 +43,7 @@ registrados depois que seus endpoints estão prontos. Ao final, inclusive em
 falha ou Ctrl+C, o executor encerra os processos e preserva as evidências.
 
 O resultado esperado termina com `WORKFLOW_STATUS_COMPLETED` e `Estado:
-COMPLETED`. O terminal informa o diretório exclusivo em `.tg/runs/tg-...`.
+COMPLETED`. O terminal informa o diretório exclusivo em `.ariadne/runs/ariadne-...`.
 Sucesso significa conclusão operacional; critérios de domínio são avaliados
 separadamente.
 
@@ -103,10 +103,10 @@ verifica a descrição Python; a validação definitiva do contrato ocorre no Go
 ## Falhas e repetição
 
 ```sh
-./tg run examples/workflow.py
-./tg run examples/recovery.py
-./tg run examples/bdi.py
-./tg run examples/echo.py --repeat 5
+./ariadne run examples/workflow.py
+./ariadne run examples/recovery.py
+./ariadne run examples/bdi.py
+./ariadne run examples/echo.py --repeat 5
 ```
 
 O exemplo de recuperação declara dois agentes com a mesma capacidade e uma
@@ -171,27 +171,27 @@ sem resultado; use os eventos de encerramento para interpretar esse caso.
 Com o SDK instalado no ambiente Python e os binários preparados:
 
 ```sh
-tg run /caminho/meu_experimento.py --runtime-dir /caminho/binarios
+ariadne run /caminho/meu_experimento.py --runtime-dir /caminho/binarios
 ```
 
-O diretório precisa conter `tg-registry`, `tg-orchestrator` e `tg-messaging`.
-`TG_RUNTIME_DIR` também configura esse caminho. No checkout, `./tg run` prepara
-os binários em `.tg/bin` e usa o cache Go. `--runtime-dir` evita a compilação.
+O diretório precisa conter `ariadne-registry`, `ariadne-orchestrator` e `ariadne-messaging`.
+`ARIADNE_RUNTIME_DIR` também configura esse caminho. No checkout, `./ariadne run` prepara
+os binários em `.ariadne/bin` e usa o cache Go. `--runtime-dir` evita a compilação.
 `--output /caminho/evidencias` muda a pasta que recebe diretórios de execução.
 
 Esta versão oferece o backend de processos locais. Não conecta a execução
 declarativa a um cluster externo nem gera contêineres; os fluxos Docker antigos
-continuam disponíveis. `./tg status` e `./tg logs` reconhecem ambos os backends,
+continuam disponíveis. `./ariadne status` e `./ariadne logs` reconhecem ambos os backends,
 por ID ou caminho da execução. Sem argumento, usam a última execução iniciada
 no diretório compartilhado. Para processos locais, logs mostram as últimas
 100 linhas de cada arquivo `.log`/`.jsonl` e funcionam após o encerramento.
 `stop` continua controlando Docker; para interromper processos locais, use
 Ctrl+C no supervisor.
 
-O shell usa `.tg/runs` deste checkout mesmo quando invocado de outro diretório.
-`TG_RUNS_DIR` muda essa raiz. Para uma execução com `--output` personalizado,
+O shell usa `.ariadne/runs` deste checkout mesmo quando invocado de outro diretório.
+`ARIADNE_RUNS_DIR` muda essa raiz. Para uma execução com `--output` personalizado,
 passe seu caminho a `status`/`logs` ou configure a mesma raiz. A CLI instalada
-também oferece `tg status --output PASTA` e `tg logs --output PASTA --tail 50`,
+também oferece `ariadne status --output PASTA` e `ariadne logs --output PASTA --tail 50`,
 com consulta offline das evidências salvas de ambos os backends.
 O Inspector pode listar o resultado de workflow salvo; a exploração dos logs
 por agente e das repetições usa os arquivos brutos.

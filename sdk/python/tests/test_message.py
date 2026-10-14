@@ -1,7 +1,7 @@
 import unittest
 
 from contract.v1 import contract_pb2
-from tg_sdk import MessagingClient
+from ariadne_sdk import MessagingClient
 
 
 class FakeMessagingStub:

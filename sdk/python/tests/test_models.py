@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 
 from contract.v1 import contract_pb2
-from tg_sdk import Agent, Task, TaskResult
+from ariadne_sdk import Agent, Task, TaskResult
 
 
 def build_agent(agent_type):

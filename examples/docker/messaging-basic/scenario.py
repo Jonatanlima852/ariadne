@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
-from tg_sdk import MessagingClient
+from ariadne_sdk import MessagingClient
 
 
 def main():

@@ -1,5 +1,5 @@
 .git
-.tg
+.ariadne
 .env
 **/.env
 **/.env.*
@@ -13,3 +13,4 @@ studies/runtime_metrics/results/*.csv
 docs
 internal-notes
 *.md
+.tg

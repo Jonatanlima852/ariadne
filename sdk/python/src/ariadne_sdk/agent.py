@@ -9,7 +9,7 @@ import grpc
 from google.protobuf import timestamp_pb2
 
 from contract.v1 import contract_pb2, contract_pb2_grpc
-from tg_sdk.models import Task, TaskResult
+from ariadne_sdk.models import Task, TaskResult
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class _AgentServicer(contract_pb2_grpc.AgentServiceServicer):
 
 
 class Agent:
-    """Classe base para agentes do TG Runtime.
+    """Classe base para agentes do Ariadne Runtime.
 
     Cuida do registro no Registry e do servidor gRPC do AgentService.
     Use handler ou implemente handle com a lógica de negócio. execute_task
@@ -145,7 +145,7 @@ class Agent:
                 return result.to_proto()
             if isinstance(result, contract_pb2.TaskResult):
                 return result
-            raise TypeError("agent handler must return tg_sdk.TaskResult")
+            raise TypeError("agent handler must return ariadne_sdk.TaskResult")
         except ValueError as error:
             return self._exception_result(
                 raw_task, contract_pb2.ERROR_CODE_INVALID_TASK, error, False

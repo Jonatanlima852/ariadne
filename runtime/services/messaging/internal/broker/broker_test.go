@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 func validMessage(id string) *pb.MessageEnvelope {

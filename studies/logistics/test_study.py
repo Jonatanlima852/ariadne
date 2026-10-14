@@ -68,7 +68,7 @@ class StudyTests(unittest.TestCase):
             self.assertTrue((output / "logistics-summary.csv").is_file())
 
     def test_all_strategy_descriptions_have_labels_and_share_domain(self):
-        from tg_sdk.execution import load_scenario
+        from ariadne_sdk.execution import load_scenario
         source = Path(__file__).with_name("experiment.py")
         for strategy in ("bdi-only", "llm-only", "hybrid"):
             with patch.dict(os.environ, {"LOGISTICS_STRATEGY": strategy}), patch("openai.OpenAI", return_value=FakeClient()):
@@ -81,7 +81,7 @@ class StudyTests(unittest.TestCase):
                 self.assertEqual(steps[1]["input_bindings"][0]["source_path"], "output.mission")
 
     def test_sdk_planner_matches_reference_on_all_cases_and_variations(self):
-        from tg_sdk import Task
+        from ariadne_sdk import Task
         from studies.logistics.bdi import logistics_agent
         agent = logistics_agent()
         world = load_world()
@@ -96,7 +96,7 @@ class StudyTests(unittest.TestCase):
                     self.assertEqual(result.metadata["selected_plan"], "safe_logistics_mission")
 
     def test_llm_adapter_preserves_structured_plan_and_interpretation(self):
-        from tg_sdk import Task
+        from ariadne_sdk import Task
         from studies.logistics.llm import LogisticsLlmAgent
         agent = LogisticsLlmAgent(openai_client=FakeClient(), model="test-only")
         case = load_case("avoid-contamination")
@@ -110,8 +110,8 @@ class StudyTests(unittest.TestCase):
                 self.assertEqual(result.output["mission"], case["mission"])
 
     def test_legacy_agents_reuse_moved_implementations(self):
-        from tg_sdk import Task
-        from tg_sdk import BdiAgent
+        from ariadne_sdk import Task
+        from ariadne_sdk import BdiAgent
         from studies.logistics.llm import LogisticsLlmAgent
         root = Path(__file__).resolve().parents[2]
         with patch.object(sys, "path", [str(root / "examples/support/agents/bdi-agent"), *sys.path]):
@@ -130,9 +130,9 @@ class StudyTests(unittest.TestCase):
         agent = llm_class(openai_client=FakeClient())
         self.assertEqual(set(agent._handlers), {"explanation", "task-decomposition", "logistics-plan", "logistics-interpret"})
 
-    @unittest.skipUnless(os.getenv("TG_TEST_RUNTIME_DIR"), "requires real local runtime binaries")
+    @unittest.skipUnless(os.getenv("ARIADNE_TEST_RUNTIME_DIR"), "requires real local runtime binaries")
     def test_hybrid_through_runtime_with_explicit_fake_provider(self):
-        from tg_sdk.execution import run_experiment
+        from ariadne_sdk.execution import run_experiment
         experiment = Path(__file__).with_name("experiment.py").resolve()
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
@@ -140,14 +140,14 @@ class StudyTests(unittest.TestCase):
             source.write_text(
                 "import os\nfrom unittest.mock import patch\n"
                 "from studies.logistics.test_study import FakeClient\n"
-                "from tg_sdk.execution import load_scenario\n"
+                "from ariadne_sdk.execution import load_scenario\n"
                 "with patch.dict(os.environ, {'LOGISTICS_STRATEGY':'hybrid', 'LOGISTICS_CASE':'avoid-contamination', 'LLM_MODEL':'test-only'}), "
                 "patch('openai.OpenAI', return_value=FakeClient()):\n"
                 f"    scenario = load_scenario({str(experiment)!r})\n"
                 "    scenario.agents[0]._openai = FakeClient()\n"
             )
             run, summary = run_experiment(source, output_root=directory / "runs",
-                                          runtime_dir=os.environ["TG_TEST_RUNTIME_DIR"])
+                                          runtime_dir=os.environ["ARIADNE_TEST_RUNTIME_DIR"])
             self.assertEqual(summary["status"], "COMPLETED")
             rows = evaluate_run(run)
             self.assertTrue(rows[0]["evaluation"]["valid"])

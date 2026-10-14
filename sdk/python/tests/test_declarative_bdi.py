@@ -4,7 +4,7 @@ from pathlib import Path
 import threading
 import unittest
 
-from tg_sdk import BdiAgent, Input, Plan, Task
+from ariadne_sdk import BdiAgent, Input, Plan, Task
 
 
 def task(payload=None):

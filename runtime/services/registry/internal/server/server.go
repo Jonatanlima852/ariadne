@@ -6,9 +6,9 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"tg/runtime/contractversion"
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/registry/internal/store"
+	"ariadne/runtime/contractversion"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/registry/internal/store"
 )
 
 // RegistryServer implementa pb.RegistryServiceServer.

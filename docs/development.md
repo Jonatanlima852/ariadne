@@ -4,7 +4,7 @@
 
 | Atividade | Ferramentas |
 |---|---|
-| Cenários Docker via `./tg` | uv e Docker Compose >=2.24.4 |
+| Cenários Docker via `./ariadne` | uv e Docker Compose >=2.24.4 |
 | SDK, scripts e cenários Python | uv e Python compatível com o projeto |
 | Compilar e testar o runtime localmente | Go 1.26.3 ou compatível com `runtime/go.mod` |
 | Regenerar contrato | Go, protoc, plugins Go, uv e grpcio-tools |
@@ -20,7 +20,7 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 |---|---|
 | `proto/` | [Contrato](../proto/contract/v1/contract.proto), versão e checksum |
 | `runtime/` | Módulo Go, serviços e stubs gerados |
-| `sdk/python/` | [API pública](../sdk/python/src/tg_sdk/__init__.py) e testes |
+| `sdk/python/` | [API pública](../sdk/python/src/ariadne_sdk/__init__.py) e testes |
 | `examples/support/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
 | `examples/support/clients/submit-task/` | [Cliente de tarefa simples](../examples/support/clients/submit-task/main.py) |
 | `examples/docker/` | Scripts de integração e topologias |
@@ -29,7 +29,7 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `studies/benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `studies/runtime_metrics/` | Extração de métricas e resultados locais |
 | `tools/deploy/` | Compose básico |
-| `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./tg` |
+| `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./ariadne` |
 | `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
 | `docs/` | Documentação pública atual |
 | `internal-notes/` | Histórico interno de aprendizado; não é guia de uso |
@@ -37,7 +37,7 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 Para acompanhar uma tarefa no código, leia nesta ordem: contrato,
 [handler](../runtime/services/orchestrator/internal/server/server.go),
 [executor](../runtime/services/orchestrator/internal/execution/executor.go),
-[adaptador do agente](../sdk/python/src/tg_sdk/agent.py) e agente de domínio.
+[adaptador do agente](../sdk/python/src/ariadne_sdk/agent.py) e agente de domínio.
 Para workflows, acrescente o [engine](../runtime/services/orchestrator/internal/workflow/engine.go).
 
 ## Preparar e verificar
@@ -68,7 +68,7 @@ Para novos agentes, a API principal é `Agent.handle(task)`, com `Task` e
 `TaskResult` do SDK. Exemplo de lógica local, sem iniciar serviços:
 
 ```python
-from tg_sdk import Agent, Task, TaskResult
+from ariadne_sdk import Agent, Task, TaskResult
 
 
 class GreetingAgent(Agent):
@@ -116,7 +116,7 @@ alteração, mas não prova compatibilidade semântica.
 `make proto` automatiza a geração; sua configuração atual de includes usa
 Homebrew. Em outro ambiente, ajuste o caminho de includes ao protoc instalado.
 Go e Homebrew são consultados apenas nas tarefas que precisam deles;
-`make demo` e `make doctor` delegam ao [executor tg](cli.md).
+`make demo` e `make doctor` delegam ao [executor ariadne](cli.md).
 
 ## Critério para uma mudança revisável
 

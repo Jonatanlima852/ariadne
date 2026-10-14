@@ -1,6 +1,6 @@
-"""./tg run examples/recovery.py — timeout e reassignment no runtime Go."""
+"""./ariadne run examples/recovery.py — timeout e reassignment no runtime Go."""
 import time
-from tg_sdk import Agent, Scenario, Step
+from ariadne_sdk import Agent, Scenario, Step
 
 
 def slow(task):

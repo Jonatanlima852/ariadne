@@ -2,7 +2,7 @@
 
 import os
 
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 
 
 def main():

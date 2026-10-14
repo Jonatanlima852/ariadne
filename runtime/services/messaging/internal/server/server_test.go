@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/events"
-	"tg/runtime/services/messaging/internal/broker"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/events"
+	"ariadne/runtime/services/messaging/internal/broker"
 )
 
 type memoryLogger struct {

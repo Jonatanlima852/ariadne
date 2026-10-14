@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../sdk/python/src"))
 
-from tg_sdk import BdiAgent
+from ariadne_sdk import BdiAgent
 
 from beliefs import CALENDARS
 from plans import PLAN_LIBRARY

@@ -1,5 +1,5 @@
-"""./tg run examples/workflow.py — a referência ao output encadeia as etapas."""
-from tg_sdk import Agent, Scenario, Step
+"""./ariadne run examples/workflow.py — a referência ao output encadeia as etapas."""
+from ariadne_sdk import Agent, Scenario, Step
 
 echo = Agent(name="echo", capabilities=["echo"], handler=lambda task: {"text": task.goal})
 uppercase = Agent(

@@ -1,0 +1,18 @@
+#!/bin/sh
+# Bootstrap do checkout. Semântica e argumentos pertencem à CLI Python.
+set -eu
+ARIADNE_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ARIADNE_RUNTIME_SOURCE=${ARIADNE_RUNTIME_SOURCE:-"$ARIADNE_ROOT/runtime"}
+ARIADNE_RUNS_DIR=${ARIADNE_RUNS_DIR:-"$ARIADNE_ROOT/.ariadne/runs"}
+export ARIADNE_ROOT ARIADNE_RUNTIME_SOURCE ARIADNE_RUNS_DIR
+if [ -n "${ARIADNE_PYTHON:-}" ]; then
+    exec "$ARIADNE_PYTHON" -m ariadne_sdk "$@"
+fi
+if ! command -v uv >/dev/null 2>&1; then
+    printf 'Erro: instale uv ou configure ARIADNE_PYTHON com um Python que tenha ariadne-sdk.\n' >&2
+    exit 1
+fi
+if [ -n "${ARIADNE_SDK_EXTRAS:-}" ]; then
+    exec uv run --project "$ARIADNE_ROOT/sdk/python" --extra "$ARIADNE_SDK_EXTRAS" python -m ariadne_sdk "$@"
+fi
+exec uv run --project "$ARIADNE_ROOT/sdk/python" python -m ariadne_sdk "$@"

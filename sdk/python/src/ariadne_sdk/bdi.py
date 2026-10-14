@@ -1,15 +1,15 @@
 from collections.abc import Mapping
 from copy import deepcopy
 
-from tg_sdk.agent import Agent
-from tg_sdk.models import Task, TaskResult
-from tg_sdk.plans import Input, InputError, Plan, checked_cost, resolve_input
+from ariadne_sdk.agent import Agent
+from ariadne_sdk.models import Task, TaskResult
+from ariadne_sdk.plans import Input, InputError, Plan, checked_cost, resolve_input
 
 
 def plan(_method=None, *, name=None, priority=0):
     """Marca um método como plano BDI descoberto automaticamente."""
     def decorate(method):
-        method._tg_bdi_plan = {
+        method._ariadne_bdi_plan = {
             "name": name or method.__name__,
             "priority": priority,
         }
@@ -130,7 +130,7 @@ class BdiAgent(Agent):
         declared = []
         for attribute_name in dir(self):
             method = getattr(self, attribute_name)
-            metadata = getattr(method, "_tg_bdi_plan", None)
+            metadata = getattr(method, "_ariadne_bdi_plan", None)
             if metadata is not None:
                 declared.append((metadata["priority"], attribute_name, method, metadata))
         declared.sort(key=lambda item: (-item[0], item[1]))
@@ -161,8 +161,8 @@ class BdiAgent(Agent):
                     }
                     candidate["output"] = output
                 return candidate
-            invoke._tg_plan_name = metadata["name"]
-            invoke._tg_plan_priority = metadata["priority"]
+            invoke._ariadne_plan_name = metadata["name"]
+            invoke._ariadne_plan_priority = metadata["priority"]
             wrapped.append(invoke)
         return wrapped
 
@@ -222,7 +222,7 @@ class BdiAgent(Agent):
         evaluated = []
         for plan_fn in self.plan_library:
             candidate = plan_fn(desire, self.beliefs)
-            name = getattr(plan_fn, "_tg_plan_name", plan_fn.__name__)
+            name = getattr(plan_fn, "_ariadne_plan_name", plan_fn.__name__)
             if candidate is None:
                 evaluated.append({"name": name, "applicable": False})
                 continue

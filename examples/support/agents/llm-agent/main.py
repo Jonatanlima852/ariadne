@@ -2,7 +2,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from tg_sdk import Prompt, llm_capability
+from ariadne_sdk import Prompt, llm_capability
 from studies.logistics.llm import LogisticsLlmAgent
 
 

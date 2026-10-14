@@ -1,4 +1,4 @@
-name: tg-failure-reassignment
+name: ariadne-failure-reassignment
 
 services:
   registry:

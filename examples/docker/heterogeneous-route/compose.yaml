@@ -1,4 +1,4 @@
-name: tg-heterogeneous-route
+name: ariadne-heterogeneous-route
 
 services:
   registry:

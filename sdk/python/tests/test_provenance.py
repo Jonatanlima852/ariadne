@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 from unittest import TestCase
 
-from tg_sdk.provenance import capture, file_record
+from ariadne_sdk.provenance import capture, file_record
 
 
 class ProvenanceTests(TestCase):

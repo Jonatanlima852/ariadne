@@ -41,7 +41,7 @@ não precisa de classe de agente nem decorator:
 
 ```python
 from pydantic import BaseModel
-from tg_sdk import LlmAgent, Prompt
+from ariadne_sdk import LlmAgent, Prompt
 
 class Answer(BaseModel):
     text: str
@@ -63,12 +63,12 @@ gRPC e protobuf; o suporte LLM é um extra:
 
 ```sh
 uv sync --project sdk/python --extra llm
-TG_SDK_EXTRAS=llm ./tg check examples/llm.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne check examples/llm.py
 # Para executar, exporte OPENAI_API_KEY no terminal:
-TG_SDK_EXTRAS=llm ./tg run examples/llm.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne run examples/llm.py
 ```
 
-Fora do checkout, instale `tg-sdk[llm]`. A descrição LLM usa Pydantic, portanto
+Fora do checkout, instale `ariadne-sdk[llm]`. A descrição LLM usa Pydantic, portanto
 requer o extra mesmo para `check`; credenciais são necessárias apenas na execução.
 
 ## Campanhas
@@ -77,7 +77,7 @@ Um arquivo de campanha aponta para um experimento e, opcionalmente, declara
 uma matriz de variáveis de configuração:
 
 ```python
-from tg_sdk import Campaign
+from ariadne_sdk import Campaign
 
 campaign = Campaign(
     "../studies/logistics/experiment.py",
@@ -89,7 +89,7 @@ campaign = Campaign(
 ```
 
 O caminho do experimento é relativo ao arquivo da campanha. Execute com
-`./tg campaign arquivo.py --runtime-dir .tg/bin`. O exemplo
+`./ariadne campaign arquivo.py --runtime-dir .ariadne/bin`. O exemplo
 [examples/campaign.py](../examples/campaign.py) repete o echo com processos novos.
 A matriz usa valores textuais e ordem de inserção; a repetição é o laço externo.
 A coleta é sequencial, restaura o ambiente entre observações e cria uma execução
@@ -123,11 +123,11 @@ si só, suficiente para reconstruir o código.
 
 ## CLI e verificação
 
-`./tg` é um bootstrap curto para a mesma CLI Python instalada como `tg`. Parsing,
+`./ariadne` é um bootstrap curto para a mesma CLI Python instalada como `ariadne`. Parsing,
 status, logs, validação e execução estão no SDK. O backend Docker está isolado
 em `tools/launcher/docker.sh`. Os comandos Docker e `verify` precisam do checkout;
-configure `TG_ROOT` quando necessário. `TG_PYTHON` permite usar um Python com o
-SDK já instalado; por padrão o bootstrap usa uv. `TG_SDK_EXTRAS=llm` inclui o extra.
+configure `ARIADNE_ROOT` quando necessário. `ARIADNE_PYTHON` permite usar um Python com o
+SDK já instalado; por padrão o bootstrap usa uv. `ARIADNE_SDK_EXTRAS=llm` inclui o extra.
 
 `check` também detecta limite de etapas/profundidade, políticas desconhecidas e
 parâmetros de retry inválidos antes de iniciar serviços. O Go continua sendo a
@@ -136,7 +136,7 @@ validação definitiva, inclusive para tamanhos e bindings materializados.
 ```sh
 make verify
 # Equivalente pelo comando público:
-TG_SDK_EXTRAS=llm ./tg verify
+ARIADNE_SDK_EXTRAS=llm ./ariadne verify
 ```
 
 A verificação inclui contrato, Go, SDK, integrações locais, logística com provedor
@@ -150,3 +150,16 @@ A mesma rotina está em [.github/workflows/verify.yml](../.github/workflows/veri
 Resultados de CI só existem depois que o workflow for executado pelo GitHub.
 
 [Índice](README.md) · [Experimentos](experiments.md)
+
+## Nome Ariadne
+
+O comando é `./ariadne` no checkout ou `ariadne` quando instalado. O pacote é
+`ariadne-sdk`, os imports usam `ariadne_sdk`, as variáveis operacionais usam
+`ARIADNE_*` e novas evidências ficam em `.ariadne/`. O módulo Go é
+`ariadne/runtime` e os binários são `ariadne-registry`, `ariadne-orchestrator`
+e `ariadne-messaging`.
+
+A renomeação não reescreve evidências anteriores: a pasta local `.tg/` e os
+resultados publicados conservam seus dados. Para inspecionar uma execução
+antiga, forneça seu caminho a `./ariadne status` ou `./ariadne logs`; o avaliador
+aceita os caminhos históricos. Os comandos e variáveis antigos não são aliases.

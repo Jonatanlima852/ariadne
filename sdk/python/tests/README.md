@@ -18,11 +18,11 @@ As verificações novas de descrição e handler usam `unittest`:
 uv run --directory sdk/python --extra llm python -m unittest discover -s tests -q
 ```
 
-Após preparar os binários com `./tg run examples/echo.py`, execute da raiz
+Após preparar os binários com `./ariadne run examples/echo.py`, execute da raiz
 as integrações reais opt-in (abrem portas locais, sem LLM nem Docker):
 
 ```sh
-TG_TEST_RUNTIME_DIR="$PWD/.tg/bin" uv run --project sdk/python --extra llm \
+ARIADNE_TEST_RUNTIME_DIR="$PWD/.ariadne/bin" uv run --project sdk/python --extra llm \
   python -m unittest discover -s sdk/python/tests -q
 ```
 

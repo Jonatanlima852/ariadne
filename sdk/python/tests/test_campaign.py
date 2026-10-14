@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import tempfile
 from unittest import TestCase
-from tg_sdk import Campaign
-from tg_sdk.campaign import run_campaign
+from ariadne_sdk import Campaign
+from ariadne_sdk.campaign import run_campaign
 
 
 class CampaignTests(TestCase):
@@ -14,20 +14,20 @@ class CampaignTests(TestCase):
             source = root / 'experiment.py'
             source.write_text('')
             seen = []
-            previous = os.environ.get('TG_TEST_CASE')
+            previous = os.environ.get('ARIADNE_TEST_CASE')
             def runner(source, **options):
-                seen.append((os.environ['TG_TEST_CASE'], options['execution_id']))
-                if os.environ['TG_TEST_CASE'] == 'fail':
+                seen.append((os.environ['ARIADNE_TEST_CASE'], options['execution_id']))
+                if os.environ['ARIADNE_TEST_CASE'] == 'fail':
                     raise ValueError('invalid declaration')
                 return None, {'status': 'COMPLETED'}
-            directory, manifest = run_campaign(Campaign(source, {'TG_TEST_CASE': ['ok', 'fail']}, repeat=2),
+            directory, manifest = run_campaign(Campaign(source, {'ARIADNE_TEST_CASE': ['ok', 'fail']}, repeat=2),
                                                output_root=root, runner=runner)
             self.assertEqual([case for case, _ in seen], ['ok', 'fail', 'ok', 'fail'])
             self.assertEqual(len({identity for _, identity in seen}), 4)
             self.assertEqual(manifest['planned_observations'], 4)
             self.assertEqual(manifest['status'], 'FAILED')
             self.assertEqual(manifest, json.loads((directory / 'campaign.json').read_text()))
-            self.assertEqual(os.environ.get('TG_TEST_CASE'), previous)
+            self.assertEqual(os.environ.get('ARIADNE_TEST_CASE'), previous)
 
     def test_cancelled_observation_is_preserved_and_stops_campaign(self):
         with tempfile.TemporaryDirectory() as temporary:

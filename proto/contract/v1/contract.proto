@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-// TG Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
+// Ariadne Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
 // Compatible additions must preserve existing field numbers and semantics.
 
 package contract.v1;
 
-option go_package = "tg/runtime/gen/go/contract/v1;contractv1";
+option go_package = "ariadne/runtime/gen/go/contract/v1;contractv1";
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";

@@ -8,7 +8,7 @@ payload, conversation, correlation, trace, task e TTL.
 Com Docker e Compose >=2.24.4, na raiz:
 
 ```sh
-./tg scenario messaging-basic
+./ariadne scenario messaging-basic
 ```
 
 O executor salva a mensagem recebida e os eventos antes de encerrar sua

@@ -1,18 +1,18 @@
 services:
   runner:
     build:
-      context: "${TG_ROOT:?execute pelo comando ./tg}"
+      context: "${ARIADNE_ROOT:?execute pelo comando ./ariadne}"
       dockerfile: tools/launcher/Dockerfile
-    image: tg-scenario-runner:local
-    profiles: [tg-tools]
+    image: ariadne-scenario-runner:local
+    profiles: [ariadne-tools]
     environment:
       REGISTRY_ADDR: registry:50051
       ORCHESTRATOR_ADDR: orchestrator:50052
       MESSAGING_ADDR: messaging:50053
       SCENARIO_REPORT_PATH: /results/result.json
-      TG_READY_TIMEOUT: "${TG_READY_TIMEOUT:-90}"
-      TG_SCENARIO_TIMEOUT: "${TG_SCENARIO_TIMEOUT:-180}"
+      ARIADNE_READY_TIMEOUT: "${ARIADNE_READY_TIMEOUT:-90}"
+      ARIADNE_SCENARIO_TIMEOUT: "${ARIADNE_SCENARIO_TIMEOUT:-180}"
     volumes:
       - type: bind
-        source: "${TG_RUN_DIR:?execute pelo comando ./tg}"
+        source: "${ARIADNE_RUN_DIR:?execute pelo comando ./ariadne}"
         target: /results

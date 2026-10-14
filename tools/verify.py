@@ -14,9 +14,9 @@ def main(argv=None):
     parser.add_argument('--no-inspector', action='store_true', help='omite verificações do visualizador')
     args = parser.parse_args(argv)
     environment = dict(os.environ)
-    environment.pop('TG_TEST_RUNTIME_DIR', None)
-    environment['GOCACHE'] = str(ROOT / '.tg/cache/go')
-    environment['TG_PYTHON'] = sys.executable
+    environment.pop('ARIADNE_TEST_RUNTIME_DIR', None)
+    environment['GOCACHE'] = str(ROOT / '.ariadne/cache/go')
+    environment['ARIADNE_PYTHON'] = sys.executable
 
     def run(command, *, cwd=ROOT, env=None):
         print('\n> ' + ' '.join(str(value) for value in command), flush=True)
@@ -25,23 +25,23 @@ def main(argv=None):
     run(['sh', 'tools/check-contract-freeze.sh'])
     run(['go', 'test', './...'], cwd=ROOT / 'runtime')
     if not args.unit_only:
-        binaries = ROOT / '.tg/bin'
+        binaries = ROOT / '.ariadne/bin'
         binaries.mkdir(parents=True, exist_ok=True)
         for service in ('registry', 'orchestrator', 'messaging'):
-            run(['go', 'build', '-o', binaries / f'tg-{service}', f'./services/{service}/cmd'], cwd=ROOT / 'runtime')
-        environment['TG_TEST_RUNTIME_DIR'] = str(binaries)
+            run(['go', 'build', '-o', binaries / f'ariadne-{service}', f'./services/{service}/cmd'], cwd=ROOT / 'runtime')
+        environment['ARIADNE_TEST_RUNTIME_DIR'] = str(binaries)
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'sdk/python/tests', '-q'])
     run([sys.executable, '-m', 'unittest', 'studies.logistics.test_domain', 'studies.logistics.test_study', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/launcher', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'studies/runtime_metrics', '-q'])
 
     # Verifica a instalação mínima real, separada do ambiente de testes LLM.
-    core = ROOT / '.tg/verify/core'
+    core = ROOT / '.ariadne/verify/core'
     core_env = {**environment, 'UV_PROJECT_ENVIRONMENT': str(core)}
     run(['uv', 'sync', '--locked', '--project', 'sdk/python', '--no-default-groups'], env=core_env)
     run([core / 'bin/python', '-c', '''
 import importlib.util
-from tg_sdk.execution import load_scenario
+from ariadne_sdk.execution import load_scenario
 assert importlib.util.find_spec("openai") is None
 assert importlib.util.find_spec("pydantic") is None
 for path in ("examples/echo.py", "examples/bdi.py", "examples/meeting.py", "studies/logistics/experiment.py"):

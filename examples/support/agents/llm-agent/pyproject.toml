@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "Agente auxiliar para decomposição e explicação estruturadas"
 requires-python = ">=3.11"
 dependencies = [
-    "tg-sdk",
+    "ariadne-sdk",
 ]
 
 [tool.uv.sources]
-tg-sdk = { path = "../../sdk/python", editable = true }
+ariadne-sdk = { path = "../../sdk/python", editable = true }

@@ -3,7 +3,7 @@ import { Icon, StatusBadge, formatMs } from './ui.jsx';
 export default function RunBrowser({ runs, loading, error, onRefresh, onSelect, onSample }) {
   return <main className="runs-layout">
     <section className="runs-heading">
-      <div><span className="kicker">EXECUÇÕES LOCAIS</span><h1>Escolha uma execução.</h1><p>A interface lê as evidências disponíveis em <code>.tg/runs</code> por meio da API local.</p></div>
+      <div><span className="kicker">EXECUÇÕES LOCAIS</span><h1>Escolha uma execução.</h1><p>A interface lê as evidências disponíveis em <code>.ariadne/runs</code> por meio da API local.</p></div>
       <button className="secondary" onClick={onRefresh} disabled={loading}><Icon name="refresh"/>Atualizar</button>
     </section>
     {error && <div className="api-error"><Icon name="warning"/><div><strong>Não foi possível acessar a API</strong><p>{error}</p><code>uv run --project tools/inspector/api uvicorn app:app --app-dir tools/inspector/api --port 8787</code></div></div>}

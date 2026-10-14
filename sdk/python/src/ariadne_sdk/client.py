@@ -12,7 +12,7 @@ from typing import Any, Mapping
 import grpc
 
 from contract.v1 import contract_pb2, contract_pb2_grpc
-from tg_sdk.models import TaskResult, mapping_to_struct, struct_to_dict
+from ariadne_sdk.models import TaskResult, mapping_to_struct, struct_to_dict
 
 
 def _utc_now():

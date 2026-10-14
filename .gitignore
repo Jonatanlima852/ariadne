@@ -66,4 +66,7 @@ Thumbs.db
 # Notas internas de aprendizado e acompanhamento
 CLAUDE.md
 /internal-notes/
+/.ariadne/
+
+# Preserved local evidence from before the Ariadne rename
 /.tg/

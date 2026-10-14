@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
 from studies.logistics.legacy import run_hybrid
 from studies.logistics import evaluate_plan
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 
 
 def main():

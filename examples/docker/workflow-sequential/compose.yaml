@@ -1,4 +1,4 @@
-name: tg-workflow-sequential
+name: ariadne-workflow-sequential
 
 services:
   registry:

@@ -1,5 +1,5 @@
 {
-  "name": "tg-runtime-inspector",
+  "name": "ariadne-runtime-inspector",
   "private": true,
   "version": "0.1.0",
   "scripts": {

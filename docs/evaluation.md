@@ -84,7 +84,7 @@ Essas convenções devem acompanhar qualquer uso das métricas publicadas.
 
 ## Executar uma nova campanha
 
-Na interface declarativa, `./tg run arquivo.py --repeat N` preserva as amostras
+Na interface declarativa, `./ariadne run arquivo.py --repeat N` preserva as amostras
 brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
 em código separado. O [guia de experimentos](experiments.md) descreve os
 arquivos, os escopos de duração e a reutilização de estado entre repetições.
@@ -93,9 +93,9 @@ Os runners históricos abaixo mantêm seu comportamento e artefatos publicados.
 O caminho atual do estudo está em [studies/logistics](../studies/logistics/README.md):
 
 ```sh
-./tg run studies/logistics/experiment.py
+./ariadne run studies/logistics/experiment.py
 uv run --project sdk/python python -m studies.logistics.campaign
-python3 -m studies.logistics.evaluate .tg/campaigns/logistics-ID
+python3 -m studies.logistics.evaluate .ariadne/campaigns/logistics-ID
 ```
 
 Os dois primeiros comandos usam BDI por padrão. O guia do estudo explica
@@ -107,8 +107,8 @@ da campanha histórica. Consistência fica indefinida quando há uma só observa
 
 ### Runners históricos
 
-Os cenários de demonstração podem ser executados via `./tg scenario NOME`,
-com dados isolados em `.tg/runs/`. Os comandos abaixo continuam usando os
+Os cenários de demonstração podem ser executados via `./ariadne scenario NOME`,
+com dados isolados em `.ariadne/runs/`. Os comandos abaixo continuam usando os
 runners específicos de benchmark, com os requisitos e limitações próprios.
 
 Requisitos: Docker/Compose, Python, uv e acesso ao modelo configurado. Crie

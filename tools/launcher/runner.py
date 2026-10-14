@@ -83,7 +83,7 @@ def ready(scenario, timeout):
 
 
 def demo():
-    from tg_sdk import RuntimeClient
+    from ariadne_sdk import RuntimeClient
 
     with RuntimeClient("demo", os.environ["ORCHESTRATOR_ADDR"]) as scenario:
         result = scenario.submit(
@@ -111,9 +111,9 @@ def main():
     signal.signal(signal.SIGALRM, timed_out)
     try:
         print("Verificando endpoints e agentes registrados…", flush=True)
-        ready(scenario, int(os.getenv("TG_READY_TIMEOUT", "90")))
+        ready(scenario, int(os.getenv("ARIADNE_READY_TIMEOUT", "90")))
         print("Prontidão confirmada. Executando e verificando o resultado…", flush=True)
-        signal.alarm(int(os.getenv("TG_SCENARIO_TIMEOUT", "180")))
+        signal.alarm(int(os.getenv("ARIADNE_SCENARIO_TIMEOUT", "180")))
         with (directory / "scenario.log").open("w", encoding="utf-8") as output:
             with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
                 if scenario == "demo":

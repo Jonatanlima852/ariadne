@@ -1,6 +1,6 @@
 # Runtime Inspector
 
-Interface React/Vite para consultar as evidências locais geradas pelo `tg`. O
+Interface React/Vite para consultar as evidências locais geradas pelo `ariadne`. O
 frontend acessa uma API FastAPI somente leitura; nenhum comando shell ou ação
 do Docker é disparado pela interface.
 
@@ -22,13 +22,13 @@ npm run dev --prefix tools/inspector
 ```
 
 Abra `http://127.0.0.1:4173`. A tela lista automaticamente as execuções em
-`.tg/runs`. O exemplo embutido continua disponível quando não houver uma
+`.ariadne/runs`. O exemplo embutido continua disponível quando não houver uma
 execução local.
 
 Para ler outro diretório de execuções:
 
 ```sh
-TG_RUNS_DIR=/caminho/para/runs npm run api --prefix tools/inspector
+ARIADNE_RUNS_DIR=/caminho/para/runs npm run api --prefix tools/inspector
 ```
 
 ## API
@@ -42,14 +42,14 @@ As rotas disponíveis são:
 - `GET /api/runs/{run_id}/stream`
 
 A API restringe a leitura aos arquivos de evidência reconhecidos dentro de
-`.tg/runs` e limita cada resposta de execução a 20 MB.
+`.ariadne/runs` e limita cada resposta de execução a 20 MB.
 
 ## Verificar
 
 ```sh
 npm test --prefix tools/inspector
 npm run build --prefix tools/inspector
-UV_CACHE_DIR=/tmp/tg-inspector-uv uv run --project tools/inspector/api --group dev pytest -q tools/inspector/api
+UV_CACHE_DIR=/tmp/ariadne-inspector-uv uv run --project tools/inspector/api --group dev pytest -q tools/inspector/api
 ```
 
 [Roteiro para apresentar o trabalho](../../docs/presentation.md)

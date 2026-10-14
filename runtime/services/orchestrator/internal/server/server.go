@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/events"
-	"tg/runtime/services/orchestrator/internal/execution"
-	"tg/runtime/services/orchestrator/internal/planning"
-	"tg/runtime/services/orchestrator/internal/workflow"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/events"
+	"ariadne/runtime/services/orchestrator/internal/execution"
+	"ariadne/runtime/services/orchestrator/internal/planning"
+	"ariadne/runtime/services/orchestrator/internal/workflow"
 )
 
 type OrchestratorServer struct {

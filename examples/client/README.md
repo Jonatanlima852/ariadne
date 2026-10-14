@@ -1,6 +1,6 @@
 # Cenário heterogêneo LLM + BDI
 
-Este cenário usa a API pública `tg_sdk.Scenario` para enviar uma pergunta ao
+Este cenário usa a API pública `ariadne_sdk.Scenario` para enviar uma pergunta ao
 runtime, que coordena o planejamento e a execução das etapas:
 
 ```text

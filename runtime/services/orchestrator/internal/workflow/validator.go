@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/protobuf/encoding/protojson"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 type ValidationLimits struct {

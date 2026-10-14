@@ -1,7 +1,7 @@
 # Biblioteca de planos: estratégias para alcançar o desejo "ir de uma
 # origem a um destino". Cada plano recebe (desire, beliefs) e devolve um
 # dict {"name", "reasoning_summary", "output", "cost"?} — formato
-# esperado por tg_sdk.BdiAgent — ou None se o plano não se aplica.
+# esperado por ariadne_sdk.BdiAgent — ou None se o plano não se aplica.
 #
 # "cost" é opcional e usado para comparar planos entre si (menor vence).
 # Aqui, tanto a rota direta quanto a rota com escala carregam a distância
@@ -85,7 +85,7 @@ def unknown_route_plan(desire, beliefs):
 
 
 # A ordem aqui só importa como critério de desempate / fallback —
-# tg_sdk.BdiAgent avalia todos os planos aplicáveis e, entre os que
+# ariadne_sdk.BdiAgent avalia todos os planos aplicáveis e, entre os que
 # trazem "cost", escolhe o de menor valor. unknown_route não tem "cost"
 # e por isso só é considerada quando nenhuma rota é encontrada.
 PLAN_LIBRARY = [

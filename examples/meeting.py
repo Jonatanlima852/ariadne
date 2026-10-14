@@ -1,8 +1,8 @@
-"""./tg run examples/meeting.py — agendas, desejo e planos em um arquivo.
+"""./ariadne run examples/meeting.py — agendas, desejo e planos em um arquivo.
 
 Propõe um horário; não escreve em calendários externos.
 """
-from tg_sdk import BdiAgent, Input, Plan, Scenario, Step
+from ariadne_sdk import BdiAgent, Input, Plan, Scenario, Step
 
 calendars = {"alice": [(9, 11), (14, 15)], "bob": [(10, 12), (16, 18)],
              "carol": [(9, 10), (13, 17)]}

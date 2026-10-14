@@ -4,7 +4,7 @@
 // 	protoc        v7.34.1
 // source: contract/v1/contract.proto
 
-// TG Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
+// Ariadne Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
 // Compatible additions must preserve existing field numbers and semantics.
 
 package contractv1
@@ -3754,7 +3754,7 @@ const file_contract_v1_contract_proto_rawDesc = "" +
 	"\vGetWorkflow\x12\x1f.contract.v1.GetWorkflowRequest\x1a .contract.v1.GetWorkflowResponse\x12Y\n" +
 	"\x0eCancelWorkflow\x12\".contract.v1.CancelWorkflowRequest\x1a#.contract.v1.CancelWorkflowResponse2`\n" +
 	"\fAgentService\x12P\n" +
-	"\vExecuteTask\x12\x1f.contract.v1.ExecuteTaskRequest\x1a .contract.v1.ExecuteTaskResponseB*Z(tg/runtime/gen/go/contract/v1;contractv1b\x06proto3"
+	"\vExecuteTask\x12\x1f.contract.v1.ExecuteTaskRequest\x1a .contract.v1.ExecuteTaskResponseB/Z-ariadne/runtime/gen/go/contract/v1;contractv1b\x06proto3"
 
 var (
 	file_contract_v1_contract_proto_rawDescOnce sync.Once

@@ -1,4 +1,4 @@
-# Documentação do TG Runtime
+# Documentação do Ariadne Runtime
 
 Esta documentação descreve a implementação atual e os caminhos para executar,
 entender, desenvolver e avaliar o projeto. Todos os comandos partem da raiz
@@ -26,7 +26,7 @@ do repositório, salvo indicação explícita.
   coleta de campanhas e avaliação offline com gráficos.
 
 - [Primeira execução](quickstart.md): requisitos, comandos Docker, resultado e diagnóstico.
-- [Executor tg](cli.md): comandos, isolamento, prazos e arquivos de resultado.
+- [Executor ariadne](cli.md): comandos, isolamento, prazos e arquivos de resultado.
 - [Execução manual](manual-execution.md): Compose básico e cliente no host.
 - [Arquitetura e conceitos](architecture.md): responsabilidades, fluxos e glossário.
 - [Catálogo de cenários](scenarios.md): objetivos, requisitos e resultados esperados.

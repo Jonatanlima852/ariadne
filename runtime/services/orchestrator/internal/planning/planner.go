@@ -10,7 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 const Capability = "task-decomposition"

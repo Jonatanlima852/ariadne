@@ -456,7 +456,7 @@ wheels = [
 ]
 
 [[package]]
-name = "tg-runtime-inspector-api"
+name = "ariadne-runtime-inspector-api"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

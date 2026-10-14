@@ -1,1 +1,1 @@
-"""Estudos de caso consumidores do TG Runtime e SDK."""
+"""Estudos de caso consumidores do Ariadne Runtime e SDK."""

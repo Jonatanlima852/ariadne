@@ -1,13 +1,13 @@
-from tg_sdk.agent import Agent
-from tg_sdk.message import Message, MessagingClient
-from tg_sdk.bdi import BdiAgent, plan
-from tg_sdk.plans import Input, Plan
-from tg_sdk.planning import SearchProblem, SearchResult, SearchLimitExceeded, uniform_cost_search
-from tg_sdk.models import Task, TaskResult
-from tg_sdk.experiment import Step
-from tg_sdk.campaign import Campaign
-from tg_sdk.scenario import Scenario
-from tg_sdk.client import (
+from ariadne_sdk.agent import Agent
+from ariadne_sdk.message import Message, MessagingClient
+from ariadne_sdk.bdi import BdiAgent, plan
+from ariadne_sdk.plans import Input, Plan
+from ariadne_sdk.planning import SearchProblem, SearchResult, SearchLimitExceeded, uniform_cost_search
+from ariadne_sdk.models import Task, TaskResult
+from ariadne_sdk.experiment import Step
+from ariadne_sdk.campaign import Campaign
+from ariadne_sdk.scenario import Scenario
+from ariadne_sdk.client import (
     RuntimeClient,
     ScenarioReport,
     ScenarioResult,
@@ -22,10 +22,10 @@ def __getattr__(name):
     importar o núcleo do SDK.
     """
     if name in {"LlmAgent", "LlmValidationError", "Prompt", "LlmCapability", "llm_capability"}:
-        from tg_sdk import llm
+        from ariadne_sdk import llm
 
         return getattr(llm, name)
-    raise AttributeError(f"module 'tg_sdk' has no attribute {name!r}")
+    raise AttributeError(f"module 'ariadne_sdk' has no attribute {name!r}")
 
 __all__ = [
     "Agent",

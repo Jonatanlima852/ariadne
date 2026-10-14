@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 func testAgent(agentID string) *pb.AgentDescriptor {

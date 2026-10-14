@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 func applyBindings(task *pb.Task, bindings []*pb.ResultBinding, results map[string]*pb.WorkflowStepResult) error {

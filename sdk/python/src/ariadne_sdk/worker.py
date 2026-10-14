@@ -9,7 +9,7 @@ import threading
 
 from google.protobuf.json_format import MessageToDict
 
-from tg_sdk.evidence import EventLog, write_json
+from ariadne_sdk.evidence import EventLog, write_json
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
     for signum in (signal.SIGINT, signal.SIGTERM):
         signal.signal(signum, lambda *_: stopped.set())
 
-    from tg_sdk.execution import import_roots, load_scenario
+    from ariadne_sdk.execution import import_roots, load_scenario
     sys.path[:0] = import_roots(args.source)
     scenario = load_scenario(args.source)
     agent = scenario.agents[args.index]

@@ -4,7 +4,7 @@
 // - protoc             v7.34.1
 // source: contract/v1/contract.proto
 
-// TG Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
+// Ariadne Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
 // Compatible additions must preserve existing field numbers and semantics.
 
 package contractv1

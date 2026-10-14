@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/startup"
-	"tg/runtime/services/registry/internal/server"
-	"tg/runtime/services/registry/internal/store"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/startup"
+	"ariadne/runtime/services/registry/internal/server"
+	"ariadne/runtime/services/registry/internal/store"
 )
 
 func main() {

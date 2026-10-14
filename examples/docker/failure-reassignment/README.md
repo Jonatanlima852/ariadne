@@ -15,7 +15,7 @@ O Registry ordena agentes por ID, portanto `a-slow` é selecionado primeiro.
 Com Docker e Compose >=2.24.4, na raiz:
 
 ```sh
-./tg scenario failure-reassignment
+./ariadne scenario failure-reassignment
 ```
 
 O executor aguarda os dois agentes, salva relatório e eventos e encerra sua

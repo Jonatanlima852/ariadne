@@ -1,4 +1,4 @@
-module tg/runtime
+module ariadne/runtime
 
 go 1.26.3
 

@@ -31,12 +31,12 @@ Dockerfile ou relatório do cenário.
 Com Docker e Compose >=2.24.4 e a chave configurada acima:
 
 ```sh
-./tg doctor heterogeneous-route
-./tg scenario heterogeneous-route
+./ariadne doctor heterogeneous-route
+./ariadne scenario heterogeneous-route
 ```
 
 O executor roda também o cliente em contêiner, salva o relatório em
-`.tg/runs/ID/result.json` e encerra os serviços. Há chamadas reais à LLM.
+`.ariadne/runs/ID/result.json` e encerra os serviços. Há chamadas reais à LLM.
 Veja [configuração e prazos](../../../docs/cli.md).
 
 ## Execução manual (Python e uv no host)
@@ -67,7 +67,7 @@ docker compose \
 ```
 
 Use `down -v` somente quando também quiser apagar os eventos. O nome de
-projeto `tg-heterogeneous-route` mantém rede e volume separados do Compose
+projeto `ariadne-heterogeneous-route` mantém rede e volume separados do Compose
 baseline em `tools/deploy/`.
 
 O cliente envia somente a pergunta com a capability `task-decomposition`. O

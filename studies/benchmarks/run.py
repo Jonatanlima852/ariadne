@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 
 
 GOAL = "Planeje uma rota de A para D e explique por que ela foi escolhida"

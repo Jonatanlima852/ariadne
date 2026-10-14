@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 
 
 ROOT = Path(__file__).resolve().parents[3]

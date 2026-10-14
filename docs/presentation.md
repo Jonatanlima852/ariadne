@@ -9,19 +9,19 @@ dentro de uma amostra e de um domínio definidos.
 ## Preparar a demonstração
 
 Antes da apresentação, execute os cenários escolhidos para construir as imagens
-e verificar o ambiente. Guarde os IDs: `./tg status` sem argumento sempre mostra
+e verificar o ambiente. Guarde os IDs: `./ariadne status` sem argumento sempre mostra
 a última execução iniciada, não necessariamente a que está sendo apresentada.
 
 ```sh
-./tg doctor
-./tg demo
-./tg scenario workflow-sequential
-./tg scenario failure-reassignment
+./ariadne doctor
+./ariadne demo
+./ariadne scenario workflow-sequential
+./ariadne scenario failure-reassignment
 ```
 
 Inicie a API e o frontend conforme o
 [guia do visualizador](../tools/inspector/README.md), abra
-`http://127.0.0.1:4173` e escolha uma das execuções listadas de `.tg/runs`.
+`http://127.0.0.1:4173` e escolha uma das execuções listadas de `.ariadne/runs`.
 
 Para apresentar sem Docker, use o botão **Abrir exemplo**.
 Ele mostra um registro real incluído no repositório e identificado como exemplo.
@@ -35,7 +35,7 @@ Os tempos abaixo são uma sugestão de fala, não estimativas de execução ou b
 | Tempo | O que explicar ou fazer | Evidência a mostrar |
 |---|---|---|
 | 0–2 min | Problema, objetivo e contribuição: contrato comum, runtime e SDK | Diagrama da [arquitetura](architecture.md) e serviços do [contrato](../proto/contract/v1/contract.proto) |
-| 2–4 min | Uma tarefa solicita uma capacidade; o runtime encontra e aciona um agente | `./tg demo`; resultado com `mock-agent-01` e trace |
+| 2–4 min | Uma tarefa solicita uma capacidade; o runtime encontra e aciona um agente | `./ariadne demo`; resultado com `mock-agent-01` e trace |
 | 4–6 min | O runtime também coordena etapas com dependências | Resultado de `workflow-sequential`, saídas `first` e `second`; definição no [script](../examples/docker/workflow-sequential/scenario.py) |
 | 6–8 min | Uma tentativa pode falhar e a política permitir nova atribuição | Visualizador do cenário de falha: `TASK_ASSIGNED`, `TASK_TIMEOUT`, `TASK_REASSIGNED`, `TASK_COMPLETED` |
 | 8–11 min | A mesma interface integra interpretação LLM e planejamento BDI | Fluxo heterogêneo na arquitetura e, se preparado, relatório de `heterogeneous-route` ou `logistics-mission` |
@@ -96,7 +96,7 @@ acadêmico tenha esses títulos ou já esteja completo.
 
 ## Se algo falhar durante a apresentação
 
-Use o ID para consultar `./tg logs ID`. Abra os dados disponíveis e identifique
+Use o ID para consultar `./ariadne logs ID`. Abra os dados disponíveis e identifique
 a etapa da falha; um arquivo ausente não deve ser interpretado como aprovação.
 Se necessário, passe ao exemplo registrado, explicando a mudança. Para LLM,
 prefira preparar uma execução antes: credencial, rede, modelo e resposta são

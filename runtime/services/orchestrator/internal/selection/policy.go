@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 // Selector guarda apenas o cursor necessário ao ROUND_ROBIN. A chave do

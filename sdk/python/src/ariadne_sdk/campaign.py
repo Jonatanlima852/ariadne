@@ -9,8 +9,8 @@ import signal
 import sys
 import uuid
 
-from tg_sdk.evidence import utc_now, write_json
-from tg_sdk.execution import import_roots, run_experiment
+from ariadne_sdk.evidence import utc_now, write_json
+from ariadne_sdk.execution import import_roots, run_experiment
 
 
 @dataclass(frozen=True)
@@ -39,7 +39,7 @@ def load_campaign(source):
     previous_path = sys.path[:]
     try:
         sys.path[:0] = import_roots(source)
-        declaration = runpy.run_path(str(source), run_name="__tg_campaign__").get("campaign")
+        declaration = runpy.run_path(str(source), run_name="__ariadne_campaign__").get("campaign")
     finally:
         sys.path[:] = previous_path
     if not isinstance(declaration, Campaign):
@@ -85,7 +85,7 @@ def run_campaign(campaign, *, output_root, runtime_dir=None, runtime_source=None
         save()
         for repetition in range(1, campaign.repeat + 1):
             for parameters in variants:
-                execution_id = 'tg-' + uuid.uuid4().hex
+                execution_id = 'ariadne-' + uuid.uuid4().hex
                 entry = {"directory": f"runs/{execution_id}", "repetition": repetition,
                          "parameters": parameters, "status": "RUNNING"}
                 manifest['runs'].append(entry)

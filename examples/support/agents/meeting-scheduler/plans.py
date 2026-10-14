@@ -1,7 +1,7 @@
 # Biblioteca de planos para o desejo "marcar uma reunião com certos
 # participantes, duração e horário preferido". Cada plano recebe
 # (desire, beliefs) e devolve um dict {"name", "reasoning_summary",
-# "output", "cost"?} — formato esperado por tg_sdk.BdiAgent — ou None
+# "output", "cost"?} — formato esperado por ariadne_sdk.BdiAgent — ou None
 # se não se aplica.
 #
 # Convenção de custo (menor = melhor): reuniões com todos presentes

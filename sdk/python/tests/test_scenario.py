@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from contract.v1 import contract_pb2
-from tg_sdk import RuntimeClient, TaskResult
+from ariadne_sdk import RuntimeClient, TaskResult
 
 
 def response(*, task_id, agent_id, metadata=None, output=None):

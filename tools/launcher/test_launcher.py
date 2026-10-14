@@ -37,7 +37,7 @@ elif command == 'cp':
 elif command == 'config':
     sys.exit(int(os.getenv('FAKE_CONFIG_FAIL', '0')))
 elif command in ('build', 'run'):
-    directory = Path(os.environ['TG_RUN_DIR'])
+    directory = Path(os.environ['ARIADNE_RUN_DIR'])
     directory.joinpath('fake-' + command).touch()
     if os.getenv('FAKE_HOLD') == command:
         while not directory.joinpath('fake-stopped').exists(): time.sleep(0.02)
@@ -52,11 +52,11 @@ elif command in ('build', 'run'):
 
 class LauncherTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="tg tests ")
+        self.temp = tempfile.TemporaryDirectory(prefix="ariadne tests ")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / "repo with spaces"
         self.root.mkdir()
-        shutil.copy2(ROOT / "tg", self.root / "tg")
+        shutil.copy2(ROOT / "ariadne", self.root / "ariadne")
         (self.root / "tools/launcher").mkdir(parents=True)
         shutil.copy2(ROOT / "tools/launcher/docker.sh", self.root / "tools/launcher/docker.sh")
         self.bin = self.root / "bin"
@@ -66,16 +66,16 @@ class LauncherTests(unittest.TestCase):
         docker.chmod(0o755)
         self.calls = self.root / "calls.jsonl"
         self.env = {**os.environ, "PATH": f"{self.bin}:{os.environ['PATH']}", "FAKE_CALLS": str(self.calls),
-                    "TG_PYTHON": sys.executable, "PYTHONPATH": str(ROOT / "sdk/python/src")}
-        for key in ("TG_ENV_FILE", "TG_READY_TIMEOUT", "TG_SCENARIO_TIMEOUT", "TG_RUNS_DIR"):
+                    "ARIADNE_PYTHON": sys.executable, "PYTHONPATH": str(ROOT / "sdk/python/src")}
+        for key in ("ARIADNE_ENV_FILE", "ARIADNE_READY_TIMEOUT", "ARIADNE_SCENARIO_TIMEOUT", "ARIADNE_RUNS_DIR"):
             self.env.pop(key, None)
 
     def command(self, *args, **extra):
-        return subprocess.run([str(self.root / "tg"), *args], env={**self.env, **extra},
+        return subprocess.run([str(self.root / "ariadne"), *args], env={**self.env, **extra},
                               cwd=self.temp.name, capture_output=True, text=True, timeout=15)
 
     def latest(self):
-        return self.root / ".tg/runs" / (self.root / ".tg/latest").read_text().strip()
+        return self.root / ".ariadne/runs" / (self.root / ".ariadne/latest").read_text().strip()
 
     def recorded(self):
         return [json.loads(line) for line in self.calls.read_text().splitlines()]
@@ -85,13 +85,13 @@ class LauncherTests(unittest.TestCase):
         self.assertFalse(self.calls.exists())
 
     def test_local_status_and_logs_work_offline_by_latest_id_and_path(self):
-        directory = self.root / ".tg/runs/tg-local"
+        directory = self.root / ".ariadne/runs/ariadne-local"
         directory.mkdir(parents=True)
         for name, value in {"status": "FAILED", "scenario": "logistics", "environment": "stopped",
                             "backend": "local-processes", "agent-1.jsonl": '{"type":"AGENT_ERROR"}',
                             "execution.jsonl": '{"type":"EXPERIMENT_FINISHED"}'}.items():
             (directory / name).write_text(value + "\n")
-        (self.root / ".tg/latest").write_text(directory.name + "\n")
+        (self.root / ".ariadne/latest").write_text(directory.name + "\n")
         for identifier in ((), (directory.name,), (str(directory),)):
             status = self.command("status", *identifier, FAKE_DAEMON_FAIL="1")
             self.assertEqual(status.returncode, 0, status.stderr)
@@ -103,7 +103,7 @@ class LauncherTests(unittest.TestCase):
         self.assertFalse(self.calls.exists())
 
     def test_local_stop_does_not_call_docker(self):
-        directory = self.root / ".tg/runs/tg-active-local"
+        directory = self.root / ".ariadne/runs/ariadne-active-local"
         directory.mkdir(parents=True)
         for name, value in {"status": "RUNNING", "scenario": "test", "environment": "running"}.items():
             (directory / name).write_text(value + "\n")
@@ -114,7 +114,7 @@ class LauncherTests(unittest.TestCase):
 
     def test_doctor_is_read_only_and_checks_compose_version(self):
         self.assertEqual(self.command("doctor").returncode, 0)
-        self.assertFalse((self.root / ".tg").exists())
+        self.assertFalse((self.root / ".ariadne").exists())
         self.assertNotEqual(self.command("doctor", FAKE_VERSION="2.23.0").returncode, 0)
         self.assertNotEqual(self.command("doctor", FAKE_DAEMON_FAIL="1").returncode, 0)
 
@@ -177,15 +177,15 @@ class LauncherTests(unittest.TestCase):
     def test_rejects_unknown_scenarios_paths_and_invalid_timeouts(self):
         for args in [('scenario', 'unknown'), ('stop', '../../foreign'), ('demo', 'extra')]:
             self.assertNotEqual(self.command(*args).returncode, 0)
-        self.assertNotEqual(self.command('demo', TG_READY_TIMEOUT='0').returncode, 0)
-        self.assertNotEqual(self.command('doctor', 'heterogeneous-route', TG_ENV_FILE='missing').returncode, 0)
+        self.assertNotEqual(self.command('demo', ARIADNE_READY_TIMEOUT='0').returncode, 0)
+        self.assertNotEqual(self.command('doctor', 'heterogeneous-route', ARIADNE_ENV_FILE='missing').returncode, 0)
 
     def test_stop_during_build_prevents_starting_services(self):
-        with subprocess.Popen([str(self.root / 'tg'), 'demo'], env={**self.env, 'FAKE_HOLD': 'build'},
+        with subprocess.Popen([str(self.root / 'ariadne'), 'demo'], env={**self.env, 'FAKE_HOLD': 'build'},
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
             deadline = time.monotonic() + 5
             while time.monotonic() < deadline:
-                if list((self.root / '.tg').glob('runs/*/fake-build')): break
+                if list((self.root / '.ariadne').glob('runs/*/fake-build')): break
                 time.sleep(0.02)
             else:
                 process.kill()
@@ -197,11 +197,11 @@ class LauncherTests(unittest.TestCase):
         self.assertEqual((self.latest() / 'status').read_text().strip(), 'CANCELLED')
 
     def test_signal_cleans_up_and_preserves_cancelled_status(self):
-        with subprocess.Popen([str(self.root / 'tg'), 'demo'], env={**self.env, 'FAKE_HOLD': 'run'},
+        with subprocess.Popen([str(self.root / 'ariadne'), 'demo'], env={**self.env, 'FAKE_HOLD': 'run'},
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
             deadline = time.monotonic() + 5
             while time.monotonic() < deadline:
-                if list((self.root / '.tg').glob('runs/*/fake-run')): break
+                if list((self.root / '.ariadne').glob('runs/*/fake-run')): break
                 time.sleep(0.02)
             else:
                 process.kill()

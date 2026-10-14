@@ -1,7 +1,9 @@
-# TG Runtime — cooperação entre agentes heterogêneos
+# Ariadne
 
-Implementação de referência de um trabalho de graduação sobre
-**interoperabilidade entre agentes inteligentes**. O projeto define um contrato
+**Framework para execução e cooperação de agentes heterogêneos.**
+
+Desenvolvido como implementação de referência de um trabalho de graduação sobre
+**interoperabilidade entre agentes inteligentes**, Ariadne define um contrato
 comum para que agentes com arquiteturas diferentes sejam descobertos, recebam
 tarefas, troquem mensagens e cooperem em workflows.
 
@@ -38,8 +40,8 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 Para explorar a nova interface de autoria, com **Go e uv** no host:
 
 ```sh
-./tg run examples/echo.py
-./tg run examples/workflow.py
+./ariadne run examples/echo.py
+./ariadne run examples/workflow.py
 ```
 
 Cada arquivo declara agentes e tarefas. O executor inicia o runtime Go e os
@@ -50,8 +52,8 @@ A [API BDI declarativa](docs/bdi.md) permite definir agentes com `Input` e `Plan
 sem subclasses, e oferece planejamento por busca genérica no SDK.
 
 O [estudo logístico](studies/logistics/README.md) já usa essa interface:
-`./tg run studies/logistics/experiment.py` executa BDI por padrão.
-Depois, `./tg status` e `./tg logs` consultam a execução. LLM/híbrido,
+`./ariadne run studies/logistics/experiment.py` executa BDI por padrão.
+Depois, `./ariadne status` e `./ariadne logs` consultam a execução. LLM/híbrido,
 campanhas e avaliação offline estão documentados no guia do estudo.
 
 ### Demonstração via Docker
@@ -62,12 +64,12 @@ instalação local de Go ou Python. A primeira preparação baixa dependências 
 constrói imagens.
 
 ```sh
-./tg doctor
-./tg demo
+./ariadne doctor
+./ariadne demo
 ```
 
-O executor aguarda os agentes, salva resultados em `.tg/runs/` e encerra sua
-topologia automaticamente. Use `./tg status` e `./tg logs` para inspecionar a
+O executor aguarda os agentes, salva resultados em `.ariadne/runs/` e encerra sua
+topologia automaticamente. Use `./ariadne status` e `./ariadne logs` para inspecionar a
 última execução. Veja todos os comandos em [referência do executor](docs/cli.md).
 
 O [guia de primeira execução](docs/quickstart.md) reúne os comandos, a
@@ -77,7 +79,7 @@ demonstra a coordenação de duas tarefas.
 
 Para ler os resultados visualmente, inicie a API e a interface conforme o
 [guia do visualizador](tools/inspector/README.md). A aplicação React lista as
-execuções de `.tg/runs` e mostra tarefas, agentes e eventos. Inclui também um
+execuções de `.ariadne/runs` e mostra tarefas, agentes e eventos. Inclui também um
 exemplo registrado de recuperação que pode ser explorado sem Docker.
 
 ## O que está implementado

@@ -1,4 +1,4 @@
-"""Integração real opt-in: TG_TEST_RUNTIME_DIR=/.../.tg/bin python -m unittest ..."""
+"""Integração real opt-in: ARIADNE_TEST_RUNTIME_DIR=/.../.ariadne/bin python -m unittest ..."""
 
 import json
 import os
@@ -11,11 +11,11 @@ import tempfile
 import time
 import unittest
 
-RUNTIME = os.getenv("TG_TEST_RUNTIME_DIR")
+RUNTIME = os.getenv("ARIADNE_TEST_RUNTIME_DIR")
 ROOT = Path(__file__).resolve().parents[3]
 
 
-@unittest.skipUnless(RUNTIME, "set TG_TEST_RUNTIME_DIR to run real Go/Python integration")
+@unittest.skipUnless(RUNTIME, "set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration")
 class ExecutionIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -23,7 +23,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.directory = Path(self.temporary.name)
 
     def command(self, source, *options):
-        return [sys.executable, "-m", "tg_sdk", "run", str(source),
+        return [sys.executable, "-m", "ariadne_sdk", "run", str(source),
                 "--runtime-dir", str(Path(RUNTIME).resolve()),
                 "--output", str(self.directory / "runs"), *options]
 
@@ -90,7 +90,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertEqual(manifest["metadata"]["case"]["id"], "avoid-contamination")
         self.assertTrue(json.loads((run / "result.json").read_text())["output"]["feasible"])
         for command in ("status", "logs"):
-            response = subprocess.run([sys.executable, "-m", "tg_sdk", command, "--output", str(run.parent)],
+            response = subprocess.run([sys.executable, "-m", "ariadne_sdk", command, "--output", str(run.parent)],
                                       capture_output=True, text=True, cwd=self.directory, timeout=10)
             self.assertEqual(response.returncode, 0, response.stderr)
             self.assertIn("COMPLETED", response.stdout)
@@ -98,7 +98,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
     def test_domain_exception_is_preserved_as_failed_result(self):
         source = self.directory / "failure.py"
         source.write_text(
-            "from tg_sdk import Agent, Scenario, Step\n"
+            "from ariadne_sdk import Agent, Scenario, Step\n"
             "def reject(task): raise ValueError('invalid mission')\n"
             "scenario = Scenario(agents=[Agent(name='bad', capabilities=['test'], handler=reject)], "
             "tasks=[Step('test', 'reject')])\n"
@@ -111,7 +111,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
     def test_partial_startup_failure_cleans_runtime(self):
         source = self.directory / "startup_failure.py"
         source.write_text(
-            "from tg_sdk import Agent, Scenario, Step\n"
+            "from ariadne_sdk import Agent, Scenario, Step\n"
             "class Broken(Agent):\n"
             "    capabilities = ['test']\n"
             "    def start(self): raise RuntimeError('startup rejected')\n"
@@ -124,7 +124,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
     def test_sigint_cancels_and_cleans_all_processes(self):
         source = self.directory / "interrupt.py"
         source.write_text(
-            "import time\nfrom tg_sdk import Agent, Scenario, Step\n"
+            "import time\nfrom ariadne_sdk import Agent, Scenario, Step\n"
             "def slow(task): time.sleep(30); return {}\n"
             "scenario = Scenario(agents=[Agent(name='slow', capabilities=['test'], handler=slow)], "
             "tasks=[Step('test', 'wait')])\n"

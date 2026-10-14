@@ -9,7 +9,7 @@ from google.protobuf import timestamp_pb2
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../sdk/python/src"))
 
 from contract.v1 import contract_pb2
-from tg_sdk import Agent
+from ariadne_sdk import Agent
 
 logging.basicConfig(
     level=logging.INFO,

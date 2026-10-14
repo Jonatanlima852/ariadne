@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Sequence
 
-from tg_sdk.experiment import Step, compile_steps
+from ariadne_sdk.experiment import Step, compile_steps
 
 
 @dataclass

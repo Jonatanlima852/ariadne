@@ -18,11 +18,11 @@ import uuid
 import grpc
 
 from contract.v1 import contract_pb2 as pb, contract_pb2_grpc as rpc
-from tg_sdk.agent import Agent
-from tg_sdk.evidence import EventLog, utc_now, write_json
-from tg_sdk.provenance import capture
-from tg_sdk.scenario import Scenario
-from tg_sdk.client import RuntimeClient
+from ariadne_sdk.agent import Agent
+from ariadne_sdk.evidence import EventLog, utc_now, write_json
+from ariadne_sdk.provenance import capture
+from ariadne_sdk.scenario import Scenario
+from ariadne_sdk.client import RuntimeClient
 
 SERVICES = ("registry", "orchestrator", "messaging")
 
@@ -42,7 +42,7 @@ def load_scenario(source):
     previous_path = sys.path[:]
     try:
         sys.path[:0] = import_roots(source)
-        namespace = runpy.run_path(str(source), run_name="__tg_experiment__")
+        namespace = runpy.run_path(str(source), run_name="__ariadne_experiment__")
     finally:
         sys.path[:] = previous_path
     scenario = namespace.get("scenario")
@@ -159,7 +159,7 @@ def build_runtime(source, destination, processes):
         raise RuntimeError("Go is required to prepare the runtime; alternatively use --runtime-dir")
     destination.mkdir(parents=True, exist_ok=True)
     for service in SERVICES:
-        binary = destination / f"tg-{service}"
+        binary = destination / f"ariadne-{service}"
         child = processes.start(
             ["go", "build", "-o", str(binary), f"./services/{service}/cmd"],
             "build", cwd=source,
@@ -178,8 +178,8 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
     source = Path(source).resolve(strict=True)
     scenario = load_scenario(source)
     provenance = capture(source, scenario.artifacts)
-    execution_id = execution_id or ("tg-" + uuid.uuid4().hex)
-    if not execution_id.startswith("tg-") or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in execution_id):
+    execution_id = execution_id or ("ariadne-" + uuid.uuid4().hex)
+    if not execution_id.startswith("ariadne-") or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in execution_id):
         raise ValueError("invalid execution_id")
     directory = Path(output_root).resolve() / execution_id
     directory.mkdir(parents=True)
@@ -218,9 +218,9 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
             print("Preparando runtime Go (cache de compilação reutilizado)…", flush=True)
             build_runtime(runtime_source, runtime_dir, processes)
         if runtime_dir is None:
-            raise ValueError("provide --runtime-dir or TG_RUNTIME_DIR with tg-registry, tg-orchestrator, tg-messaging")
+            raise ValueError("provide --runtime-dir or ARIADNE_RUNTIME_DIR with ariadne-registry, ariadne-orchestrator, ariadne-messaging")
         runtime_dir = Path(runtime_dir).resolve(strict=True)
-        binaries = {service: runtime_dir / f"tg-{service}" for service in SERVICES}
+        binaries = {service: runtime_dir / f"ariadne-{service}" for service in SERVICES}
         for binary in binaries.values():
             if not binary.is_file() or not os.access(binary, os.X_OK):
                 raise ValueError(f"runtime executable not found: {binary}")
@@ -230,7 +230,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         addresses = {}
         for service, binary in binaries.items():
             ready_file = directory / f"{service}.ready"
-            env = {**os.environ, "TG_JSON_LOGS": "1", "TG_READY_FILE": str(ready_file)}
+            env = {**os.environ, "ARIADNE_JSON_LOGS": "1", "ARIADNE_READY_FILE": str(ready_file)}
             if service == "registry":
                 env["REGISTRY_ADDR"] = "127.0.0.1:0"
             else:
@@ -244,7 +244,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         env = {**os.environ, **{f"{name.upper()}_ADDR": addr for name, addr in addresses.items()}}
         for index, agent in enumerate(scenario.agents):
             processes.start([
-                sys.executable, "-m", "tg_sdk.worker", str(source), str(index),
+                sys.executable, "-m", "ariadne_sdk.worker", str(source), str(index),
                 addresses["registry"], str(directory),
             ], f"agent-{index + 1}", env=env)
             endpoint = wait_ready(processes, directory / f"agent-{index + 1}.ready", ready_timeout, agent=True)

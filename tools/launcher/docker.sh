@@ -1,9 +1,9 @@
 #!/bin/sh
 # Backend Docker privado; a CLI pública valida os argumentos antes da chamada.
 set -eu
-: "${TG_ROOT:?invoke through tg}"
-export TG_ROOT
-RUNS=${TG_RUNS_DIR:-"$TG_ROOT/.tg/runs"}
+: "${ARIADNE_ROOT:?invoke through ariadne}"
+export ARIADNE_ROOT
+RUNS=${ARIADNE_RUNS_DIR:-"$ARIADNE_ROOT/.ariadne/runs"}
 case "$RUNS" in /*) ;; *) RUNS="$PWD/$RUNS" ;; esac
 STATE=$(dirname -- "$RUNS")
 
@@ -18,17 +18,17 @@ select_scenario() {
         messaging-basic) base=examples/docker/messaging-basic/compose.yaml; services=messaging ;;
         heterogeneous-route) base=examples/docker/heterogeneous-route/compose.yaml; services='registry orchestrator bdi-agent llm-agent'; llm=yes ;;
         logistics-mission) base=studies/benchmarks/compose.yaml; services='registry orchestrator bdi-agent llm-agent'; llm=yes ;;
-        *) die "Cenário desconhecido: $scenario. Consulte ./tg scenario." ;;
+        *) die "Cenário desconhecido: $scenario. Consulte ./ariadne scenario." ;;
     esac
     env_file=/dev/null
     if [ "$llm" = yes ]; then
-        if [ -n "${TG_ENV_FILE:-}" ]; then
-            case "$TG_ENV_FILE" in /*) env_file=$TG_ENV_FILE ;; *) env_file="$TG_ROOT/$TG_ENV_FILE" ;; esac
-            [ -f "$env_file" ] || die "TG_ENV_FILE não encontrado: $env_file"
-        elif [ "$scenario" = heterogeneous-route ] && [ -f "$TG_ROOT/examples/docker/heterogeneous-route/.env" ]; then
-            env_file="$TG_ROOT/examples/docker/heterogeneous-route/.env"
-        elif [ -f "$TG_ROOT/.env" ]; then
-            env_file="$TG_ROOT/.env"
+        if [ -n "${ARIADNE_ENV_FILE:-}" ]; then
+            case "$ARIADNE_ENV_FILE" in /*) env_file=$ARIADNE_ENV_FILE ;; *) env_file="$ARIADNE_ROOT/$ARIADNE_ENV_FILE" ;; esac
+            [ -f "$env_file" ] || die "ARIADNE_ENV_FILE não encontrado: $env_file"
+        elif [ "$scenario" = heterogeneous-route ] && [ -f "$ARIADNE_ROOT/examples/docker/heterogeneous-route/.env" ]; then
+            env_file="$ARIADNE_ROOT/examples/docker/heterogeneous-route/.env"
+        elif [ -f "$ARIADNE_ROOT/.env" ]; then
+            env_file="$ARIADNE_ROOT/.env"
         fi
     fi
 }
@@ -63,8 +63,8 @@ configuration() {
 
 compose() {
     docker compose --env-file "$env_file" -p "$project" \
-        -f "$TG_ROOT/$base" -f "$run_dir/override.yaml" \
-        -f "$TG_ROOT/tools/launcher/runner.compose.yaml" "$@"
+        -f "$ARIADNE_ROOT/$base" -f "$run_dir/override.yaml" \
+        -f "$ARIADNE_ROOT/tools/launcher/runner.compose.yaml" "$@"
 }
 
 control() {
@@ -74,13 +74,13 @@ control() {
 doctor() (
     select_scenario "$1"
     check_tools
-    run_dir=$(mktemp -d "${TMPDIR:-/tmp}/tg-doctor.XXXXXX")
+    run_dir=$(mktemp -d "${TMPDIR:-/tmp}/ariadne-doctor.XXXXXX")
     trap 'rm -rf -- "$run_dir"' EXIT
-    project=tg-doctor
-    TG_RUN_DIR=$run_dir
-    export TG_RUN_DIR
+    project=ariadne-doctor
+    ARIADNE_RUN_DIR=$run_dir
+    export ARIADNE_RUN_DIR
     configuration
-    compose config --quiet || die 'Configuração inválida. Para LLM, confira OPENAI_API_KEY e TG_ENV_FILE.'
+    compose config --quiet || die 'Configuração inválida. Para LLM, confira OPENAI_API_KEY e ARIADNE_ENV_FILE.'
     printf 'OK: Docker e Compose %s; cenário %s configurado.\n' "$version" "$scenario"
     printf 'Cliente em contêiner; nenhuma porta publicada no host.\n'
     [ "$llm" = no ] || printf 'A configuração LLM existe; acesso ao modelo só é verificado na execução real.\n'
@@ -117,7 +117,7 @@ shutdown() {
         printf 'stopped\n' > "$run_dir/environment"
     else
         printf 'cleanup-failed\n' > "$run_dir/environment"
-        printf 'Não foi possível encerrar tudo. Repita: ./tg stop %s\n' "$run_id" >&2
+        printf 'Não foi possível encerrar tudo. Repita: ./ariadne stop %s\n' "$run_id" >&2
         return 1
     fi
 }
@@ -143,12 +143,12 @@ finish() {
         if [ "$keep" = no ] || [ "$outcome" = CANCELLED ]; then
             shutdown || code=1
         else
-            printf 'Ambiente mantido. Para encerrar: ./tg stop %s\n' "$run_id"
+            printf 'Ambiente mantido. Para encerrar: ./ariadne stop %s\n' "$run_id"
         fi
     fi
     printf 'Estado: %s\nResultados: %s\n' "$outcome" "$run_dir"
     if [ "$outcome" = FAILED ]; then
-        printf 'Confira ./tg logs %s e os arquivos build.log/diagnostics.log.\n' "$run_id" >&2
+        printf 'Confira ./ariadne logs %s e os arquivos build.log/diagnostics.log.\n' "$run_id" >&2
     fi
     exit "$code"
 }
@@ -157,17 +157,17 @@ run_scenario() {
     select_scenario "$1"
     keep=$2
     check_tools
-    TG_READY_TIMEOUT=${TG_READY_TIMEOUT:-90}
-    TG_SCENARIO_TIMEOUT=${TG_SCENARIO_TIMEOUT:-180}
-    timeout_value TG_READY_TIMEOUT "$TG_READY_TIMEOUT"
-    timeout_value TG_SCENARIO_TIMEOUT "$TG_SCENARIO_TIMEOUT"
-    export TG_READY_TIMEOUT TG_SCENARIO_TIMEOUT
+    ARIADNE_READY_TIMEOUT=${ARIADNE_READY_TIMEOUT:-90}
+    ARIADNE_SCENARIO_TIMEOUT=${ARIADNE_SCENARIO_TIMEOUT:-180}
+    timeout_value ARIADNE_READY_TIMEOUT "$ARIADNE_READY_TIMEOUT"
+    timeout_value ARIADNE_SCENARIO_TIMEOUT "$ARIADNE_SCENARIO_TIMEOUT"
+    export ARIADNE_READY_TIMEOUT ARIADNE_SCENARIO_TIMEOUT
     mkdir -p "$RUNS"
-    run_dir=$(mktemp -d "$RUNS/tg-$(date -u +%Y%m%d-%H%M%S)-XXXXXX")
+    run_dir=$(mktemp -d "$RUNS/ariadne-$(date -u +%Y%m%d-%H%M%S)-XXXXXX")
     run_id=${run_dir##*/}
     project=$(printf '%s' "$run_id" | tr '[:upper:]' '[:lower:]')
-    TG_RUN_DIR=$run_dir
-    export TG_RUN_DIR
+    ARIADNE_RUN_DIR=$run_dir
+    export ARIADNE_RUN_DIR
     configuration
     printf '%s\n' "$scenario" > "$run_dir/scenario"
     printf 'RUNNING\n' > "$run_dir/status"

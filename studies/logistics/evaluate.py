@@ -96,7 +96,7 @@ def summarize(rows):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", nargs="+", type=Path, help="run directories or campaign directories")
-    parser.add_argument("--output", type=Path, default=Path(".tg/evaluations") / ("logistics-" + uuid.uuid4().hex))
+    parser.add_argument("--output", type=Path, default=Path(".ariadne/evaluations") / ("logistics-" + uuid.uuid4().hex))
     args = parser.parse_args(argv)
     runs = []
     campaigns = []

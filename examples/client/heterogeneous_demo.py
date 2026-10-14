@@ -9,7 +9,7 @@ sys.path.insert(
     os.path.join(os.path.dirname(__file__), "../../sdk/python/src"),
 )
 
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 
 
 GOAL = "Planeje uma rota de A para D e explique por que ela foi escolhida"

@@ -14,7 +14,7 @@ SubmitWorkflow
 Com Docker e Compose >=2.24.4, na raiz:
 
 ```sh
-./tg scenario workflow-sequential
+./ariadne scenario workflow-sequential
 ```
 
 O executor aguarda o agente, salva resultados e encerra o ambiente. Veja a

@@ -1,7 +1,7 @@
 [project]
-name = "tg-sdk"
+name = "ariadne-sdk"
 version = "0.1.0"
-description = "Python SDK para agentes do TG Runtime"
+description = "Python SDK para agentes do Ariadne Runtime"
 requires-python = ">=3.11"
 dependencies = [
     "grpcio",
@@ -12,7 +12,7 @@ dependencies = [
 llm = ["openai==2.50.0", "pydantic==2.13.4"]
 
 [project.scripts]
-tg = "tg_sdk.__main__:main"
+ariadne = "ariadne_sdk.__main__:main"
 
 [build-system]
 requires = ["setuptools"]

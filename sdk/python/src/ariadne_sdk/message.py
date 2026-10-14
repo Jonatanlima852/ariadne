@@ -10,7 +10,7 @@ import grpc
 from google.protobuf import timestamp_pb2
 
 from contract.v1 import contract_pb2, contract_pb2_grpc
-from tg_sdk.models import mapping_to_struct, struct_to_dict
+from ariadne_sdk.models import mapping_to_struct, struct_to_dict
 
 
 def _message_type(value):

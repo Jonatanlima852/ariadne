@@ -1,7 +1,7 @@
 [project]
 name = "submit-task"
 version = "0.1.0"
-description = "Cliente de linha de comando para submeter tasks ao TG Runtime"
+description = "Cliente de linha de comando para submeter tasks ao Ariadne Runtime"
 requires-python = ">=3.11"
 dependencies = [
     "grpcio",

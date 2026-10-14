@@ -8,8 +8,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/events"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/events"
 )
 
 type engineExecutor struct {

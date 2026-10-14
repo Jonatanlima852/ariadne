@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 type cancellableExecutor struct{ started chan struct{} }

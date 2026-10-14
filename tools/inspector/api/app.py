@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
-RUNS_ROOT = Path(os.getenv("TG_RUNS_DIR", REPOSITORY_ROOT / ".tg" / "runs")).resolve()
+RUNS_ROOT = Path(os.getenv("ARIADNE_RUNS_DIR", REPOSITORY_ROOT / ".ariadne" / "runs")).resolve()
 ALLOWED_FILES = {
     "summary.json",
     "result.json",
@@ -23,7 +23,7 @@ ALLOWED_FILES = {
 RUN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 MAX_RESPONSE_BYTES = 20 * 1024 * 1024
 
-app = FastAPI(title="TG Runtime Inspector API", version="0.1.0")
+app = FastAPI(title="Ariadne Runtime Inspector API", version="0.1.0")
 
 
 def _is_regular_file(path: Path) -> bool:

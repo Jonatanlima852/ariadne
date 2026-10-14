@@ -1,5 +1,5 @@
 import unittest
-from tg_sdk import SearchProblem, SearchLimitExceeded, uniform_cost_search
+from ariadne_sdk import SearchProblem, SearchLimitExceeded, uniform_cost_search
 
 
 class PlanningTests(unittest.TestCase):

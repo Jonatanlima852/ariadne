@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/registry/internal/store"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/registry/internal/store"
 )
 
 func registration(version string) *pb.RegisterAgentRequest {

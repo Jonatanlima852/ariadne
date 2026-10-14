@@ -8,10 +8,10 @@ from typing import Any, Mapping
 try:
     from pydantic import BaseModel
 except ImportError as error:
-    raise ImportError("LLM support requires tg-sdk[llm]; in this checkout use uv sync --project sdk/python --extra llm") from error
+    raise ImportError("LLM support requires ariadne-sdk[llm]; in this checkout use uv sync --project sdk/python --extra llm") from error
 
-from tg_sdk.agent import Agent
-from tg_sdk.models import Task, TaskResult
+from ariadne_sdk.agent import Agent
+from ariadne_sdk.models import Task, TaskResult
 
 log = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ def llm_capability(capability_id, *, output_schema, result_mapper=None):
         raise TypeError("output_schema must be a Pydantic BaseModel class")
 
     def decorate(method):
-        method._tg_llm_capability = {
+        method._ariadne_llm_capability = {
             "id": capability_id,
             "output_schema": output_schema,
             "result_mapper": result_mapper,
@@ -151,7 +151,7 @@ class LlmAgent(Agent):
                 try:
                     from openai import OpenAI
                 except ImportError as error:
-                    raise RuntimeError("install tg-sdk[llm] to execute LLM agents") from error
+                    raise RuntimeError("install ariadne-sdk[llm] to execute LLM agents") from error
                 self._openai = OpenAI()
             return self._openai
 
@@ -159,7 +159,7 @@ class LlmAgent(Agent):
         handlers = {}
         for name in dir(self):
             method = getattr(self, name)
-            declaration = getattr(method, "_tg_llm_capability", None)
+            declaration = getattr(method, "_ariadne_llm_capability", None)
             if declaration is None:
                 continue
             capability = declaration["id"]

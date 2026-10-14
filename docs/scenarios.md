@@ -1,11 +1,11 @@
 # Catálogo de cenários
 
 Comece pelos casos determinísticos. Todos os cenários abaixo podem ser
-executados pelo [executor tg](cli.md), com Docker e Compose >=2.24.4, sem
+executados pelo [executor ariadne](cli.md), com Docker e Compose >=2.24.4, sem
 Python ou uv no host. Os READMEs também mantêm comandos manuais, que podem
 exigir ferramentas adicionais. Execute da raiz do repositório.
 
-| Cenário | O que observar | Requisitos adicionais via tg | Resultado esperado |
+| Cenário | O que observar | Requisitos adicionais via ariadne | Resultado esperado |
 |---|---|---|---|
 | [Echo básico](quickstart.md) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `mock-agent-01` |
 | [Workflow sequencial](../examples/docker/workflow-sequential/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
@@ -15,9 +15,9 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 | [Missão logística](../examples/docker/logistics-mission/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
 
 ```sh
-./tg scenario workflow-sequential
-./tg scenario failure-reassignment
-./tg scenario messaging-basic
+./ariadne scenario workflow-sequential
+./ariadne scenario failure-reassignment
+./ariadne scenario messaging-basic
 ```
 
 O resumo aparece no terminal; a saída detalhada fica em `scenario.log` e o
@@ -39,7 +39,7 @@ uv run --directory sdk/python python ../../examples/support/agents/meeting-sched
 
 ## Endereços e isolamento
 
-Os endereços abaixo valem para os comandos Compose manuais. `./tg` remove as
+Os endereços abaixo valem para os comandos Compose manuais. `./ariadne` remove as
 portas publicadas e usa exclusivamente a rede interna de cada execução.
 
 | Topologia | Endereço de entrada padrão no host |

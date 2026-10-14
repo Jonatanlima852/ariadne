@@ -1,6 +1,6 @@
-# Referência do executor `tg`
+# Referência do executor `ariadne`
 
-`./tg run arquivo.py` e `./tg check arquivo.py` oferecem o novo caminho de
+`./ariadne run arquivo.py` e `./ariadne check arquivo.py` oferecem o novo caminho de
 [experimentos declarativos](experiments.md), com Go e uv. A referência abaixo
 descreve principalmente o launcher Docker. `status` e `logs` reconhecem também
 execuções locais, por ID ou caminho, sem exigir Docker. A CLI usa Python com
@@ -8,9 +8,9 @@ o SDK; o bootstrap pode preparar esse ambiente pelo uv.
 O ponteiro de última execução é compartilhado. Para processos locais, `logs`
 mostra até 100 linhas por arquivo; `stop` ainda se aplica somente a Docker.
 
-`./tg` é um bootstrap shell para a CLI Python, também instalada como `tg`.
+`./ariadne` é um bootstrap shell para a CLI Python, também instalada como `ariadne`.
 Os mesmos argumentos e comportamentos valem nas duas entradas. No checkout,
-uv prepara o SDK; `TG_PYTHON` seleciona um ambiente já instalado. Os comandos
+uv prepara o SDK; `ARIADNE_PYTHON` seleciona um ambiente já instalado. Os comandos
 Docker exigem adicionalmente Docker Compose >=2.24.4 e usam o backend de
 `tools/launcher/`, com o cliente da tarefa em contêiner.
 
@@ -18,18 +18,18 @@ Docker exigem adicionalmente Docker Compose >=2.24.4 e usam o backend de
 
 | Comando | Comportamento |
 |---|---|
-| `./tg help` | Ajuda, sem exigir Docker |
-| `./tg run ARQUIVO.py` | Executa uma descrição local |
-| `./tg check ARQUIVO.py` | Valida entradas e limites estáticos |
-| `./tg campaign ARQUIVO.py` | Coleta uma matriz com execuções independentes |
-| `./tg verify` | Verificação integrada; use o extra `llm` |
-| `./tg doctor [cenário]` | Verifica ferramentas e configuração; padrão `demo` |
-| `./tg demo [--keep]` | Tarefa simples, com conclusão verificada |
-| `./tg scenario` | Lista os cenários disponíveis |
-| `./tg scenario NOME [--keep]` | Executa e valida um cenário |
-| `./tg status [ID]` | Estado salvo e localização dos resultados |
-| `./tg logs [ID]` | Logs exportados e, se o ambiente estiver ativo, logs atuais |
-| `./tg stop [ID]` | Exporta dados e encerra somente essa execução |
+| `./ariadne help` | Ajuda, sem exigir Docker |
+| `./ariadne run ARQUIVO.py` | Executa uma descrição local |
+| `./ariadne check ARQUIVO.py` | Valida entradas e limites estáticos |
+| `./ariadne campaign ARQUIVO.py` | Coleta uma matriz com execuções independentes |
+| `./ariadne verify` | Verificação integrada; use o extra `llm` |
+| `./ariadne doctor [cenário]` | Verifica ferramentas e configuração; padrão `demo` |
+| `./ariadne demo [--keep]` | Tarefa simples, com conclusão verificada |
+| `./ariadne scenario` | Lista os cenários disponíveis |
+| `./ariadne scenario NOME [--keep]` | Executa e valida um cenário |
+| `./ariadne status [ID]` | Estado salvo e localização dos resultados |
+| `./ariadne logs [ID]` | Logs exportados e, se o ambiente estiver ativo, logs atuais |
+| `./ariadne stop [ID]` | Exporta dados e encerra somente essa execução |
 
 O ID padrão é o da última execução iniciada neste checkout. Em execuções
 simultâneas, use o ID explícito. `stop` pode ser repetido após um encerramento
@@ -39,7 +39,7 @@ monitor contínuo de saúde do Docker.
 ## Isolamento e limpeza
 
 Cada execução recebe um projeto Compose e volume exclusivos, com dados em
-`.tg/runs/ID/`. Overrides removem as portas publicadas; o cliente acessa os
+`.ariadne/runs/ID/`. Overrides removem as portas publicadas; o cliente acessa os
 serviços pela rede Docker. Os comandos Compose manuais mantêm seus projetos
 e portas originais.
 
@@ -52,7 +52,7 @@ nome é informado para recuperação; os demais recursos ainda são encerrados.
 As imagens construídas permanecem como cache local.
 
 Ctrl+C e SIGTERM acionam a limpeza. Uma interrupção abrupta do host/processo
-pode impedir esse tratamento; `./tg stop ID` retoma o encerramento. O comando
+pode impedir esse tratamento; `./ariadne stop ID` retoma o encerramento. O comando
 usa uma descrição de controle sem credenciais, inclusive para parar um
 cenário LLM depois de remover seu `.env`.
 
@@ -72,7 +72,7 @@ cenário LLM depois de remover seu `.env`.
 | `diagnostics.log`, `cleanup.log` | Diagnóstico e encerramento |
 
 Uma falha anterior ao cenário pode impedir a criação de `summary.json` e
-`result.json`; consulte `status` e os logs da etapa que falhou. `.tg/` é
+`result.json`; consulte `status` e os logs da etapa que falhou. `.ariadne/` é
 ignorado pelo Git e excluído do contexto de build. Esses relatórios
 operacionais não substituem a metodologia dos benchmarks.
 
@@ -83,7 +83,7 @@ os serviços ainda estarem ativos.
 ## Prazos
 
 ```sh
-TG_READY_TIMEOUT=120 TG_SCENARIO_TIMEOUT=300 ./tg scenario heterogeneous-route
+ARIADNE_READY_TIMEOUT=120 ARIADNE_SCENARIO_TIMEOUT=300 ./ariadne scenario heterogeneous-route
 ```
 
 Os valores são segundos inteiros entre 1 e 3600. Prontidão usa 90 segundos
@@ -95,7 +95,7 @@ externo não altera retry, deadlines ou timeout de workflow dentro do runtime.
 `heterogeneous-route` e `logistics-mission` fazem chamadas reais e podem gerar
 custo no provedor. O arquivo de ambiente é escolhido nesta ordem:
 
-1. `TG_ENV_FILE`, se informado (caminho relativo à raiz ou absoluto).
+1. `ARIADNE_ENV_FILE`, se informado (caminho relativo à raiz ou absoluto).
 2. `examples/docker/heterogeneous-route/.env`, apenas para o cenário de rota, se existir.
 3. `.env` na raiz, se existir.
 
@@ -105,9 +105,9 @@ processo; variáveis exportadas têm precedência na interpolação Compose.
 projeto é `gpt-5.6-luna`, sujeito ao acesso da conta.
 
 ```sh
-./tg doctor heterogeneous-route
-./tg scenario heterogeneous-route
-./tg scenario logistics-mission
+./ariadne doctor heterogeneous-route
+./ariadne scenario heterogeneous-route
+./ariadne scenario logistics-mission
 ```
 
 `doctor` valida configuração, mas não testa credencial nem acesso ao modelo.
@@ -115,12 +115,12 @@ Cenários determinísticos não carregam `.env` pelo executor e não chamam LLM.
 
 ## Make e execução manual
 
-`make demo` e `make doctor` delegam para `./tg`. `make up`, `make logs` e
+`make demo` e `make doctor` delegam para `./ariadne`. `make up`, `make logs` e
 `make down` continuam controlando o Compose básico manual, não execuções de
-`./tg`. Para estas, use `./tg logs` e `./tg stop`.
+`./ariadne`. Para estas, use `./ariadne logs` e `./ariadne stop`.
 
 Os scripts `studies/benchmarks/run.sh` e `studies/benchmarks/run-logistics.sh` continuam sendo
-os executores das campanhas. `tg` cobre demonstrações e cenários; não oferece
+os executores das campanhas. `ariadne` cobre demonstrações e cenários; não oferece
 um subcomando de benchmark nesta versão.
 
 [Primeira execução](quickstart.md) · [Índice](README.md)

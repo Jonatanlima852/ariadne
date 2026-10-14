@@ -6,7 +6,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../sdk/python/src"))
 
-from tg_sdk import BdiAgent, plan
+from ariadne_sdk import BdiAgent, plan
 from studies.logistics.planning import plan_mission
 
 from beliefs import KNOWN_ROUTES, direct_distance, known_destinations_from
@@ -28,7 +28,7 @@ _GOAL_ROUTE_PATTERN = re.compile(
 
 class RoutePlanningAgent(BdiAgent):
     """Agente BDI de planejamento de rotas: o desejo é "ir de uma origem
-    a um destino"; tg_sdk.BdiAgent cuida de selecionar o plano e montar
+    a um destino"; ariadne_sdk.BdiAgent cuida de selecionar o plano e montar
     o resultado — este agente só sabe extrair o desejo da task e
     interpretar crenças externas vindas via BdiExtension."""
 

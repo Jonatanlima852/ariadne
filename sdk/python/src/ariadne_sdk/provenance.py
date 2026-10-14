@@ -39,7 +39,7 @@ def capture(source, artifacts=()):
             filename = getattr(module, '__file__', None)
             if filename:
                 path = Path(filename).resolve()
-                if path.suffix == '.py' and path.is_relative_to(root) and not any(part in path.parts for part in ('.venv', '.tg', 'site-packages')):
+                if path.suffix == '.py' and path.is_relative_to(root) and not any(part in path.parts for part in ('.venv', '.ariadne', 'site-packages')):
                     paths.add(path)
         for relative in ('runtime/go.mod', 'runtime/go.sum'):
             if (root / relative).is_file():

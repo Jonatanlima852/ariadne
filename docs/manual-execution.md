@@ -1,7 +1,7 @@
 # Execução manual do Compose básico
 
 Este guia mantém o caminho manual para publicar portas no host e controlar
-diretamente o Compose. Para começar, prefira [./tg demo](quickstart.md), com
+diretamente o Compose. Para começar, prefira [./ariadne demo](quickstart.md), com
 prontidão e limpeza automáticas.
 
 O exemplo envia uma tarefa `echo` a um agente descoberto pelo runtime.

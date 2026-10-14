@@ -15,7 +15,7 @@ def resolve_run(identifier, root):
     if candidate.is_dir():
         directory = candidate.resolve()
     else:
-        if not re.fullmatch(r"tg-[A-Za-z0-9-]+", identifier):
+        if not re.fullmatch(r"ariadne-[A-Za-z0-9-]+", identifier):
             raise ValueError("identificador de execução inválido")
         directory = root / identifier
     if not (directory / "scenario").is_file() or not (directory / "status").is_file():

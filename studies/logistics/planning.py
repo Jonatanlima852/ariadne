@@ -2,7 +2,7 @@
 
 O oráculo offline em domain.plan_mission mantém sua implementação de referência.
 """
-from tg_sdk import SearchProblem, uniform_cost_search
+from ariadne_sdk import SearchProblem, uniform_cost_search
 from .domain import _initial, _candidate_actions, _apply, _goal, _state_dict
 
 

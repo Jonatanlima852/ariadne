@@ -1,5 +1,5 @@
 """Declaração reutilizável; o SDK administra o ciclo do agente."""
-from tg_sdk import BdiAgent, Input, Plan
+from ariadne_sdk import BdiAgent, Input, Plan
 from .planning import plan_mission
 
 

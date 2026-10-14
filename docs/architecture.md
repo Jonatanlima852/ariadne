@@ -11,7 +11,7 @@ contrato. Cada agente implementa seu próprio raciocínio de domínio.
 | Registry | Cadastro, descoberta por capacidade, heartbeat e detecção de falhas | [registry](../runtime/services/registry/cmd/main.go) |
 | Orchestrator | Seleção, execução, retry, planejamento delegado e workflows | [orchestrator](../runtime/services/orchestrator/internal/server/server.go) |
 | Messaging | Publicação e recebimento por destinatário, em memória | [messaging](../runtime/services/messaging/internal/server/server.go) |
-| SDK Python | Modelos, registro, servidor do agente, heartbeat e clientes | [tg_sdk](../sdk/python/src/tg_sdk/__init__.py) |
+| SDK Python | Modelos, registro, servidor do agente, heartbeat e clientes | [ariadne_sdk](../sdk/python/src/ariadne_sdk/__init__.py) |
 | Agentes | Interpretação, planejamento de domínio e tarefas de teste | [catálogo](scenarios.md) |
 | Eventos e análise | Registro da execução e extração de métricas | [logger](../runtime/services/internal/events/logger.go), [métricas](../studies/runtime_metrics/compute_metrics.py) |
 

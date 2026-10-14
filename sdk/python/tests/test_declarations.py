@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 from unittest.mock import patch
 from pydantic import BaseModel
-from tg_sdk import LlmAgent, LlmCapability, Prompt, Scenario, Task
+from ariadne_sdk import LlmAgent, LlmCapability, Prompt, Scenario, Task
 
 
 class Answer(BaseModel):

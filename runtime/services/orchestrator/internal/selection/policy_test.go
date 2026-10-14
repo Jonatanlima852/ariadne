@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	pb "tg/runtime/gen/go/contract/v1"
+	pb "ariadne/runtime/gen/go/contract/v1"
 )
 
 func agent(id string, load float64, tasks int32) *pb.AgentDescriptor {

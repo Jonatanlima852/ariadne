@@ -5,7 +5,7 @@ alternativas, seleciona uma intenção e executa somente o plano escolhido.
 Nenhuma subclasse ou mensagem protobuf é necessária.
 
 ```python
-from tg_sdk import BdiAgent, Input, Plan, Scenario, Step
+from ariadne_sdk import BdiAgent, Input, Plan, Scenario, Step
 
 agent = BdiAgent(
     name="routes", capabilities=["route"],
@@ -19,7 +19,7 @@ scenario = Scenario(agents=[agent], tasks=[
 ])
 ```
 
-Salve como um arquivo Python e execute com `./tg run caminho.py`. Este exemplo
+Salve como um arquivo Python e execute com `./ariadne run caminho.py`. Este exemplo
 apenas compõe uma rota; restrições e disponibilidade de conexões são regras do
 domínio. Exemplos completos: [rotas](../examples/bdi.py),
 [agendamento](../examples/meeting.py) e [logística](../studies/logistics/bdi.py).
@@ -80,7 +80,7 @@ BDI seleciona planos de uma biblioteca. Um plano pode usar busca para construir
 uma sequência de ações; essas duas operações são separadas no SDK:
 
 ```python
-from tg_sdk import SearchProblem, uniform_cost_search
+from ariadne_sdk import SearchProblem, uniform_cost_search
 
 edges = {"A": [("D", 30), ("B", 10)], "B": [("D", 15)]}
 result = uniform_cost_search(SearchProblem(

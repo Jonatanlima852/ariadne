@@ -32,7 +32,7 @@
         } catch { throw new Error(file.name + ': esperado um objeto JSON válido.'); }
       } else data[file.name] = file.content.trim();
     }
-    if (!names.size) throw new Error('Nenhum arquivo reconhecido. Selecione os arquivos de .tg/runs/ID/.');
+    if (!names.size) throw new Error('Nenhum arquivo reconhecido. Selecione os arquivos de .ariadne/runs/ID/.');
     const result = data['result.json'] || {}, summary = data['summary.json'] || {};
     const rows = [];
     let kind = 'Sem resultado';
@@ -51,7 +51,7 @@
         else warnings.push('Tarefa inválida: ' + name);
       }
     } else if (typeof result.message_id === 'string') kind = 'Mensagem';
-    else if (data['result.json']) warnings.push('Formato de resultado não reconhecido. Consulte os dados brutos; este visualizador aceita relatórios de cenários ./tg.');
+    else if (data['result.json']) warnings.push('Formato de resultado não reconhecido. Consulte os dados brutos; este visualizador aceita relatórios de cenários ./ariadne.');
     if (!data['result.json']) warnings.push('result.json ausente: a execução pode ter falhado antes de produzir um resultado.');
     if (!data['summary.json']) warnings.push('summary.json ausente: o resultado não informa se todas as verificações do cenário passaram.');
     // SDK events describe client actions; do not merge them with runtime events.

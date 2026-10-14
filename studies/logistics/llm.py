@@ -2,7 +2,7 @@
 import json
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
-from tg_sdk import LlmAgent, LlmCapability, Prompt, llm_capability
+from ariadne_sdk import LlmAgent, LlmCapability, Prompt, llm_capability
 
 
 class LogisticsAction(BaseModel):

@@ -1,5 +1,5 @@
-"""./tg run examples/bdi.py — só o plano escolhido é executado."""
-from tg_sdk import BdiAgent, Plan, Scenario, Step
+"""./ariadne run examples/bdi.py — só o plano escolhido é executado."""
+from ariadne_sdk import BdiAgent, Plan, Scenario, Step
 
 scenario = Scenario(
     agents=[BdiAgent(name="routes", capabilities=["route"], plans=[

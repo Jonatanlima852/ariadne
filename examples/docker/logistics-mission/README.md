@@ -18,12 +18,12 @@ a topologia de benchmarks, com Orchestrator na porta 54052 por padrão.
 Com Docker e Compose >=2.24.4 e a chave configurada, na raiz:
 
 ```sh
-./tg doctor logistics-mission
-./tg scenario logistics-mission
+./ariadne doctor logistics-mission
+./ariadne scenario logistics-mission
 ```
 
 O executor usa uma instância isolada da topologia de benchmarks, sem publicar
-portas, e salva resultado e avaliação em `.tg/runs/ID/`. Há chamadas reais à
+portas, e salva resultado e avaliação em `.ariadne/runs/ID/`. Há chamadas reais à
 LLM. Veja a [referência](../../../docs/cli.md).
 
 ## Execução manual (Python e uv no host)

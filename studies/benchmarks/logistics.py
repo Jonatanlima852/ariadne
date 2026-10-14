@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
 from studies.logistics import evaluate_plan, plan_mission
-from tg_sdk import RuntimeClient
+from ariadne_sdk import RuntimeClient
 from studies.logistics.reporting import aggregate, write_csv, write_chart
 from studies.logistics.legacy import run_bdi, run_llm, run_hybrid
 

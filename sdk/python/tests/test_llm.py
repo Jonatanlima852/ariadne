@@ -4,7 +4,7 @@ from google.protobuf import struct_pb2
 from pydantic import BaseModel, ConfigDict
 
 from contract.v1 import contract_pb2
-from tg_sdk import LlmAgent, Prompt, llm_capability
+from ariadne_sdk import LlmAgent, Prompt, llm_capability
 
 
 class StrictOutput(BaseModel):

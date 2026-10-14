@@ -7,7 +7,7 @@ import (
 )
 
 func ConfigureLogging() {
-	if os.Getenv("TG_JSON_LOGS") == "1" {
+	if os.Getenv("ARIADNE_JSON_LOGS") == "1" {
 		slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
 	}
 }
@@ -15,7 +15,7 @@ func ConfigureLogging() {
 // Ready is optional for existing deployments. Rename prevents partial reads.
 // The supervisor must still check gRPC readiness after reading this address.
 func Ready(address string) error {
-	path := os.Getenv("TG_READY_FILE")
+	path := os.Getenv("ARIADNE_READY_FILE")
 	if path == "" {
 		return nil
 	}

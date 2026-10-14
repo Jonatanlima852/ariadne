@@ -6,7 +6,7 @@ from google.protobuf import struct_pb2
 from pydantic import BaseModel
 
 from contract.v1 import contract_pb2
-from tg_sdk import BdiAgent, LlmAgent, Prompt, llm_capability, plan
+from ariadne_sdk import BdiAgent, LlmAgent, Prompt, llm_capability, plan
 
 
 def task(*capabilities, payload=None):

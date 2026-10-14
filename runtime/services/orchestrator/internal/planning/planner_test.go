@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/orchestrator/internal/workflow"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/orchestrator/internal/workflow"
 )
 
 type plannerExecutor struct {

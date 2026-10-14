@@ -1,4 +1,4 @@
-# Makefile — TG Runtime
+# Makefile — Ariadne Runtime
 # Rode qualquer target com: make <target>
 # Exemplo: make proto
 
@@ -76,10 +76,10 @@ up:
 	docker compose -f tools/deploy/docker-compose.yml up --build -d
 
 demo:
-	./tg demo
+	./ariadne demo
 
 doctor:
-	./tg doctor
+	./ariadne doctor
 
 .PHONY: down
 down:
@@ -101,9 +101,9 @@ help:
 	@echo "  make build       Compila os servicos Go"
 	@echo "  make verify      Verifica SDK, Go, estudos e ferramentas"
 	@echo "  make up          Sobe o sistema via Docker Compose"
-	@echo "  make demo        Executa ./tg demo com limpeza automatica"
-	@echo "  make doctor      Verifica Docker e configuracao via ./tg doctor"
+	@echo "  make demo        Executa ./ariadne demo com limpeza automatica"
+	@echo "  make doctor      Verifica Docker e configuracao via ./ariadne doctor"
 	@echo "  make down        Para e remove os conteineres"
 	@echo "  make logs        Mostra logs de todos os servicos"
-	@echo "  ./tg help        Cenarios isolados, logs, status e encerramento"
+	@echo "  ./ariadne help        Cenarios isolados, logs, status e encerramento"
 	@echo ""

@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../sdk/python/src"))
 sys.path.insert(0, os.path.dirname(__file__))
 
-from tg_sdk import Task
+from ariadne_sdk import Task
 
 from beliefs import CALENDARS
 from plans import PLAN_LIBRARY

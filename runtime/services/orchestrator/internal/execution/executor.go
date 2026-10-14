@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/events"
-	"tg/runtime/services/orchestrator/internal/selection"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/events"
+	"ariadne/runtime/services/orchestrator/internal/selection"
 )
 
 type Discoverer interface {

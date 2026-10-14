@@ -65,7 +65,7 @@ services:
       dockerfile: examples/support/clients/submit-task/Dockerfile
     environment:
       ORCHESTRATOR_ADDR: "orchestrator:50052"
-      TG_SDK_PATH: "/sdk"
+      ARIADNE_SDK_PATH: "/sdk"
     depends_on:
       - orchestrator
     command: ["--goal", "Teste ponta a ponta", "--capability", "echo"]

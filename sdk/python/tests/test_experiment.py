@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tg_sdk import Agent, Scenario, Step, Task
-from tg_sdk.evidence import EventLog
-from tg_sdk.execution import load_scenario
+from ariadne_sdk import Agent, Scenario, Step, Task
+from ariadne_sdk.evidence import EventLog
+from ariadne_sdk.execution import load_scenario
 
 
 class ExperimentTests(unittest.TestCase):
@@ -74,7 +74,7 @@ class ExperimentTests(unittest.TestCase):
             (directory / "experiment_helpers_unique.py").write_text("def echo(task): return {'text': task.goal}\n")
             source = directory / "experiment.py"
             source.write_text(
-                "from tg_sdk import Agent, Scenario, Step\n"
+                "from ariadne_sdk import Agent, Scenario, Step\n"
                 "from experiment_helpers_unique import echo\n"
                 "scenario = Scenario(agents=[Agent(name='e', capabilities=['echo'], handler=echo)], "
                 "tasks=[Step('echo', 'hello')])\n"
@@ -90,7 +90,7 @@ class ExperimentTests(unittest.TestCase):
                 ("[Agent(name='a', capabilities=['echo'])]", "missing", "no declared agent"),
             ]:
                 source.write_text(
-                    "from tg_sdk import Agent, Scenario, Step\n"
+                    "from ariadne_sdk import Agent, Scenario, Step\n"
                     f"scenario = Scenario(agents={declarations}, tasks=[Step('{capability}', 'hello')])\n"
                 )
                 with self.assertRaisesRegex(ValueError, error):

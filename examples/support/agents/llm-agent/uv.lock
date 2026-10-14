@@ -239,11 +239,11 @@ name = "llm-agent"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "tg-sdk" },
+    { name = "ariadne-sdk" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tg-sdk", editable = "../../sdk/python" }]
+requires-dist = [{ name = "ariadne-sdk", editable = "../../sdk/python" }]
 
 [[package]]
 name = "openai"
@@ -406,7 +406,7 @@ wheels = [
 ]
 
 [[package]]
-name = "tg-sdk"
+name = "ariadne-sdk"
 version = "0.1.0"
 source = { editable = "../../sdk/python" }
 dependencies = [

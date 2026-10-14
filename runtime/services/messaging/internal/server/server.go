@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 
-	pb "tg/runtime/gen/go/contract/v1"
-	"tg/runtime/services/internal/events"
-	"tg/runtime/services/messaging/internal/broker"
+	pb "ariadne/runtime/gen/go/contract/v1"
+	"ariadne/runtime/services/internal/events"
+	"ariadne/runtime/services/messaging/internal/broker"
 )
 
 type EventLogger interface{ Log(events.Event) }

@@ -10,9 +10,9 @@ o SDK administra processos e o runtime Go executa o workflow.
 Da raiz, com Go e uv:
 
 ```sh
-./tg run studies/logistics/experiment.py
-./tg status
-./tg logs
+./ariadne run studies/logistics/experiment.py
+./ariadne status
+./ariadne logs
 ```
 
 O padrão usa BDI e `avoid-contamination`, sem chave ou chamada LLM. Mundo,
@@ -21,9 +21,9 @@ Esses metadados não são enviados automaticamente aos agentes: cada tarefa
 recebe somente o payload declarado. Para escolher caso e estratégia:
 
 ```sh
-LOGISTICS_CASE=impossible-deadline ./tg run studies/logistics/experiment.py
-TG_SDK_EXTRAS=llm LOGISTICS_STRATEGY=hybrid ./tg run studies/logistics/experiment.py
-TG_SDK_EXTRAS=llm LOGISTICS_STRATEGY=llm-only ./tg run studies/logistics/experiment.py
+LOGISTICS_CASE=impossible-deadline ./ariadne run studies/logistics/experiment.py
+ARIADNE_SDK_EXTRAS=llm LOGISTICS_STRATEGY=hybrid ./ariadne run studies/logistics/experiment.py
+ARIADNE_SDK_EXTRAS=llm LOGISTICS_STRATEGY=llm-only ./ariadne run studies/logistics/experiment.py
 ```
 
 As estratégias com LLM exigem `OPENAI_API_KEY` exportada e acesso ao modelo
@@ -37,7 +37,7 @@ os adaptadores antigos de cliente estão em [legacy.py](legacy.py).
 
 ## Coletar uma campanha
 
-Após a primeira execução preparar `.tg/bin`, colete os oito casos BDI com
+Após a primeira execução preparar `.ariadne/bin`, colete os oito casos BDI com
 duas repetições:
 
 ```sh
@@ -52,26 +52,26 @@ uv run --project sdk/python --extra llm python -m studies.logistics.campaign \
 ```
 
 A campanha intercala estratégias por caso e repetição. Salva `campaign.json`
-e execuções em `.tg/campaigns/logistics-.../runs/`, com processos novos em cada
+e execuções em `.ariadne/campaigns/logistics-.../runs/`, com processos novos em cada
 observação. `--cases` seleciona IDs, `--runtime-dir` escolhe binários e `--output`
 escolhe a pasta de campanhas. Falhas e interrupções ficam registradas. Nenhuma
 figura é gerada durante a coleta.
 
-Essa política difere de `tg run --repeat N`, que reutiliza processos. Campanhas
+Essa política difere de `ariadne run --repeat N`, que reutiliza processos. Campanhas
 têm seu próprio ponteiro de última execução; consulte uma observação pelo
-caminho informado no terminal, por exemplo `./tg status CAMINHO/DA/EXECUCAO`.
+caminho informado no terminal, por exemplo `./ariadne status CAMINHO/DA/EXECUCAO`.
 
 ## Avaliar as evidências
 
 O avaliador usa somente a biblioteca padrão do Python:
 
 ```sh
-python3 -m studies.logistics.evaluate .tg/runs/tg-ID
-python3 -m studies.logistics.evaluate .tg/campaigns/logistics-ID
+python3 -m studies.logistics.evaluate .ariadne/runs/ariadne-ID
+python3 -m studies.logistics.evaluate .ariadne/campaigns/logistics-ID
 ```
 
 Substitua os IDs pelos caminhos reais. É possível fornecer várias entradas.
-Uma pasta nova em `.tg/evaluations` recebe `logistics-results.json`,
+Uma pasta nova em `.ariadne/evaluations` recebe `logistics-results.json`,
 `logistics-summary.csv` e `logistics-quality.svg`. `--output caminho-novo`
 seleciona outro destino; um destino existente é rejeitado. Entradas não mudam.
 
@@ -105,12 +105,12 @@ uv run --project sdk/python --extra llm python -m unittest \
   studies.logistics.test_domain studies.logistics.test_study -q
 ```
 
-Com `TG_TEST_RUNTIME_DIR="$PWD/.tg/bin"`, inclui integração híbrida com Go real
+Com `ARIADNE_TEST_RUNTIME_DIR="$PWD/.ariadne/bin"`, inclui integração híbrida com Go real
 e cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
 experimental de uma LLM real.
 
 [Avaliação do TCC](../../docs/evaluation.md) · [Interface declarativa](../../docs/experiments.md)
 
-A coleta usa `tg_sdk.campaign`, compartilhado com outros estudos. Execuções
+A coleta usa `ariadne_sdk.campaign`, compartilhado com outros estudos. Execuções
 registram revisão, pacotes e hashes de mundo/casos; a avaliação registra seu
 código e hashes das evidências. Veja [proveniência](../../docs/consolidation.md).

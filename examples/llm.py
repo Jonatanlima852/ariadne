@@ -1,6 +1,6 @@
-"""TG_SDK_EXTRAS=llm ./tg run examples/llm.py (usa o provedor configurado)."""
+"""ARIADNE_SDK_EXTRAS=llm ./ariadne run examples/llm.py (usa o provedor configurado)."""
 from pydantic import BaseModel
-from tg_sdk import LlmAgent, Prompt, Scenario, Step
+from ariadne_sdk import LlmAgent, Prompt, Scenario, Step
 
 
 class Greeting(BaseModel):
@@ -10,5 +10,5 @@ class Greeting(BaseModel):
 scenario = Scenario(
     agents=[LlmAgent(name="greeter", capabilities=["greet"], output_schema=Greeting,
                     prompt=lambda goal, payload: Prompt("Responda brevemente em português.", goal))],
-    tasks=[Step("greet", "Dê boas-vindas à apresentação do TG.")],
+    tasks=[Step("greet", "Dê boas-vindas à apresentação do Ariadne.")],
 )

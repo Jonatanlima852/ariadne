@@ -1,6 +1,6 @@
-"""LOGISTICS_STRATEGY=bdi-only ./tg run studies/logistics/experiment.py"""
+"""LOGISTICS_STRATEGY=bdi-only ./ariadne run studies/logistics/experiment.py"""
 import os
-from tg_sdk import Scenario, Step
+from ariadne_sdk import Scenario, Step
 from studies.logistics.bdi import logistics_agent
 from studies.logistics.data import load_case, load_world
 

@@ -55,6 +55,7 @@ for path in ("examples/echo.py", "examples/bdi.py", "examples/meeting.py", "stud
 print("Core SDK works without OpenAI/Pydantic")
 '''])
     if not args.no_inspector:
+        run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/inspector', '-p', 'test_serve.py', '-q'])
         run(['npm', 'ci', '--no-audit', '--no-fund'], cwd=ROOT / 'tools/inspector')
         run(['node', '--test', 'model.test.js'], cwd=ROOT / 'tools/inspector')
         run(['npm', 'run', 'build'], cwd=ROOT / 'tools/inspector')

@@ -43,6 +43,12 @@ def main(argv=None):
     campaign.add_argument("--runtime-source", type=Path, default=os.getenv("ARIADNE_RUNTIME_SOURCE"))
     from ariadne_sdk.docker import SCENARIOS
     commands.add_parser("help", help="mostra os comandos disponíveis")
+    inspector = commands.add_parser("inspect", help="inicia API e interface local para explorar evidências")
+    inspector.add_argument('--port', type=positive, default=4173)
+    inspector.add_argument('--api-port', type=positive, default=8787)
+    inspector.add_argument('--ready-timeout', type=positive, default=90)
+    for option in ('runs-dir', 'campaigns-dir', 'evaluations-dir'):
+        inspector.add_argument('--' + option, type=Path)
     verify = commands.add_parser("verify", help="verifica SDK, runtime, estudos e ferramentas do checkout")
     verify.add_argument("--unit-only", action="store_true")
     verify.add_argument("--no-inspector", action="store_true")
@@ -77,6 +83,18 @@ def main(argv=None):
 
     previous = signal.signal(signal.SIGTERM, interrupt)
     try:
+        if args.command == 'inspect':
+            root = Path(os.getenv('ARIADNE_ROOT', Path(__file__).resolve().parents[4]))
+            script = root / 'tools/inspector/serve.py'
+            if not script.is_file():
+                raise ValueError('inspect exige o checkout; configure ARIADNE_ROOT')
+            options = ['--port', str(args.port), '--api-port', str(args.api_port),
+                       '--ready-timeout', str(args.ready_timeout)]
+            for option in ('runs-dir', 'campaigns-dir', 'evaluations-dir'):
+                value = getattr(args, option.replace('-', '_'))
+                if value is not None:
+                    options.extend(['--' + option, str(value.resolve())])
+            os.execv(sys.executable, [sys.executable, str(script), *options])
         if args.command == "doctor" and args.local:
             from ariadne_sdk.doctor import diagnose
             runtime_dir = args.runtime_dir or (os.getenv("ARIADNE_RUNTIME_DIR") if args.runtime_source is None else None)

@@ -54,3 +54,60 @@ def test_does_not_follow_evidence_symlinks(tmp_path, monkeypatch):
     detail = TestClient(module.app).get("/api/runs/ariadne-test-001").json()
     assert detail["run"]["has_result"] is False
     assert "result.json" not in {item["name"] for item in detail["files"]}
+
+
+def test_catalog_paginates_filters_and_does_not_follow_directory_symlinks(tmp_path, monkeypatch):
+    root = tmp_path / 'runs'
+    root.mkdir()
+    create_run(root, 'one')
+    create_run(root, 'two')
+    (root / 'outside').symlink_to(tmp_path, target_is_directory=True)
+    monkeypatch.setattr(module, 'RUNS_ROOT', root.resolve())
+    client = TestClient(module.app)
+    result = client.get('/api/catalog', params={'source': 'runs', 'limit': 1}).json()
+    assert result['total'] == 2
+    second = client.get('/api/catalog', params={'source': 'runs', 'limit': 1, 'offset': 1}).json()
+    assert result['items'][0]['id'] != second['items'][0]['id']
+    assert client.get('/api/catalog', params={'q': 'one'}).json()['total'] == 1
+    assert client.get('/api/catalog', params={'status': 'FAILED'}).json()['total'] == 0
+    assert client.get('/api/evidence', params={'source': 'runs', 'identifier': 'outside'}).status_code == 404
+
+
+def test_campaign_keeps_failed_observations_and_checks_nested_paths(tmp_path, monkeypatch):
+    campaign = tmp_path / 'campaign-one'
+    runs = campaign / 'runs'
+    runs.mkdir(parents=True)
+    run = create_run(runs)
+    (run / 'manifest.json').write_text('{"repeat": 2}')
+    (run / 'results.jsonl').write_text('{"sample": 1}')
+    (campaign / 'campaign.json').write_text(json.dumps({'runs': [
+        {'directory': 'runs/ariadne-test-001', 'status': 'COMPLETED'},
+        {'directory': 'runs/missing', 'status': 'FAILED'},
+        {'directory': '../../outside', 'status': 'FAILED'},
+    ]}))
+    monkeypatch.setattr(module, 'CAMPAIGNS_ROOT', tmp_path.resolve())
+    client = TestClient(module.app)
+    data = client.get('/api/evidence', params={'source': 'campaigns', 'identifier': campaign.name}).json()
+    assert [row['available'] for row in data['observations']] == [True, False, False]
+    detail = client.get('/api/evidence', params={'source': 'campaigns', 'identifier': f'{campaign.name}/runs/ariadne-test-001'}).json()
+    assert {'manifest.json', 'results.jsonl'} <= {item['name'] for item in detail['files']}
+    assert client.get('/api/evidence', params={'source': 'campaigns', 'identifier': 'campaign-one/../outside'}).status_code == 400
+
+
+def test_analysis_association_uses_recorded_source_and_preserves_evaluation(tmp_path, monkeypatch):
+    root = tmp_path / 'runs'
+    root.mkdir()
+    run = create_run(root)
+    evaluations = tmp_path / 'evaluations'
+    evaluation = evaluations / 'analysis-one'
+    evaluation.mkdir(parents=True)
+    document = {'sources': [str(run)], 'rows': [{'execution_id': run.name, 'sample': 1, 'evaluation': {'valid': False}}]}
+    (evaluation / 'logistics-results.json').write_text(json.dumps(document))
+    monkeypatch.setattr(module, 'RUNS_ROOT', root.resolve())
+    monkeypatch.setattr(module, 'EVALUATIONS_ROOT', evaluations.resolve())
+    client = TestClient(module.app)
+    data = client.get('/api/evidence', params={'source': 'runs', 'identifier': run.name}).json()
+    assert data['analyses'][0]['rows'][0]['evaluation']['valid'] is False
+    result = client.get('/api/evidence', params={'source': 'evaluations', 'identifier': evaluation.name}).json()
+    assert result['document'] == document
+    assert result['references'][run.name] == {'source': 'runs', 'id': run.name}

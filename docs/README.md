@@ -22,7 +22,7 @@ do repositório, salvo indicação explícita.
 
 - [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,
   execução local pelo runtime Go e evidências brutas para avaliação separada.
-- [Estudo logístico](../studies/logistics/README.md): descrição das três estratégias,
+- [Estudo logístico](../studies/scenarios/logistics/README.md): descrição das três estratégias,
   coleta de campanhas e avaliação offline com gráficos.
 
 - [Primeira execução](quickstart.md): requisitos, comandos Docker, resultado e diagnóstico.

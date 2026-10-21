@@ -11,10 +11,10 @@ No checkout, use Go compatível com `runtime/go.mod` e uv. Não é necessário
 Docker neste caminho. A primeira execução prepara o ambiente Python do SDK
 e compila os serviços Go; pode precisar baixar dependências.
 
-O [estudo logístico](../studies/logistics/README.md) usa essa mesma interface
+O [estudo logístico](../studies/scenarios/logistics/README.md) usa essa mesma interface
 para BDI, LLM e híbrido, com coleta e avaliação offline em comandos separados.
 
-O exemplo completo [echo.py](../examples/echo.py) contém:
+O exemplo completo [echo.py](../studies/scenarios/basic_task/scenario.py) contém:
 
 ```python
 from ariadne_sdk import Agent, Scenario, Step
@@ -28,8 +28,8 @@ scenario = Scenario(
 Execute da raiz:
 
 ```sh
-./ariadne check examples/echo.py
-./ariadne run examples/echo.py
+./ariadne check studies/scenarios/basic_task/scenario.py
+./ariadne run studies/scenarios/basic_task/scenario.py
 ```
 
 `check` importa o arquivo e verifica a descrição sem iniciar serviços. Declare
@@ -55,9 +55,9 @@ status e timestamps. Para metadados e falhas explícitas, devolva `TaskResult`.
 Exceções são convertidas para os erros do contrato.
 
 Classes que implementam `Agent.handle`, `BdiAgent` e `LlmAgent` usam o mesmo
-executor. Veja [bdi.py](../examples/bdi.py), que declara um agente BDI sem
+executor. Veja [bdi.py](../studies/scenarios/bdi_route/scenario.py), que declara um agente BDI sem
 subclasse, com dois planos e seleção de menor custo. A [referência BDI](bdi.md)
-explica `Input`, `Plan` e planejamento genérico; [meeting.py](../examples/meeting.py)
+explica `Input`, `Plan` e planejamento genérico; [meeting.py](../studies/scenarios/meeting/scenario.py)
 aplica a mesma interface a agendas. Agentes maiores podem ser
 importados de módulos instalados ou vizinhos ao arquivo do experimento.
 
@@ -69,11 +69,11 @@ ou `AGENT_ID` globais.
 O backend local herda o ambiente do terminal e não carrega `.env`
 automaticamente. Para agentes LLM, exporte as variáveis necessárias, incluindo
 `OPENAI_API_KEY`, antes de executar. Os exemplos echo, BDI, workflow, recuperação e reunião não usam LLM.
-`examples/llm.py` exige o extra `llm` e usa o provedor apenas na execução.
+`studies/scenarios/llm_greeting/scenario.py` exige o extra `llm` e usa o provedor apenas na execução.
 
 ## Dependências entre tarefas
 
-Em [workflow.py](../examples/workflow.py), o segundo agente recebe o resultado
+Em [workflow.py](../studies/scenarios/sequential_workflow/scenario.py), o segundo agente recebe o resultado
 do primeiro:
 
 ```python
@@ -103,10 +103,10 @@ verifica a descrição Python; a validação definitiva do contrato ocorre no Go
 ## Falhas e repetição
 
 ```sh
-./ariadne run examples/workflow.py
-./ariadne run examples/recovery.py
-./ariadne run examples/bdi.py
-./ariadne run examples/echo.py --repeat 5
+./ariadne run studies/scenarios/sequential_workflow/scenario.py
+./ariadne run studies/scenarios/failure_reassignment/scenario.py
+./ariadne run studies/scenarios/bdi_route/scenario.py
+./ariadne run studies/scenarios/basic_task/scenario.py --repeat 5
 ```
 
 O exemplo de recuperação declara dois agentes com a mesma capacidade e uma

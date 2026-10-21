@@ -21,8 +21,8 @@ scenario = Scenario(agents=[agent], tasks=[
 
 Salve como um arquivo Python e execute com `./ariadne run caminho.py`. Este exemplo
 apenas compõe uma rota; restrições e disponibilidade de conexões são regras do
-domínio. Exemplos completos: [rotas](../examples/bdi.py),
-[agendamento](../examples/meeting.py) e [logística](../studies/logistics/bdi.py).
+domínio. Exemplos completos: [rotas](../studies/scenarios/bdi_route/scenario.py),
+[agendamento](../studies/scenarios/meeting/scenario.py) e [logística](../studies/scenarios/logistics/agents/bdi.py).
 
 ## Entradas e estado
 
@@ -111,7 +111,7 @@ memória; geradores de ações devem terminar e a tarefa continua sujeita aos
 prazos do runtime. Um estado inicial que já satisfaz o objetivo exige zero
 expansões.
 
-A [logística](../studies/logistics/planning.py) usa esse algoritmo com suas
+A [logística](../studies/scenarios/logistics/planning.py) usa esse algoritmo com suas
 precondições e efeitos. O avaliador offline conserva sua busca de referência;
 as duas implementações ainda compartilham as regras de domínio. Testes comparam
 os oito casos e variações de prazo, sem alegar independência completa do oráculo.

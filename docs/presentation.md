@@ -36,7 +36,7 @@ Os tempos abaixo são uma sugestão de fala, não estimativas de execução ou b
 |---|---|---|
 | 0–2 min | Problema, objetivo e contribuição: contrato comum, runtime e SDK | Diagrama da [arquitetura](architecture.md) e serviços do [contrato](../proto/contract/v1/contract.proto) |
 | 2–4 min | Uma tarefa solicita uma capacidade; o runtime encontra e aciona um agente | `./ariadne demo`; resultado com `mock-agent-01` e trace |
-| 4–6 min | O runtime também coordena etapas com dependências | Resultado de `workflow-sequential`, saídas `first` e `second`; definição no [script](../examples/docker/workflow-sequential/scenario.py) |
+| 4–6 min | O runtime também coordena etapas com dependências | Resultado de `workflow-sequential`, saídas `first` e `second`; definição no [script](../studies/scenarios/sequential_workflow/docker/scenario.py) |
 | 6–8 min | Uma tentativa pode falhar e a política permitir nova atribuição | Visualizador do cenário de falha: `TASK_ASSIGNED`, `TASK_TIMEOUT`, `TASK_REASSIGNED`, `TASK_COMPLETED` |
 | 8–11 min | A mesma interface integra interpretação LLM e planejamento BDI | Fluxo heterogêneo na arquitetura e, se preparado, relatório de `heterogeneous-route` ou `logistics-mission` |
 | 11–15 min | Resultados do estudo de caso, alcance e próximos problemas | Tabela e artefatos da [avaliação](evaluation.md), acompanhados das [limitações](limitations.md) |

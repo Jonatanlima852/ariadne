@@ -87,7 +87,7 @@ seu histórico; use essa variante apenas para uma limpeza deliberada.
 Com Python e `uv` disponíveis, mantendo o runtime iniciado:
 
 ```sh
-uv run --project sdk/python python examples/support/clients/submit-task/main.py \
+uv run --project sdk/python python tools/clients/submit-task/main.py \
   --goal "Teste ponta a ponta" --capability echo
 ```
 
@@ -97,7 +97,7 @@ genérico ainda não exibe corretamente.
 
 ## Próxima experiência
 
-Execute o [workflow sequencial](../examples/docker/workflow-sequential/README.md)
+Execute o [workflow sequencial](../studies/scenarios/sequential_workflow/docker/README.md)
 para observar duas tarefas coordenadas, ou escolha outro caso no
 [catálogo de cenários](scenarios.md).
 

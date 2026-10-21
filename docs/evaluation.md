@@ -16,9 +16,9 @@ eventos e resultados, sem recalcular métricas dos benchmarks.
 
 1. Leia a [arquitetura](architecture.md) e a separação entre runtime e agentes.
 2. Execute a [tarefa básica](quickstart.md) para conferir a integração.
-3. Observe [workflow](../examples/docker/workflow-sequential/README.md) e
-   [reassignment](../examples/docker/failure-reassignment/README.md) sem LLM.
-4. Execute a [rota heterogênea](../examples/docker/heterogeneous-route/README.md),
+3. Observe [workflow](../studies/scenarios/sequential_workflow/docker/README.md) e
+   [reassignment](../studies/scenarios/failure_reassignment/docker/README.md) sem LLM.
+4. Execute a [rota heterogênea](../studies/scenarios/heterogeneous_route/docker/README.md),
    caso haja credencial e acesso ao provedor.
 5. Consulte os resultados logísticos já registrados e suas limitações.
 
@@ -30,10 +30,10 @@ respostas com a execução publicada.
 
 | Pergunta | Onde conferir | Alcance |
 |---|---|---|
-| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../examples/client/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
-| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../examples/docker/failure-reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | Caso B do [runner A–E](../studies/benchmarks/run.py) | Três agentes com carga reportada configurada |
-| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
+| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/heterogeneous_route/client/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
+| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/docker/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
+| Políticas alteram a distribuição? | Caso B do [runner A–E](../studies/scenarios/runtime_comparison/benchmarks/run.py) | Três agentes com carga reportada configurada |
+| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
 Os testes automatizados verificam comportamentos específicos. Eles não
@@ -69,11 +69,11 @@ não demonstra que a LLM tenha produzido planos inseguros.
 
 Artefatos para inspeção:
 
-- [JSON de respostas e avaliações](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json)
-- [Sumário CSV](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
-- [Gráfico registrado](../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
-- [Eventos JSONL](../studies/benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
-- [Mundo](../studies/logistics/world.json), [casos](../studies/logistics/cases.json) e [avaliador](../studies/logistics/domain.py)
+- [JSON de respostas e avaliações](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json)
+- [Sumário CSV](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
+- [Gráfico registrado](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
+- [Eventos JSONL](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
+- [Mundo](../studies/scenarios/logistics/world.json), [casos](../studies/scenarios/logistics/cases.json) e [avaliador](../studies/scenarios/logistics/domain.py)
 
 Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
 Na execução declarativa atual, o BDI usa a busca genérica do SDK e o avaliador
@@ -90,12 +90,12 @@ em código separado. O [guia de experimentos](experiments.md) descreve os
 arquivos, os escopos de duração e a reutilização de estado entre repetições.
 Os runners históricos abaixo mantêm seu comportamento e artefatos publicados.
 
-O caminho atual do estudo está em [studies/logistics](../studies/logistics/README.md):
+O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scenarios/logistics/README.md):
 
 ```sh
-./ariadne run studies/logistics/experiment.py
-uv run --project sdk/python python -m studies.logistics.campaign
-python3 -m studies.logistics.evaluate .ariadne/campaigns/logistics-ID
+./ariadne run studies/scenarios/logistics/scenario.py
+uv run --project sdk/python python -m studies.scenarios.logistics.benchmarks.campaign
+python3 -m studies.scenarios.logistics.evaluate .ariadne/campaigns/logistics-ID
 ```
 
 Os dois primeiros comandos usam BDI por padrão. O guia do estudo explica
@@ -116,7 +116,7 @@ Requisitos: Docker/Compose, Python, uv e acesso ao modelo configurado. Crie
 permanecer local. Os scripts aceitam outro arquivo via `BENCHMARK_ENV_FILE`.
 
 ```sh
-./studies/benchmarks/run.sh
+./studies/scenarios/runtime_comparison/benchmarks/run.sh
 ```
 
 A suíte A–E mede execução básica, políticas, cooperação heterogênea,
@@ -124,12 +124,14 @@ recuperação e comparação de entrada estruturada com fluxo assistido por LLM.
 Os casos C, D e E têm uma amostra por execução padrão.
 
 ```sh
-LOGISTICS_REPETITIONS=2 ./studies/benchmarks/run-logistics.sh
+LOGISTICS_REPETITIONS=2 ./studies/scenarios/logistics/benchmarks/run.sh
 ```
 
-O segundo comando executa a comparação logística. Ambos usam
-`studies/benchmarks/compose.yaml`, porta 54052 por padrão, criam uma pasta de resultados
-datada e encerram os contêineres ao sair.
+O segundo comando executa a comparação logística. Cada estudo possui sua
+configuração Compose: `runtime_comparison/benchmarks/compose.yaml` e
+`logistics/docker/compose.yaml`, dentro de `studies/scenarios/`. Ambos usam a
+porta 54052 por padrão, criam resultados datados e encerram os contêineres ao sair.
+Execute um por vez ou altere a porta.
 
 ### Isolar os eventos antes de medir
 
@@ -141,7 +143,7 @@ Após salvar dados anteriores e encerrar qualquer uso dessa topologia, uma
 limpeza deliberada do volume pode ser feita antes de uma campanha:
 
 ```sh
-docker compose --env-file .env -f studies/benchmarks/compose.yaml down -v
+docker compose --env-file .env -f studies/scenarios/runtime_comparison/benchmarks/compose.yaml down -v
 ```
 
 Esse comando apaga o volume da topologia de benchmarks. Para avaliação,

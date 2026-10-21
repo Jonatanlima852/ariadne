@@ -38,15 +38,12 @@ node_modules/
 # runtime/gen/
 # sdk/python/src/contract/
 
-# ── Resultados de studies/benchmarks ──────────────────
-# Mantém a estrutura de pastas mas ignora arquivos de dados
-studies/runtime_metrics/results/*.jsonl
-studies/runtime_metrics/results/*.json
-studies/runtime_metrics/results/*.csv
-studies/runtime_metrics/results/*.png
-!studies/runtime_metrics/results/.gitkeep
-studies/benchmarks/results/*
-!studies/benchmarks/results/README.md
+# Resultados locais pertencem a cada cenário.
+studies/scenarios/*/runtime_metrics/results/*
+!studies/scenarios/*/runtime_metrics/results/README.md
+studies/scenarios/*/benchmarks/results/*
+!studies/scenarios/*/benchmarks/results/README.md
+!studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/
 
 # ── Variáveis de ambiente ─────────────────────
 .env

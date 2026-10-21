@@ -10,7 +10,7 @@ Use macOS/Linux ou WSL. O uv prepara o Python e o SDK; a primeira execução pod
 baixar dependências. O projeto seleciona Python pela configuração do SDK.
 
 ```sh
-./ariadne doctor --local --file examples/echo.py
+./ariadne doctor --local --file studies/scenarios/basic_task/scenario.py
 ```
 
 Todas as linhas devem começar com `OK`. O diagnóstico confere Python, SDK,
@@ -20,7 +20,7 @@ serviços; o bootstrap uv pode preparar o ambiente antes do diagnóstico.
 ## 2. Executar
 
 ```sh
-./ariadne run examples/echo.py
+./ariadne run studies/scenarios/basic_task/scenario.py
 ```
 
 O executor compila o runtime com cache, inicia os serviços Go e o agente Python,
@@ -69,14 +69,14 @@ O [guia do Inspector](../tools/inspector/README.md) explica outras opções.
 ## 5. Explorar cooperação e recuperação
 
 ```sh
-./ariadne run examples/workflow.py
-./ariadne run examples/recovery.py
-./ariadne run studies/logistics/experiment.py
+./ariadne run studies/scenarios/sequential_workflow/scenario.py
+./ariadne run studies/scenarios/failure_reassignment/scenario.py
+./ariadne run studies/scenarios/logistics/scenario.py
 ```
 
 O primeiro exemplo transfere a saída entre etapas; o segundo demonstra timeout
 e reassignment; o terceiro planeja uma missão logística com BDI. Todos dispensam
-LLM. Consulte [experimentos](experiments.md) e [o estudo logístico](../studies/logistics/README.md).
+LLM. Consulte [experimentos](experiments.md) e [o estudo logístico](../studies/scenarios/logistics/README.md).
 
 ## Alternativa com Docker
 

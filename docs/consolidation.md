@@ -11,21 +11,20 @@ reprodução e demonstração das APIs de baixo nível.
 | `proto/` | Contrato interoperável congelado |
 | `runtime/` | Serviços Go |
 | `sdk/python/` | Autoria, clientes, executor e coleta de campanhas |
-| `examples/` | Experimentos curtos, incluindo BDI, LLM e agendamento |
-| `examples/docker/` | Cenários de integração Docker |
-| `examples/support/` | Agentes e cliente necessários aos exemplos Docker |
-| `studies/logistics/` | Domínio, dados, experimentos e avaliação logística |
-| `studies/benchmarks/` | Runners históricos e resultados preservados |
-| `studies/runtime_metrics/` | Avaliação de eventos do runtime |
+| `studies/scenarios/` | Todos os cenários, seus domínios e avaliações |
+| `studies/scenarios/*/docker/` | Cenários de integração Docker |
+| `studies/agents/` | Agentes reutilizáveis entre cenários |
+| `studies/scenarios/logistics/` | Domínio, dados, experimentos e avaliação logística |
+| `studies/scenarios/runtime_comparison/benchmarks/` | Runners históricos e resultados preservados |
+| `tools/runtime_metrics/` | Avaliação de eventos do runtime |
 | `tools/` | Deploy, backend Docker, verificação e Inspector |
 | `docs/` | Guias públicos |
 
-Migração: `agents` e `clients` foram para `examples/support`; `scenarios` para
-`examples/docker`; `benchmarks` para `studies/benchmarks`; `experiments` para
-`studies/runtime_metrics`; `infra` para `tools/deploy`; scripts operacionais
-para `tools`. Conteúdos das evidências históricas foram preservados. Caminhos
-absolutos registrados dentro de evidências antigas continuam identificando a
-coleta original; não são reescritos como se uma nova coleta tivesse ocorrido.
+Os antigos `examples/` e `studies/logistics/` foram reunidos em
+`studies/scenarios/`. Agentes reutilizáveis ficam em `studies/agents/` e o cliente
+de submissão em `tools/clients/`. Benchmarks e métricas pertencem ao cenário
+correspondente; apenas o cálculo genérico de métricas permanece em `tools/`.
+Os arquivos de evidência preservam os caminhos registrados na coleta original.
 
 ## Descrever e executar
 
@@ -58,14 +57,14 @@ saída validada ao domínio. Prompts recebem `(goal, payload)`; podem também se
 um `Prompt` constante. Subclasses e `@llm_capability` continuam disponíveis.
 
 O cliente OpenAI é criado na primeira execução, não na declaração. Validar
-`examples/llm.py` não faz chamadas nem exige chave. O SDK mínimo instala apenas
+`studies/scenarios/llm_greeting/scenario.py` não faz chamadas nem exige chave. O SDK mínimo instala apenas
 gRPC e protobuf; o suporte LLM é um extra:
 
 ```sh
 uv sync --project sdk/python --extra llm
-ARIADNE_SDK_EXTRAS=llm ./ariadne check examples/llm.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne check studies/scenarios/llm_greeting/scenario.py
 # Para executar, exporte OPENAI_API_KEY no terminal:
-ARIADNE_SDK_EXTRAS=llm ./ariadne run examples/llm.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/llm_greeting/scenario.py
 ```
 
 Fora do checkout, instale `ariadne-sdk[llm]`. A descrição LLM usa Pydantic, portanto
@@ -80,7 +79,7 @@ uma matriz de variáveis de configuração:
 from ariadne_sdk import Campaign
 
 campaign = Campaign(
-    "../studies/logistics/experiment.py",
+    "../studies/scenarios/logistics/scenario.py",
     matrix={"LOGISTICS_CASE": ["simple-delivery", "impossible-deadline"],
             "LOGISTICS_STRATEGY": ["bdi-only"]},
     repeat=2,
@@ -90,7 +89,7 @@ campaign = Campaign(
 
 O caminho do experimento é relativo ao arquivo da campanha. Execute com
 `./ariadne campaign arquivo.py --runtime-dir .ariadne/bin`. O exemplo
-[examples/campaign.py](../examples/campaign.py) repete o echo com processos novos.
+[studies/scenarios/basic_task/benchmarks/campaign.py](../studies/scenarios/basic_task/benchmarks/campaign.py) repete o echo com processos novos.
 A matriz usa valores textuais e ordem de inserção; a repetição é o laço externo.
 A coleta é sequencial, restaura o ambiente entre observações e cria uma execução
 independente por combinação. Não use a matriz para credenciais: seus valores
@@ -99,7 +98,7 @@ são configuração pública e ficam registrados.
 `campaign.json` registra o plano de coleta e cada observação antes de iniciá-la,
 inclusive falhas de carregamento e cancelamento. Uma falha não impede as outras
 observações; interrupção encerra a campanha. Cada execução tem seus próprios
-logs. O comando específico `python -m studies.logistics.campaign` é um adaptador
+logs. O comando específico `python -m studies.scenarios.logistics.benchmarks.campaign` é um adaptador
 para essa mesma implementação genérica. Avaliação e gráficos não entram no SDK.
 
 ## Proveniência

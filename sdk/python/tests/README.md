@@ -18,7 +18,7 @@ As verificações novas de descrição e handler usam `unittest`:
 uv run --directory sdk/python --extra llm python -m unittest discover -s tests -q
 ```
 
-Após preparar os binários com `./ariadne run examples/echo.py`, execute da raiz
+Após preparar os binários com `./ariadne run studies/scenarios/basic_task/scenario.py`, execute da raiz
 as integrações reais opt-in (abrem portas locais, sem LLM nem Docker):
 
 ```sh

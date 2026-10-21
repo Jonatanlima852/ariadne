@@ -46,7 +46,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
 
     def test_workflow_from_external_directory_repeats_and_preserves_traces(self):
         source = self.directory / "external.py"
-        source.write_text((ROOT / "examples/workflow.py").read_text())
+        source.write_text((Path(__file__).parent / "fixtures/standalone_workflow.py").read_text())
         run = self.execute(source, "--repeat", "2")
         results = [json.loads(line) for line in (run / "results.jsonl").read_text().splitlines()]
         self.assertEqual(len(results), 2)
@@ -59,7 +59,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertFalse(list(run.glob("*.svg")))
 
     def test_timeout_reassigns_and_logs_both_agents(self):
-        run = self.execute(ROOT / "examples/recovery.py")
+        run = self.execute(ROOT / "studies/scenarios/failure_reassignment/scenario.py")
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["steps"]["step_1"]["result"]["agent_id"], "b-healthy")
         events = [json.loads(line) for line in (run / "events.jsonl").read_text().splitlines()]
@@ -69,13 +69,13 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertTrue((run / "agent-2.jsonl").is_file())
 
     def test_declarative_bdi_uses_same_executor(self):
-        run = self.execute(ROOT / "examples/bdi.py")
+        run = self.execute(ROOT / "studies/scenarios/bdi_route/scenario.py")
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["output"], {"route": ["A", "B", "D"]})
         self.assertEqual(result["steps"]["step_1"]["result"]["metadata"]["selected_plan"], "via_b")
 
     def test_meeting_uses_same_bdi_interface_through_runtime(self):
-        run = self.execute(ROOT / "examples/meeting.py")
+        run = self.execute(ROOT / "studies/scenarios/meeting/scenario.py")
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["output"]["start"], 12)
         metadata = result["steps"]["step_1"]["result"]["metadata"]
@@ -85,7 +85,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
     def test_logistics_package_runs_outside_checkout_and_can_be_inspected_offline(self):
         from unittest.mock import patch
         with patch.dict(os.environ, {"LOGISTICS_STRATEGY": "bdi-only", "LOGISTICS_CASE": "avoid-contamination"}):
-            run = self.execute(ROOT / "studies/logistics/experiment.py")
+            run = self.execute(ROOT / "studies/scenarios/logistics/scenario.py")
         manifest = json.loads((run / "manifest.json").read_text())
         self.assertEqual(manifest["metadata"]["case"]["id"], "avoid-contamination")
         self.assertTrue(json.loads((run / "result.json").read_text())["output"]["feasible"])
@@ -156,7 +156,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
                 child.wait(timeout=15)
 
     def test_two_simultaneous_experiments_have_distinct_ports(self):
-        command = self.command(ROOT / "examples/echo.py")
+        command = self.command(ROOT / "studies/scenarios/basic_task/scenario.py")
         with (self.directory / "parallel.log").open("w") as output:
             children = [subprocess.Popen(command, stdout=output, stderr=subprocess.STDOUT) for _ in range(2)]
         try:

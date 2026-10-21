@@ -119,7 +119,7 @@ def main():
                 if scenario == "demo":
                     demo()
                 else:
-                    runpy.run_path(str(ROOT / "examples/docker" / scenario / "scenario.py"), run_name="__main__")
+                    runpy.run_path(str(ROOT / "studies/scenarios" / {"workflow-sequential": "sequential_workflow", "failure-reassignment": "failure_reassignment", "messaging-basic": "messaging", "heterogeneous-route": "heterogeneous_route", "logistics-mission": "logistics"}[scenario] / "docker/scenario.py"), run_name="__main__")
         summary["status"] = "COMPLETED"
         code = 0
         print(f"Cenário aprovado: {scenario}")

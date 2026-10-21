@@ -13,7 +13,7 @@ Não contêm arquivos de ambiente ou credenciais.
 | `logistics-historical` | Coleta `logistics-20261004T-final-v2`, 04/10/2026 | Respostas e métricas de BDI-only, LLM-only e híbrido |
 
 Os três exemplos locais são determinísticos e não usaram LLM. O exemplo logístico
-é cópia integral do [JSON publicado](../../../studies/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json),
+é cópia integral do [JSON publicado](../../../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json),
 com chamadas LLM reais da coleta histórica. Não foi feita nova chamada para esta
 biblioteca. A interface o apresenta como avaliação; não fabrica workflow ou eventos
 a partir das respostas. As limitações estão no [guia de avaliação](../../../docs/evaluation.md).
@@ -24,3 +24,7 @@ com formato anterior, e funciona quando a API está indisponível.
 Para renovar a biblioteca, faça uma execução identificada, selecione somente
 arquivos reconhecidos pelo Inspector e registre origem/limites em `demo.json`.
 Não altere métricas ou dados para melhorar a aparência de uma demonstração.
+
+Os caminhos `examples/` acima são os caminhos históricos da coleta. As definições
+atuais estão em [studies/scenarios](../../../studies/README.md); as evidências
+não foram reescritas durante a reorganização.

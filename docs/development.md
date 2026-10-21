@@ -21,13 +21,13 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `proto/` | [Contrato](../proto/contract/v1/contract.proto), versão e checksum |
 | `runtime/` | Módulo Go, serviços e stubs gerados |
 | `sdk/python/` | [API pública](../sdk/python/src/ariadne_sdk/__init__.py) e testes |
-| `examples/support/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
-| `examples/support/clients/submit-task/` | [Cliente de tarefa simples](../examples/support/clients/submit-task/main.py) |
-| `examples/docker/` | Scripts de integração e topologias |
-| `examples/` | Entradas didáticas e demo heterogênea |
-| `studies/logistics/` | [Estudo declarativo](../studies/logistics/README.md), agentes, domínio, dataset e avaliação offline |
-| `studies/benchmarks/` | Campanhas, resultados selecionados e gráficos |
-| `studies/runtime_metrics/` | Extração de métricas e resultados locais |
+| `studies/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
+| `tools/clients/submit-task/` | [Cliente de tarefa simples](../tools/clients/submit-task/main.py) |
+| `studies/scenarios/*/docker/` | Scripts de integração e topologias de cada cenário |
+| `studies/scenarios/` | Cenários, regras, dados e avaliações próprios |
+| `studies/scenarios/logistics/` | [Estudo declarativo](../studies/scenarios/logistics/README.md), agentes, domínio, dataset e avaliação offline |
+| `studies/scenarios/runtime_comparison/benchmarks/` | Campanhas, resultados selecionados e gráficos |
+| `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
 | `tools/deploy/` | Compose básico |
 | `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./ariadne` |
 | `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
@@ -101,9 +101,9 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 `execute_task()` com protobuf permanece como interface legada usada por alguns
 exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
 veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
-[agente de rotas](../examples/support/agents/bdi-agent/main.py) usam a API histórica: seu custo
+[agente de rotas](../studies/agents/bdi-agent/main.py) usam a API histórica: seu custo
 é retornado no candidato, não no decorator. Para LLM, consulte os handlers
-`@llm_capability` do [agente LLM](../examples/support/agents/llm-agent/main.py): recebem objetivo e
+`@llm_capability` do [agente LLM](../studies/agents/llm-agent/main.py): recebem objetivo e
 contexto e retornam `Prompt`, com schema de saída declarado no decorator.
 
 ## Alterações no contrato

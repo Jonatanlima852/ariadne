@@ -40,8 +40,8 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 O caminho recomendado usa **Go e uv**, sem Docker nem chave de LLM:
 
 ```sh
-./ariadne doctor --local --file examples/echo.py
-./ariadne run examples/echo.py
+./ariadne doctor --local --file studies/scenarios/basic_task/scenario.py
+./ariadne run studies/scenarios/basic_task/scenario.py
 ./ariadne status
 ```
 
@@ -50,7 +50,7 @@ reconhecer a resposta esperada e abrir o resultado no Inspector. O executor
 inicia os serviços e agentes, salva evidências e encerra seus processos.
 
 Depois, explore [workflows e recuperação](docs/experiments.md),
-[BDI declarativo](docs/bdi.md) e o [estudo logístico](studies/logistics/README.md).
+[BDI declarativo](docs/bdi.md) e o [estudo logístico](studies/scenarios/logistics/README.md).
 Abra `./ariadne inspect` para explorar amostras, campanhas, avaliações e
 demonstrações registradas, com grafo e replay manual dos eventos.
 
@@ -79,8 +79,7 @@ indica os pontos de entrada da implementação. A licença é [Apache 2.0](LICEN
 
 ## Organização e verificação
 
-O núcleo está em `proto/`, `runtime/` e `sdk/`. `examples/` reúne demonstrações;
-`studies/` reúne experimentos científicos e avaliações; `tools/` contém o suporte
+O núcleo está em `proto/`, `runtime/` e `sdk/`. [`studies/`](studies/README.md) reúne todos os cenários, seus agentes e avaliações; `tools/` contém o suporte
 operacional. Veja [organização, autoria e reprodução](docs/consolidation.md).
 
 `make verify` executa as verificações de Go, Python, integração e ferramentas,

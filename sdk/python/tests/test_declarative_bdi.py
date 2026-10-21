@@ -111,7 +111,7 @@ class DeclarativeBdiTests(unittest.TestCase):
         self.assertEqual(result.status, contract_pb2.TASK_STATUS_FAILED)
 
     def test_meeting_example_uses_same_interface_and_handles_unavailable_people(self):
-        namespace = runpy.run_path(str(Path(__file__).resolve().parents[3] / "examples/meeting.py"))
+        namespace = runpy.run_path(str(Path(__file__).resolve().parents[3] / "studies/scenarios/meeting/scenario.py"))
         instance = namespace["scenario"].agents[0]
         desire = {"participants": ["alice", "bob", "carol"], "duration": 1, "preferred": 13}
         result = instance.handle(task({"meeting": desire}))

@@ -8,11 +8,11 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 | Cenário | O que observar | Requisitos adicionais via ariadne | Resultado esperado |
 |---|---|---|---|
 | [Echo básico](quickstart.md#alternativa-com-docker) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `mock-agent-01` |
-| [Workflow sequencial](../examples/docker/workflow-sequential/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
-| [Falha e reassignment](../examples/docker/failure-reassignment/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
-| [Mensageria](../examples/docker/messaging-basic/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |
-| [Rota heterogênea](../examples/docker/heterogeneous-route/README.md) | Planner LLM, rota BDI e explicação LLM | Chave e acesso ao modelo configurado | Rota `A → B → D`, distância 25 e relatório JSON |
-| [Missão logística](../examples/docker/logistics-mission/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
+| [Workflow sequencial](../studies/scenarios/sequential_workflow/docker/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
+| [Falha e reassignment](../studies/scenarios/failure_reassignment/docker/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
+| [Mensageria](../studies/scenarios/messaging/docker/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |
+| [Rota heterogênea](../studies/scenarios/heterogeneous_route/docker/README.md) | Planner LLM, rota BDI e explicação LLM | Chave e acesso ao modelo configurado | Rota `A → B → D`, distância 25 e relatório JSON |
+| [Missão logística](../studies/scenarios/logistics/docker/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
 
 ```sh
 ./ariadne scenario workflow-sequential
@@ -27,14 +27,14 @@ resultado estruturado em `result.json`, dentro do diretório da execução.
 
 - Para estudar o runtime: echo, workflow e falha.
 - Para estudar comunicação iniciada por agentes: mensageria.
-- Para observar o raciocínio BDI sem serviços: [demo do agendador](../examples/support/agents/meeting-scheduler/demo.py).
+- Para observar o raciocínio BDI sem serviços: [demo do agendador](../studies/agents/meeting-scheduler/demo.py).
 - Para observar interoperabilidade LLM/BDI: rota heterogênea e missão logística.
 - Para comparar resultados sistematicamente: [guia de avaliação](evaluation.md).
 
 A demo do agendador roda com o ambiente do SDK:
 
 ```sh
-uv run --directory sdk/python python ../../examples/support/agents/meeting-scheduler/demo.py
+uv run --directory sdk/python python ../../studies/agents/meeting-scheduler/demo.py
 ```
 
 ## Endereços e isolamento
@@ -52,7 +52,8 @@ portas publicadas e usa exclusivamente a rede interna de cada execução.
 
 A básica e a rota heterogênea compartilham portas padrão: encerre uma antes
 de iniciar a outra ou configure as portas do cenário. A missão logística
-reutiliza o Compose de benchmarks; não possui topologia independente.
+possui Compose próprio em `studies/scenarios/logistics/docker/compose.yaml` e
+compartilha a porta padrão com a comparação A–E.
 
 Não envie tarefas de decomposição pelo cliente genérico esperando que ele
 mostre um workflow. Use o script da rota heterogênea ou `RuntimeClient` do SDK.

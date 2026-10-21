@@ -98,7 +98,7 @@ externo não altera retry, deadlines ou timeout de workflow dentro do runtime.
 custo no provedor. O arquivo de ambiente é escolhido nesta ordem:
 
 1. `ARIADNE_ENV_FILE`, se informado (caminho relativo à raiz ou absoluto).
-2. `examples/docker/heterogeneous-route/.env`, apenas para o cenário de rota, se existir.
+2. `studies/scenarios/heterogeneous_route/docker/.env`, apenas para o cenário de rota, se existir.
 3. `.env` na raiz, se existir.
 
 Também é possível fornecer `OPENAI_API_KEY` e `LLM_MODEL` pelo ambiente do
@@ -121,7 +121,7 @@ Cenários determinísticos não carregam `.env` pelo executor e não chamam LLM.
 `make down` continuam controlando o Compose básico manual, não execuções de
 `./ariadne`. Para estas, use `./ariadne logs` e `./ariadne stop`.
 
-Os scripts `studies/benchmarks/run.sh` e `studies/benchmarks/run-logistics.sh` continuam sendo
+Os scripts `studies/scenarios/runtime_comparison/benchmarks/run.sh` e `studies/scenarios/logistics/benchmarks/run.sh` continuam sendo
 os executores das campanhas. `ariadne` cobre demonstrações e cenários; não oferece
 um subcomando de benchmark nesta versão.
 

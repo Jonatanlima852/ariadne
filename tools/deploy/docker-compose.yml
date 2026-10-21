@@ -42,7 +42,7 @@ services:
   mock-agent:
     build:
       context: ../..
-      dockerfile: examples/support/agents/mock-agent/Dockerfile
+      dockerfile: studies/agents/mock-agent/Dockerfile
     ports:
       - "60051:60051"
     environment:
@@ -62,7 +62,7 @@ services:
       - client
     build:
       context: ../..
-      dockerfile: examples/support/clients/submit-task/Dockerfile
+      dockerfile: tools/clients/submit-task/Dockerfile
     environment:
       ORCHESTRATOR_ADDR: "orchestrator:50052"
       ARIADNE_SDK_PATH: "/sdk"
@@ -76,7 +76,7 @@ services:
       - heterogeneous
     build:
       context: ../..
-      dockerfile: examples/support/agents/llm-agent/Dockerfile
+      dockerfile: studies/agents/llm-agent/Dockerfile
     ports:
       - "60056:60056"
     environment:
@@ -95,7 +95,7 @@ services:
       - heterogeneous
     build:
       context: ../..
-      dockerfile: examples/support/agents/bdi-agent/Dockerfile
+      dockerfile: studies/agents/bdi-agent/Dockerfile
     ports:
       - "60054:60054"
     environment:

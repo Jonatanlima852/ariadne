@@ -11,14 +11,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    names = subprocess.check_output(['git', 'ls-files', '-z', '*.md'], cwd=ROOT).decode().split('\0')
+    names = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z', '*.md'], cwd=ROOT).decode().split('\0')
     failures = []
     checked = 0
-    for name in names:
+    for name in sorted(set(names)):
         if not name or (name != 'README.md' and Path(name).parts[0] not in
                         {'docs', 'examples', 'sdk', 'studies', 'tools', 'proto'}):
             continue
         path = ROOT / name
+        if not path.is_file():
+            continue
         fenced = False
         for number, line in enumerate(path.read_text().splitlines(), 1):
             if line.lstrip().startswith(('```', '~~~')):

@@ -1,49 +1,41 @@
 # Primeira execução
 
-`./ariadne` prepara uma topologia isolada, espera pelos serviços e agentes, executa
-a demonstração e salva os resultados antes de encerrar o ambiente.
+O caminho recomendado usa um experimento Python e processos locais. Não exige
+Docker, protoc ou chave de LLM. Execute os comandos na raiz do repositório.
 
-## Requisitos
+## 1. Preparar e conferir
 
-- Repositório clonado e terminal na raiz.
-- uv (ou `ARIADNE_PYTHON` apontando para um Python com o SDK instalado).
-- Docker em execução, com Docker Compose **2.24.4 ou superior**.
-- Shell POSIX: macOS/Linux; no Windows, use um ambiente como WSL com Docker.
-- Rede para baixar imagens e dependências na primeira construção.
-
-O cliente da tarefa roda em contêiner. A CLI única usa Python pelo uv, que pode
-preparar esse ambiente na primeira execução. Go e protoc não são necessários
-no host para esta demonstração Docker, nem uma chave LLM.
-
-## 1. Conferir o ambiente
+Instale Go compatível com `runtime/go.mod` (atualmente >=1.26.3) e uv.
+Use macOS/Linux ou WSL. O uv prepara o Python e o SDK; a primeira execução pode
+baixar dependências. O projeto seleciona Python pela configuração do SDK.
 
 ```sh
-./ariadne doctor
+./ariadne doctor --local --file examples/echo.py
 ```
 
-O diagnóstico verifica Docker, versão do Compose e configuração da topologia,
-sem iniciar contêineres. O executor não publica portas no host: pode coexistir
-com outras topologias sem disputar as portas 50051/50052.
+Todas as linhas devem começar com `OK`. O diagnóstico confere Python, SDK,
+Go, destino de evidências e a descrição do exemplo. Não compila nem inicia
+serviços; o bootstrap uv pode preparar o ambiente antes do diagnóstico.
 
-## 2. Executar a demonstração
+## 2. Executar
 
 ```sh
-./ariadne demo
+./ariadne run examples/echo.py
 ```
 
-A primeira construção pode demorar. O comando informa o caminho de `build.log`
-e avança por prontidão, execução e validação. O trecho final deve conter:
+O executor compila o runtime com cache, inicia os serviços Go e o agente Python,
+espera a prontidão e executa o workflow. Ao terminar, encerra seus processos e
+preserva os resultados. O terminal deve mostrar:
 
 ```text
-Cenário aprovado: demo
+Amostra 1/1: WORKFLOW_STATUS_COMPLETED
+Resultado: {"text": "Olá, Ariadne!"}
 Estado: COMPLETED
-Resultados: .../.ariadne/runs/ariadne-.../
+Evidências: .../.ariadne/runs/ariadne-.../
 ```
 
-A tarefa solicita a capacidade `echo`, o Orchestrator descobre `mock-agent-01`
-e o agente conclui a tarefa. O mock atual devolve status e identificação; esta
-demonstração não exige um payload de resposta. O resultado completo e seu
-trace ficam em `result.json`.
+A tarefa pede a capacidade `echo`; o runtime descobre o agente e recebe sua
+resposta. `COMPLETED` indica conclusão operacional, não uma avaliação científica.
 
 ## 3. Consultar o resultado
 
@@ -52,57 +44,73 @@ trace ficam em `result.json`.
 ./ariadne logs
 ```
 
-Os comandos usam a última execução iniciada neste checkout. `status` mostra o
-ID, cenário, resultado e estado do ambiente. `logs` funciona também depois do
-encerramento, lendo os arquivos exportados.
+Sem argumento, consultam a última execução. Os logs continuam disponíveis após
+o encerramento. `result.json` contém a resposta; `events.jsonl` registra eventos;
+`manifest.json` descreve o experimento. Para interromper uma execução local,
+use Ctrl+C no terminal do executor.
 
-Cada pasta contém logs de construção e execução, resultado estruturado,
-resumo do cenário e eventos. Veja a [referência do executor](cli.md) para o
-significado dos arquivos e os prazos configuráveis.
+## 4. Abrir a visualização
 
-Para uma leitura visual, inicie a API e o frontend conforme o
-[guia do visualizador local](../tools/inspector/README.md). A tela lista as
-execuções em `.ariadne/runs` e apresenta tarefas, saídas e eventos, com busca por
-agente ou identificador. Também inclui um exemplo registrado para exploração
-sem executar o Docker.
-
-## 4. Explorar outros cenários
+Esta etapa é opcional e exige Node **22.12 ou superior** na linha 22 (usada no CI),
+npm e uv. O intervalo aceito pelo frontend é `^20.19.0 || >=22.12.0`.
 
 ```sh
-./ariadne scenario workflow-sequential
-./ariadne scenario failure-reassignment
-./ariadne scenario messaging-basic
+./ariadne doctor --local --inspector
+npm ci --prefix tools/inspector
+npm run api --prefix tools/inspector
 ```
 
-Os três cenários dispensam LLM. O primeiro encadeia duas tarefas; o segundo
-recupera a execução após um timeout; o terceiro verifica uma mensagem com
-seus identificadores de correlação.
-
-Para manter os serviços após um cenário:
+Deixe a API aberta e, em outro terminal na raiz, execute:
 
 ```sh
-./ariadne scenario workflow-sequential --keep
+npm run dev --prefix tools/inspector
+```
+
+Abra `http://127.0.0.1:4173`, escolha a execução e consulte **Resultados** e
+**Linha do tempo**. A interface lê arquivos salvos; não precisa dos agentes
+ativos. Para encerrar a interface e a API, use Ctrl+C em ambos os terminais.
+O [guia do Inspector](../tools/inspector/README.md) explica outras opções.
+
+## 5. Explorar cooperação e recuperação
+
+```sh
+./ariadne run examples/workflow.py
+./ariadne run examples/recovery.py
+./ariadne run studies/logistics/experiment.py
+```
+
+O primeiro exemplo transfere a saída entre etapas; o segundo demonstra timeout
+e reassignment; o terceiro planeja uma missão logística com BDI. Todos dispensam
+LLM. Consulte [experimentos](experiments.md) e [o estudo logístico](../studies/logistics/README.md).
+
+## Alternativa com Docker
+
+Com uv e Docker Compose >=2.24.4, é possível executar a demonstração básica sem
+Go no host. A CLI usa Python preparado pelo uv; os serviços e o cliente da tarefa
+rodam em contêineres.
+
+```sh
+./ariadne doctor
+./ariadne demo
+./ariadne status
 ./ariadne logs
-./ariadne stop
 ```
 
-O encerramento atua somente na execução selecionada e preserva os arquivos
-locais de resultado. Sem `--keep`, a limpeza ocorre automaticamente, inclusive
-em falha ou interrupção tratada pelo executor.
+A resposta esperada identifica `mock-agent-01` e `Estado: COMPLETED`.
+O launcher encerra sua topologia automaticamente. Para manter os serviços,
+use `./ariadne demo --keep` e depois `./ariadne stop`.
+Veja [cenários Docker](scenarios.md), [referência da CLI](cli.md) e
+[execução manual](manual-execution.md) para publicar portas ou controlar Compose.
 
 ## Diagnóstico rápido
 
 | Situação | Próximo passo |
 |---|---|
-| Docker não responde | Inicie o Docker e execute `./ariadne doctor` novamente |
-| Compose antigo | Atualize para >=2.24.4 |
-| Falha ao construir | Leia `build.log`; confira rede e disponibilidade das dependências |
-| Agente não ficou pronto | Confira `runner.log` e `services.log`; o erro identifica os agentes pendentes |
-| Cenário falhou | Confira `scenario.log`, `summary.json` e eventos; após corrigir a causa, inicie uma nova execução |
-| Limpeza falhou ou terminal encerrou abruptamente | Execute `./ariadne stop ID`, usando o ID mostrado no início |
-
-Para publicar portas e usar um cliente no host, consulte a
-[execução manual](manual-execution.md). Para escolher o próximo experimento,
-consulte o [catálogo](scenarios.md).
+| uv ausente | Instale uv ou configure `ARIADNE_PYTHON` com um Python que tenha o SDK |
+| Go ausente ou antigo | Confira `runtime/go.mod` e repita `doctor --local` |
+| Falha de build | Leia `build.log` na pasta informada; confira rede e dependências |
+| Processo ou agente não iniciou | Leia `summary.json` e os arquivos `.log` via `./ariadne logs` |
+| Inspector não abre | Rode `doctor --local --inspector`; confira os dois terminais e a porta 4173 |
+| Docker indisponível | Inicie Docker e execute `./ariadne doctor` |
 
 [Índice](README.md)

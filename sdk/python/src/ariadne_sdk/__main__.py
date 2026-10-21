@@ -46,8 +46,16 @@ def main(argv=None):
     verify = commands.add_parser("verify", help="verifica SDK, runtime, estudos e ferramentas do checkout")
     verify.add_argument("--unit-only", action="store_true")
     verify.add_argument("--no-inspector", action="store_true")
-    doctor = commands.add_parser("doctor", help="verifica o backend Docker")
-    doctor.add_argument("scenario", nargs="?", default="demo", choices=SCENARIOS)
+    doctor = commands.add_parser("doctor", help="verifica Docker ou requisitos locais com --local")
+    doctor.add_argument("scenario", nargs="?", choices=SCENARIOS)
+    doctor.add_argument("--local", action="store_true", help="diagnostica o backend de processos locais")
+    doctor.add_argument("--file", type=Path, help="valida também uma descrição Python (importa o arquivo)")
+    doctor_binaries = doctor.add_mutually_exclusive_group()
+    doctor_binaries.add_argument("--runtime-dir", type=Path)
+    doctor_binaries.add_argument("--runtime-source", type=Path)
+    doctor.add_argument("--output", type=Path)
+    doctor.add_argument("--llm", action="store_true", help="confere extra LLM e presença de credencial, sem chamada externa")
+    doctor.add_argument("--inspector", action="store_true", help="confere Node, npm e uv")
     demo = commands.add_parser("demo", help="executa o exemplo Docker básico")
     demo.add_argument("--keep", action="store_true")
     scenario = commands.add_parser("scenario", help="lista ou executa exemplos Docker")
@@ -58,12 +66,24 @@ def main(argv=None):
     stop.add_argument("--output", type=Path, default=Path(os.getenv("ARIADNE_RUNS_DIR", ".ariadne/runs")))
     supplied = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(supplied or ["help"])
+    if args.command == "doctor":
+        if args.local and args.scenario:
+            parser.error("doctor --local não aceita cenário Docker; use --file caminho.py")
+        if not args.local and any((args.file, args.runtime_dir, args.runtime_source, args.output, args.llm, args.inspector)):
+            parser.error("as opções de diagnóstico local exigem --local")
 
     def interrupt(*_):
         raise KeyboardInterrupt
 
     previous = signal.signal(signal.SIGTERM, interrupt)
     try:
+        if args.command == "doctor" and args.local:
+            from ariadne_sdk.doctor import diagnose
+            runtime_dir = args.runtime_dir or (os.getenv("ARIADNE_RUNTIME_DIR") if args.runtime_source is None else None)
+            return diagnose(runtime_dir=runtime_dir,
+                            runtime_source=args.runtime_source or os.getenv("ARIADNE_RUNTIME_SOURCE"),
+                            output=args.output or os.getenv("ARIADNE_RUNS_DIR", ".ariadne/runs"),
+                            source=args.file, llm=args.llm, inspector=args.inspector)
         if args.command == "verify":
             root = Path(os.getenv("ARIADNE_ROOT", Path(__file__).resolve().parents[4]))
             script = root / "tools/verify.py"
@@ -79,7 +99,7 @@ def main(argv=None):
             if args.command == "scenario" and args.scenario is None:
                 print("Cenários: " + ", ".join(SCENARIOS))
                 return 0
-            options = [args.scenario] if args.command in ("doctor", "scenario") else []
+            options = [args.scenario or "demo"] if args.command in ("doctor", "scenario") else []
             if getattr(args, "keep", False):
                 options.append("--keep")
             command(args.command, *options)

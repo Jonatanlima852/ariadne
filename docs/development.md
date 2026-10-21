@@ -113,9 +113,9 @@ Os stubs gerados não devem ser editados manualmente. Antes de alterar o
 Go/Python e verifique consumidores, testes e checksum. O checksum detecta uma
 alteração, mas não prova compatibilidade semântica.
 
-`make proto` automatiza a geração; sua configuração atual de includes usa
-Homebrew. Em outro ambiente, ajuste o caminho de includes ao protoc instalado.
-Go e Homebrew são consultados apenas nas tarefas que precisam deles;
+`make proto` automatiza a geração; os includes são obtidos por
+`pkg-config`, com fallback em `/usr/include`. Use `PROTO_INCLUDES=/caminho`
+quando necessário. As ferramentas de geração são necessárias apenas para regenerar stubs;
 `make demo` e `make doctor` delegam ao [executor ariadne](cli.md).
 
 ## Critério para uma mudança revisável
@@ -123,11 +123,14 @@ Go e Homebrew são consultados apenas nas tarefas que precisam deles;
 Descreva o comportamento alterado, atualize o guia público correspondente e
 execute as verificações do componente afetado. Preserve os resultados
 experimentais publicados: uma nova coleta deve ter identificação própria.
-O projeto ainda não tem pipeline de CI versionado nem um comando que execute
-todas as verificações acima.
+O comando `make verify` executa a rotina integrada também usada pelo CI em
+`.github/workflows/verify.yml`, incluindo links locais da documentação e build
+do frontend. O verificador de links confere destinos de links inline; não
+consulta URLs externas nem valida âncoras.
 
 O visualizador usa React, Vite e uma API FastAPI somente leitura. Instale as dependências com
-`npm install --prefix tools/inspector` e use Node >=18. Execute
+`npm ci --prefix tools/inspector` e use Node 22 >=22.12 (linha do CI).
+O intervalo aceito é `^20.19.0 || >=22.12.0`. Execute
 `npm test --prefix tools/inspector` para o parser e
 `npm run build --prefix tools/inspector` para validar a interface. Durante o
 desenvolvimento, use `npm run api --prefix tools/inspector` e

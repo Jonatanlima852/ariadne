@@ -87,7 +87,7 @@ seu histórico; use essa variante apenas para uma limpeza deliberada.
 Com Python e `uv` disponíveis, mantendo o runtime iniciado:
 
 ```sh
-uv run --project sdk/python python main.py \
+uv run --project sdk/python python examples/support/clients/submit-task/main.py \
   --goal "Teste ponta a ponta" --capability echo
 ```
 

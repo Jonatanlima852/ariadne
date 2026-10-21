@@ -140,9 +140,10 @@ ARIADNE_SDK_EXTRAS=llm ./ariadne verify
 ```
 
 A verificação inclui contrato, Go, SDK, integrações locais, logística com provedor
-falso, launcher com Docker falso, métricas e Inspector. Também instala o SDK
-mínimo em um ambiente separado e verifica que OpenAI/Pydantic não são dependências
-obrigatórias. Requer Go, uv e Node; pode baixar dependências na primeira execução.
+falso, launcher com Docker falso, métricas, links locais e Inspector (parser,
+API e build React/Vite com `npm ci`). Também instala o SDK mínimo em um ambiente separado e verifica que OpenAI/Pydantic não são dependências
+obrigatórias. Requer Go, uv, npm e Node `^20.19.0 || >=22.12.0`; pode baixar
+dependências na primeira execução.
 Não faz chamadas LLM reais nem precisa do daemon Docker. `--unit-only` omite
 as integrações de processos; `--no-inspector` omite o visualizador.
 

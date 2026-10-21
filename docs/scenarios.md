@@ -1,13 +1,13 @@
 # Catálogo de cenários
 
 Comece pelos casos determinísticos. Todos os cenários abaixo podem ser
-executados pelo [executor ariadne](cli.md), com Docker e Compose >=2.24.4, sem
-Python ou uv no host. Os READMEs também mantêm comandos manuais, que podem
+executados pelo [executor ariadne](cli.md), com uv e Docker Compose >=2.24.4.
+O uv prepara o Python da CLI; Go não é necessário no host. Os READMEs também mantêm comandos manuais, que podem
 exigir ferramentas adicionais. Execute da raiz do repositório.
 
 | Cenário | O que observar | Requisitos adicionais via ariadne | Resultado esperado |
 |---|---|---|---|
-| [Echo básico](quickstart.md) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `mock-agent-01` |
+| [Echo básico](quickstart.md#alternativa-com-docker) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `mock-agent-01` |
 | [Workflow sequencial](../examples/docker/workflow-sequential/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
 | [Falha e reassignment](../examples/docker/failure-reassignment/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
 | [Mensageria](../examples/docker/messaging-basic/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |

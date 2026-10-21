@@ -23,6 +23,7 @@ Docker exigem adicionalmente Docker Compose >=2.24.4 e usam o backend de
 | `./ariadne check ARQUIVO.py` | Valida entradas e limites estáticos |
 | `./ariadne campaign ARQUIVO.py` | Coleta uma matriz com execuções independentes |
 | `./ariadne verify` | Verificação integrada; use o extra `llm` |
+| `./ariadne doctor --local [--file ARQUIVO.py]` | Confere Python, SDK, Go/binários, destino e descrição opcional |
 | `./ariadne doctor [cenário]` | Verifica ferramentas e configuração; padrão `demo` |
 | `./ariadne demo [--keep]` | Tarefa simples, com conclusão verificada |
 | `./ariadne scenario` | Lista os cenários disponíveis |
@@ -127,3 +128,21 @@ um subcomando de benchmark nesta versão.
 
 Veja [organização e reprodução](consolidation.md) para dependências opcionais,
 `Campaign`, proveniência e detalhes da implementação única da CLI.
+
+## Diagnóstico local
+
+`./ariadne doctor --local` verifica o ambiente do executor local. Use `--file`
+para validar também o experimento, `--llm` para conferir dependências opcionais
+e presença de `OPENAI_API_KEY`, e `--inspector` para conferir Node, npm e uv.
+A chave nunca é exibida e não há chamada ao provedor.
+
+`--runtime-dir` confere os três binários executáveis e dispensa Go; alternativamente,
+`--runtime-source` confere a versão Go exigida pelo módulo. As variáveis
+`ARIADNE_RUNTIME_DIR` e `ARIADNE_RUNTIME_SOURCE` também são reconhecidas.
+`--output` seleciona o destino cuja permissão de escrita será conferida.
+Essas opções exigem `--local` e não podem ser combinadas com cenário Docker.
+
+O diagnóstico retorna código 1 se alguma checagem falhar. Não instala, compila
+ou inicia serviços, mas o bootstrap uv pode preparar o SDK antes de executá-lo.
+Como `check`, `--file` importa o arquivo Python: mantenha o topo declarativo.
+A verificação não garante acesso à rede/modelo ou prontidão futura dos serviços.

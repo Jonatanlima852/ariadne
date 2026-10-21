@@ -5,4 +5,4 @@ Este diretório recebe exportações de eventos, sumários CSV e relatórios com
 
 As campanhas automatizadas gravam em [benchmarks/results](../../benchmarks/results/README.md).
 Os artefatos selecionados e as instruções para interpretá-los estão no
-[guia de avaliação](../../docs/evaluation.md).
+[guia de avaliação](../../../docs/evaluation.md).

@@ -13,6 +13,11 @@ def main(argv=None):
     parser.add_argument('--unit-only', action='store_true', help='omite build e integração com processos Go')
     parser.add_argument('--no-inspector', action='store_true', help='omite verificações do visualizador')
     args = parser.parse_args(argv)
+    if not args.no_inspector:
+        from ariadne_sdk.doctor import node_supported, tool_version, NODE_REQUIREMENT
+        installed = tool_version('node', '--version')
+        if not node_supported(installed):
+            raise SystemExit(f'Inspector exige Node {NODE_REQUIREMENT}; encontrado {installed}')
     environment = dict(os.environ)
     environment.pop('ARIADNE_TEST_RUNTIME_DIR', None)
     environment['GOCACHE'] = str(ROOT / '.ariadne/cache/go')
@@ -23,6 +28,7 @@ def main(argv=None):
         subprocess.run([str(value) for value in command], cwd=cwd, env=env or environment, check=True)
 
     run(['sh', 'tools/check-contract-freeze.sh'])
+    run([sys.executable, 'tools/check-doc-links.py'])
     run(['go', 'test', './...'], cwd=ROOT / 'runtime')
     if not args.unit_only:
         binaries = ROOT / '.ariadne/bin'
@@ -49,7 +55,9 @@ for path in ("examples/echo.py", "examples/bdi.py", "examples/meeting.py", "stud
 print("Core SDK works without OpenAI/Pydantic")
 '''])
     if not args.no_inspector:
+        run(['npm', 'ci', '--no-audit', '--no-fund'], cwd=ROOT / 'tools/inspector')
         run(['node', '--test', 'model.test.js'], cwd=ROOT / 'tools/inspector')
+        run(['npm', 'run', 'build'], cwd=ROOT / 'tools/inspector')
         run(['uv', 'run', '--locked', '--project', 'tools/inspector/api', 'python', '-m', 'pytest',
              'tools/inspector/api/test_app.py', '-q'])
     print('\nVerificação concluída. Nenhuma chamada LLM real foi feita.')

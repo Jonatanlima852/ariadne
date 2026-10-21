@@ -37,50 +37,25 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 
 ## Primeira experiência
 
-Para explorar a nova interface de autoria, com **Go e uv** no host:
+O caminho recomendado usa **Go e uv**, sem Docker nem chave de LLM:
 
 ```sh
+./ariadne doctor --local --file examples/echo.py
 ./ariadne run examples/echo.py
-./ariadne run examples/workflow.py
+./ariadne status
 ```
 
-Cada arquivo declara agentes e tarefas. O executor inicia o runtime Go e os
-agentes em processos locais, salva logs e resultados e encerra os processos.
-Veja o [guia de experimentos](docs/experiments.md), incluindo recuperação,
-BDI e repetição com evidências brutas para avaliação separada.
-A [API BDI declarativa](docs/bdi.md) permite definir agentes com `Input` e `Plan`,
-sem subclasses, e oferece planejamento por busca genérica no SDK.
+Siga o [guia de primeira execução](docs/quickstart.md) para preparar o ambiente,
+reconhecer a resposta esperada e abrir o resultado no Inspector. O executor
+inicia os serviços e agentes, salva evidências e encerra seus processos.
 
-O [estudo logístico](studies/logistics/README.md) já usa essa interface:
-`./ariadne run studies/logistics/experiment.py` executa BDI por padrão.
-Depois, `./ariadne status` e `./ariadne logs` consultam a execução. LLM/híbrido,
-campanhas e avaliação offline estão documentados no guia do estudo.
+Depois, explore [workflows e recuperação](docs/experiments.md),
+[BDI declarativo](docs/bdi.md) e o [estudo logístico](studies/logistics/README.md).
+O Inspector mostra tarefas, agentes e eventos e inclui um exemplo registrado.
 
-### Demonstração via Docker
-
-Com Docker e Docker Compose >=2.24.4, a demonstração básica executa uma tarefa
-`echo` pelo Registry, Orchestrator e agente mock, sem chave de LLM nem
-instalação local de Go ou Python. A primeira preparação baixa dependências e
-constrói imagens.
-
-```sh
-./ariadne doctor
-./ariadne demo
-```
-
-O executor aguarda os agentes, salva resultados em `.ariadne/runs/` e encerra sua
-topologia automaticamente. Use `./ariadne status` e `./ariadne logs` para inspecionar a
-última execução. Veja todos os comandos em [referência do executor](docs/cli.md).
-
-O [guia de primeira execução](docs/quickstart.md) reúne os comandos, a
-verificação de prontidão, o resultado esperado e o encerramento do ambiente.
-Depois, o [workflow sequencial](examples/docker/workflow-sequential/README.md)
-demonstra a coordenação de duas tarefas.
-
-Para ler os resultados visualmente, inicie a API e a interface conforme o
-[guia do visualizador](tools/inspector/README.md). A aplicação React lista as
-execuções de `.ariadne/runs` e mostra tarefas, agentes e eventos. Inclui também um
-exemplo registrado de recuperação que pode ser explorado sem Docker.
+Como alternativa, com **uv e Docker Compose >=2.24.4**, use `./ariadne doctor`
+e `./ariadne demo`. O uv prepara o Python da CLI; Go não é necessário no host.
+Veja o [caminho Docker](docs/quickstart.md#alternativa-com-docker).
 
 ## O que está implementado
 

@@ -6,7 +6,9 @@ do Docker é disparado pela interface.
 
 ## Executar
 
-Requisitos: Node.js, npm e `uv`.
+Requisitos: Node 22 >=22.12 (linha usada no CI), npm e `uv`.
+Intervalo aceito: `^20.19.0 || >=22.12.0`. Confira com
+`./ariadne doctor --local --inspector`.
 
 Na raiz do repositório, inicie a API:
 
@@ -17,7 +19,7 @@ npm run api --prefix tools/inspector
 Em outro terminal, inicie o frontend:
 
 ```sh
-npm install --prefix tools/inspector
+npm ci --prefix tools/inspector
 npm run dev --prefix tools/inspector
 ```
 

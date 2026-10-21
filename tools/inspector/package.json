@@ -15,5 +15,8 @@
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
 }

@@ -51,7 +51,8 @@ inicia os serviços e agentes, salva evidências e encerra seus processos.
 
 Depois, explore [workflows e recuperação](docs/experiments.md),
 [BDI declarativo](docs/bdi.md) e o [estudo logístico](studies/logistics/README.md).
-O Inspector mostra tarefas, agentes e eventos e inclui um exemplo registrado.
+Abra `./ariadne inspect` para explorar amostras, campanhas, avaliações e
+demonstrações registradas, com grafo e replay manual dos eventos.
 
 Como alternativa, com **uv e Docker Compose >=2.24.4**, use `./ariadne doctor`
 e `./ariadne demo`. O uv prepara o Python da CLI; Go não é necessário no host.

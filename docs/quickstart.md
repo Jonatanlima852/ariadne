@@ -56,19 +56,14 @@ npm e uv. O intervalo aceito pelo frontend é `^20.19.0 || >=22.12.0`.
 
 ```sh
 ./ariadne doctor --local --inspector
-npm ci --prefix tools/inspector
-npm run api --prefix tools/inspector
+./ariadne inspect
 ```
 
-Deixe a API aberta e, em outro terminal na raiz, execute:
-
-```sh
-npm run dev --prefix tools/inspector
-```
-
-Abra `http://127.0.0.1:4173`, escolha a execução e consulte **Resultados** e
-**Linha do tempo**. A interface lê arquivos salvos; não precisa dos agentes
-ativos. Para encerrar a interface e a API, use Ctrl+C em ambos os terminais.
+Abra `http://127.0.0.1:4173`, escolha a execução e consulte **Etapas** e
+**Workflow e replay**. O comando prepara as dependências do frontend quando
+necessário, inicia API e interface e aguarda ambas ficarem prontas. Ctrl+C
+encerra os dois processos. A interface lê arquivos salvos; não precisa dos
+agentes ativos. Na aba **Demonstrações**, há registros para explorar sem nova coleta.
 O [guia do Inspector](../tools/inspector/README.md) explica outras opções.
 
 ## 5. Explorar cooperação e recuperação

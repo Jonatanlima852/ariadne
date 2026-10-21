@@ -18,6 +18,7 @@ Docker exigem adicionalmente Docker Compose >=2.24.4 e usam o backend de
 
 | Comando | Comportamento |
 |---|---|
+| `./ariadne inspect` | Inicia API e frontend do Inspector; Ctrl+C encerra ambos |
 | `./ariadne help` | Ajuda, sem exigir Docker |
 | `./ariadne run ARQUIVO.py` | Executa uma descrição local |
 | `./ariadne check ARQUIVO.py` | Valida entradas e limites estáticos |
@@ -146,3 +147,12 @@ O diagnóstico retorna código 1 se alguma checagem falhar. Não instala, compil
 ou inicia serviços, mas o bootstrap uv pode preparar o SDK antes de executá-lo.
 Como `check`, `--file` importa o arquivo Python: mantenha o topo declarativo.
 A verificação não garante acesso à rede/modelo ou prontidão futura dos serviços.
+
+## Abrir o Inspector
+
+`./ariadne inspect` inicia o visualizador em localhost:4173 e sua API em 8787.
+Requer checkout, uv, npm e Node compatível com o frontend; prepara dependências
+quando necessário. Use `--port`, `--api-port` e `--ready-timeout` para configurar
+portas e espera de prontidão. `--runs-dir`, `--campaigns-dir` e `--evaluations-dir`
+selecionam diretórios de evidências. Ctrl+C encerra os processos supervisionados.
+Veja [o guia do Inspector](../tools/inspector/README.md).

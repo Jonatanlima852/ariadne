@@ -1,21 +1,192 @@
-import { Icon, StatusBadge, formatMs } from './ui.jsx';
-
-export default function RunBrowser({ runs, loading, error, onRefresh, onSelect, onSample }) {
-  return <main className="runs-layout">
-    <section className="runs-heading">
-      <div><span className="kicker">EXECUÇÕES LOCAIS</span><h1>Escolha uma execução.</h1><p>A interface lê as evidências disponíveis em <code>.ariadne/runs</code> por meio da API local.</p></div>
-      <button className="secondary" onClick={onRefresh} disabled={loading}><Icon name="refresh"/>Atualizar</button>
-    </section>
-    {error && <div className="api-error"><Icon name="warning"/><div><strong>Não foi possível acessar a API</strong><p>{error}</p><code>uv run --project tools/inspector/api uvicorn app:app --app-dir tools/inspector/api --port 8787</code></div></div>}
-    <section className="run-grid">
-      {runs.map(run => <button className="run-card" key={run.id} onClick={() => onSelect(run.id)}>
-        <div className="run-card-top"><StatusBadge status={run.status}/><Icon name="arrow"/></div>
-        <h2>{run.scenario}</h2><code>{run.id}</code>
-        <div className="run-stats"><span><small>Duração</small>{formatMs(run.elapsed_ms)}</span><span><small>Eventos</small>{run.event_count}</span><span><small>Ambiente</small>{run.environment || '—'}</span></div>
-      </button>)}
-      {!loading && !error && !runs.length && <div className="no-runs"><Icon name="layers" size={28}/><h2>Nenhuma execução encontrada</h2><p>Execute um cenário e atualize esta página.</p></div>}
-      {loading && <div className="no-runs"><span className="spinner"/><h2>Lendo execuções…</h2></div>}
-    </section>
-    <section className="sample-banner"><div><span className="kicker">DEMONSTRAÇÃO</span><h2>Explore sem executar um cenário</h2><p>Abra o exemplo registrado de timeout e reassignment.</p></div><button className="primary" onClick={onSample}><Icon name="play"/>Abrir exemplo</button></section>
-  </main>;
+import { useEffect, useState } from "react";
+import { inspectorApi } from "../api.js";
+import { Icon, StatusBadge, formatMs } from "./ui.jsx";
+const SOURCES = {
+  runs: "Execuções",
+  campaigns: "Campanhas",
+  evaluations: "Avaliações",
+  samples: "Demonstrações",
+};
+const SIZE = 12;
+export default function RunBrowser({ source, onSource, onSelect, onSample }) {
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
+  const [page, setPage] = useState(0);
+  const [revision, setRevision] = useState(0);
+  const [data, setData] = useState({ items: [], total: 0, warnings: [] });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    setPage(0);
+    setStatus("");
+    setQuery("");
+  }, [source]);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+    const timer = setTimeout(() => {
+      inspectorApi
+        .catalog({ source, q: query, status, offset: page * SIZE, limit: SIZE })
+        .then((result) => {
+          if (!cancelled) setData(result);
+        })
+        .catch((failure) => {
+          if (!cancelled) setError(failure.message);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    }, 150);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [source, query, status, page, revision]);
+  return (
+    <main className="runs-layout">
+      <section className="runs-heading">
+        <div>
+          <span className="kicker">EVIDÊNCIAS LOCAIS</span>
+          <h1>Explore o que aconteceu.</h1>
+          <p>
+            Execuções, campanhas e análises preservadas. Nenhum agente é
+            iniciado por esta tela.
+          </p>
+        </div>
+        <button
+          className="secondary"
+          onClick={() => setRevision(revision + 1)}
+          disabled={loading}
+        >
+          <Icon name="refresh" />
+          Atualizar
+        </button>
+      </section>
+      <nav className="catalog-tabs" aria-label="Tipo de evidência">
+        {Object.entries(SOURCES).map(([key, title]) => (
+          <button
+            key={key}
+            aria-pressed={key === source}
+            onClick={() => onSource(key)}
+          >
+            {title}
+          </button>
+        ))}
+      </nav>
+      <div className="toolbar">
+        <label className="search-box">
+          <Icon name="search" />
+          <input
+            aria-label="Buscar evidências"
+            placeholder="Nome, caso, estratégia ou identificador…"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(0);
+            }}
+          />
+        </label>
+        <select
+          aria-label="Estado da execução"
+          value={status}
+          onChange={(event) => {
+            setStatus(event.target.value);
+            setPage(0);
+          }}
+        >
+          <option value="">Todos os estados</option>
+          {[
+            "COMPLETED",
+            "FAILED",
+            "CANCELLED",
+            "RUNNING",
+            "AVALIADA",
+            "UNKNOWN",
+          ].map((value) => (
+            <option key={value}>{value}</option>
+          ))}
+        </select>
+      </div>
+      {error && (
+        <p className="api-error" role="alert">
+          {error} · Inicie os serviços com ./ariadne inspect.
+        </p>
+      )}
+      {data.warnings.map((warning) => (
+        <p key={warning} className="error-message">
+          {warning}
+        </p>
+      ))}
+      {loading ? (
+        <p role="status">Lendo catálogo…</p>
+      ) : (
+        !error && (
+          <>
+            <section className="run-grid">
+              {data.items.map((run) => (
+                <button
+                  className="run-card"
+                  key={run.id}
+                  onClick={() => onSelect(run)}
+                >
+                  <div className="run-card-top">
+                    <StatusBadge status={run.status} />
+                    <Icon name="arrow" />
+                  </div>
+                  <h2>{run.demo?.title || run.scenario}</h2>
+                  <code>{run.id}</code>
+                  <p>
+                    {run.demo?.description ||
+                      [run.case_id, run.strategy].filter(Boolean).join(" · ")}
+                  </p>
+                  <div className="run-stats">
+                    <span>
+                      <small>Registrado em</small>
+                      {run.started_at
+                        ? new Date(run.started_at).toLocaleString("pt-BR")
+                        : "Não informado"}
+                    </span>
+                    <span>
+                      <small>Duração</small>
+                      {formatMs(run.elapsed_ms)}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </section>
+            {!data.items.length && (
+              <p className="no-data">
+                Nenhuma evidência encontrada nesta seleção.
+              </p>
+            )}
+            <div className="pager">
+              <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                Anterior
+              </button>
+              <span>
+                {data.total} registros · página {page + 1} de{" "}
+                {Math.max(1, Math.ceil(data.total / SIZE))}
+              </span>
+              <button
+                disabled={(page + 1) * SIZE >= data.total}
+                onClick={() => setPage(page + 1)}
+              >
+                Próxima
+              </button>
+            </div>
+          </>
+        )
+      )}
+      <section className="sample-banner">
+        <div>
+          <h2>Recuperação de tarefa</h2>
+          <p>Exemplo registrado disponível mesmo sem a API.</p>
+        </div>
+        <button className="primary" onClick={onSample}>
+          Abrir exemplo embutido
+        </button>
+      </section>
+    </main>
+  );
 }

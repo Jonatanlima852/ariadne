@@ -1,6 +1,25 @@
-import { JsonDetails } from './ui.jsx';
-
+import { useState } from "react";
 export default function RawData({ report }) {
-  const eventFiles = ['events.jsonl', 'message-events.jsonl'].filter(name => report.names.includes(name));
-  return <section className="content-card"><div className="section-heading"><div><span className="kicker">AUDITORIA</span><h2>Dados brutos</h2></div></div><p className="section-note">Conteúdo original interpretado pelo visualizador. Logs de construção e serviços permanecem na pasta da execução.</p><div className="raw-grid">{Object.entries(report.data).map(([name, data]) => <JsonDetails key={name} title={name} data={data}/>)}{eventFiles.map(name => <JsonDetails key={name} title={`${name} · eventos válidos`} data={report.events.filter(event => event.source === name).map(({ source, line, ...event }) => event)}/>)}</div></section>;
+  const [name, setName] = useState("");
+  const file = report.rawFiles.find((item) => item.name === name);
+  return (
+    <section className="content-card">
+      <h2>Arquivos originais</h2>
+      <p>
+        Conteúdo integral da execução, incluindo outras amostras. A seleção de
+        amostra não altera estes arquivos.
+      </p>
+      <select
+        aria-label="Arquivo de evidências"
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      >
+        <option value="">Selecione um arquivo</option>
+        {report.rawFiles.map((item) => (
+          <option key={item.name}>{item.name}</option>
+        ))}
+      </select>
+      {file && <pre className="raw-file">{file.content}</pre>}
+    </section>
+  );
 }

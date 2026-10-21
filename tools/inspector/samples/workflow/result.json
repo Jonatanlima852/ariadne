@@ -1,0 +1,46 @@
+{
+  "workflow_id": "7794eb9c-0f9a-4849-82ab-fde507be912d",
+  "run_id": "e071f482-aa1d-4f1a-97ab-68875267c767",
+  "root_task_id": "d6f98b74-0e2b-4018-b711-0f07b37f5271",
+  "trace_id": "7b2ba504-695c-4969-b65a-39d2bdff4a26",
+  "status": "WORKFLOW_STATUS_COMPLETED",
+  "output": {
+    "text": "OLÁ, AGENTES!"
+  },
+  "error": null,
+  "duration_ms": 4.3340000000000005,
+  "steps": {
+    "first": {
+      "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+      "result": {
+        "task_id": "7b1b9907-5bad-47f3-97ad-6042183abef7",
+        "agent_id": "echo",
+        "agent_kind": "generic",
+        "status": "TASK_STATUS_COMPLETED",
+        "output": {
+          "text": "Olá, agentes!"
+        },
+        "metadata": {},
+        "error": null
+      },
+      "duration_ms": 0.402
+    },
+    "second": {
+      "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+      "result": {
+        "task_id": "9c3ddf1e-d40c-4b84-bb10-0b6e7c8cbb8f",
+        "agent_id": "uppercase",
+        "agent_kind": "generic",
+        "status": "TASK_STATUS_COMPLETED",
+        "output": {
+          "text": "OLÁ, AGENTES!"
+        },
+        "metadata": {},
+        "error": null
+      },
+      "duration_ms": 0.33
+    }
+  },
+  "sample": 2,
+  "client_duration_ms": 6.124209146946669
+}

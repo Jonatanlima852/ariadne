@@ -1,0 +1,7 @@
+{
+  "title": "Cooperação entre etapas",
+  "description": "Duas amostras: o segundo agente transforma o texto recebido do primeiro. Explore o binding e as dependências.",
+  "origin": ".ariadne/runs/ariadne-bded20878c044a34b8c76236b39d01a3",
+  "recorded_at": "2026-10-21T04:57:08.154406+00:00",
+  "limits": "Execução real local determinística, sem LLM. Demonstração funcional; não é benchmark."
+}

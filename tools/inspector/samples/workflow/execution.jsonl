@@ -1,0 +1,18 @@
+{"timestamp": "2026-10-21T04:57:08.196114+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "EXPERIMENT_STARTED"}
+{"timestamp": "2026-10-21T04:57:08.268521+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STARTED", "process": "registry", "pid": 71840}
+{"timestamp": "2026-10-21T04:57:08.539695+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STARTED", "process": "orchestrator", "pid": 71843}
+{"timestamp": "2026-10-21T04:57:08.812200+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STARTED", "process": "messaging", "pid": 71845}
+{"timestamp": "2026-10-21T04:57:09.107942+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STARTED", "process": "agent-1", "pid": 71846}
+{"timestamp": "2026-10-21T04:57:09.703099+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STARTED", "process": "agent-2", "pid": 71871}
+{"timestamp": "2026-10-21T04:57:10.133502+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "EXPERIMENT_READY", "addresses": {"registry": "127.0.0.1:65185", "orchestrator": "127.0.0.1:65189", "messaging": "127.0.0.1:65191"}}
+{"timestamp": "2026-10-21T04:57:10.134177+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "SAMPLE_STARTED", "sample": 1, "trace_id": "3d60ce4a-ead6-44bd-93ae-6d3b29ac1052"}
+{"timestamp": "2026-10-21T04:57:10.147521+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "SAMPLE_FINISHED", "sample": 1, "trace_id": "3d60ce4a-ead6-44bd-93ae-6d3b29ac1052", "status": "WORKFLOW_STATUS_COMPLETED"}
+{"timestamp": "2026-10-21T04:57:10.147918+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "SAMPLE_STARTED", "sample": 2, "trace_id": "7b2ba504-695c-4969-b65a-39d2bdff4a26"}
+{"timestamp": "2026-10-21T04:57:10.155284+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "SAMPLE_FINISHED", "sample": 2, "trace_id": "7b2ba504-695c-4969-b65a-39d2bdff4a26", "status": "WORKFLOW_STATUS_COMPLETED"}
+{"timestamp": "2026-10-21T04:57:10.155586+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "EXPERIMENT_STOPPING", "status": "COMPLETED"}
+{"timestamp": "2026-10-21T04:57:10.194495+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STOPPED", "pid": 71871, "exit_code": 0, "forced": false}
+{"timestamp": "2026-10-21T04:57:10.233094+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STOPPED", "pid": 71846, "exit_code": 0, "forced": false}
+{"timestamp": "2026-10-21T04:57:10.234721+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STOPPED", "pid": 71845, "exit_code": -15, "forced": false}
+{"timestamp": "2026-10-21T04:57:10.236169+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STOPPED", "pid": 71843, "exit_code": -15, "forced": false}
+{"timestamp": "2026-10-21T04:57:10.237598+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "PROCESS_STOPPED", "pid": 71840, "exit_code": -15, "forced": false}
+{"timestamp": "2026-10-21T04:57:10.238879+00:00", "execution_id": "ariadne-bded20878c044a34b8c76236b39d01a3", "type": "EXPERIMENT_FINISHED", "scenario": "workflow", "started_at": "2026-10-21T04:57:08.154406+00:00", "status": "COMPLETED", "completed_at": "2026-10-21T04:57:10.237996+00:00", "elapsed_ms": 2083.6113749537617}

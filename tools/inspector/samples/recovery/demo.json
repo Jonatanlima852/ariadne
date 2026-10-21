@@ -1,0 +1,7 @@
+{
+  "title": "Timeout e nova atribuição",
+  "description": "Avance pelos eventos: a tentativa no agente lento expira e o agente saudável conclui a tarefa.",
+  "origin": ".ariadne/runs/ariadne-54f20bd596854908b29e8b5c775dbd07",
+  "recorded_at": "2026-10-21T04:57:40.165693+00:00",
+  "limits": "Execução real local determinística, sem LLM. Timeout não garante interrupção de efeitos externos."
+}

@@ -1,0 +1,7 @@
+{
+  "title": "BDI, LLM e híbrido: avaliação registrada",
+  "description": "Resultados históricos reais das três estratégias, com casos viáveis e impossíveis. Explore os filtros e as respostas.",
+  "origin": "studies/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json",
+  "recorded_at": "2026-10-04",
+  "limits": "Avaliação histórica, oito casos e duas repetições. Não contém definição de workflow nem replay reconstruído; regras compartilhadas entre planejador e avaliador."
+}

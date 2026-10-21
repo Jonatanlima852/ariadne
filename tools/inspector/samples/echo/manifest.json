@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "execution_id": "ariadne-08b3f945ad3648f0bb0e7d8a75a929be",
+  "backend": "local-processes",
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/examples/echo.py",
+  "source_sha256": "4d51a577eef1391769957a6dba4d7ed7c6a244090b9c1bbbaa712cf4b726c90c",
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 17.0.0 (clang-1700.6.4.2)]",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "contract_version": "1.0.0",
+  "repeat": 1,
+  "ready_timeout_seconds": 30,
+  "rpc_timeout_seconds": 60,
+  "metadata": {},
+  "provenance": {
+    "schema_version": 1,
+    "git": {
+      "root": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis",
+      "revision": "a4bb8364f72bdfe6b1d2f9352eef3bcd353ba687",
+      "dirty": true,
+      "changes": [
+        "M .github/workflows/verify.yml",
+        " M README.md",
+        " M docs/cli.md",
+        " M docs/consolidation.md",
+        " M docs/development.md",
+        " M docs/manual-execution.md",
+        " M docs/quickstart.md",
+        " M docs/scenarios.md",
+        " M sdk/python/src/ariadne_sdk/__main__.py",
+        " M studies/benchmarks/results/README.md",
+        " M studies/runtime_metrics/results/README.md",
+        " M tools/inspector/README.md",
+        " M tools/inspector/package-lock.json",
+        " M tools/inspector/package.json",
+        " M tools/verify.py",
+        "?? sdk/python/src/ariadne_sdk/doctor.py",
+        "?? sdk/python/tests/test_doctor.py",
+        "?? tools/check-doc-links.py",
+        "?? tools/inspector/.nvmrc"
+      ]
+    },
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 17.0.0 (clang-1700.6.4.2)]",
+    "packages": [
+      {
+        "name": "annotated-types",
+        "version": "0.8.0"
+      },
+      {
+        "name": "anyio",
+        "version": "4.14.2"
+      },
+      {
+        "name": "ariadne-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "ariadne-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "certifi",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "distro",
+        "version": "1.9.0"
+      },
+      {
+        "name": "grpcio",
+        "version": "1.80.0"
+      },
+      {
+        "name": "grpcio-tools",
+        "version": "1.80.0"
+      },
+      {
+        "name": "h11",
+        "version": "0.16.0"
+      },
+      {
+        "name": "httpcore",
+        "version": "1.0.9"
+      },
+      {
+        "name": "httpx",
+        "version": "0.28.1"
+      },
+      {
+        "name": "idna",
+        "version": "3.18"
+      },
+      {
+        "name": "jiter",
+        "version": "0.16.0"
+      },
+      {
+        "name": "openai",
+        "version": "2.50.0"
+      },
+      {
+        "name": "protobuf",
+        "version": "6.33.6"
+      },
+      {
+        "name": "pydantic",
+        "version": "2.13.4"
+      },
+      {
+        "name": "pydantic_core",
+        "version": "2.46.4"
+      },
+      {
+        "name": "setuptools",
+        "version": "82.0.1"
+      },
+      {
+        "name": "sniffio",
+        "version": "1.3.1"
+      },
+      {
+        "name": "tg-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "tqdm",
+        "version": "4.70.0"
+      },
+      {
+        "name": "typing-inspection",
+        "version": "0.4.2"
+      },
+      {
+        "name": "typing_extensions",
+        "version": "4.15.0"
+      }
+    ],
+    "files": [
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/examples/echo.py",
+        "sha256": "4d51a577eef1391769957a6dba4d7ed7c6a244090b9c1bbbaa712cf4b726c90c"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/runtime/go.mod",
+        "sha256": "16bcf1114278ad5ee9fddbb701f6a9dafdb585a5101c78657685eea229182aec"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/runtime/go.sum",
+        "sha256": "17577dee125cdc0e5d31fd6bff9f0431281ec2452314d8343f5270376c359e7d"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/pyproject.toml",
+        "sha256": "015076667a9dbe971b3c41289fbf1e1ae5358e21c76eac85dc1de58927ea4712"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/__init__.py",
+        "sha256": "8986c27170bc2f7243674dcd9a08cc141b92322aab5a3ce1e62c7dc448dac3af"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/__main__.py",
+        "sha256": "39def3d1a57af94f92ac997ec435366f3883a94f89a2d721ce0f690f61ae7aa0"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/agent.py",
+        "sha256": "9ace4b94d70109a88055f0e34b4ddd41c6930c5e4b61189b0d409fb9b18e45b7"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/bdi.py",
+        "sha256": "512b0384a09c13d732eba2a5ea1d4c1beb10265cb38627c135364679f744c9dc"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/campaign.py",
+        "sha256": "105cdd9366a8046f31b0a69e96f80a67d74a4774fe7e93564244b03d6334be48"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/client.py",
+        "sha256": "103c34cced7af47d52f10667e37e8d4adf102de574e188b548636872a7c60d2b"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/docker.py",
+        "sha256": "63ed835be0fb6a9beebd26f6702bd49bbf09e31726dfe6050a3b3aae3f03ec01"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/evidence.py",
+        "sha256": "8114d068cb3b5be9ba5fc5c17340f8c3c3a0b8e947983e3a0fbeaa36aecd06c3"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/execution.py",
+        "sha256": "34d44977e09d59b0b8d16c7dbc0eb8e7fa2c74253ad6f2a9cefbfd39bae047ee"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/experiment.py",
+        "sha256": "c748ae0ae658767811d73077b009ea67a56aa7217cdf3223c38914fea3474e55"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/message.py",
+        "sha256": "a1b6b3add08cb169d2b15c40d9d07572180a825dae39398975e71371ca369635"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/models.py",
+        "sha256": "8231fbf23b95f84b794b932ab95fd6942b5666051e736def43b8f50c3c41825c"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/planning.py",
+        "sha256": "5d31167a0c4d6938b88c2a05d3cc7c81920e242b442e1603106a9c242760ddb6"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/plans.py",
+        "sha256": "f7315f654dabf84b51dd0854a7c6920855db998e446c262bbcacc583b4a5bf14"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/provenance.py",
+        "sha256": "8cefc5e846bb8aec2fc731d4a393709c4665a45898dafc853d18f29a6c499df9"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/scenario.py",
+        "sha256": "323f02c13a003161ccff243323416ac5f32834c9de14b12f942a5e0409f0a065"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/contract/v1/contract_pb2.py",
+        "sha256": "a170e64d91aebe0d9690c60fb9ab5b6a56c3bd3b6b0d3f081b13023b74324503"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/contract/v1/contract_pb2_grpc.py",
+        "sha256": "6e13ab952bc4c396a85c629d5dab2dfef28d66900dee67ea4b0fd597252edfa5"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/uv.lock",
+        "sha256": "082604ed628c5004755cf414ba9b43048f10c63e302a9bce1e804a93a7e68735"
+      }
+    ],
+    "scope": "source, loaded repository Python modules, declared artifacts and runtime/SDK dependency manifests"
+  },
+  "agents": [
+    {
+      "agent_id": "echo",
+      "capabilities": [
+        "echo"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "step_1",
+      "goal": "Olá, Ariadne!",
+      "capabilities": [
+        "echo"
+      ],
+      "payload": {},
+      "depends_on": [],
+      "input_bindings": [],
+      "deadline_ms": 0,
+      "max_attempts": 1,
+      "backoff_ms": 0,
+      "exclude_failed_agent": false,
+      "selection_policy": "FIRST_AVAILABLE"
+    }
+  ],
+  "binaries_sha256": {
+    "registry": "2ba8cd8daf41c264355aa8d2616d82b3f25fe658d1cedd811da78c0cc00c444e",
+    "orchestrator": "54faf00318c48125265c67402d8129a5e485f4ba054427e51f930a3ce2d5269c",
+    "messaging": "df3a411c6f4ea146d7a17f0b17115169f8a53b6f684cd9f3ff2bbf0b91d57ca8"
+  },
+  "addresses": {
+    "registry": "127.0.0.1:64482",
+    "orchestrator": "127.0.0.1:64485",
+    "messaging": "127.0.0.1:64487"
+  },
+  "processes": [
+    {
+      "name": "registry",
+      "pid": 70034
+    },
+    {
+      "name": "orchestrator",
+      "pid": 70035
+    },
+    {
+      "name": "messaging",
+      "pid": 70037
+    },
+    {
+      "name": "agent-1",
+      "pid": 70038
+    }
+  ]
+}

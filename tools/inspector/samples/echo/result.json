@@ -1,0 +1,31 @@
+{
+  "workflow_id": "15350a8d-2a36-4110-9a94-6365afc9305b",
+  "run_id": "4584c31c-eac3-41c5-85d4-8b5b5af34524",
+  "root_task_id": "9322bb82-73ee-42dc-bd6e-a7a98765cede",
+  "trace_id": "19c0a2df-8b36-4f70-b30b-86b6e7b26a28",
+  "status": "WORKFLOW_STATUS_COMPLETED",
+  "output": {
+    "text": "Olá, Ariadne!"
+  },
+  "error": null,
+  "duration_ms": 6.832000000000001,
+  "steps": {
+    "step_1": {
+      "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+      "result": {
+        "task_id": "cbf6e7db-47b4-4c3a-9606-0f04d543d46c",
+        "agent_id": "echo",
+        "agent_kind": "generic",
+        "status": "TASK_STATUS_COMPLETED",
+        "output": {
+          "text": "Olá, Ariadne!"
+        },
+        "metadata": {},
+        "error": null
+      },
+      "duration_ms": 0.858
+    }
+  },
+  "sample": 1,
+  "client_duration_ms": 13.134667184203863
+}

@@ -1,0 +1,5944 @@
+{
+  "generated_at": "2026-10-04T06:30:40.596030+00:00",
+  "model": "gpt-5.6-luna",
+  "repetitions": 2,
+  "case_count": 8,
+  "method": "ground-truth mission and deterministic action simulator",
+  "rows": [
+    {
+      "case_id": "simple-delivery",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "G",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 13.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 11.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 42.77670895680785,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "simple-delivery",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "F",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 2,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "H",
+          "battery": 10,
+          "elapsed_minutes": 13,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "E",
+            "F",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5992.234917008318,
+      "tokens": 1149,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "simple-delivery",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "G",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 13.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 11.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "A"
+        ],
+        "minimum_final_battery": 0.0,
+        "deadline_minutes": 20.0,
+        "destination": "H",
+        "forbidden_locations": []
+      },
+      "interpretation_exact": false,
+      "latency_ms": 1258.635125006549,
+      "tokens": 257,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 18.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 7,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 42.168332962319255,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "F",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 10,
+        "final_state": {
+          "location": "H",
+          "battery": 73,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5452.962790965103,
+      "tokens": 1198,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 18.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 7,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20.0,
+        "deadline_minutes": 22.0,
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2439.6782079711556,
+      "tokens": 322,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 85.0,
+          "has_key": true,
+          "delivered": true,
+          "location": "F",
+          "has_package": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ],
+          "door_unlocked": true,
+          "elapsed_minutes": 16.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 25.154333910904825,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 4620.286999968812,
+      "tokens": 1064,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 85.0,
+          "has_key": true,
+          "delivered": true,
+          "location": "F",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ],
+          "has_package": true,
+          "door_unlocked": true,
+          "elapsed_minutes": 16.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15.0,
+        "deadline_minutes": 20.0,
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1879.5871670590714,
+      "tokens": 312,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 17.0,
+          "door_unlocked": false
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 20.984582952223718,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "F",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 1,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 10,
+        "final_state": {
+          "location": "H",
+          "battery": 73,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5117.623750003986,
+      "tokens": 1167,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 17.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "forbidden_locations": [
+          "C"
+        ],
+        "deadline_minutes": 24.0,
+        "destination": "H",
+        "minimum_final_battery": 40.0
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1245.9879579255357,
+      "tokens": 265,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 16.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "G",
+          "has_package": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ],
+          "door_unlocked": false,
+          "elapsed_minutes": 11.0
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 5,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 35.29062506277114,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "G",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 1,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 12,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 3325.0101669691503,
+      "tokens": 963,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "G",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 16.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "G",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 11.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 5,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10.0,
+        "deadline_minutes": 15.0,
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1655.127999954857,
+      "tokens": 312,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "actions": [],
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 18.836541916243732,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "Impossível cumprir em no máximo 5 minutos: o caminho mais rápido até H leva pelo menos 9 minutos (A→C→D→E→F→H), além de exigir a chave em D e o desbloqueio em E."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 4344.533332972787,
+      "tokens": 931,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "door_unlocked": false,
+          "elapsed_minutes": 0.0
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 0.0,
+        "deadline_minutes": 5.0,
+        "destination": "H",
+        "forbidden_locations": []
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2005.1824159454554,
+      "tokens": 368,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 15.779917011968791,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "Nenhuma rota válida existe de A até D sem passar por B ou C; as únicas saídas de A levam a B ou C."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 2391.559374984354,
+      "tokens": 817,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "door_unlocked": false,
+          "elapsed_minutes": 0.0
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "deadline_minutes": 30.0,
+        "destination": "D",
+        "minimum_final_battery": 0.0
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2264.011917053722,
+      "tokens": 371,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 1,
+      "strategy": "bdi-only",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "has_package": false,
+          "visited": [
+            "A"
+          ],
+          "door_unlocked": false,
+          "elapsed_minutes": 0.0
+        },
+        "actions": [],
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 22.597959032282233,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 1,
+      "strategy": "llm-only",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "No existe una secuencia válida: evitando C, la única ruta hasta G es A→B→D→G, que tarda 9 minutos pero consume 49% de batería, dejando 16%. No pasa por E para recargar y no termina con al menos 90% de batería dentro del límite de 12 minutos."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 4881.3300000038,
+      "tokens": 1056,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 1,
+      "strategy": "hybrid",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "door_unlocked": false,
+          "elapsed_minutes": 0.0
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 90.0,
+        "deadline_minutes": 12.0,
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1646.278208005242,
+      "tokens": 324,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "simple-delivery",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "G",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 13.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 11.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 22.51458296086639,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "simple-delivery",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 2,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 9,
+          "elapsed_minutes": 13,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5028.840707964264,
+      "tokens": 1087,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "simple-delivery",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Leve o pacote médico da base A até H em no máximo 20 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "C"
+          },
+          {
+            "type": "MOVE",
+            "from": "C",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "MOVE",
+            "from": "G",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 13.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 11.0,
+          "door_unlocked": false
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "C",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "C",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "G",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 13,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "C",
+            "D",
+            "G",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "A"
+        ],
+        "minimum_final_battery": 0.0,
+        "deadline_minutes": 20.0,
+        "destination": "H",
+        "forbidden_locations": []
+      },
+      "interpretation_exact": false,
+      "latency_ms": 3336.7555839940906,
+      "tokens": 463,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 18.0,
+          "door_unlocked": false
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 7,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 23.795124958269298,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 1,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 8,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 19,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 8904.547207988799,
+      "tokens": 1481,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "avoid-contamination",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em H sem passar pela área contaminada C; passe por D e termine com pelo menos 20% de bateria, em até 22 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20,
+        "deadline_minutes": 22
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 18.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 7,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 20.0,
+        "deadline_minutes": 22.0,
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1673.2922500232235,
+      "tokens": 332,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 85.0,
+          "has_key": true,
+          "delivered": true,
+          "location": "F",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ],
+          "has_package": true,
+          "door_unlocked": true,
+          "elapsed_minutes": 16.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 24.652375024743378,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5097.488124971278,
+      "tokens": 1159,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "key-and-door",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Leve o pacote até F. Você precisa visitar D para buscar a chave, não pode usar C e deve chegar com 15% de bateria ou mais antes de 20 minutos.",
+      "expected_mission": {
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15,
+        "deadline_minutes": 20
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "PICK_UP_KEY",
+            "location": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "E"
+          },
+          {
+            "type": "UNLOCK_DOOR",
+            "location": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "F"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "F"
+          }
+        ],
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "F",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 85.0,
+          "has_key": true,
+          "delivered": true,
+          "location": "F",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ],
+          "has_package": true,
+          "door_unlocked": true,
+          "elapsed_minutes": 16.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 9,
+        "final_state": {
+          "location": "F",
+          "battery": 85,
+          "elapsed_minutes": 16,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 15.0,
+        "deadline_minutes": 20.0,
+        "destination": "F",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1411.4261659560725,
+      "tokens": 312,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 17.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 34.74050003569573,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "E",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "location": "E",
+            "type": "UNLOCK_DOOR"
+          },
+          {
+            "to": "F",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "to": "H",
+            "from": "F",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 1,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 10,
+        "final_state": {
+          "location": "H",
+          "battery": 73,
+          "elapsed_minutes": 18,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": true,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "E",
+            "F",
+            "H"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 5696.822167024948,
+      "tokens": 1218,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "energy-reserve",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Faça a entrega em H preservando no mínimo 40% de bateria e evitando C. O limite é 24 minutos.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 40,
+        "deadline_minutes": 24
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "E"
+          },
+          {
+            "type": "RECHARGE",
+            "location": "E"
+          },
+          {
+            "type": "MOVE",
+            "from": "E",
+            "to": "H"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "H"
+          }
+        ],
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 72.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "H",
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 17.0,
+          "door_unlocked": false
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "E",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "E",
+            "type": "RECHARGE"
+          },
+          {
+            "to": "H",
+            "from": "E",
+            "type": "MOVE"
+          },
+          {
+            "location": "H",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "H",
+          "battery": 72,
+          "elapsed_minutes": 17,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "E",
+            "H"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 40.0,
+        "deadline_minutes": 24.0,
+        "destination": "H",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 1361.4125000312924,
+      "tokens": 265,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "final_state": {
+          "battery": 16.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "G",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ],
+          "has_package": true,
+          "elapsed_minutes": 11.0,
+          "door_unlocked": false
+        },
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 5,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 22.236041026189923,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "location": "D",
+            "type": "PICK_UP_KEY"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "G",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": false,
+        "optimality_gap_minutes": 1,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 6,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 12,
+          "has_package": true,
+          "has_key": true,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 3294.238583999686,
+      "tokens": 946,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "deliver-to-g",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em G, passando obrigatoriamente por D, sem atravessar C, em até 15 minutos e com pelo menos 10% de bateria restante.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [
+          "D"
+        ],
+        "minimum_final_battery": 10,
+        "deadline_minutes": 15
+      },
+      "oracle": {
+        "feasible": true,
+        "actions": [
+          {
+            "type": "PICK_UP_PACKAGE",
+            "location": "A"
+          },
+          {
+            "type": "MOVE",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "type": "MOVE",
+            "from": "B",
+            "to": "D"
+          },
+          {
+            "type": "MOVE",
+            "from": "D",
+            "to": "G"
+          },
+          {
+            "type": "DELIVER_PACKAGE",
+            "location": "G"
+          }
+        ],
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        },
+        "rejection_reason": ""
+      },
+      "candidate": {
+        "feasible": true,
+        "actions": [
+          {
+            "location": "A",
+            "type": "PICK_UP_PACKAGE"
+          },
+          {
+            "to": "B",
+            "from": "A",
+            "type": "MOVE"
+          },
+          {
+            "to": "D",
+            "from": "B",
+            "type": "MOVE"
+          },
+          {
+            "to": "G",
+            "from": "D",
+            "type": "MOVE"
+          },
+          {
+            "location": "G",
+            "type": "DELIVER_PACKAGE"
+          }
+        ],
+        "final_state": {
+          "battery": 16.0,
+          "has_key": false,
+          "delivered": true,
+          "location": "G",
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ],
+          "has_package": true,
+          "door_unlocked": false,
+          "elapsed_minutes": 11.0
+        },
+        "rejection_reason": ""
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": true,
+        "correct_rejection": false,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": true,
+        "failure_reason": "",
+        "action_count": 5,
+        "final_state": {
+          "location": "G",
+          "battery": 16,
+          "elapsed_minutes": 11,
+          "has_package": true,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": true,
+          "visited": [
+            "A",
+            "B",
+            "D",
+            "G"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [
+          "D"
+        ],
+        "forbidden_locations": [
+          "C"
+        ],
+        "deadline_minutes": 15.0,
+        "destination": "G",
+        "minimum_final_battery": 10.0
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2005.2194590680301,
+      "tokens": 313,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 18.652374972589314,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "Impossível entregar o pacote em H em no máximo 5 minutos. O caminho mais rápido de A até H leva 9 minutos, mesmo pela rota A→C→D→E→F→H."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 4263.257957994938,
+      "tokens": 955,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-deadline",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Entregue o pacote em H em no máximo 5 minutos. Se for impossível, recuse a missão.",
+      "expected_mission": {
+        "destination": "H",
+        "forbidden_locations": [],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 5
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "actions": [],
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 0.0,
+        "deadline_minutes": 5.0,
+        "destination": "H",
+        "forbidden_locations": []
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2632.1370840305462,
+      "tokens": 391,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "actions": [],
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 17.771166982129216,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "Nenhuma rota válida existe de A até D sem passar por B ou C; as únicas arestas de saída de A levam a B ou C."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 2496.840166975744,
+      "tokens": 802,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-blocked",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Leve o pacote para D em até 30 minutos, mas não passe por B nem por C. Recuse se nenhuma rota válida existir.",
+      "expected_mission": {
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 0,
+        "deadline_minutes": 30
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "actions": [],
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 0.0,
+        "deadline_minutes": 30.0,
+        "destination": "D",
+        "forbidden_locations": [
+          "B",
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2444.7464160621166,
+      "tokens": 360,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 2,
+      "strategy": "bdi-only",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 23.89099996071309,
+      "tokens": 0,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 2,
+      "strategy": "llm-only",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "rejection_reason": "Não é possível cumprir todos os requisitos: sem atravessar C, o único caminho até G é A→B→D→G, que leva 9 minutos, mas consome 49% da bateria e termina com apenas 16%. A recarga em E não permite alcançar G depois, pois não há caminho válido de E até G dentro do grafo."
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": null,
+      "interpretation_exact": false,
+      "latency_ms": 7004.221457988024,
+      "tokens": 1177,
+      "runtime_error": ""
+    },
+    {
+      "case_id": "impossible-reserve",
+      "repetition": 2,
+      "strategy": "hybrid",
+      "request": "Entregue em G em até 12 minutos e termine com pelo menos 90% de bateria. Não atravesse C e recuse se não der.",
+      "expected_mission": {
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ],
+        "required_locations": [],
+        "minimum_final_battery": 90,
+        "deadline_minutes": 12
+      },
+      "oracle": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "candidate": {
+        "feasible": false,
+        "actions": [],
+        "final_state": {
+          "battery": 65.0,
+          "has_key": false,
+          "delivered": false,
+          "location": "A",
+          "visited": [
+            "A"
+          ],
+          "has_package": false,
+          "elapsed_minutes": 0.0,
+          "door_unlocked": false
+        },
+        "rejection_reason": "nenhum plano satisfaz todas as restrições"
+      },
+      "evaluation": {
+        "valid": true,
+        "safe": true,
+        "goal_reached": false,
+        "correct_rejection": true,
+        "optimal": true,
+        "optimality_gap_minutes": 0,
+        "oracle_feasible": false,
+        "failure_reason": "",
+        "action_count": 0,
+        "final_state": {
+          "location": "A",
+          "battery": 65,
+          "elapsed_minutes": 0,
+          "has_package": false,
+          "has_key": false,
+          "door_unlocked": false,
+          "delivered": false,
+          "visited": [
+            "A"
+          ]
+        }
+      },
+      "interpretation": {
+        "required_locations": [],
+        "minimum_final_battery": 90.0,
+        "deadline_minutes": 12.0,
+        "destination": "G",
+        "forbidden_locations": [
+          "C"
+        ]
+      },
+      "interpretation_exact": true,
+      "latency_ms": 2050.5011250497773,
+      "tokens": 315,
+      "runtime_error": ""
+    }
+  ],
+  "summary": [
+    {
+      "strategy": "bdi-only",
+      "runs": 16,
+      "valid_rate": 1.0,
+      "safe_rate": 1.0,
+      "optimal_rate": 1.0,
+      "goal_rate": 0.625,
+      "correct_rejection_rate": 0.375,
+      "runtime_success_rate": 1.0,
+      "interpretation_accuracy": null,
+      "consistency_rate": 1.0,
+      "average_latency_ms": 25.740135482919868,
+      "p95_latency_ms": 42.168332962319255,
+      "total_tokens": 0
+    },
+    {
+      "strategy": "llm-only",
+      "runs": 16,
+      "valid_rate": 1.0,
+      "safe_rate": 1.0,
+      "optimal_rate": 0.5625,
+      "goal_rate": 0.625,
+      "correct_rejection_rate": 0.375,
+      "runtime_success_rate": 1.0,
+      "interpretation_accuracy": null,
+      "consistency_rate": 0.25,
+      "average_latency_ms": 4869.487356736499,
+      "p95_latency_ms": 7004.221457988024,
+      "total_tokens": 17170
+    },
+    {
+      "strategy": "hybrid",
+      "runs": 16,
+      "valid_rate": 1.0,
+      "safe_rate": 1.0,
+      "optimal_rate": 1.0,
+      "goal_rate": 0.625,
+      "correct_rejection_rate": 0.375,
+      "runtime_success_rate": 1.0,
+      "interpretation_accuracy": 0.875,
+      "consistency_rate": 1.0,
+      "average_latency_ms": 1956.873723946046,
+      "p95_latency_ms": 2632.1370840305462,
+      "total_tokens": 5282
+    }
+  ]
+}

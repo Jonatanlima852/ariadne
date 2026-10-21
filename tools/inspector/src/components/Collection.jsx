@@ -80,7 +80,13 @@ export default function Collection({ detail, onSelect }) {
               . As métricas abaixo vêm do avaliador; não são recalculadas pela
               interface.
             </p>
-            {document.model && <p>Modelo da coleta: {document.model} · {document.case_count ?? 'Quantidade não informada'} casos · {document.repetitions ?? 'Quantidade não informada'} repetições.</p>}
+            {document.model && (
+              <p>
+                Modelo da coleta: {document.model} ·{" "}
+                {document.case_count ?? "Quantidade não informada"} casos ·{" "}
+                {document.repetitions ?? "Quantidade não informada"} repetições.
+              </p>
+            )}
             <div className="table-scroll">
               <table>
                 <thead>
@@ -128,9 +134,9 @@ export default function Collection({ detail, onSelect }) {
         {detail.analyses?.length > 0 && (
           <div>
             <h3>Avaliações desta campanha</h3>
-            {detail.analyses.map((item) => (
+            {detail.analyses.map((item, index) => (
               <button key={item.id} onClick={() => onSelect(item)}>
-                {item.id}
+                Avaliação {index + 1}
               </button>
             ))}
           </div>
@@ -185,9 +191,7 @@ export default function Collection({ detail, onSelect }) {
             <article className="observation" key={index}>
               <h3>
                 {fields(row).caseId ||
-                  row.directory ||
-                  row.execution_id ||
-                  "Observação"}{" "}
+                  `Observação ${safePage * 20 + index + 1}`}{" "}
                 · {fields(row).strategy}
               </h3>
               <p>Repetição/amostra {fields(row).repetition}</p>

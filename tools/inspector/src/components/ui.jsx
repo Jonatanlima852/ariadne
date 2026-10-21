@@ -25,7 +25,7 @@ export function StatusBadge({ status }) {
   const tone = normalized.includes('COMPLETED') ? 'success'
     : normalized.includes('FAIL') || normalized.includes('CANCEL') ? 'danger'
       : normalized.includes('RUN') || normalized.includes('PROGRESS') ? 'active' : 'neutral';
-  return <span className={`badge ${tone}`}><span className="badge-dot" />{display(status)}</span>;
+  return <span className={`badge ${tone}`}><span className="badge-dot" />{window.AriadnePresentation?.status(status) || display(status)}</span>;
 }
 
 export function JsonDetails({ title, data, open = false }) {

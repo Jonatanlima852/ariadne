@@ -57,7 +57,7 @@ print("Core SDK works without OpenAI/Pydantic")
     if not args.no_inspector:
         run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/inspector', '-p', 'test_serve.py', '-q'])
         run(['npm', 'ci', '--no-audit', '--no-fund'], cwd=ROOT / 'tools/inspector')
-        run(['node', '--test', 'model.test.js'], cwd=ROOT / 'tools/inspector')
+        run(['node', '--test', 'model.test.js', 'presentation.test.js'], cwd=ROOT / 'tools/inspector')
         run(['npm', 'run', 'build'], cwd=ROOT / 'tools/inspector')
         run(['uv', 'run', '--locked', '--project', 'tools/inspector/api', 'python', '-m', 'pytest',
              'tools/inspector/api/test_app.py', '-q'])

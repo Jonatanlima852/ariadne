@@ -1199,3 +1199,95 @@ button:disabled {
   outline: 3px solid #356bb4;
   outline-offset: 3px;
 }
+
+/* Demonstration-first presentation */
+.story-layout.workspace {display:block; max-width:1460px; margin:0 auto; width:100%;}
+.story-layout .report-main {padding:30px clamp(18px,4vw,55px) 60px; min-width:0;}
+.story-navigation {min-height:0; align-items:center; position:static; width:100%; display:flex; flex-direction:row; gap:8px; padding:14px clamp(18px,4vw,55px); border-right:0; border-bottom:1px solid var(--line); background:transparent;}
+.story-navigation > button {width:auto; margin:0; padding:12px 22px; border-radius:24px;}
+.story-navigation > button.active {background:var(--navy); color:white;}
+.demo-heading {max-width:850px; margin:12px 0 28px;}
+.demo-heading h1 {font-size:clamp(28px,4vw,46px); line-height:1.12; letter-spacing:-1.5px; margin:12px 0 16px;}
+.demo-heading p {color:var(--muted); font-size:17px;}
+.mission-strip {display:flex; gap:20px; align-items:center; padding:22px 26px; background:#e7eeea; border-radius:18px; margin-bottom:25px;}
+.mission-symbol {font-size:34px; color:var(--teal);}
+.mission-strip small {font-size:12px; text-transform:uppercase; letter-spacing:1.3px; color:#496256;}
+.mission-strip p {margin:4px 0 0; font-size:18px; line-height:1.5;}
+.participant-count {margin-left:auto; white-space:nowrap; font-size:13px; color:#476355;}
+.theatre {background:#fff; border:1px solid #dce3df; border-radius:24px; overflow:hidden; box-shadow:0 12px 45px #17352707;}
+.theatre-heading {display:flex; justify-content:space-between; align-items:center; padding:24px 28px 12px; gap:20px;}
+.theatre-heading h2 {font-size:20px; margin:0;}
+.theatre-heading > span {color:var(--muted); font-size:12px;}
+.agent-scene-scroll {overflow-x:auto; background-image:radial-gradient(#dce4de 1px,transparent 1px); background-size:20px 20px; margin:10px 15px; border-radius:18px;}
+.agent-scene {display:block; width:100%; min-width:820px; height:auto;}
+.journey-line {stroke:#d4ded8; stroke-width:2; fill:none; transition:stroke .4s;}
+.journey-line.traversed {stroke:#91b7a6;}
+.journey-line.current {stroke:#26816a; stroke-width:3;}
+.response-line {stroke-dasharray:6 5;}
+.route-label {font-size:11px; fill:#718579;}
+.scene-endpoint {fill:#f4f6f3; stroke:#dbe4de; stroke-width:2;}
+.scene-endpoint.done {fill:#d8efe5; stroke:#5b9c80;}
+.endpoint-symbol {font-size:33px; fill:#396653;}
+.station-label {font-size:13px; fill:#42564d;}
+.runtime-station {fill:#173d36; stroke:#173d36; stroke-width:2;}
+.runtime-letter {fill:#d9e8b7; font-size:45px; font-weight:700;}
+.runtime-name {fill:white; font-size:17px; font-weight:600;}
+.agent-station {fill:#fff; stroke:#c7d5ce; stroke-width:2; transition:fill .3s,stroke .3s;}
+.agent-station.active {fill:#e1f1e9; stroke:#238365; stroke-width:3;}
+.agent-station.done {fill:#f0f7f2; stroke:#88af98;}
+.agent-station.warning {fill:#fff3e5; stroke:#ce8e4f;}
+.agent-station.selected {stroke:#376b9b;}
+.agent-station-button {display:flex; gap:12px; align-items:center; width:100%; height:100%; text-align:left; border:0; background:none; color:var(--ink); padding:6px;}
+.agent-station-button > span {display:flex; flex-direction:column; min-width:0; gap:3px;}
+.agent-station-button strong {font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;}
+.agent-station-button small {font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#687c70;}
+.agent-station-button em {font-size:12px; font-style:normal; color:#476453;}
+.agent-avatar {flex:0 0 44px; width:44px; height:44px; fill:none; stroke:#285a47; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+.task-token {transition:transform .7s ease; pointer-events:none;}
+.task-token rect {fill:#e5eadf; stroke:#becbb8;}
+.task-token.active rect {fill:#e7eead; stroke:#9cad48;}
+.task-token.done rect {fill:#d5ece1; stroke:#76a78f;}
+.task-token.warning rect {fill:#ffe1b9; stroke:#c5904d;}
+.task-token text {font-size:11px; font-weight:600; fill:#334c38;}
+.journey-legend {display:flex; flex-wrap:wrap; gap:16px; align-items:center; padding:12px 28px 22px; font-size:12px; color:#68766e;}
+.journey-legend > span:last-child {flex:1 1 300px;}
+.legend-dot {display:inline-block; width:8px; height:8px; border-radius:50%; background:#328767; margin-right:6px;}
+.legend-dot.warning {background:#ce8e4f;}
+.story-caption {padding:24px 28px; background:#f1f5ee; display:flex; gap:18px; align-items:center; min-height:105px;}
+.story-number {font-size:28px; font-weight:700; color:#72917e;}
+.story-caption p {margin:0 0 4px; font-size:19px; line-height:1.5;}
+.story-caption small {color:#6c7c71; font-size:12px;}
+.story-controls {display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:20px 28px;}
+.story-controls button, .story-controls select, .participant-detail button, .story-outcome button, .return-story, .story-notice button, .analysis-step button {border:1px solid #cfdbd2; border-radius:10px; padding:10px 15px; background:#fff; color:#254d3d;}
+.story-controls .play-story {background:#173d36; color:#fff; border-color:#173d36; min-width:135px;}
+.story-controls > small {margin-left:auto; color:var(--muted); font-size:11px;}
+.story-controls label {display:flex; align-items:center; gap:8px; font-size:13px;}
+.participant-detail {padding:18px 28px; display:flex; align-items:center; gap:18px; border-top:1px solid #dce3df;}
+.participant-detail h3,.participant-detail p {margin:0;}
+.participant-detail button {margin-left:auto;}
+.story-outcome {display:flex; gap:24px; justify-content:space-between; align-items:flex-start; padding:30px; margin:28px 0; border:1px solid #dce3df; background:#fff; border-radius:20px;}
+.story-outcome h2 {margin:10px 0 18px; font-size:26px;}
+.story-outcome > div {flex:1; min-width:0;}
+.answer-text {font-size:24px; line-height:1.6; margin:10px 0; color:#193f32; overflow-wrap:anywhere; white-space:pre-wrap; border:0;}
+.domain-verdict {color:#285e47; font-weight:600;}
+.task-story {margin:35px 0;}
+.task-story h2 {font-size:22px;}
+.task-story article {display:flex; align-items:flex-start; gap:16px; margin:15px 0; padding:14px 0;}
+.task-story article > span {background:#e3ebdf; color:#416746; border-radius:50%; width:34px; height:34px; display:grid; place-items:center; flex:0 0 34px;}
+.task-story h3 {font-size:16px; margin:4px 0;}
+.task-story p {margin:4px 0; color:var(--muted); font-size:14px;}
+.technical-view > details {margin:18px 0; border:1px solid var(--line); border-radius:12px; background:#fff; padding:18px;}
+.technical-view > details > summary {cursor:pointer; font-weight:600;}
+.technical-view > code {font-size:12px; overflow-wrap:anywhere; color:var(--muted);}
+.technical-view > details .content-card {margin:20px 0 0;}
+.analysis-step {padding:18px 0; border-top:1px solid var(--line);}
+.analysis-step h3 {font-size:17px;}
+.cast-preview {display:flex; gap:8px; align-items:center; min-height:75px; padding:8px 0;}
+.cast-preview span {display:grid; place-items:center; width:36px; height:36px; border-radius:12px; background:#eef2eb; font-size:21px; color:#476348;}
+.cast-preview .cast-runtime {background:#173d36; color:#e1eabf; font-size:18px; font-weight:bold;}
+.cast-preview i {width:18px; height:1px; background:#bccbbd;}
+.run-card h2 {font-size:21px; line-height:1.35;}
+.run-card > p {font-size:14px; line-height:1.6; color:var(--muted);}
+.story-notice {padding:16px; background:#fff3e5; border-radius:12px;}
+@media(max-width:700px) {.mission-strip,.story-outcome {flex-direction:column; align-items:flex-start;}.participant-count{margin-left:0;}.theatre-heading{align-items:flex-start;flex-direction:column;gap:6px;}.story-navigation{overflow:auto;flex-wrap:nowrap;}.story-navigation>button{white-space:nowrap;padding:10px 13px;font-size:13px;}.story-controls>small{margin-left:0;}.story-caption p{font-size:16px;}}
+@media(prefers-reduced-motion:reduce) {.task-token,.journey-line,.agent-station{transition:none;}}

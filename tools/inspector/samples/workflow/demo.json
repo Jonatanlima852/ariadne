@@ -3,5 +3,25 @@
   "description": "Duas amostras: o segundo agente transforma o texto recebido do primeiro. Explore o binding e as dependências.",
   "origin": ".ariadne/runs/ariadne-bded20878c044a34b8c76236b39d01a3",
   "recorded_at": "2026-10-21T04:57:08.154406+00:00",
-  "limits": "Execução real local determinística, sem LLM. Demonstração funcional; não é benchmark."
+  "limits": "Execução real local determinística, sem LLM. Demonstração funcional; não é benchmark.",
+  "presentation": {
+    "agents": {
+      "echo": {
+        "label": "Eco",
+        "role": "Entrega o texto para a próxima etapa."
+      },
+      "uppercase": {
+        "label": "Editor de texto",
+        "role": "Transforma o texto recebido em letras maiúsculas."
+      }
+    },
+    "steps": {
+      "first": {
+        "label": "Repassar o texto"
+      },
+      "second": {
+        "label": "Transformar em maiúsculas"
+      }
+    }
+  }
 }

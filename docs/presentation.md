@@ -23,8 +23,8 @@ Inicie a API e o frontend conforme o
 [guia do visualizador](../tools/inspector/README.md), abra
 `http://127.0.0.1:4173` e escolha uma das execuções listadas de `.ariadne/runs`.
 
-Para apresentar sem Docker, use o botão **Abrir exemplo**.
-Ele mostra um registro real incluído no repositório e identificado como exemplo.
+Para apresentar sem Docker, escolha um item no catálogo **Demonstrações**.
+Ele mostra registros reais incluídos no repositório e identificados como exemplos.
 Para outros cenários, preserve previamente as pastas de resultados. Diga
 explicitamente quando estiver mostrando uma execução registrada.
 
@@ -48,14 +48,15 @@ cooperação entre raciocínio LLM e BDI.
 
 ## Ler o cenário de recuperação na tela
 
-1. Identifique cenário, estado final e trace. O estado salvo do ambiente indica
-   como o executor o deixou; não consulta o Docker neste momento.
-2. Mostre que a tarefa terminou com `b-healthy` e abra sua saída.
-3. Na linha do tempo, selecione `events.jsonl`. Localize a atribuição a `a-slow`,
-   o timeout e a nova atribuição a `b-healthy` para o mesmo `task_id`.
+1. Abra a demonstração de recuperação e apresente o pedido e os dois agentes.
+2. Clique em **Reproduzir**: a tarefa chega ao primeiro agente, o prazo esgota
+   e o Ariadne atribui o trabalho ao agente alternativo. Use as setas para pausar
+   a explicação em cada acontecimento.
+3. Mostre a resposta em **Desfecho registrado**, separada do instante do replay.
+   O ritmo da animação é didático; os tempos reais aparecem na legenda.
 4. Explique por que sucesso final não significa ausência de falhas intermediárias.
-5. Abra um evento completo ou os dados brutos para mostrar a ligação entre a
-   visualização e os arquivos de origem.
+5. Em **Detalhes técnicos**, abra a linha do tempo ou os dados brutos para
+   relacionar a figura aos IDs e eventos originais.
 
 O reassignment depende da política e da existência de alternativa. O timeout
 não garante que o agente original tenha parado seus efeitos; o cenário não

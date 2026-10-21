@@ -8,14 +8,14 @@ export function TopBar({ onReset }) {
           A
         </span>
         <div>
-          <strong>Ariadne Inspector</strong>
-          <small>evidências de execução</small>
+          <strong>Ariadne</strong>
+          <small>agentes em cooperação</small>
         </div>
       </div>
       {onReset && (
         <button className="new-run" onClick={onReset}>
           <Icon name="layers" />
-          Todas as execuções
+          Explorar experimentos
         </button>
       )}
     </header>

@@ -2,7 +2,7 @@
 
 Interface React/Vite e API FastAPI somente leitura para explorar evidências do
 runtime. Não executa agentes, campanhas ou avaliações. Não usa o stream de
-produção: o replay é uma reprodução manual dos eventos salvos.
+produção: o replay reproduz os acontecimentos dos eventos salvos, com controle manual ou automático.
 
 ## Abrir com um comando
 
@@ -30,23 +30,32 @@ O supervisor escuta somente em localhost e não abre o navegador automaticamente
 
 ## Explorar
 
-- **Execuções:** busca por nome, caso, estratégia ou ID, filtro por estado,
-  data e paginação. A URL local identifica fonte, execução, amostra e aba.
-- **Amostras:** `results.jsonl` permite escolher cada repetição. Eventos são
-  filtrados por trace, preservando números de linha e arquivos originais.
-- **Workflow e replay:** conexões vêm de `manifest.json`, incluindo ramificações.
-  Clique na etapa para ver entrada declarada, bindings e resultado. Avance por
-  evento para acompanhar atribuição, timeout e reassignment. O resultado final
-  fica identificado como tal e não representa o estado intermediário do replay.
-- **Resultados:** estado operacional, decisão de viabilidade e avaliação de
-  domínio são dimensões distintas. Sem avaliação, a interface não presume validade.
-- **Campanhas:** filtre caso, estratégia e repetição; abra uma observação. Falhas
-  sem arquivos continuam visíveis. A interface apresenta registros e total previsto.
-- **Avaliações:** leia tabelas e respostas já calculadas pelo avaliador logístico.
-  A otimalidade agregada inclui rejeições corretas; observe cobertura e limitações.
-- **Demonstrações:** echo, workflow com duas amostras, recuperação e avaliação
-  histórica BDI/LLM/híbrido. Veja [origem dos exemplos](samples/README.md).
-- **Dados brutos:** arquivos integrais, incluindo amostras não selecionadas.
+- **Demonstrações:** catálogo inicial com exemplos de eco, cooperação em duas
+  etapas, recuperação e avaliação histórica. Veja [origem dos exemplos](samples/README.md).
+- **Demonstração:** pedido, agentes ilustrados e tarefas que se deslocam pela
+  cena. Reproduza, pause, avance ou ajuste o ritmo didático. O tempo real aparece
+  separadamente. A resposta final é identificada como desfecho registrado.
+- **Análise:** selecione a repetição e a avaliação associada; consulte resultados
+  por etapa. Estado operacional, viabilidade e validade são dimensões distintas.
+- **Detalhes técnicos:** IDs, definição do workflow, linha do tempo completa,
+  mensagens, avisos de integridade e arquivos brutos permanecem disponíveis.
+- **Minhas execuções:** busca, filtros e paginação dos registros locais.
+  A URL identifica fonte, execução, amostra e aba.
+- **Campanhas e avaliações:** explore observações e métricas já calculadas.
+  Falhas sem arquivos permanecem visíveis; confira cobertura e limitações.
+
+A cena representa atribuições e retornos pelo Ariadne, não mensagens diretas
+entre agentes. As tarefas de etapas diferentes continuam distintas. Sem eventos,
+não se inventa um percurso. A arquitetura BDI/LLM só aparece quando registrada.
+
+### Rótulos opcionais para apresentação
+
+O campo `metadata.presentation` do manifesto pode fornecer `title`, `description`,
+`request`, `agents` e `steps`. Os dois últimos são objetos indexados pelos IDs
+originais; cada agente aceita `label` e `role`, e cada etapa aceita `label`.
+Os exemplos incluídos usam o mesmo formato em `demo.json`, na chave `presentation`.
+Esses rótulos são editoriais: não alteram eventos, resultados ou identificadores.
+Sem rótulos, a interface usa nomes declarados ou “Agente 1”, “Etapa 1” etc.
 
 Avaliações são associadas a execuções/campanhas pelos caminhos de entrada
 registrados. Na execução, selecione a análise para consultar o julgamento da

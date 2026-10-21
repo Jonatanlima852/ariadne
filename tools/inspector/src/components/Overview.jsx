@@ -1,120 +1,83 @@
-import { Icon, StatusBadge, display, formatMs } from "./ui.jsx";
-
-function MetricCard({ icon, label, children, accent }) {
-  return (
-    <article className={`metric-card ${accent || ""}`}>
-      <div className="metric-icon">
-        <Icon name={icon} />
-      </div>
-      <div>
-        <span>{label}</span>
-        <strong>{children}</strong>
-      </div>
-    </article>
-  );
-}
-
-export default function Overview({ report, origin }) {
+import { formatMs, StatusBadge } from "./ui.jsx";
+import ReadableResult from "./ReadableResult.jsx";
+export default function Overview({ report }) {
   const outcome = window.TGInspector.domainOutcome(report);
+  const scene = window.AriadnePresentation.describe(report);
   return (
-    <>
-      <section className="hero-card">
-        <div>
-          <span className="kicker">{origin}</span>
-          <h1>{report.scenario}</h1>
-          <p>
-            Snapshot de evidências da execução. Os valores vêm dos arquivos
-            registrados, não de serviços ativos.
-          </p>
-        </div>
-        <StatusBadge status={report.status} />
-      </section>
-      <section className="metrics-grid">
-        <MetricCard icon="activity" label="Estado" accent="green">
-          {report.status}
-        </MetricCard>
-        <MetricCard icon="layers" label="Resultado">
-          {report.kind}
-        </MetricCard>
-        <MetricCard icon="clock" label="Duração total">
-          {formatMs(report.summary.elapsed_ms)}
-        </MetricCard>
-        <MetricCard icon="file" label="Eventos">
-          {report.events.length}
-        </MetricCard>
-      </section>
-      {report.demo && (
-        <section className="content-card">
-          <h2>{report.demo.title}</h2>
-          <p>{report.demo.description}</p>
-          <p>
-            Origem: {report.demo.origin} · {report.demo.recorded_at}
-          </p>
-          <p>{report.demo.limits}</p>
-        </section>
-      )}
+    <div className="analysis-view">
       <section className="content-card">
-        <h2>Como interpretar o resultado</h2>
-        {report.analysis && (
-          <p>
-            Avaliação selecionada: {report.analysis.id} ·{" "}
-            {report.analysis.generated_at}
-          </p>
-        )}
+        <h2>{scene.title}</h2>
         <div className="outcome-grid">
           <div>
             <small>Execução completa</small>
-            <strong>{report.status}</strong>
+            <StatusBadge status={report.status} />
           </div>
           <div>
-            <small>Workflow/amostra selecionada</small>
-            <strong>{report.result.status || "Não informado"}</strong>
+            <small>Repetição selecionada</small>
+            <StatusBadge status={report.result.status} />
           </div>
           <div>
-            <small>Decisão do agente</small>
-            <strong>{outcome.mission}</strong>
+            <small>Duração do pedido</small>
+            <strong>
+              {formatMs(
+                report.result.client_duration_ms ?? report.result.duration_ms,
+              )}
+            </strong>
           </div>
           <div>
-            <small>Avaliação de domínio</small>
-            <strong>{outcome.validity}</strong>
+            <small>Preparação, execução e encerramento</small>
+            <strong>{formatMs(report.summary.elapsed_ms)}</strong>
           </div>
         </div>
         <p className="section-note">
-          Concluir uma execução não comprova a validade da resposta. Uma recusa
+          As durações têm escopos diferentes. Não são uma medida isolada do
+          custo do runtime.
+        </p>
+      </section>
+      <section className="content-card">
+        <h2>Avaliação da resposta</h2>
+        <p>
+          {outcome.mission === "Sem decisão de viabilidade"
+            ? "Este resultado não declara a viabilidade de uma missão."
+            : outcome.mission}
+        </p>
+        <strong>{outcome.validity}</strong>
+        <p className="section-note">
+          Uma execução concluída não comprova a validade da resposta. Uma recusa
           pode ser correta quando a missão é impossível.
         </p>
       </section>
-      <section className="context-strip">
-        <div>
-          <span>Trace ID</span>
-          <code>{display(report.trace)}</code>
-        </div>
-        <div>
-          <span>Ambiente</span>
-          <strong>{display(report.environment)}</strong>
-        </div>
-        <div>
-          <span>Arquivos</span>
-          <strong>{report.names.length} reconhecidos</strong>
-        </div>
-      </section>
-      {report.summary.error && (
-        <p className="error-message">
-          <Icon name="warning" />
-          {report.summary.error}
-        </p>
-      )}
-      {!!report.warnings.length && (
-        <section className="warning-list">
-          <h2>
-            <Icon name="warning" />
-            Pontos de atenção
-          </h2>
-          {report.warnings.map((warning, index) => (
-            <p key={index}>{warning}</p>
-          ))}
+      {report.demo && (
+        <section className="content-card">
+          <h2>Sobre este exemplo</h2>
+          <p>{report.demo.limits}</p>
+          <p>Registrado em {report.demo.recorded_at}.</p>
         </section>
       )}
-    </>
+      <section className="content-card">
+        <h2>Participantes e resultados</h2>
+        {report.rows.map((row, index) => (
+          <article className="analysis-step" key={row.name}>
+            <h3>
+              Etapa {index + 1} ·{" "}
+              {scene.agents.find((agent) => agent.id === row.agent_id)?.name ||
+                "Agente não informado"}
+            </h3>
+            <StatusBadge status={row.status} />
+            <ReadableResult
+              value={row.output}
+              onDetails={() => {
+                window.location.hash = new URLSearchParams({
+                  ...Object.fromEntries(
+                    new URLSearchParams(window.location.hash.slice(1)),
+                  ),
+                  tab: "details",
+                }).toString();
+              }}
+            />
+          </article>
+        ))}
+      </section>
+    </div>
   );
 }

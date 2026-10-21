@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { inspectorApi } from "../api.js";
 import { Icon, StatusBadge, formatMs } from "./ui.jsx";
 const SOURCES = {
-  runs: "Execuções",
+  samples: "Demonstrações",
+  runs: "Minhas execuções",
   campaigns: "Campanhas",
   evaluations: "Avaliações",
-  samples: "Demonstrações",
 };
 const SIZE = 12;
 export default function RunBrowser({ source, onSource, onSelect, onSample }) {
@@ -47,11 +47,10 @@ export default function RunBrowser({ source, onSource, onSelect, onSample }) {
     <main className="runs-layout">
       <section className="runs-heading">
         <div>
-          <span className="kicker">EVIDÊNCIAS LOCAIS</span>
-          <h1>Explore o que aconteceu.</h1>
+          <span className="kicker">DESCUBRA O ARIADNE</span>
+          <h1>Veja os agentes trabalhando juntos.</h1>
           <p>
-            Execuções, campanhas e análises preservadas. Nenhum agente é
-            iniciado por esta tela.
+            Escolha uma história para acompanhar o pedido, os participantes e a resposta.
           </p>
         </div>
         <button
@@ -104,7 +103,7 @@ export default function RunBrowser({ source, onSource, onSelect, onSample }) {
             "AVALIADA",
             "UNKNOWN",
           ].map((value) => (
-            <option key={value}>{value}</option>
+            <option key={value} value={value}>{window.AriadnePresentation.status(value)}</option>
           ))}
         </select>
       </div>
@@ -134,11 +133,11 @@ export default function RunBrowser({ source, onSource, onSelect, onSample }) {
                     <StatusBadge status={run.status} />
                     <Icon name="arrow" />
                   </div>
-                  <h2>{run.demo?.title || run.scenario}</h2>
-                  <code>{run.id}</code>
+                  <div className="cast-preview" aria-hidden="true"><span>↗</span><i/><span className="cast-runtime">A</span><i/><span>♙</span>{run.participant_count > 1 && <span>♙</span>}<i/><span>✓</span></div>
+                  <h2>{run.presentation?.title || run.demo?.title || window.AriadnePresentation.title(run.scenario)}</h2>
                   <p>
-                    {run.demo?.description ||
-                      [run.case_id, run.strategy].filter(Boolean).join(" · ")}
+                    {run.presentation?.description || run.demo?.description ||
+                      (run.participant_count ? `${run.participant_count} agentes · ${run.step_count} etapas. Abra para acompanhar o percurso.` : "Explore os resultados registrados deste experimento.")}
                   </p>
                   <div className="run-stats">
                     <span>

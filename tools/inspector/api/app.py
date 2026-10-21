@@ -70,7 +70,9 @@ def catalog_entry(path, source):
     metadata = manifest.get("metadata", {})
     demo = _read_json(path / "demo.json")
     return {**summary, **reference, "strategy": metadata.get("strategy"),
-            "case_id": metadata.get("case", {}).get("id"), "demo": demo}
+            "case_id": metadata.get("case", {}).get("id"), "demo": demo,
+            "presentation": metadata.get("presentation", {}),
+            "participant_count": len(manifest.get("agents", [])), "step_count": len(manifest.get("steps", []))}
 
 
 def analysis_links(path):

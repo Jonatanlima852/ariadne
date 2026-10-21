@@ -7,7 +7,7 @@
     "api": "uv run --project api uvicorn app:app --app-dir api --host 127.0.0.1 --port 8787",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test model.test.js"
+    "test": "node --test model.test.js presentation.test.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "6.1.2",

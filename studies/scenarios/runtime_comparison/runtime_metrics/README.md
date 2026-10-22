@@ -1,4 +1,4 @@
-# Métricas da comparação A–E
+# Métricas da comparação A–D
 
 O runner da campanha chama `tools/runtime_metrics/compute_metrics.py` sobre os
 eventos coletados e produz `task-summary.csv`. O script local

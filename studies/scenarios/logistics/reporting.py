@@ -15,6 +15,8 @@ def aggregate(rows):
     summaries = []
     for strategy in ("bdi-only", "llm-only", "hybrid"):
         selected = [row for row in rows if row["strategy"] == strategy]
+        if not selected:
+            continue
         latencies = [row["latency_ms"] for row in selected]
         by_case = defaultdict(list)
         for row in selected:

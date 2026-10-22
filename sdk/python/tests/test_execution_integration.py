@@ -83,9 +83,17 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertEqual(len(metadata["evaluated_plans"]), 10)
 
     def test_logistics_package_runs_outside_checkout_and_can_be_inspected_offline(self):
-        from unittest.mock import patch
-        with patch.dict(os.environ, {"LOGISTICS_STRATEGY": "bdi-only", "LOGISTICS_CASE": "avoid-contamination"}):
-            run = self.execute(ROOT / "studies/scenarios/logistics/scenario.py")
+        source = self.directory / "fake_logistics.py"
+        source.write_text(
+            "import os, sys\nfrom unittest.mock import patch\n"
+            f"sys.path.insert(0, {str(ROOT)!r})\n"
+            "from studies.scenarios.logistics.test_study import FakeClient\n"
+            "from ariadne_sdk.execution import load_scenario\n"
+            "with patch.dict(os.environ, {'LOGISTICS_STRATEGY':'hybrid', 'LOGISTICS_CASE':'avoid-contamination', 'LLM_MODEL':'test-only'}):\n"
+            f"    scenario = load_scenario({str(ROOT / 'studies/scenarios/logistics/scenario.py')!r})\n"
+            "scenario.agents[0]._openai = FakeClient()\n"
+        )
+        run = self.execute(source)
         manifest = json.loads((run / "manifest.json").read_text())
         self.assertEqual(manifest["metadata"]["case"]["id"], "avoid-contamination")
         self.assertTrue(json.loads((run / "result.json").read_text())["output"]["feasible"])

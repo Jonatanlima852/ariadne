@@ -81,14 +81,14 @@ from ariadne_sdk import Campaign
 campaign = Campaign(
     "../studies/scenarios/logistics/scenario.py",
     matrix={"LOGISTICS_CASE": ["simple-delivery", "impossible-deadline"],
-            "LOGISTICS_STRATEGY": ["bdi-only"]},
+            "LOGISTICS_STRATEGY": ["hybrid"]},
     repeat=2,
     name="logistics-check",
 )
 ```
 
 O caminho do experimento é relativo ao arquivo da campanha. Execute com
-`./ariadne campaign arquivo.py --runtime-dir .ariadne/bin`. O exemplo
+`ARIADNE_SDK_EXTRAS=llm ./ariadne campaign arquivo.py --runtime-dir .ariadne/bin`. O exemplo
 [studies/scenarios/basic_task/benchmarks/campaign.py](../studies/scenarios/basic_task/benchmarks/campaign.py) repete o echo com processos novos.
 A matriz usa valores textuais e ordem de inserção; a repetição é o laço externo.
 A coleta é sequencial, restaura o ambiente entre observações e cria uma execução

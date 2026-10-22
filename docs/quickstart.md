@@ -71,7 +71,7 @@ O [guia do Inspector](../tools/inspector/README.md) explica outras opções.
 ```sh
 ./ariadne run studies/scenarios/sequential_workflow/scenario.py
 ./ariadne run studies/scenarios/failure_reassignment/scenario.py
-./ariadne run studies/scenarios/logistics/scenario.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
 ```
 
 O primeiro exemplo transfere a saída entre etapas; o segundo demonstra timeout

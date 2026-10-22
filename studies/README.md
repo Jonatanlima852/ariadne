@@ -17,7 +17,7 @@ ou por ser uma demonstração: todos fazem parte dos estudos do TG.
 | [Agendamento](scenarios/meeting/README.md) | Crenças, restrições e planos |
 | [Rota heterogênea](scenarios/heterogeneous_route/README.md) | Cooperação LLM → BDI → LLM |
 | [Logística](scenarios/logistics/README.md) | Estratégias BDI, LLM e híbrida em um domínio comum |
-| [Comparação do runtime](scenarios/runtime_comparison/README.md) | Campanha histórica A–E de capacidades do runtime |
+| [Comparação do runtime](scenarios/runtime_comparison/README.md) | Campanha A–D de capacidades do runtime |
 
 ## Onde colocar cada artefato
 

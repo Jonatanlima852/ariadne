@@ -32,7 +32,7 @@ respostas com a execução publicada.
 |---|---|---|
 | Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/heterogeneous_route/client/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/docker/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | Caso B do [runner A–E](../studies/scenarios/runtime_comparison/benchmarks/run.py) | Três agentes com carga reportada configurada |
+| Políticas alteram a distribuição? | Caso B do [runner A–D](../studies/scenarios/runtime_comparison/benchmarks/run.py) | Três agentes com carga reportada configurada |
 | O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
@@ -48,6 +48,10 @@ oito casos, duas repetições e 16 respostas por estratégia, com modelo
 - BDI-only: recebe a missão estruturada e usa planejamento simbólico.
 - LLM-only: recebe pedido natural e mundo e propõe uma sequência de ações.
 - Híbrido: LLM interpreta restrições; BDI planeja a missão estruturada.
+
+A avaliação atual compara apenas LLM-only e híbrido. BDI-only foi retirado da
+coleta; aparece abaixo exclusivamente para preservar o registro histórico,
+não como estratégia da avaliação atual do TG.
 
 | Estratégia | Validade | Otimalidade agregada¹ | Consistência² | Latência média | Tokens totais |
 |---|---:|---:|---:|---:|---:|
@@ -88,18 +92,19 @@ Na interface declarativa, `./ariadne run arquivo.py --repeat N` preserva as amos
 brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
 em código separado. O [guia de experimentos](experiments.md) descreve os
 arquivos, os escopos de duração e a reutilização de estado entre repetições.
-Os runners históricos abaixo mantêm seu comportamento e artefatos publicados.
+Os artefatos publicados permanecem intactos. Os runners abaixo foram ajustados
+para a avaliação atual: não executam mais BDI isolado nem a comparação do caso E.
 
 O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scenarios/logistics/README.md):
 
 ```sh
-./ariadne run studies/scenarios/logistics/scenario.py
-uv run --project sdk/python python -m studies.scenarios.logistics.benchmarks.campaign
+ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
+uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
 python3 -m studies.scenarios.logistics.evaluate .ariadne/campaigns/logistics-ID
 ```
 
-Os dois primeiros comandos usam BDI por padrão. O guia do estudo explica
-como selecionar LLM/híbrido e exportar as credenciais. Substitua `logistics-ID`
+Os dois primeiros comandos usam o fluxo híbrido por padrão e fazem chamadas LLM.
+O guia do estudo explica como selecionar LLM-only e exportar as credenciais. Substitua `logistics-ID`
 pelo diretório informado na coleta. A avaliação usa os dados preservados nos
 manifestos e escreve em uma pasta nova; não inicia agentes. No novo caminho,
 todas as estratégias usam workflows, portanto os escopos de latência diferem
@@ -119,9 +124,9 @@ permanecer local. Os scripts aceitam outro arquivo via `BENCHMARK_ENV_FILE`.
 ./studies/scenarios/runtime_comparison/benchmarks/run.sh
 ```
 
-A suíte A–E mede execução básica, políticas, cooperação heterogênea,
-recuperação e comparação de entrada estruturada com fluxo assistido por LLM.
-Os casos C, D e E têm uma amostra por execução padrão.
+A suíte A–D mede execução básica, políticas, cooperação heterogênea,
+e recuperação. O antigo caso E (BDI isolado versus fluxo assistido) foi retirado.
+Os casos C e D têm uma amostra por execução padrão.
 
 ```sh
 LOGISTICS_REPETITIONS=2 ./studies/scenarios/logistics/benchmarks/run.sh

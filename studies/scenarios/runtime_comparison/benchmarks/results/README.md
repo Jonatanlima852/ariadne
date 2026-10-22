@@ -1,4 +1,4 @@
-# Resultados da comparação A–E
+# Resultados da comparação A–D
 
 `../run.sh` gera uma pasta datada com eventos, resultados por caso, resumo de
 latências, distribuição entre agentes e gráficos. `task-summary.csv` e

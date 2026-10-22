@@ -1,4 +1,4 @@
-"""LOGISTICS_STRATEGY=bdi-only ./ariadne run studies/scenarios/logistics/scenario.py"""
+"""ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py"""
 import os
 from ariadne_sdk import Scenario, Step
 from studies.scenarios.logistics.agents.mission_planner import mission_planner
@@ -6,13 +6,9 @@ from studies.scenarios.logistics.data import load_case, load_world
 
 case = load_case(os.getenv("LOGISTICS_CASE", "avoid-contamination"))
 world = load_world()
-strategy = os.getenv("LOGISTICS_STRATEGY", "bdi-only")
+strategy = os.getenv("LOGISTICS_STRATEGY", "hybrid")
 
-if strategy == "bdi-only":
-    agents = [mission_planner()]
-    tasks = [Step("logistics-execution", case["request"], name="execute",
-                  payload={"world": world, "mission": case["mission"]})]
-elif strategy in ("llm-only", "hybrid"):
+if strategy in ("llm-only", "hybrid"):
     from studies.scenarios.logistics.agents.mission_assistant import mission_assistant
     agents = [mission_assistant()]
     if strategy == "llm-only":

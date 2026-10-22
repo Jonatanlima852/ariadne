@@ -50,7 +50,7 @@ import importlib.util
 from ariadne_sdk.execution import load_scenario
 assert importlib.util.find_spec("openai") is None
 assert importlib.util.find_spec("pydantic") is None
-for path in ("studies/scenarios/basic_task/scenario.py", "studies/scenarios/bdi_route/scenario.py", "studies/scenarios/meeting/scenario.py", "studies/scenarios/logistics/scenario.py"):
+for path in ("studies/scenarios/basic_task/scenario.py", "studies/scenarios/bdi_route/scenario.py", "studies/scenarios/meeting/scenario.py"):
     load_scenario(path).definition()
 print("Core SDK works without OpenAI/Pydantic")
 '''])

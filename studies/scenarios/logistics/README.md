@@ -10,25 +10,26 @@ o SDK administra processos e o runtime Go executa o workflow.
 Da raiz, com Go e uv:
 
 ```sh
-./ariadne run studies/scenarios/logistics/scenario.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
 ./ariadne status
 ./ariadne logs
 ```
 
-O padrão usa BDI e `avoid-contamination`, sem chave ou chamada LLM. Mundo,
+O padrão é híbrido (LLM interpreta e BDI planeja), no caso `avoid-contamination`.
+Requer credencial e faz chamadas ao provedor. Mundo,
 missão de referência, caso, estratégia e modelo ficam nos metadados do manifesto.
 Esses metadados não são enviados automaticamente aos agentes: cada tarefa
 recebe somente o payload declarado. Para escolher caso e estratégia:
 
 ```sh
-LOGISTICS_CASE=impossible-deadline ./ariadne run studies/scenarios/logistics/scenario.py
-ARIADNE_SDK_EXTRAS=llm LOGISTICS_STRATEGY=hybrid ./ariadne run studies/scenarios/logistics/scenario.py
-ARIADNE_SDK_EXTRAS=llm LOGISTICS_STRATEGY=llm-only ./ariadne run studies/scenarios/logistics/scenario.py
+LOGISTICS_CASE=impossible-deadline ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
+LOGISTICS_STRATEGY=hybrid ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
+LOGISTICS_STRATEGY=llm-only ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
 ```
 
 As estratégias com LLM exigem `OPENAI_API_KEY` exportada e acesso ao modelo
 configurado por `LLM_MODEL`. O executor local não lê `.env` automaticamente.
-BDI recebe mundo e missão estruturada; LLM-only recebe pedido natural e mundo;
+LLM-only recebe pedido natural e mundo;
 no híbrido, `interpret.output["mission"]` transfere a interpretação ao BDI.
 
 O mundo, os oito casos, os prompts logísticos e as regras foram preservados.
@@ -37,18 +38,18 @@ os adaptadores antigos de cliente estão em [legacy.py](legacy.py).
 
 ## Coletar uma campanha
 
-Após a primeira execução preparar `.ariadne/bin`, colete os oito casos BDI com
+Após a primeira execução preparar `.ariadne/bin`, colete os oito casos híbridos com
 duas repetições:
 
 ```sh
-uv run --project sdk/python python -m studies.scenarios.logistics.benchmarks.campaign
+uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
 ```
 
-Para comparar as três estratégias, com chamadas LLM reais:
+Para comparar as duas estratégias, com chamadas LLM reais:
 
 ```sh
 uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign \
-  --strategies bdi-only llm-only hybrid --repeat 2
+  --strategies llm-only hybrid --repeat 2
 ```
 
 A campanha intercala estratégias por caso e repetição. Salva `campaign.json`
@@ -95,8 +96,9 @@ antes de retornar metadados.
 Todas as estratégias novas usam workflows. Suas latências não têm exatamente
 o mesmo escopo das tarefas simples do benchmark histórico. Os resultados em
 `studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2` preservam os conteúdos
-da coleta histórica, antes localizada em `benchmarks/results/`. Os runners
-antigos continuam disponíveis para reprodução histórica.
+da coleta histórica, antes localizada em `benchmarks/results/`. Os arquivos preservados incluem BDI-only da coleta antiga; os runners atuais
+executam somente LLM-only e híbrido. A leitura das evidências antigas continua
+disponível no avaliador, sem recolher BDI isolado.
 
 ## Verificar
 

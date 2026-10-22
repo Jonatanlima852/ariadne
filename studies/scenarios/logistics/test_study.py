@@ -35,7 +35,7 @@ class FakeClient:
 class StudyTests(unittest.TestCase):
     def make_run(self, directory, case_id, *, completed=True, repeat=1):
         case, world = load_case(case_id), load_world()
-        manifest = {"repeat": repeat, "metadata": {"study": "logistics", "strategy": "bdi-only",
+        manifest = {"repeat": repeat, "metadata": {"study": "logistics", "strategy": "hybrid",
                                                     "case": case, "world": world}}
         (directory / "manifest.json").write_text(json.dumps(manifest))
         record = {"sample": 1, "status": "WORKFLOW_STATUS_COMPLETED" if completed else "RPC_FAILED",
@@ -70,7 +70,7 @@ class StudyTests(unittest.TestCase):
     def test_all_strategy_descriptions_have_labels_and_share_domain(self):
         from ariadne_sdk.execution import load_scenario
         source = Path(__file__).with_name("scenario.py")
-        for strategy in ("bdi-only", "llm-only", "hybrid"):
+        for strategy in ("llm-only", "hybrid"):
             with patch.dict(os.environ, {"LOGISTICS_STRATEGY": strategy}), patch("openai.OpenAI", return_value=FakeClient()):
                 scenario = load_scenario(source)
             self.assertEqual(scenario.metadata["strategy"], strategy)
@@ -79,6 +79,29 @@ class StudyTests(unittest.TestCase):
             self.assertEqual(len(steps), 2 if strategy == "hybrid" else 1)
             if strategy == "hybrid":
                 self.assertEqual(steps[1]["input_bindings"][0]["source_path"], "output.mission")
+
+    def test_standalone_bdi_strategy_is_rejected(self):
+        from ariadne_sdk.execution import load_scenario
+        with patch.dict(os.environ, {"LOGISTICS_STRATEGY": "bdi-only"}):
+            with self.assertRaisesRegex(ValueError, "unknown logistics strategy"):
+                load_scenario(Path(__file__).with_name("scenario.py"))
+
+    def test_two_strategy_report_does_not_require_standalone_bdi(self):
+        from studies.scenarios.logistics.reporting import aggregate
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            self.make_run(directory, "avoid-contamination")
+            row = evaluate_run(directory)[0]
+            summary = aggregate([row, {**row, "strategy": "llm-only"}])
+        self.assertEqual([item["strategy"] for item in summary], ["llm-only", "hybrid"])
+        self.assertTrue(all(item["runs"] == 1 for item in summary))
+
+    def test_campaign_defaults_to_hybrid(self):
+        from studies.scenarios.logistics.benchmarks import campaign
+        with patch.object(campaign, "run_campaign", return_value=(None, {"status": "COMPLETED"})) as run, \
+                patch.object(Path, "is_file", return_value=True):
+            self.assertEqual(campaign.main(["--cases", "avoid-contamination", "--repeat", "1"]), 0)
+        self.assertEqual(run.call_args.args[0].matrix["LOGISTICS_STRATEGY"], ["hybrid"])
 
     def test_sdk_planner_matches_reference_on_all_cases_and_variations(self):
         from ariadne_sdk import Task

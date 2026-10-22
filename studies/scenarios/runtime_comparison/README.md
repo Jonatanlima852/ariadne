@@ -1,6 +1,6 @@
 # Comparação do runtime
 
-Campanha histórica A–E: execução simples, políticas de seleção, workflow heterogêneo, recuperação e decomposição.
+Campanha A–D: execução simples, políticas de seleção, workflow heterogêneo com decomposição e recuperação.
 
 ## Executar
 

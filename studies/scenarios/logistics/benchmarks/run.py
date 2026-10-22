@@ -1,4 +1,4 @@
-"""Compara BDI-only, LLM-only e LLM+BDI em missões restritas."""
+"""Compara LLM-only e LLM+BDI em missões restritas."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "sdk/python/src"))
 from studies.scenarios.logistics import evaluate_plan, plan_mission
 from ariadne_sdk import RuntimeClient
 from studies.scenarios.logistics.reporting import aggregate, write_csv, write_chart
-from studies.scenarios.logistics.legacy import run_bdi, run_llm, run_hybrid
+from studies.scenarios.logistics.legacy import run_llm, run_hybrid
 
 
 def measured(operation):
@@ -33,7 +33,7 @@ def usage_tokens(metadata):
 
 
 def extract(strategy, result):
-    if strategy in ("bdi-only", "llm-only"):
+    if strategy == "llm-only":
         result.assert_completed()
         return result.output, usage_tokens(result.metadata), None
     result.assert_completed()
@@ -60,7 +60,6 @@ def main():
             for case in cases:
                 oracle = plan_mission(world, case["mission"])
                 for strategy, operation in (
-                    ("bdi-only", lambda c=case: run_bdi(scenario, c, world)),
                     ("llm-only", lambda c=case: run_llm(scenario, c, world)),
                     ("hybrid", lambda c=case: run_hybrid(scenario, c, world)),
                 ):

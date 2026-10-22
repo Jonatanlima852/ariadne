@@ -30,7 +30,7 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 - No caminho manual, o Compose básico exige conferir prontidão pelos logs.
   `./ariadne` verifica endpoints e registro dos agentes antes de executar o cenário.
 - O cliente genérico não apresenta workflows; use os scripts ou `RuntimeClient`.
-- A suíte A–E inclui chamadas LLM e exige credencial mesmo contendo casos
+- A suíte A–D inclui chamadas LLM e exige credencial mesmo contendo casos
   determinísticos. Os cenários individuais sem LLM continuam disponíveis.
 - Os runners de benchmarks reutilizam um volume de eventos. Uma nova coleta
   deve começar em ambiente isolado ou com limpeza deliberada após preservar dados.

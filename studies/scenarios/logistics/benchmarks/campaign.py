@@ -9,7 +9,7 @@ from studies.scenarios.logistics.data import load_cases
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--strategies", nargs="+", choices=("bdi-only", "llm-only", "hybrid"), default=["bdi-only"])
+    parser.add_argument("--strategies", nargs="+", choices=("llm-only", "hybrid"), default=["hybrid"])
     parser.add_argument("--cases", nargs="+", choices=[case["id"] for case in load_cases()])
     parser.add_argument("--repeat", type=int, default=2)
     parser.add_argument("--runtime-dir", type=Path, default=Path(".ariadne/bin"))

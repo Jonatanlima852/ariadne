@@ -53,7 +53,7 @@ portas publicadas e usa exclusivamente a rede interna de cada execução.
 A básica e a rota heterogênea compartilham portas padrão: encerre uma antes
 de iniciar a outra ou configure as portas do cenário. A missão logística
 possui Compose próprio em `studies/scenarios/logistics/docker/compose.yaml` e
-compartilha a porta padrão com a comparação A–E.
+compartilha a porta padrão com a comparação A–D.
 
 Não envie tarefas de decomposição pelo cliente genérico esperando que ele
 mostre um workflow. Use o script da rota heterogênea ou `RuntimeClient` do SDK.

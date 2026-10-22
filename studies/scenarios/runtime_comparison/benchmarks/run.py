@@ -1,4 +1,4 @@
-"""Executa os cenários A-E contra a topologia de benchmarks."""
+"""Executa os casos A-D contra a topologia de benchmarks."""
 
 from __future__ import annotations
 
@@ -210,39 +210,14 @@ def main():
         raw["D"] = [sample]
         summaries.append(summarize("D-reassignment", [sample], reassigned=True))
 
-        structured, structured_latency = measured(lambda: scenario.submit(
-            "E-structured", goal="Planeje uma rota de A para D",
-            capabilities=["route-planning"], task_type="PLAN_ROUTE",
-            payload={"origin": "A", "destination": "D"},
-            bdi_goal="ir de A para D",
-        ))
-        structured.assert_completed()
-        assisted, assisted_latency = measured(lambda: RuntimeClient(
-            "benchmark-e-assisted", address,
-            entry_capability="task-decomposition",
-        ).ask(GOAL))
-        assisted.assert_completed()
-        structured_sample = {"latency_ms": structured_latency, "agent_id": structured.agent_id, "status": structured.status}
-        assisted_sample = workflow_sample(assisted, assisted_latency)
-        raw["E"] = {"structured": [structured_sample], "llm_assisted": [assisted_sample]}
-        summaries.append(summarize("E-structured", [structured_sample]))
-        summaries.append(summarize(
-            "E-llm-assisted", [assisted_sample],
-            overhead_ms=assisted_latency - structured_latency,
-            selected_agents=[
-                value["result"].raw.agent_id for value in assisted.steps.values()
-                if value["result"]
-            ],
-        ))
-
     document = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "orchestrator": address,
         "raw": raw,
         "summary": summaries,
         "limitations": {
-            "message_count": "0: the evaluated workflow uses direct AgentService calls; Messaging Service is not implemented",
-            "sample_note": "C, D and E use one costly integration sample by default",
+            "message_count": "0: the evaluated workflow uses direct AgentService calls; the Messaging Service is evaluated separately",
+            "sample_note": "C and D use one integration sample by default",
         },
     }
     (output_dir / "results.json").write_text(
@@ -253,7 +228,7 @@ def main():
     write_chart(output_dir / "latency.svg", summaries)
     write_distribution_chart(output_dir / "agent-distribution.svg", summaries)
     write_message_chart(output_dir / "message-count.svg")
-    print(f"BENCHMARKS A-E APROVADOS output={output_dir}")
+    print(f"BENCHMARKS A-D APROVADOS output={output_dir}")
 
 
 if __name__ == "__main__":

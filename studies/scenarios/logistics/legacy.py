@@ -1,15 +1,5 @@
 """Adaptadores dos clientes Docker históricos, preservados para compatibilidade."""
 
-def run_bdi(scenario, case, world):
-    return scenario.submit(
-        f"bdi-{case['id']}",
-        goal=case["request"],
-        capabilities=["logistics-execution"],
-        task_type="LOGISTICS_BDI_ONLY",
-        payload={"world": world, "mission": case["mission"]},
-    )
-
-
 def run_llm(scenario, case, world):
     return scenario.submit(
         f"llm-{case['id']}",

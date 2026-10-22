@@ -102,9 +102,10 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
 veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
 [agente de rotas](../studies/agents/route-planner/main.py) usam a API histórica: seu custo
-é retornado no candidato, não no decorator. Para LLM, consulte os handlers
-`@llm_capability` do [agente LLM](../studies/agents/planner-explainer/main.py): recebem objetivo e
-contexto e retornam `Prompt`, com schema de saída declarado no decorator.
+é retornado no candidato, não no decorator. Para LLM, prefira composição de `LlmCapability`, como no
+[planejador e explicador](../studies/agents/planner-explainer/main.py). Cada capacidade
+associa prompt, modelo de resposta e conversão opcional; não exige subclasse.
+`@llm_capability` continua disponível no SDK para agentes que precisem de métodos.
 
 ## Alterações no contrato
 

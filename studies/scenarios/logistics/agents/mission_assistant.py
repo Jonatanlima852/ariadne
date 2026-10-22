@@ -1,44 +1,7 @@
-"""Agente linguístico do estudo; prompts e schemas preservados."""
+"""Capacidades logísticas reutilizáveis, sem subclasse de agente."""
 import json
-from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field
-from ariadne_sdk import LlmAgent, LlmCapability, Prompt, llm_capability
-
-
-class LogisticsAction(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    type: Literal[
-        "PICK_UP_PACKAGE", "PICK_UP_KEY", "RECHARGE", "UNLOCK_DOOR",
-        "MOVE", "DELIVER_PACKAGE",
-    ]
-    origin: str = ""
-    destination: str = ""
-    location: str = ""
-
-
-class LogisticsPlan(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    feasible: bool
-    actions: list[LogisticsAction]
-    rejection_reason: str = ""
-
-
-class LogisticsMission(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    destination: str
-    forbidden_locations: list[str]
-    required_locations: list[str]
-    minimum_final_battery: int = Field(ge=0, le=100)
-    deadline_minutes: int = Field(gt=0)
-
-
-class LogisticsInterpretation(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    mission: LogisticsMission
+from ariadne_sdk import LlmAgent, LlmCapability, Prompt
+from .mission_models import LogisticsPlan, LogisticsInterpretation
 
 
 def normalize_logistics_plan(plan):
@@ -87,22 +50,14 @@ def logistics_interpret(goal, context):
     )
 
 
-def mission_assistant(**options):
-    configuration = dict(name="mission-assistant", agent_id="mission-assistant-01", handlers=[
+def mission_capabilities():
+    return [
         LlmCapability("logistics-plan", logistics_plan, LogisticsPlan, normalize_logistics_plan),
         LlmCapability("logistics-interpret", logistics_interpret, LogisticsInterpretation),
-    ])
+    ]
+
+
+def mission_assistant(**options):
+    configuration = dict(name="mission-assistant", agent_id="mission-assistant-01",
+                         handlers=mission_capabilities())
     return LlmAgent(**(configuration | options))
-
-
-class MissionAssistant(LlmAgent):
-    """Adaptador para os agentes Docker históricos."""
-    capabilities = ["logistics-plan", "logistics-interpret"]
-    default_agent_id = "mission-assistant-01"
-    default_name = "Mission Assistant"
-    logistics_plan = staticmethod(llm_capability(
-        "logistics-plan", output_schema=LogisticsPlan, result_mapper=normalize_logistics_plan,
-    )(logistics_plan))
-    logistics_interpret = staticmethod(llm_capability(
-        "logistics-interpret", output_schema=LogisticsInterpretation,
-    )(logistics_interpret))

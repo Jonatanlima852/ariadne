@@ -27,14 +27,14 @@ resultado estruturado em `result.json`, dentro do diretório da execução.
 
 - Para estudar o runtime: echo, workflow e falha.
 - Para estudar comunicação iniciada por agentes: mensageria.
-- Para observar o raciocínio BDI sem serviços: [demo do agendador](../studies/agents/meeting-scheduler/demo.py).
+- Para observar o raciocínio BDI sem Docker: [cenário de agendamento](../studies/scenarios/meeting/scenario.py).
 - Para observar interoperabilidade LLM/BDI: rota heterogênea e missão logística.
 - Para comparar resultados sistematicamente: [guia de avaliação](evaluation.md).
 
-A demo do agendador roda com o ambiente do SDK:
+O cenário de agendamento usa o SDK e inicia o runtime local:
 
 ```sh
-uv run --directory sdk/python python ../../studies/agents/meeting-scheduler/demo.py
+./ariadne run studies/scenarios/meeting/scenario.py
 ```
 
 ## Endereços e isolamento

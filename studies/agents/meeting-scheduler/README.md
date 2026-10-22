@@ -7,7 +7,7 @@ Este diretório funciona como ponto de navegação; não contém outro worker.
 Para observar deliberação local sem Docker, execute da raiz:
 
 ```sh
-uv run --directory sdk/python python ../../studies/agents/meeting-scheduler/demo.py
+./ariadne run studies/scenarios/meeting/scenario.py
 ```
 
 Veja o [catálogo de cenários](../../../docs/scenarios.md) para integrar BDI ao runtime

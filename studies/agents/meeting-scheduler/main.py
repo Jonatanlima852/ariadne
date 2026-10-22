@@ -24,6 +24,12 @@ class MeetingSchedulerAgent(BdiAgent):
     agente precisa avaliar compromissos (quórum parcial, desvio de
     horário) e justificar a escolha."""
 
+    default_agent_id = "meeting-scheduler-01"
+    default_port = 60055
+    runtime_name = "python-sdk-bdi"
+    capabilities = ["meeting-scheduling"]
+    beliefs = CALENDARS
+
     def desire(self, task):
         """Lê participantes, duração e horário preferido de task.payload.
 
@@ -54,20 +60,9 @@ class MeetingSchedulerAgent(BdiAgent):
 
 def main():
     agent_id = os.getenv("AGENT_ID", "meeting-scheduler-01")
-    host = os.getenv("AGENT_HOST", "localhost")
-    port = int(os.getenv("AGENT_PORT", "60055"))
-    registry_addr = os.getenv("REGISTRY_ADDR", "localhost:50051")
-    capability = os.getenv("CAPABILITY", "meeting-scheduling")
-
-    agent = MeetingSchedulerAgent(
-        agent_id=agent_id,
+    agent = MeetingSchedulerAgent.from_env(
         name=f"Meeting Scheduler Agent ({agent_id})",
-        capabilities=[capability],
-        host=host,
-        port=port,
-        registry_addr=registry_addr,
-        runtime="python-sdk-bdi",
-        beliefs=CALENDARS,
+        capabilities=[os.getenv("CAPABILITY", "meeting-scheduling")],
         plan_library=PLAN_LIBRARY,
     )
     agent.run()

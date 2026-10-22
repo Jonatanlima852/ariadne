@@ -11,7 +11,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 from ariadne_sdk import BdiAgent, plan
 from studies.scenarios.logistics.planning import plan_mission
 
-from beliefs import KNOWN_ROUTES, direct_distance, known_destinations_from
+from beliefs import KNOWN_ROUTES
+from plans import direct_route_plan, via_intermediate_plan, unknown_route_plan
 
 logging.basicConfig(
     level=logging.INFO,
@@ -81,69 +82,18 @@ class RoutePlanningAgent(BdiAgent):
 
     @plan(name="direct_route")
     def direct_route(self, desire, beliefs):
-        if desire.get("kind") != "route":
-            return None
-        origin, destination = desire["origin"], desire["destination"]
-        distance = direct_distance(origin, destination, beliefs)
-        if distance is None:
-            return None
-        return {
-            "cost": distance,
-            "reasoning_summary": (
-                f"existe uma conexão direta de {origin} para {destination} "
-                f"nas crenças (distância {distance})."
-            ),
-            "origin": origin,
-            "destination": destination,
-            "route": [origin, destination],
-            "distance": distance,
-        }
+        if desire.get("kind") == "route":
+            return direct_route_plan(desire, beliefs)
 
     @plan(name="via_intermediate")
     def via_intermediate(self, desire, beliefs):
-        if desire.get("kind") != "route":
-            return None
-        origin, destination = desire["origin"], desire["destination"]
-        best = None
-        for intermediate in known_destinations_from(origin, beliefs):
-            if intermediate == destination:
-                continue
-            first_leg = direct_distance(origin, intermediate, beliefs)
-            second_leg = direct_distance(intermediate, destination, beliefs)
-            if first_leg is None or second_leg is None:
-                continue
-            total = first_leg + second_leg
-            if best is None or total < best["distance"]:
-                best = {"intermediate": intermediate, "distance": total}
-        if best is None:
-            return None
-        return {
-            "cost": best["distance"],
-            "reasoning_summary": (
-                f"escala em {best['intermediate']} encontrada nas crenças "
-                f"(distância total {best['distance']})."
-            ),
-            "origin": origin,
-            "destination": destination,
-            "route": [origin, best["intermediate"], destination],
-            "distance": best["distance"],
-        }
+        if desire.get("kind") == "route":
+            return via_intermediate_plan(desire, beliefs)
 
     @plan(name="unknown_route", priority=-100)
     def unknown_route(self, desire, beliefs):
-        if desire.get("kind") != "route":
-            return None
-        origin, destination = desire["origin"], desire["destination"]
-        return {
-            "reasoning_summary": (
-                f"nenhuma rota conhecida (direta ou com escala) de {origin} "
-                f"para {destination}."
-            ),
-            "origin": origin,
-            "destination": destination,
-            "route": [],
-            "distance": None,
-        }
+        if desire.get("kind") == "route":
+            return unknown_route_plan(desire, beliefs)
 
     def merge_external_beliefs(self, beliefs_text):
         """Interpreta task.bdi.beliefs como uma lista JSON de rotas, ex.:

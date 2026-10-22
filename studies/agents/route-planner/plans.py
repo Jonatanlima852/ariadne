@@ -73,7 +73,7 @@ def unknown_route_plan(desire, beliefs):
         "name": "unknown_route",
         "reasoning_summary": (
             f"nenhuma rota conhecida (direta ou com escala) de {origin} "
-            f"para {destination} nas crenças; plano de fallback escolhido."
+            f"para {destination}."
         ),
         "output": {
             "origin": origin,

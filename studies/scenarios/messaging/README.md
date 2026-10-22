@@ -10,6 +10,8 @@ Da raiz do repositório:
 ./ariadne scenario messaging-basic
 ```
 
+A entrada [scenario.py](scenario.py) usa dois clientes do contrato, sem agentes BDI/LLM.
+
 [Execução e configuração Docker](docker/README.md).
 
 Este cenário determinístico demonstra um comportamento funcional; não mede,

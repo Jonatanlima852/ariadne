@@ -30,7 +30,7 @@ LLM. Veja a [referência](../../../../docs/cli.md).
 
 ```sh
 docker compose --env-file .env -f studies/scenarios/logistics/docker/compose.yaml up \
-  --build -d --wait registry orchestrator route-planner planner-explainer
+  --build -d --wait registry orchestrator mission-planner mission-assistant
 
 uv run --project sdk/python \
   python studies/scenarios/logistics/docker/scenario.py

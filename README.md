@@ -65,7 +65,7 @@ Veja o [caminho Docker](docs/quickstart.md#alternativa-com-docker).
 - Workflows com dependências, bindings de resultados, paralelismo e API assíncrona.
 - Mensageria em memória entre agentes.
 - SDK Python com `Agent`, `BdiAgent`, `LlmAgent` e `Scenario`.
-- Cenários executáveis, benchmarks A–E e comparação logística BDI/LLM/híbrido.
+- Cenários organizados por assunto, benchmarks próprios e comparação logística LLM-only/híbrido.
 
 É um protótipo de pesquisa para experimentos locais. Estado em memória,
 mensageria sem reentrega e dependência do provedor LLM são limites relevantes;

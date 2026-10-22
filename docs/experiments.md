@@ -55,9 +55,9 @@ status e timestamps. Para metadados e falhas explícitas, devolva `TaskResult`.
 Exceções são convertidas para os erros do contrato.
 
 Classes que implementam `Agent.handle`, `BdiAgent` e `LlmAgent` usam o mesmo
-executor. Veja [bdi.py](../studies/scenarios/bdi_route/scenario.py), que declara um agente BDI sem
+executor. Veja [fixture de seleção BDI](../sdk/python/tests/fixtures/route_choice.py), que declara um agente BDI sem
 subclasse, com dois planos e seleção de menor custo. A [referência BDI](bdi.md)
-explica `Input`, `Plan` e planejamento genérico; [meeting.py](../studies/scenarios/meeting/scenario.py)
+explica `Input`, `Plan` e planejamento genérico; [agendamento](../studies/scenarios/meeting/scenario.py)
 aplica a mesma interface a agendas. Agentes maiores podem ser
 importados de módulos instalados ou vizinhos ao arquivo do experimento.
 
@@ -69,7 +69,7 @@ ou `AGENT_ID` globais.
 O backend local herda o ambiente do terminal e não carrega `.env`
 automaticamente. Para agentes LLM, exporte as variáveis necessárias, incluindo
 `OPENAI_API_KEY`, antes de executar. Os exemplos echo, BDI, workflow, recuperação e reunião não usam LLM.
-`studies/scenarios/llm_greeting/scenario.py` exige o extra `llm` e usa o provedor apenas na execução.
+`studies/scenarios/greeting/scenario.py` exige o extra `llm` e usa o provedor apenas na execução.
 
 ## Dependências entre tarefas
 
@@ -105,7 +105,6 @@ verifica a descrição Python; a validação definitiva do contrato ocorre no Go
 ```sh
 ./ariadne run studies/scenarios/sequential_workflow/scenario.py
 ./ariadne run studies/scenarios/failure_reassignment/scenario.py
-./ariadne run studies/scenarios/bdi_route/scenario.py
 ./ariadne run studies/scenarios/basic_task/scenario.py --repeat 5
 ```
 

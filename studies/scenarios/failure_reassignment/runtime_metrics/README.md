@@ -13,3 +13,6 @@ python3 tools/runtime_metrics/compute_metrics.py \
 Observe `reassignment_count`, `recovery_ms` e `total_latency_ms`. O cálculo usa
 atribuição como início da execução; não separa transporte de processamento.
 [Definição das métricas](../../../../tools/runtime_metrics/README.md).
+
+[render_event_charts.py](render_event_charts.py) gera o gráfico de recuperação
+a partir do CSV; o runner deste cenário já executa essa etapa.

@@ -1,7 +1,5 @@
 import json
 import os
-import runpy
-import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -131,62 +129,6 @@ class StudyTests(unittest.TestCase):
                 self.assertTrue(result.output["feasible"])
             else:
                 self.assertEqual(result.output["mission"], case["mission"])
-
-    def test_legacy_agents_reuse_moved_implementations(self):
-        from ariadne_sdk import Task
-        from ariadne_sdk import BdiAgent
-        root = Path(__file__).resolve().parents[3]
-        with patch.object(sys, "path", [str(root / "studies/agents/route-planner"), *sys.path]):
-            namespace = runpy.run_path(str(root / "studies/agents/route-planner/main.py"))
-        agent_class = namespace["RoutePlanningAgent"]
-        self.assertTrue(issubclass(agent_class, BdiAgent))
-        result = agent_class().handle(Task(task_id="route", goal="Ir de A para D",
-                                         payload={"origin": "A", "destination": "D"}))
-        self.assertEqual(result.output["route"], ["A", "B", "D"])
-        case, world = load_case("avoid-contamination"), load_world()
-        result = agent_class().handle(Task(task_id="logistics", goal=case["request"],
-                                           payload={"mission": case["mission"], "world": world}))
-        self.assertEqual(result.output, plan_mission(world, case["mission"]))
-        factory = runpy.run_path(str(root / "studies/agents/planner-explainer/main.py"))["planner_explainer"]
-        agent = factory(openai_client=FakeClient())
-        self.assertEqual(set(agent._handlers), {"explanation", "task-decomposition", "logistics-plan", "logistics-interpret"})
-
-    def test_composed_workflow_and_explanation_with_fake_provider(self):
-        from ariadne_sdk import Task
-        from types import SimpleNamespace
-        root = Path(__file__).resolve().parents[3]
-        factory = runpy.run_path(str(root / "studies/agents/planner-explainer/main.py"))["planner_explainer"]
-        draft = {"workflow_id": "route-workflow", "final_step_id": "route", "steps": [{
-            "step_id": "route", "type": "TASK", "goal": "Ir de A para D",
-            "payload_json": '{"origin":"A","destination":"D"}',
-            "required_capabilities": ["route-planning"], "depends_on": [], "input_bindings": [],
-        }]}
-        explanation = {"explanation": "Via B", "reasoning_summary": "Menor distância", "confidence": 0.9}
-        requests = []
-
-        def parse(**request):
-            requests.append(request)
-            schema = request["text_format"]
-            value = draft if schema.__name__ == "WorkflowDraft" else explanation
-            return SimpleNamespace(output_parsed=schema(**value), usage=None)
-
-        with patch.dict(os.environ, {"AGENT_ID": "custom-planner", "AGENT_PORT": "61234"}):
-            agent = factory(openai_client=SimpleNamespace(responses=SimpleNamespace(parse=parse)))
-        self.assertEqual(agent.agent_id, "custom-planner")
-        self.assertEqual(agent.port, 61234)
-        task = Task(task_id="test", goal="Ir de A para D", required_capabilities=("task-decomposition",))
-        result = agent.handle(task)
-        self.assertEqual(result.status, "TASK_STATUS_COMPLETED")
-        self.assertEqual(result.output["steps"][0]["payload"], {"origin": "A", "destination": "D"})
-        result = agent.handle(Task(task_id="explain", goal="Explique", required_capabilities=("explanation",),
-                                   payload={"route": ["A", "B", "D"]}))
-        self.assertEqual(result.output, explanation)
-        self.assertIn('"route": ["A", "B", "D"]', requests[-1]["input"][1]["content"])
-        draft["steps"][0]["payload_json"] = "[]"
-        self.assertEqual(agent.handle(task).status, "TASK_STATUS_FAILED")
-        explanation["confidence"] = 2
-        self.assertEqual(agent.handle(Task(task_id="bad", goal="Explique",
-                                          required_capabilities=("explanation",))).status, "TASK_STATUS_FAILED")
 
     @unittest.skipUnless(os.getenv("ARIADNE_TEST_RUNTIME_DIR"), "requires real local runtime binaries")
     def test_hybrid_through_runtime_with_explicit_fake_provider(self):

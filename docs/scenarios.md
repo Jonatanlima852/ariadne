@@ -11,7 +11,7 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 | [Workflow sequencial](../studies/scenarios/sequential_workflow/docker/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
 | [Falha e reassignment](../studies/scenarios/failure_reassignment/docker/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
 | [Mensageria](../studies/scenarios/messaging/docker/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |
-| [Rota heterogênea](../studies/scenarios/heterogeneous_route/docker/README.md) | Planner LLM, rota BDI e explicação LLM | Chave e acesso ao modelo configurado | Rota `A → B → D`, distância 25 e relatório JSON |
+| [Rota heterogênea](../studies/scenarios/routing/docker/README.md) | Planner LLM, rota BDI e explicação LLM | Chave e acesso ao modelo configurado | Rota `A → B → D`, distância 25 e relatório JSON |
 | [Missão logística](../studies/scenarios/logistics/docker/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
 
 ```sh

@@ -43,7 +43,7 @@ services:
   text-echo:
     build:
       context: ../../../..
-      dockerfile: studies/agents/text-echo/Dockerfile
+      dockerfile: studies/scenarios/sequential_workflow/agents/text_echo/Dockerfile
     environment:
       AGENT_ID: "workflow-echo"
       AGENT_HOST: "text-echo"

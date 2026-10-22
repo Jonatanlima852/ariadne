@@ -21,7 +21,7 @@ docker compose -f studies/scenarios/messaging/docker/compose.yaml up --build -d 
 
 PYTHONPATH=sdk/python/src \
 uv run --project sdk/python \
-  python studies/scenarios/messaging/docker/scenario.py
+  python studies/scenarios/messaging/scenario.py
 
 docker compose -f studies/scenarios/messaging/docker/compose.yaml down
 ```

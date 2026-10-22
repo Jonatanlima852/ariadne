@@ -69,7 +69,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertTrue((run / "agent-2.jsonl").is_file())
 
     def test_declarative_bdi_uses_same_executor(self):
-        run = self.execute(ROOT / "studies/scenarios/bdi_route/scenario.py")
+        run = self.execute(ROOT / "sdk/python/tests/fixtures/route_choice.py")
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["output"], {"route": ["A", "B", "D"]})
         self.assertEqual(result["steps"]["step_1"]["result"]["metadata"]["selected_plan"], "via_b")

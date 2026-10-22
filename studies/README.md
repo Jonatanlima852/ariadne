@@ -1,35 +1,46 @@
 # Estudos por cenário
 
-Cada cenário reúne sua definição, agentes específicos, domínio, regras, casos,
-configuração de execução, benchmarks e métricas. Não há separação por tamanho
-ou por ser uma demonstração: todos fazem parte dos estudos do TG.
-
-## Cenários
+Cada pasta em `scenarios/` representa um assunto estudado no TG. Dentro dela
+ficam os agentes, domínio, regras, casos, benchmarks e métricas necessários.
+A arquitetura do agente (BDI ou LLM) e o modo de execução não definem cenários separados.
 
 | Cenário | O que investigar |
 |---|---|
-| [Tarefa simples](scenarios/basic_task/README.md) | Descoberta, atribuição e resposta |
+| [Tarefa simples](scenarios/basic_task/README.md) | Descoberta, atribuição e resposta; benchmark A |
+| [Seleção de agentes](scenarios/agent_selection/README.md) | Políticas e distribuição de tarefas; benchmark B |
 | [Workflow sequencial](scenarios/sequential_workflow/README.md) | Dependências e passagem de resultados |
-| [Recuperação](scenarios/failure_reassignment/README.md) | Prazo e nova atribuição |
+| [Recuperação](scenarios/failure_reassignment/README.md) | Prazo e nova atribuição; benchmark D |
 | [Mensageria](scenarios/messaging/README.md) | Envelopes, entrega e correlação |
-| [Rotas BDI](scenarios/bdi_route/README.md) | Seleção de planos por custo |
-| [Saudação LLM](scenarios/llm_greeting/README.md) | Resposta estruturada de um provedor |
+| [Saudação](scenarios/greeting/README.md) | Resposta estruturada de um provedor LLM |
 | [Agendamento](scenarios/meeting/README.md) | Crenças, restrições e planos |
-| [Rota heterogênea](scenarios/heterogeneous_route/README.md) | Cooperação LLM → BDI → LLM |
-| [Logística](scenarios/logistics/README.md) | Estratégias BDI, LLM e híbrida em um domínio comum |
-| [Comparação do runtime](scenarios/runtime_comparison/README.md) | Campanha A–D de capacidades do runtime |
+| [Rotas](scenarios/routing/README.md) | Escolha e explicação de rota com LLM → BDI → LLM; benchmark C |
+| [Logística](scenarios/logistics/README.md) | Missões com energia, prazo e restrições; LLM-only e híbrido |
 
-## Onde colocar cada artefato
+## Estrutura de um cenário
 
-- Agentes reutilizáveis: [agents/](agents/README.md).
-- Agentes e regras exclusivos: dentro do cenário correspondente.
-- Campanhas e resultados selecionados: `scenarios/<nome>/benchmarks/`.
-- Análise de eventos de um cenário: `scenarios/<nome>/runtime_metrics/`.
-- Cálculo genérico de métricas: [tools/runtime_metrics](../tools/runtime_metrics/README.md).
+```text
+scenarios/<assunto>/
+  README.md          # pergunta estudada e como executar
+  scenario.py        # entrada principal
+  agents/            # agentes deste cenário, quando houver
+  docker/            # topologia e adaptadores para serviços em contêineres
+  benchmarks/        # casos, campanhas e resultados deste assunto
+  runtime_metrics/   # análises de eventos específicas deste assunto
+```
 
-Crie apenas as pastas necessárias. Os mecanismos de execução e campanha são
-fornecidos pelo SDK. Novas execuções continuam usando `.ariadne/`; resultados
-selecionados podem ser preservados no cenário com origem e limitações descritas.
-Caminhos históricos dentro de evidências permanecem intactos.
+Crie apenas as pastas necessárias. Arquivos de domínio, regras e dados ficam
+junto ao cenário. Mensageria usa clientes do contrato e não precisa declarar agentes.
+Os READMEs indicam se a entrada é uma declaração `Scenario` executada por
+`./ariadne run` ou um cliente de serviços já iniciados, executado pelo launcher Docker.
+
+Os agentes pertencem ao cenário que define seu comportamento. Mecanismos genéricos
+ficam no SDK; medição/exportação compartilhadas ficam em `tools/benchmarking.py`
+e [tools/runtime_metrics](../tools/runtime_metrics/README.md).
+Não há diretório global de agentes nem cenário agregador de benchmarks.
+
+A seleção BDI isolada é uma [fixture funcional do SDK](../sdk/python/tests/fixtures/route_choice.py),
+não um estudo comparativo separado. A antiga campanha A–D foi distribuída entre
+os assuntos acima; os rótulos permanecem nos resultados para identificação.
+Evidências históricas mantêm os bytes e caminhos registrados na coleta.
 
 [Guia de execução](../docs/quickstart.md) · [Avaliação](../docs/evaluation.md)

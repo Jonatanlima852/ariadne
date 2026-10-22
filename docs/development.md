@@ -21,12 +21,12 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `proto/` | [Contrato](../proto/contract/v1/contract.proto), versão e checksum |
 | `runtime/` | Módulo Go, serviços e stubs gerados |
 | `sdk/python/` | [API pública](../sdk/python/src/ariadne_sdk/__init__.py) e testes |
-| `studies/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
+| `studies/scenarios/*/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
 | `tools/clients/submit-task/` | [Cliente de tarefa simples](../tools/clients/submit-task/main.py) |
 | `studies/scenarios/*/docker/` | Scripts de integração e topologias de cada cenário |
 | `studies/scenarios/` | Cenários, regras, dados e avaliações próprios |
 | `studies/scenarios/logistics/` | [Estudo declarativo](../studies/scenarios/logistics/README.md), agentes, domínio, dataset e avaliação offline |
-| `studies/scenarios/runtime_comparison/benchmarks/` | Campanhas, resultados selecionados e gráficos |
+| `studies/scenarios/*/benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
 | `tools/deploy/` | Compose básico |
 | `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./ariadne` |
@@ -101,9 +101,9 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 `execute_task()` com protobuf permanece como interface legada usada por alguns
 exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
 veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
-[agente de rotas](../studies/agents/route-planner/main.py) usam a API histórica: seu custo
+[agente de rotas](../studies/scenarios/routing/agents/route_planner/main.py) usam a API histórica: seu custo
 é retornado no candidato, não no decorator. Para LLM, prefira composição de `LlmCapability`, como no
-[planejador e explicador](../studies/agents/planner-explainer/main.py). Cada capacidade
+[planejador e explicador](../studies/scenarios/routing/agents/planner_explainer/main.py). Cada capacidade
 associa prompt, modelo de resposta e conversão opcional; não exige subclasse.
 `@llm_capability` continua disponível no SDK para agentes que precisem de métodos.
 

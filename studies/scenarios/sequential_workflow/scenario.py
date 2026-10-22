@@ -1,6 +1,6 @@
 """./ariadne run studies/scenarios/sequential_workflow/scenario.py — a referência ao output encadeia as etapas."""
 from ariadne_sdk import Scenario, Step
-from studies.agents.text import echo_agent, uppercase_agent
+from studies.scenarios.sequential_workflow.agents.text import echo_agent, uppercase_agent
 
 echo = echo_agent()
 uppercase = uppercase_agent()

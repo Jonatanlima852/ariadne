@@ -13,15 +13,15 @@ reprodução e demonstração das APIs de baixo nível.
 | `sdk/python/` | Autoria, clientes, executor e coleta de campanhas |
 | `studies/scenarios/` | Todos os cenários, seus domínios e avaliações |
 | `studies/scenarios/*/docker/` | Cenários de integração Docker |
-| `studies/agents/` | Agentes reutilizáveis entre cenários |
+| `studies/scenarios/*/agents/` | Agentes pertencentes ao cenário |
 | `studies/scenarios/logistics/` | Domínio, dados, experimentos e avaliação logística |
-| `studies/scenarios/runtime_comparison/benchmarks/` | Runners históricos e resultados preservados |
+| `studies/scenarios/*/benchmarks/` | Campanhas e resultados de cada assunto |
 | `tools/runtime_metrics/` | Avaliação de eventos do runtime |
 | `tools/` | Deploy, backend Docker, verificação e Inspector |
 | `docs/` | Guias públicos |
 
 Os antigos `examples/` e `studies/logistics/` foram reunidos em
-`studies/scenarios/`. Agentes reutilizáveis ficam em `studies/agents/` e o cliente
+`studies/scenarios/`. Agentes ficam em `studies/scenarios/*/agents/` e o cliente
 de submissão em `tools/clients/`. Benchmarks e métricas pertencem ao cenário
 correspondente; apenas o cálculo genérico de métricas permanece em `tools/`.
 Os arquivos de evidência preservam os caminhos registrados na coleta original.
@@ -57,14 +57,14 @@ saída validada ao domínio. Prompts recebem `(goal, payload)`; podem também se
 um `Prompt` constante. Subclasses e `@llm_capability` continuam disponíveis.
 
 O cliente OpenAI é criado na primeira execução, não na declaração. Validar
-`studies/scenarios/llm_greeting/scenario.py` não faz chamadas nem exige chave. O SDK mínimo instala apenas
+`studies/scenarios/greeting/scenario.py` não faz chamadas nem exige chave. O SDK mínimo instala apenas
 gRPC e protobuf; o suporte LLM é um extra:
 
 ```sh
 uv sync --project sdk/python --extra llm
-ARIADNE_SDK_EXTRAS=llm ./ariadne check studies/scenarios/llm_greeting/scenario.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne check studies/scenarios/greeting/scenario.py
 # Para executar, exporte OPENAI_API_KEY no terminal:
-ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/llm_greeting/scenario.py
+ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/greeting/scenario.py
 ```
 
 Fora do checkout, instale `ariadne-sdk[llm]`. A descrição LLM usa Pydantic, portanto

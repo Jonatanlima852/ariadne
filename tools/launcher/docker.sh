@@ -16,8 +16,8 @@ select_scenario() {
         workflow-sequential) base=studies/scenarios/sequential_workflow/docker/compose.yaml; services='registry orchestrator text-echo' ;;
         failure-reassignment) base=studies/scenarios/failure_reassignment/docker/compose.yaml; services='registry orchestrator slow-agent healthy-agent' ;;
         messaging-basic) base=studies/scenarios/messaging/docker/compose.yaml; services=messaging ;;
-        heterogeneous-route) base=studies/scenarios/heterogeneous_route/docker/compose.yaml; services='registry orchestrator route-planner planner-explainer'; llm=yes ;;
-        logistics-mission) base=studies/scenarios/logistics/docker/compose.yaml; services='registry orchestrator route-planner planner-explainer'; llm=yes ;;
+        heterogeneous-route) base=studies/scenarios/routing/docker/compose.yaml; services='registry orchestrator route-planner planner-explainer'; llm=yes ;;
+        logistics-mission) base=studies/scenarios/logistics/docker/compose.yaml; services='registry orchestrator mission-planner mission-assistant'; llm=yes ;;
         *) die "Cenário desconhecido: $scenario. Consulte ./ariadne scenario." ;;
     esac
     env_file=/dev/null
@@ -25,8 +25,8 @@ select_scenario() {
         if [ -n "${ARIADNE_ENV_FILE:-}" ]; then
             case "$ARIADNE_ENV_FILE" in /*) env_file=$ARIADNE_ENV_FILE ;; *) env_file="$ARIADNE_ROOT/$ARIADNE_ENV_FILE" ;; esac
             [ -f "$env_file" ] || die "ARIADNE_ENV_FILE não encontrado: $env_file"
-        elif [ "$scenario" = heterogeneous-route ] && [ -f "$ARIADNE_ROOT/studies/scenarios/heterogeneous_route/docker/.env" ]; then
-            env_file="$ARIADNE_ROOT/studies/scenarios/heterogeneous_route/docker/.env"
+        elif [ "$scenario" = heterogeneous-route ] && [ -f "$ARIADNE_ROOT/studies/scenarios/routing/docker/.env" ]; then
+            env_file="$ARIADNE_ROOT/studies/scenarios/routing/docker/.env"
         elif [ -f "$ARIADNE_ROOT/.env" ]; then
             env_file="$ARIADNE_ROOT/.env"
         fi

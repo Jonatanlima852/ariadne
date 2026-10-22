@@ -21,7 +21,7 @@ scenario = Scenario(agents=[agent], tasks=[
 
 Salve como um arquivo Python e execute com `./ariadne run caminho.py`. Este exemplo
 apenas compõe uma rota; restrições e disponibilidade de conexões são regras do
-domínio. Exemplos completos: [rotas](../studies/scenarios/bdi_route/scenario.py),
+domínio. Consulte a [fixture de seleção de planos](../sdk/python/tests/fixtures/route_choice.py),
 [agendamento](../studies/scenarios/meeting/scenario.py) e [logística](../studies/scenarios/logistics/agents/mission_planner.py).
 
 ## Entradas e estado

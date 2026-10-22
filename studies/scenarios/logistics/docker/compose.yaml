@@ -38,13 +38,13 @@ services:
       timeout: 2s
       retries: 20
 
-  route-planner:
+  mission-planner:
     build:
       context: ../../../..
-      dockerfile: studies/agents/route-planner/Dockerfile
+      dockerfile: studies/scenarios/logistics/docker/planner.Dockerfile
     environment:
-      AGENT_ID: "route-planner-01"
-      AGENT_HOST: "route-planner"
+      AGENT_ID: "mission-planner-01"
+      AGENT_HOST: "mission-planner"
       AGENT_PORT: "60054"
       REGISTRY_ADDR: "registry:50051"
       HEARTBEAT_INTERVAL_SECONDS: "1"
@@ -57,13 +57,13 @@ services:
       timeout: 2s
       retries: 20
 
-  planner-explainer:
+  mission-assistant:
     build:
       context: ../../../..
-      dockerfile: studies/agents/planner-explainer/Dockerfile
+      dockerfile: studies/scenarios/logistics/docker/assistant.Dockerfile
     environment:
-      AGENT_ID: "planner-explainer-01"
-      AGENT_HOST: "planner-explainer"
+      AGENT_ID: "mission-assistant-01"
+      AGENT_HOST: "mission-assistant"
       AGENT_PORT: "60056"
       REGISTRY_ADDR: "registry:50051"
       HEARTBEAT_INTERVAL_SECONDS: "1"

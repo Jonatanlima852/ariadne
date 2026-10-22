@@ -18,7 +18,7 @@ eventos e resultados, sem recalcular métricas dos benchmarks.
 2. Execute a [tarefa básica](quickstart.md) para conferir a integração.
 3. Observe [workflow](../studies/scenarios/sequential_workflow/docker/README.md) e
    [reassignment](../studies/scenarios/failure_reassignment/docker/README.md) sem LLM.
-4. Execute a [rota heterogênea](../studies/scenarios/heterogeneous_route/docker/README.md),
+4. Execute a [rota heterogênea](../studies/scenarios/routing/docker/README.md),
    caso haja credencial e acesso ao provedor.
 5. Consulte os resultados logísticos já registrados e suas limitações.
 
@@ -30,9 +30,9 @@ respostas com a execução publicada.
 
 | Pergunta | Onde conferir | Alcance |
 |---|---|---|
-| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/heterogeneous_route/client/heterogeneous_demo.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
+| Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/routing/scenario.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/docker/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | Caso B do [runner A–D](../studies/scenarios/runtime_comparison/benchmarks/run.py) | Três agentes com carga reportada configurada |
+| Políticas alteram a distribuição? | [Seleção de agentes, caso B](../studies/scenarios/agent_selection/benchmarks/run.py) | Três agentes com carga reportada configurada |
 | O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
@@ -110,50 +110,37 @@ manifestos e escreve em uma pasta nova; não inicia agentes. No novo caminho,
 todas as estratégias usam workflows, portanto os escopos de latência diferem
 da campanha histórica. Consistência fica indefinida quando há uma só observação.
 
-### Runners históricos
+### Benchmarks por assunto
 
-Os cenários de demonstração podem ser executados via `./ariadne scenario NOME`,
-com dados isolados em `.ariadne/runs/`. Os comandos abaixo continuam usando os
-runners específicos de benchmark, com os requisitos e limitações próprios.
-
-Requisitos: Docker/Compose, Python, uv e acesso ao modelo configurado. Crie
-`.env` na raiz com `OPENAI_API_KEY` e, se necessário, `LLM_MODEL`. A chave deve
-permanecer local. Os scripts aceitam outro arquivo via `BENCHMARK_ENV_FILE`.
+A antiga suíte A–D foi distribuída entre os cenários. Cada comando usa sua
+própria topologia Docker e exporta resultados em `benchmarks/results/<data>/`:
 
 ```sh
-./studies/scenarios/runtime_comparison/benchmarks/run.sh
+sh studies/scenarios/basic_task/benchmarks/run.sh
+sh studies/scenarios/agent_selection/benchmarks/run.sh
+sh studies/scenarios/routing/benchmarks/run.sh
+sh studies/scenarios/failure_reassignment/benchmarks/run.sh
+LOGISTICS_REPETITIONS=2 sh studies/scenarios/logistics/benchmarks/run.sh
 ```
 
-A suíte A–D mede execução básica, políticas, cooperação heterogênea,
-e recuperação. O antigo caso E (BDI isolado versus fluxo assistido) foi retirado.
-Os casos C e D têm uma amostra por execução padrão.
+Todos exigem Docker/Compose, Python e uv. Apenas rotas (C) e logística exigem
+acesso LLM: configure OPENAI_API_KEY e, opcionalmente, LLM_MODEL. Para logística,
+crie `.env`; `BENCHMARK_ENV_FILE` permite selecionar outro arquivo. O antigo
+caso E e BDI isolado não fazem parte da avaliação atual. C e D usam uma amostra.
+
+As topologias usam a porta 54052 por padrão: execute uma por vez ou configure
+BENCHMARK_ORCHESTRATOR_PORT. Os volumes são preservados e os eventos escritos
+em append; salvar em pasta datada não isola eventos de campanhas anteriores.
+Após preservar os dados anteriores, remova deliberadamente o volume da
+respectiva topologia antes da nova coleta, por exemplo:
 
 ```sh
-LOGISTICS_REPETITIONS=2 ./studies/scenarios/logistics/benchmarks/run.sh
+docker compose -f studies/scenarios/basic_task/benchmarks/compose.yaml down -v
 ```
 
-O segundo comando executa a comparação logística. Cada estudo possui sua
-configuração Compose: `runtime_comparison/benchmarks/compose.yaml` e
-`logistics/docker/compose.yaml`, dentro de `studies/scenarios/`. Ambos usam a
-porta 54052 por padrão, criam resultados datados e encerram os contêineres ao sair.
-Execute um por vez ou altere a porta.
-
-### Isolar os eventos antes de medir
-
-Os runners preservam o volume entre execuções e o logger escreve em modo
-append. Portanto, a pasta datada não garante, sozinha, que o JSONL copiado
-contenha apenas a campanha atual. Não execute os dois runners simultaneamente.
-
-Após salvar dados anteriores e encerrar qualquer uso dessa topologia, uma
-limpeza deliberada do volume pode ser feita antes de uma campanha:
-
-```sh
-docker compose --env-file .env -f studies/scenarios/runtime_comparison/benchmarks/compose.yaml down -v
-```
-
-Esse comando apaga o volume da topologia de benchmarks. Para avaliação,
-registre também commit, configuração, versões e condições da máquina: o runner
-atual não produz um manifesto completo dessas informações.
+Registre commit, configuração, versões e condições da máquina: os runners
+Docker não produzem um manifesto completo. Para coletas com manifesto, use
+as campanhas declarativas descritas acima.
 
 ## Interpretar e apresentar
 

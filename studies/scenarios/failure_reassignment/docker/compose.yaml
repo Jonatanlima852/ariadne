@@ -43,7 +43,7 @@ services:
   slow-agent:
     build:
       context: ../../../..
-      dockerfile: studies/agents/execution-simulator/Dockerfile
+      dockerfile: studies/scenarios/failure_reassignment/agents/Dockerfile
     environment:
       AGENT_ID: "a-slow"
       AGENT_HOST: "slow-agent"
@@ -65,7 +65,7 @@ services:
   healthy-agent:
     build:
       context: ../../../..
-      dockerfile: studies/agents/text-echo/Dockerfile
+      dockerfile: studies/scenarios/failure_reassignment/agents/Dockerfile
     environment:
       AGENT_ID: "b-healthy"
       AGENT_HOST: "healthy-agent"

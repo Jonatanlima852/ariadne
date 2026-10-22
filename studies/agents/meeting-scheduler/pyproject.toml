@@ -1,8 +1,0 @@
-[project]
-name = "meeting-scheduler"
-version = "0.1.0"
-description = "Agente BDI exemplo que tenta agendar reuniões avaliando compromissos entre horário e quórum"
-requires-python = ">=3.11"
-dependencies = [
-    "grpcio",
-]

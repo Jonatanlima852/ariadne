@@ -1,6 +1,6 @@
 """./ariadne run studies/scenarios/failure_reassignment/scenario.py — timeout e reassignment no runtime Go."""
 from ariadne_sdk import Scenario, Step
-from studies.agents.text import echo_agent
+from studies.scenarios.failure_reassignment.agents.worker import echo_agent
 
 scenario = Scenario(
     agents=[

@@ -42,7 +42,7 @@ services:
   execution-simulator:
     build:
       context: ../..
-      dockerfile: studies/agents/execution-simulator/Dockerfile
+      dockerfile: studies/scenarios/basic_task/agents/execution_simulator/Dockerfile
     ports:
       - "60051:60051"
     environment:
@@ -76,7 +76,7 @@ services:
       - heterogeneous
     build:
       context: ../..
-      dockerfile: studies/agents/planner-explainer/Dockerfile
+      dockerfile: studies/scenarios/routing/agents/planner_explainer/Dockerfile
     ports:
       - "60056:60056"
     environment:
@@ -95,7 +95,7 @@ services:
       - heterogeneous
     build:
       context: ../..
-      dockerfile: studies/agents/route-planner/Dockerfile
+      dockerfile: studies/scenarios/routing/agents/route_planner/Dockerfile
     ports:
       - "60054:60054"
     environment:

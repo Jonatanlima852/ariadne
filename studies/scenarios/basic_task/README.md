@@ -19,3 +19,5 @@ Este cenário determinístico demonstra um comportamento funcional; não mede,
 isoladamente, a qualidade de raciocínio de uma LLM.
 
 [Todos os estudos](../../README.md)
+
+A medição deste assunto está em [benchmarks](benchmarks/README.md).

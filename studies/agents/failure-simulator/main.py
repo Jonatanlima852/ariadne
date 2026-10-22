@@ -11,7 +11,7 @@ from ariadne_sdk import Agent
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s [failing-agent] %(message)s",
+    format="%(asctime)s %(levelname)s [failure-simulator] %(message)s",
 )
 log = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def _now():
     return ts
 
 
-class FailingAgent(Agent):
+class FailureSimulatorAgent(Agent):
     """Agente que sempre falha — útil para testar a reação do orchestrator."""
 
     def execute_task(self, task):
@@ -36,22 +36,22 @@ class FailingAgent(Agent):
             trace=task.trace,
             error=contract_pb2.ErrorInfo(
                 code=contract_pb2.ERROR_CODE_EXECUTION_FAILED,
-                message="this agent always fails (FailingAgent)",
+                message="this agent always fails (FailureSimulatorAgent)",
                 retryable=True,
             ),
         )
 
 
 def main():
-    agent_id = os.getenv("AGENT_ID", "failing-agent-01")
+    agent_id = os.getenv("AGENT_ID", "failure-simulator-01")
     host = os.getenv("AGENT_HOST", "localhost")
     port = int(os.getenv("AGENT_PORT", "60053"))
     registry_addr = os.getenv("REGISTRY_ADDR", "localhost:50051")
     capability = os.getenv("CAPABILITY", "echo")
 
-    agent = FailingAgent(
+    agent = FailureSimulatorAgent(
         agent_id=agent_id,
-        name=f"Failing Agent ({agent_id})",
+        name=f"Failure Simulator ({agent_id})",
         capabilities=[capability],
         host=host,
         port=port,

@@ -7,7 +7,7 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 
 | Cenário | O que observar | Requisitos adicionais via ariadne | Resultado esperado |
 |---|---|---|---|
-| [Echo básico](quickstart.md#alternativa-com-docker) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `mock-agent-01` |
+| [Echo básico](quickstart.md#alternativa-com-docker) | Descoberta e tarefa simples | Nenhum no caminho Docker | `COMPLETED`, agente `execution-simulator-01` |
 | [Workflow sequencial](../studies/scenarios/sequential_workflow/docker/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
 | [Falha e reassignment](../studies/scenarios/failure_reassignment/docker/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
 | [Mensageria](../studies/scenarios/messaging/docker/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |

@@ -6,7 +6,7 @@ RUN pip install --no-cache-dir grpcio openai pydantic protobuf
 COPY sdk/python ./sdk/python
 RUN pip install --no-cache-dir --no-deps --no-build-isolation ./sdk/python
 
-COPY studies/agents/llm-agent/main.py .
+COPY studies/agents/planner-explainer/main.py .
 COPY studies ./studies
 
 CMD ["python", "main.py"]

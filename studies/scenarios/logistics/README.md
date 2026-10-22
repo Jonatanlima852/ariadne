@@ -85,7 +85,7 @@ Campanhas interrompidas informam no JSON quantas observações estavam previstas
 e quantas execuções foram registradas. Observações que nem chegaram a iniciar
 não entram nas taxas; essa incompletude fica explicitada no relatório.
 
-O BDI declara entradas e um plano em [bdi.py](agents/bdi.py), usando a busca genérica
+O BDI declara entradas e um plano em [mission_planner.py](agents/mission_planner.py), usando a busca genérica
 do SDK por meio de [planning.py](planning.py). O avaliador conserva sua busca
 de referência em `domain.py`; as regras de domínio ainda são compartilhadas.
 A otimalidade agregada inclui rejeições corretas. Preserve a revisão do avaliador para reproduzir

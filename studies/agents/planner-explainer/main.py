@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../sdk/python/
 from pydantic import BaseModel, ConfigDict, Field
 
 from ariadne_sdk import Prompt, llm_capability
-from studies.scenarios.logistics.agents.llm import LogisticsLlmAgent
+from studies.scenarios.logistics.agents.mission_assistant import MissionAssistant
 
 
 class ResultBindingDraft(BaseModel):
@@ -75,13 +75,13 @@ def normalize_workflow(plan):
     }
 
 
-class PlannerExplainerAgent(LogisticsLlmAgent):
+class PlannerExplainerAgent(MissionAssistant):
     capabilities = [
         "task-decomposition", "explanation", "logistics-plan",
         "logistics-interpret",
     ]
-    default_agent_id = "llm-agent-01"
-    default_name = "LLM Planner and Explainer"
+    default_agent_id = "planner-explainer-01"
+    default_name = "Planner and Explainer"
     default_port = 60056
 
     @llm_capability(

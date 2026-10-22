@@ -1,5 +1,5 @@
 [project]
-name = "echo-agent"
+name = "text-echo"
 version = "0.1.0"
 description = "Agente exemplo que devolve o goal da task como resultado (ariadne_sdk)"
 requires-python = ">=3.11"

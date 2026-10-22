@@ -54,7 +54,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mock-agent"
+name = "execution-simulator"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

@@ -235,7 +235,7 @@ wheels = [
 ]
 
 [[package]]
-name = "llm-agent"
+name = "planner-explainer"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

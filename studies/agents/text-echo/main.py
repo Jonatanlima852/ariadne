@@ -11,7 +11,7 @@ from ariadne_sdk import Agent
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s [echo-agent] %(message)s",
+    format="%(asctime)s %(levelname)s [text-echo] %(message)s",
 )
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class EchoAgent(Agent):
 
 
 def main():
-    agent_id = os.getenv("AGENT_ID", "echo-agent-01")
+    agent_id = os.getenv("AGENT_ID", "text-echo-01")
     host = os.getenv("AGENT_HOST", "localhost")
     port = int(os.getenv("AGENT_PORT", "60052"))
     registry_addr = os.getenv("REGISTRY_ADDR", "localhost:50051")
@@ -51,7 +51,7 @@ def main():
 
     agent = EchoAgent(
         agent_id=agent_id,
-        name=f"Echo Agent ({agent_id})",
+        name=f"Text Echo ({agent_id})",
         capabilities=[capability],
         host=host,
         port=port,

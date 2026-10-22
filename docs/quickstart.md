@@ -91,7 +91,7 @@ rodam em contêineres.
 ./ariadne logs
 ```
 
-A resposta esperada identifica `mock-agent-01` e `Estado: COMPLETED`.
+A resposta esperada identifica `execution-simulator-01` e `Estado: COMPLETED`.
 O launcher encerra sua topologia automaticamente. Para manter os serviços,
 use `./ariadne demo --keep` e depois `./ariadne stop`.
 Veja [cenários Docker](scenarios.md), [referência da CLI](cli.md) e

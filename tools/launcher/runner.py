@@ -18,12 +18,12 @@ from contract.v1 import contract_pb2 as pb, contract_pb2_grpc as rpc
 
 ROOT = Path(__file__).resolve().parents[2]
 AGENTS = {
-    "demo": {"mock-agent-01": "echo"},
+    "demo": {"execution-simulator-01": "echo"},
     "workflow-sequential": {"workflow-echo": "echo"},
     "failure-reassignment": {"a-slow": "recovery-test", "b-healthy": "recovery-test"},
     "messaging-basic": {},
-    "heterogeneous-route": {"bdi-agent-01": "route-planning", "llm-agent-01": "task-decomposition"},
-    "logistics-mission": {"bdi-agent-01": "logistics-execution", "llm-agent-01": "logistics-interpret"},
+    "heterogeneous-route": {"route-planner-01": "route-planning", "planner-explainer-01": "task-decomposition"},
+    "logistics-mission": {"route-planner-01": "logistics-execution", "planner-explainer-01": "logistics-interpret"},
 }
 
 
@@ -89,7 +89,7 @@ def demo():
         result = scenario.submit(
             "echo", goal="Teste ponta a ponta", capabilities=["echo"],
         ).assert_completed()
-        if result.agent_id != "mock-agent-01":
+        if result.agent_id != "execution-simulator-01":
             raise AssertionError(f"Agente inesperado: {result.agent_id}")
         scenario.report().save(os.environ["SCENARIO_REPORT_PATH"])
         print(f"Tarefa concluída por {result.agent_id}; trace_id={scenario.trace_id}")

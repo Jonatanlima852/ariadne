@@ -15,7 +15,7 @@ from beliefs import KNOWN_ROUTES, direct_distance, known_destinations_from
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s [bdi-agent] %(message)s",
+    format="%(asctime)s %(levelname)s [route-planner] %(message)s",
 )
 log = logging.getLogger(__name__)
 
@@ -36,8 +36,8 @@ class RoutePlanningAgent(BdiAgent):
 
     capabilities = ["route-planning", "logistics-execution"]
     beliefs = KNOWN_ROUTES
-    default_agent_id = "bdi-agent-01"
-    default_name = "BDI Route Planning Agent"
+    default_agent_id = "route-planner-01"
+    default_name = "Route Planner"
     default_port = 60054
     runtime_name = "python-sdk-bdi"
 

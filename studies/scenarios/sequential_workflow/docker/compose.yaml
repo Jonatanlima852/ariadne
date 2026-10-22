@@ -40,13 +40,13 @@ services:
       timeout: 2s
       retries: 15
 
-  echo-agent:
+  text-echo:
     build:
       context: ../../../..
-      dockerfile: studies/agents/echo-agent/Dockerfile
+      dockerfile: studies/agents/text-echo/Dockerfile
     environment:
       AGENT_ID: "workflow-echo"
-      AGENT_HOST: "echo-agent"
+      AGENT_HOST: "text-echo"
       AGENT_PORT: "60052"
       REGISTRY_ADDR: "registry:50051"
       CAPABILITY: "echo"

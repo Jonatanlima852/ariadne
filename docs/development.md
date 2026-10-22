@@ -101,9 +101,9 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 `execute_task()` com protobuf permanece como interface legada usada por alguns
 exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
 veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
-[agente de rotas](../studies/agents/bdi-agent/main.py) usam a API histórica: seu custo
+[agente de rotas](../studies/agents/route-planner/main.py) usam a API histórica: seu custo
 é retornado no candidato, não no decorator. Para LLM, consulte os handlers
-`@llm_capability` do [agente LLM](../studies/agents/llm-agent/main.py): recebem objetivo e
+`@llm_capability` do [agente LLM](../studies/agents/planner-explainer/main.py): recebem objetivo e
 contexto e retornam `Prompt`, com schema de saída declarado no decorator.
 
 ## Alterações no contrato

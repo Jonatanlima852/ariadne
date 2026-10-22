@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir grpcio protobuf
 COPY sdk/python/src ./sdk/python/src
 
 # copia o código do agente
-COPY studies/agents/failing-agent/main.py .
+COPY studies/agents/failure-simulator/main.py .
 
 ENV PYTHONPATH=/app/sdk/python/src
 

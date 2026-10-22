@@ -82,8 +82,8 @@ class StudyTests(unittest.TestCase):
 
     def test_sdk_planner_matches_reference_on_all_cases_and_variations(self):
         from ariadne_sdk import Task
-        from studies.scenarios.logistics.agents.bdi import logistics_agent
-        agent = logistics_agent()
+        from studies.scenarios.logistics.agents.mission_planner import mission_planner
+        agent = mission_planner()
         world = load_world()
         for case in load_cases():
             for deadline in (1, case["mission"]["deadline_minutes"], 30):
@@ -97,8 +97,8 @@ class StudyTests(unittest.TestCase):
 
     def test_llm_adapter_preserves_structured_plan_and_interpretation(self):
         from ariadne_sdk import Task
-        from studies.scenarios.logistics.agents.llm import LogisticsLlmAgent
-        agent = LogisticsLlmAgent(openai_client=FakeClient(), model="test-only")
+        from studies.scenarios.logistics.agents.mission_assistant import MissionAssistant
+        agent = MissionAssistant(openai_client=FakeClient(), model="test-only")
         case = load_case("avoid-contamination")
         for capability in ("logistics-plan", "logistics-interpret"):
             result = agent.handle(Task(task_id="test", goal=case["request"],
@@ -112,10 +112,10 @@ class StudyTests(unittest.TestCase):
     def test_legacy_agents_reuse_moved_implementations(self):
         from ariadne_sdk import Task
         from ariadne_sdk import BdiAgent
-        from studies.scenarios.logistics.agents.llm import LogisticsLlmAgent
+        from studies.scenarios.logistics.agents.mission_assistant import MissionAssistant
         root = Path(__file__).resolve().parents[3]
-        with patch.object(sys, "path", [str(root / "studies/agents/bdi-agent"), *sys.path]):
-            namespace = runpy.run_path(str(root / "studies/agents/bdi-agent/main.py"))
+        with patch.object(sys, "path", [str(root / "studies/agents/route-planner"), *sys.path]):
+            namespace = runpy.run_path(str(root / "studies/agents/route-planner/main.py"))
         agent_class = namespace["RoutePlanningAgent"]
         self.assertTrue(issubclass(agent_class, BdiAgent))
         result = agent_class().handle(Task(task_id="route", goal="Ir de A para D",
@@ -125,8 +125,8 @@ class StudyTests(unittest.TestCase):
         result = agent_class().handle(Task(task_id="logistics", goal=case["request"],
                                            payload={"mission": case["mission"], "world": world}))
         self.assertEqual(result.output, plan_mission(world, case["mission"]))
-        llm_class = runpy.run_path(str(root / "studies/agents/llm-agent/main.py"))["PlannerExplainerAgent"]
-        self.assertTrue(issubclass(llm_class, LogisticsLlmAgent))
+        llm_class = runpy.run_path(str(root / "studies/agents/planner-explainer/main.py"))["PlannerExplainerAgent"]
+        self.assertTrue(issubclass(llm_class, MissionAssistant))
         agent = llm_class(openai_client=FakeClient())
         self.assertEqual(set(agent._handlers), {"explanation", "task-decomposition", "logistics-plan", "logistics-interpret"})
 

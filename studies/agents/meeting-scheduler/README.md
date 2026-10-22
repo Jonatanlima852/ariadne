@@ -1,6 +1,6 @@
 # Exemplos de agentes BDI
 
-As implementações executáveis estão no [agente de rotas](../bdi-agent/main.py)
+As implementações executáveis estão no [agente de rotas](../route-planner/main.py)
 e no [agendador de reuniões](main.py).
 Este diretório funciona como ponto de navegação; não contém outro worker.
 

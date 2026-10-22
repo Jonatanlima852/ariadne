@@ -3,9 +3,9 @@ from ariadne_sdk import BdiAgent, Input, Plan
 from ..planning import plan_mission
 
 
-def logistics_agent(**options):
+def mission_planner(**options):
     configuration = dict(
-        name="logistics", agent_id="bdi-agent-01",
+        name="mission-planner", agent_id="mission-planner-01",
         capabilities=["logistics-execution"],
         beliefs=Input("world"), desire=Input("mission"),
         plans=[Plan("safe_logistics_mission", execute=plan_mission)],

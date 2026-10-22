@@ -27,13 +27,13 @@ docker compose version
 ```sh
 docker compose -f tools/deploy/docker-compose.yml up --build -d
 docker compose -f tools/deploy/docker-compose.yml ps
-docker compose -f tools/deploy/docker-compose.yml logs --tail=50 registry orchestrator mock-agent
+docker compose -f tools/deploy/docker-compose.yml logs --tail=50 registry orchestrator execution-simulator
 ```
 
-O Compose básico inicia Registry, Orchestrator, Messaging e mock-agent.
+O Compose básico inicia Registry, Orchestrator, Messaging e execution-simulator.
 Ele ainda não tem healthchecks: `Up` indica que o contêiner está iniciado,
 mas não garante que o agente já se registrou. Nos logs, aguarde as mensagens
-de início dos serviços e `registered with registry` do mock-agent. Repita a
+de início dos serviços e `registered with registry` do execution-simulator. Repita a
 consulta de logs se necessário.
 
 ## 2. Enviar a tarefa
@@ -48,7 +48,7 @@ Trecho esperado da resposta, com IDs e horário variáveis:
 ```text
 Resultado:
   status   : COMPLETED
-  agent_id : mock-agent-01
+  agent_id : execution-simulator-01
 ```
 
 O cliente solicita a capacidade `echo`. O Orchestrator consulta o Registry,
@@ -61,7 +61,7 @@ diretas ao agente e não publica um `MessageEnvelope`.
 ## 3. Observar e encerrar
 
 ```sh
-docker compose -f tools/deploy/docker-compose.yml logs --tail=50 orchestrator mock-agent
+docker compose -f tools/deploy/docker-compose.yml logs --tail=50 orchestrator execution-simulator
 docker compose -f tools/deploy/docker-compose.yml exec -T orchestrator cat /data/events.jsonl
 docker compose -f tools/deploy/docker-compose.yml down
 ```
@@ -78,8 +78,8 @@ seu histórico; use essa variante apenas para uma limpeza deliberada.
 | Docker não responde | Inicie o Docker e repita `docker info` |
 | Porta já ocupada | Encerre a outra topologia que usa a porta; os cenários de workflow e falha têm portas próprias |
 | `UNAVAILABLE` | Confira `ps` e logs; aguarde os serviços e repita o envio |
-| `no compatible agent found` | Confira o registro do mock-agent e a capacidade `echo` |
-| Mock-agent encerrou ao iniciar | Com o Registry pronto, execute `docker compose -f tools/deploy/docker-compose.yml restart mock-agent` e confira o registro |
+| `no compatible agent found` | Confira o registro do execution-simulator e a capacidade `echo` |
+| Mock-agent encerrou ao iniciar | Com o Registry pronto, execute `docker compose -f tools/deploy/docker-compose.yml restart execution-simulator` e confira o registro |
 | Não há eventos no host | O Compose grava em `/data/events.jsonl`, no volume do contêiner |
 
 ## Cliente local, opcional

@@ -4,11 +4,11 @@ WORKDIR /app
 # instala grpcio diretamente (sem uv, que é ferramenta de dev)
 RUN pip install --no-cache-dir grpcio protobuf
 
-# copia os stubs gerados pelo protoc e o ariadne_sdk
+# copia os stubs gerados pelo protoc
 COPY sdk/python/src ./sdk/python/src
 
 # copia o código do agente
-COPY studies/agents/echo-agent/main.py .
+COPY studies/agents/execution-simulator/main.py .
 
 ENV PYTHONPATH=/app/sdk/python/src
 

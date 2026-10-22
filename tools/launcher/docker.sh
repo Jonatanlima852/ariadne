@@ -12,12 +12,12 @@ select_scenario() {
     scenario=$1
     llm=no
     case "$scenario" in
-        demo) base=tools/deploy/docker-compose.yml; services='registry orchestrator mock-agent' ;;
-        workflow-sequential) base=studies/scenarios/sequential_workflow/docker/compose.yaml; services='registry orchestrator echo-agent' ;;
+        demo) base=tools/deploy/docker-compose.yml; services='registry orchestrator execution-simulator' ;;
+        workflow-sequential) base=studies/scenarios/sequential_workflow/docker/compose.yaml; services='registry orchestrator text-echo' ;;
         failure-reassignment) base=studies/scenarios/failure_reassignment/docker/compose.yaml; services='registry orchestrator slow-agent healthy-agent' ;;
         messaging-basic) base=studies/scenarios/messaging/docker/compose.yaml; services=messaging ;;
-        heterogeneous-route) base=studies/scenarios/heterogeneous_route/docker/compose.yaml; services='registry orchestrator bdi-agent llm-agent'; llm=yes ;;
-        logistics-mission) base=studies/scenarios/logistics/docker/compose.yaml; services='registry orchestrator bdi-agent llm-agent'; llm=yes ;;
+        heterogeneous-route) base=studies/scenarios/heterogeneous_route/docker/compose.yaml; services='registry orchestrator route-planner planner-explainer'; llm=yes ;;
+        logistics-mission) base=studies/scenarios/logistics/docker/compose.yaml; services='registry orchestrator route-planner planner-explainer'; llm=yes ;;
         *) die "Cenário desconhecido: $scenario. Consulte ./ariadne scenario." ;;
     esac
     env_file=/dev/null

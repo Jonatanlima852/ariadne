@@ -87,18 +87,19 @@ def logistics_interpret(goal, context):
     )
 
 
-def logistics_llm_agent(**options):
-    configuration = dict(name="logistics-llm", agent_id="llm-agent-01", handlers=[
+def mission_assistant(**options):
+    configuration = dict(name="mission-assistant", agent_id="mission-assistant-01", handlers=[
         LlmCapability("logistics-plan", logistics_plan, LogisticsPlan, normalize_logistics_plan),
         LlmCapability("logistics-interpret", logistics_interpret, LogisticsInterpretation),
     ])
     return LlmAgent(**(configuration | options))
 
 
-class LogisticsLlmAgent(LlmAgent):
+class MissionAssistant(LlmAgent):
     """Adaptador para os agentes Docker históricos."""
     capabilities = ["logistics-plan", "logistics-interpret"]
-    default_agent_id = "llm-agent-01"
+    default_agent_id = "mission-assistant-01"
+    default_name = "Mission Assistant"
     logistics_plan = staticmethod(llm_capability(
         "logistics-plan", output_schema=LogisticsPlan, result_mapper=normalize_logistics_plan,
     )(logistics_plan))

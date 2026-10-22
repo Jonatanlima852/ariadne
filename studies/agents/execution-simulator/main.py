@@ -13,7 +13,7 @@ from ariadne_sdk import Agent
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s [mock-agent] %(message)s",
+    format="%(asctime)s %(levelname)s [execution-simulator] %(message)s",
 )
 log = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ def _now():
     return ts
 
 
-class MockAgent(Agent):
+class ExecutionSimulatorAgent(Agent):
     def __init__(self, delay_ms, fail_rate, **kwargs):
         super().__init__(**kwargs)
         self.delay_ms = delay_ms
@@ -63,7 +63,7 @@ class MockAgent(Agent):
 
 
 def main():
-    agent_id = os.getenv("AGENT_ID", "mock-agent-01")
+    agent_id = os.getenv("AGENT_ID", "execution-simulator-01")
     host = os.getenv("AGENT_HOST", "localhost")
     port = int(os.getenv("AGENT_PORT", "60051"))
     registry_addr = os.getenv("REGISTRY_ADDR", "localhost:50051")
@@ -72,9 +72,9 @@ def main():
     fail_rate = float(os.getenv("FAIL_RATE", "0.0"))
     reported_load = os.getenv("REPORTED_LOAD")
 
-    agent = MockAgent(
+    agent = ExecutionSimulatorAgent(
         agent_id=agent_id,
-        name=f"Mock Agent ({agent_id})",
+        name=f"Execution Simulator ({agent_id})",
         capabilities=[capability],
         host=host,
         port=port,

@@ -39,15 +39,15 @@ services:
       timeout: 2s
       retries: 15
 
-  llm-agent:
+  planner-explainer:
     build:
       context: ../../../..
-      dockerfile: studies/agents/llm-agent/Dockerfile
+      dockerfile: studies/agents/planner-explainer/Dockerfile
     ports:
       - "${LLM_AGENT_PORT:-60056}:60056"
     environment:
-      AGENT_ID: "llm-agent-01"
-      AGENT_HOST: "llm-agent"
+      AGENT_ID: "planner-explainer-01"
+      AGENT_HOST: "planner-explainer"
       AGENT_PORT: "60056"
       REGISTRY_ADDR: "registry:50051"
       HEARTBEAT_INTERVAL_SECONDS: "5"
@@ -62,15 +62,15 @@ services:
       timeout: 3s
       retries: 20
 
-  bdi-agent:
+  route-planner:
     build:
       context: ../../../..
-      dockerfile: studies/agents/bdi-agent/Dockerfile
+      dockerfile: studies/agents/route-planner/Dockerfile
     ports:
       - "${BDI_AGENT_PORT:-60054}:60054"
     environment:
-      AGENT_ID: "bdi-agent-01"
-      AGENT_HOST: "bdi-agent"
+      AGENT_ID: "route-planner-01"
+      AGENT_HOST: "route-planner"
       AGENT_PORT: "60054"
       REGISTRY_ADDR: "registry:50051"
       HEARTBEAT_INTERVAL_SECONDS: "5"

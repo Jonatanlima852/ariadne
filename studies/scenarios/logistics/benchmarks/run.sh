@@ -20,7 +20,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up \
-  --build -d --wait registry orchestrator bdi-agent llm-agent
+  --build -d --wait registry orchestrator route-planner planner-explainer
 ORCHESTRATOR_ADDR="localhost:${BENCHMARK_ORCHESTRATOR_PORT:-54052}" \
 LOGISTICS_OUTPUT_DIR="$OUTPUT_DIR" \
   uv run --directory "$ROOT_DIR/tools/clients/submit-task" \

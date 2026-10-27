@@ -12,6 +12,11 @@ from typing import Any, Mapping
 import grpc
 
 from contract.v1 import contract_pb2, contract_pb2_grpc
+from ariadne_sdk.mission import (
+    DEFAULT_PLANNER_CAPABILITY,
+    MissionResult,
+    build_mission_request,
+)
 from ariadne_sdk.models import TaskResult, mapping_to_struct, struct_to_dict
 
 
@@ -248,6 +253,8 @@ class RuntimeClient:
         self._stub = orchestrator_stub
         self.results = {}
         self.workflows = {}
+        self.missions = {}
+        self._mission_requests = {}
         self.events = []
 
     def _event(self, event_type, step, **details):
@@ -466,6 +473,103 @@ class RuntimeClient:
                 steps=workflow_steps,
                 final_step_id=final_step_id,
             ),
+        )
+
+    def run_mission(
+        self,
+        goal,
+        *,
+        context=None,
+        limits=None,
+        planner_capability=DEFAULT_PLANNER_CAPABILITY,
+        retry_policy=None,
+        selection_policy=None,
+        metadata=None,
+        mission_id=None,
+        rpc_timeout=None,
+    ):
+        """Executa uma missão até o fim e devolve ``MissionResult``.
+
+        O orquestrador pede o plano a um agente com ``planner_capability``,
+        executa cada rodada e repete até ``DONE``, ``ABORT`` ou um limite.
+        """
+        request = self._mission_request(
+            goal, context=context, limits=limits, planner_capability=planner_capability,
+            retry_policy=retry_policy, selection_policy=selection_policy,
+            metadata=metadata, mission_id=mission_id,
+        )
+        self._event("MISSION_SUBMITTED", "mission", mission_id=request.mission_id)
+        options = {} if rpc_timeout is None else {"timeout": rpc_timeout}
+        response = self._stub.RunMission(
+            contract_pb2.RunMissionRequest(mission=request), **options
+        )
+        if response.HasField("error") and response.error.message:
+            self._event(
+                "MISSION_REJECTED", "mission", mission_id=request.mission_id,
+                error=response.error.message,
+            )
+            raise RuntimeError(f"mission: {response.error.message}")
+        result = MissionResult(response.result, request)
+        self.missions[result.mission_id] = result
+        self._event(
+            "MISSION_FINISHED", "mission", mission_id=result.mission_id,
+            status=result.status, rounds=len(result.rounds),
+        )
+        return result
+
+    def start_mission(
+        self,
+        goal,
+        *,
+        context=None,
+        limits=None,
+        planner_capability=DEFAULT_PLANNER_CAPABILITY,
+        retry_policy=None,
+        selection_policy=None,
+        metadata=None,
+        mission_id=None,
+    ):
+        """Inicia a missão sem esperar; consulte com ``get_mission``."""
+        request = self._mission_request(
+            goal, context=context, limits=limits, planner_capability=planner_capability,
+            retry_policy=retry_policy, selection_policy=selection_policy,
+            metadata=metadata, mission_id=mission_id,
+        )
+        response = self._stub.StartMission(
+            contract_pb2.StartMissionRequest(mission=request)
+        )
+        if response.HasField("error") and response.error.message:
+            raise RuntimeError(f"mission: {response.error.message}")
+        self._mission_requests[response.mission_id] = request
+        self._event("MISSION_STARTED", "mission", mission_id=response.mission_id)
+        return response.mission_id
+
+    def get_mission(self, mission_id):
+        response = self._stub.GetMission(
+            contract_pb2.GetMissionRequest(mission_id=mission_id)
+        )
+        if response.HasField("error") and response.error.message:
+            raise RuntimeError(f"mission: {response.error.message}")
+        return MissionResult(response.result, self._mission_requests.get(mission_id))
+
+    def cancel_mission(self, mission_id):
+        response = self._stub.CancelMission(
+            contract_pb2.CancelMissionRequest(mission_id=mission_id)
+        )
+        if response.HasField("error") and response.error.message:
+            raise RuntimeError(f"mission: {response.error.message}")
+        self._event("MISSION_CANCELLED", "mission", mission_id=mission_id)
+        return MissionResult(response.result, self._mission_requests.get(mission_id))
+
+    def _mission_request(self, goal, *, mission_id=None, **options):
+        return build_mission_request(
+            goal,
+            mission_id=mission_id or str(uuid.uuid4()),
+            trace=contract_pb2.TraceContext(
+                trace_id=self.trace_id,
+                correlation_id=self.name,
+            ),
+            **options,
         )
 
     def report(self):

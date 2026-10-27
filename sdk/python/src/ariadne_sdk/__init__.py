@@ -6,6 +6,14 @@ from ariadne_sdk.planning import SearchProblem, SearchResult, SearchLimitExceede
 from ariadne_sdk.models import Task, TaskResult
 from ariadne_sdk.experiment import Step
 from ariadne_sdk.campaign import Campaign
+from ariadne_sdk.mission import (
+    Mission,
+    MissionLimits,
+    MissionResult,
+    PlannerRequest,
+    PlannerResponse,
+    plan_step,
+)
 from ariadne_sdk.scenario import Scenario
 from ariadne_sdk.client import (
     RuntimeClient,
@@ -27,7 +35,8 @@ def __getattr__(name):
     Agentes determinísticos e BDI não precisam instalar OpenAI/Pydantic para
     importar o núcleo do SDK.
     """
-    if name in {"LlmAgent", "LlmValidationError", "Prompt", "LlmCapability", "llm_capability"}:
+    if name in {"LlmAgent", "LlmValidationError", "Prompt", "LlmCapability", "llm_capability",
+                "PlannerDecision", "mission_planning"}:
         from ariadne_sdk import llm
 
         return getattr(llm, name)
@@ -57,6 +66,12 @@ __all__ = [
     "LlmValidationError",
     "Message",
     "MessagingClient",
+    "Mission",
+    "MissionLimits",
+    "MissionResult",
+    "PlannerDecision",
+    "PlannerRequest",
+    "PlannerResponse",
     "Prompt",
     "Scenario",
     "Campaign",
@@ -71,6 +86,8 @@ __all__ = [
     "act",
     "forget",
     "llm_capability",
+    "mission_planning",
     "observe",
     "plan",
+    "plan_step",
 ]

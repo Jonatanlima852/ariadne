@@ -1,0 +1,16 @@
+observation,case,configuration,execution_kind,model,suite,repetition,total_orders,delivered,on_time,delivery_pct,on_time_pct,wall_seconds,total_tokens,distance,energy_consumed,rejected_actions,input_tokens,output_tokens,result,error,stop_reason
+1,s01-distributed-mixed-orders,single-llm,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,79.2698,10521.0,90,371,0,3102.0,7419.0,complete,,all orders delivered
+2,s01-distributed-mixed-orders,ariadne,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,34.7635,21073.0,59.0,241.0,0,17889.0,3184.0,complete,,all orders delivered
+3,s02-scarce-stock-coupling,single-llm,real-llm,gpt-5.6-luna,stress,1,8,6,6,75.0,75.0,57.3723,17500.0,47,210,0,12186.0,5314.0,partial,,"As únicas órdenes pendientes son o4 y o8, ambas requieren medicine. No queda medicine disponible en ningún depósito (south, east ni north), y ningún vehículo transporta carga recuperable. Por tanto, no existe una secuencia ejecutable para completar las órdenes restantes."
+4,s02-scarce-stock-coupling,ariadne,real-llm,gpt-5.6-luna,stress,1,8,6,6,75.0,75.0,93.0822,43337.0,53.0,257.0,0,35909.0,7428.0,partial,,no remaining stock/vehicle/route candidate
+5,s03-capacity-and-source,single-llm,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,45.0747,7915.0,97,374,0,3122.0,4793.0,complete,,all orders delivered
+6,s03-capacity-and-source,ariadne,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,46.7021,22438.0,66.0,261.0,0,18328.0,4110.0,complete,,all orders delivered
+7,s04-recharge-detours,single-llm,real-llm,gpt-5.6-luna,stress,1,6,6,6,100.0,100.0,28.9641,5755.0,38,143,0,2828.0,2927.0,complete,,all orders delivered
+8,s04-recharge-detours,ariadne,real-llm,gpt-5.6-luna,stress,1,6,5,5,83.33333333333333,83.33333333333333,211.7127,86080.0,43.0,164.0,0,69869.0,16211.0,partial,,no remaining stock/vehicle/route candidate
+9,s05-directed-connections,single-llm,real-llm,gpt-5.6-luna,stress,1,6,6,6,100.0,100.0,44.7837,11792.0,67,273,1,7315.0,4477.0,complete,,all orders delivered
+10,s05-directed-connections,ariadne,real-llm,gpt-5.6-luna,stress,1,6,6,6,100.0,100.0,37.7586,16845.0,44.0,203.0,0,13642.0,3203.0,complete,,all orders delivered
+11,s06-progressive-roadblocks,single-llm,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,108.4424,26280.0,74,285,1,15916.0,10364.0,complete,,all orders delivered
+12,s06-progressive-roadblocks,ariadne,real-llm,gpt-5.6-luna,stress,1,8,8,8,100.0,100.0,333.8607,136739.0,81.0,332.0,0,111096.0,25643.0,complete,,all orders delivered
+13,s07-loaded-vehicle-loss,single-llm,real-llm,gpt-5.6-luna,stress,1,6,6,6,100.0,100.0,67.264,11853.0,59,237,0,5837.0,6016.0,complete,,all orders delivered
+14,s07-loaded-vehicle-loss,ariadne,real-llm,gpt-5.6-luna,stress,1,6,6,6,100.0,100.0,78.4586,28931.0,55.0,222.0,0,22183.0,6748.0,complete,,all orders delivered
+15,s08-cascading-disruptions,single-llm,real-llm,gpt-5.6-luna,stress,1,10,9,9,90.0,90.0,191.9208,43675.0,71,287,1,26155.0,17520.0,partial,,"Apenas o pedido o8 permanece. Nenhum veículo consegue atendê-lo no estado atual: o8 pesa 8 unidades, excedendo a capacidade da bike (4); van2 está em C com apenas 7 de bateria e não alcança uma estação de recarga; e o truck está em H com 18 de bateria, sem rota alcançável até uma estação de recarga (E, K ou N) devido ao consumo mínimo necessário. Portanto, não há ação executável."

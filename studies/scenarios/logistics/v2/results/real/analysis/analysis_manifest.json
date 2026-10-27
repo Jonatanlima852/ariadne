@@ -1,0 +1,36 @@
+{
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v2/results/real/results.json",
+  "source_sha256": "dbd4de741ed8042ad0fec4a1eb9f0609a477c5ce4f72a1d1e31592272c0d8528",
+  "created_at": "2026-10-22T06:55:26.244061+00:00",
+  "title": "Logística básica: configuração original",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "observations": 20,
+  "comparisons": {
+    "ariadne": {
+      "paired_cases": [
+        "easy",
+        "two-orders",
+        "stock-contention",
+        "one-vehicle",
+        "recharge",
+        "priority-deadlines",
+        "road-block",
+        "vehicle-loss",
+        "capacity-impossible",
+        "combined-incidents"
+      ],
+      "baseline_only": [],
+      "hybrid_only": []
+    }
+  },
+  "figures": [
+    "single-llm-vs-ariadne-af7d6d42/01-atendimento.svg",
+    "single-llm-vs-ariadne-af7d6d42/01-atendimento.png",
+    "single-llm-vs-ariadne-af7d6d42/02-tempo-e-tokens.svg",
+    "single-llm-vs-ariadne-af7d6d42/02-tempo-e-tokens.png",
+    "single-llm-vs-ariadne-af7d6d42/03-distancia-e-energia.svg",
+    "single-llm-vs-ariadne-af7d6d42/03-distancia-e-energia.png"
+  ],
+  "aggregation": "arithmetic mean within case/configuration; per-metric valid n"
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "configuration": "single-llm",
+    "observations": 10,
+    "delivered": 68,
+    "total_orders": 76,
+    "on_time": 65,
+    "rejected_actions": 0,
+    "wall_seconds": 4.3881,
+    "wall_seconds_before_report": 4.3878,
+    "reporting_seconds": 0,
+    "distance": 598,
+    "energy_consumed": 2518,
+    "llm_calls": 0,
+    "input_tokens": null,
+    "output_tokens": null,
+    "operational_errors": 0
+  },
+  {
+    "configuration": "ariadne",
+    "observations": 10,
+    "delivered": 68,
+    "total_orders": 76,
+    "on_time": 65,
+    "rejected_actions": 0,
+    "wall_seconds": 11.540799999999999,
+    "wall_seconds_before_report": 11.3413,
+    "reporting_seconds": 0.1996,
+    "distance": 598.0,
+    "energy_consumed": 2518.0,
+    "llm_calls": 0,
+    "input_tokens": null,
+    "output_tokens": null,
+    "operational_errors": 0
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "source_sha256": "827d1a145f665bbec58fda203d4be0c990142af7ea3d535641f2844fa16a0d62",
+  "paired_observations": 30,
+  "cases": 10,
+  "totals": {
+    "single-llm": {
+      "delivered": 204,
+      "total_orders": 228,
+      "on_time": 190,
+      "wall_seconds": 2612.4399,
+      "total_tokens": null,
+      "rejected_actions": 13,
+      "observations": 30,
+      "errors": 1,
+      "mean_wall_seconds": 87.08133000000001,
+      "mean_tokens": null,
+      "mean_paired_tokens": 18395.379310344826
+    },
+    "ariadne-lean": {
+      "delivered": 219,
+      "total_orders": 228,
+      "on_time": 210,
+      "wall_seconds": 146.4226,
+      "total_tokens": 31313.0,
+      "rejected_actions": 0,
+      "observations": 30,
+      "errors": 0,
+      "mean_wall_seconds": 4.880753333333334,
+      "mean_tokens": 1043.7666666666667,
+      "mean_paired_tokens": 1038.4137931034484
+    }
+  },
+  "speedup_mean_wall_seconds": 17.841780572124794,
+  "paired_token_observations": 29,
+  "paired_token_totals": {
+    "single-llm": 533466.0,
+    "ariadne-lean": 30114.0
+  },
+  "token_reduction_on_known_pairs_pct": 94.35502918648986
+}

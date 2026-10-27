@@ -1,0 +1,15 @@
+{
+  "backend": "docker-compose",
+  "replayed_observations": 15,
+  "collections": [
+    {
+      "directory": ".ariadne/logistics-v2/20261022T061629592385Z",
+      "raw_results_sha256": "d888de1f8344350b3f996b3f0d4263c1b571f5e4187c0d1e5fc65cd18456f0ea"
+    },
+    {
+      "directory": ".ariadne/logistics-v2/20261022T061918320935Z",
+      "raw_results_sha256": "ca5bca65584e7d78a7f6bf870b6d43c3588d03cd1ab4460eae1bfe9b9723b886"
+    }
+  ],
+  "preservation": "Only repeated workflow and executor-state copies omitted. Final states, histories, metrics and specialist decisions retained."
+}

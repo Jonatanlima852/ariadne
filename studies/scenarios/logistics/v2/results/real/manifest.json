@@ -1,0 +1,3607 @@
+{
+  "backend": "docker-compose",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "cases": [
+    {
+      "id": "easy",
+      "description": "Entrega viável dentro do prazo; não exige recarga.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "C",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Entrega viável dentro do prazo; não exige recarga.",
+        "optimality_claim": false,
+        "deliverable_orders": 1
+      }
+    },
+    {
+      "id": "two-orders",
+      "description": "Ambos os pedidos viáveis; recursos suficientes.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "D",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "F",
+          "items": {
+            "medicine": 2
+          },
+          "priority": 2,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de medicine em F; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Ambos os pedidos viáveis; recursos suficientes.",
+        "optimality_claim": false,
+        "deliverable_orders": 2
+      }
+    },
+    {
+      "id": "stock-contention",
+      "description": "Somente um pedido pode ser atendido: quatro unidades no total.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 4,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 0,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "C",
+          "items": {
+            "food": 4
+          },
+          "priority": 3,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 4 unidades de food em C; prioridade 3 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "G",
+          "items": {
+            "food": 4
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 4 unidades de food em G; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Somente um pedido pode ser atendido: quatro unidades no total.",
+        "optimality_claim": false,
+        "deliverable_orders": 1
+      }
+    },
+    {
+      "id": "one-vehicle",
+      "description": "Dois pedidos viáveis com reutilização sequencial de van1.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "D",
+          "items": {
+            "food": 2
+          },
+          "priority": 2,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "H",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Dois pedidos viáveis com reutilização sequencial de van1.",
+        "optimality_claim": false,
+        "deliverable_orders": 2
+      }
+    },
+    {
+      "id": "recharge",
+      "description": "Entrega viável somente com recarga em E.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 30,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "H",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Entrega viável somente com recarga em E.",
+        "optimality_claim": false,
+        "deliverable_orders": 1
+      }
+    },
+    {
+      "id": "priority-deadlines",
+      "description": "Todos viáveis; o1 e o3 têm prazos apertados. A ordem de atendimento afeta atrasos.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "C",
+          "items": {
+            "food": 2
+          },
+          "priority": 5,
+          "deadline": 5,
+          "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 5 (maior é mais urgente); prazo absoluto 5 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "H",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o3",
+          "destination": "F",
+          "items": {
+            "medicine": 1
+          },
+          "priority": 3,
+          "deadline": 12,
+          "request": "Pedido o3: entregar 1 unidades de medicine em F; prioridade 3 (maior é mais urgente); prazo absoluto 12 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Todos viáveis; o1 e o3 têm prazos apertados. A ordem de atendimento afeta atrasos.",
+        "optimality_claim": false
+      }
+    },
+    {
+      "id": "road-block",
+      "description": "Entrega viável por desvio após bloqueio de D-E.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "H",
+          "items": {
+            "food": 2
+          },
+          "priority": 2,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em H; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "G",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de food em G; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [
+        {
+          "type": "block",
+          "edge": [
+            "D",
+            "E"
+          ],
+          "after_actions": 2,
+          "description": "Obras bloqueiam D-E nos dois sentidos."
+        }
+      ],
+      "expected": {
+        "note": "Entrega viável por desvio após bloqueio de D-E.",
+        "optimality_claim": false,
+        "deliverable_orders": 2
+      }
+    },
+    {
+      "id": "vehicle-loss",
+      "description": "Pedidos viáveis com van2; se van1 carregar antes da pane, sua carga precisará ser recuperada em A.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "C",
+          "items": {
+            "food": 2
+          },
+          "priority": 3,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 3 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "F",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de food em F; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [
+        {
+          "type": "unavailable",
+          "vehicle": "van1",
+          "after_actions": 1,
+          "description": "van1 sofreu pane; carga pode ser transferida por veículo no mesmo local."
+        }
+      ],
+      "expected": {
+        "note": "Pedidos viáveis com van2; se van1 carregar antes da pane, sua carga precisará ser recuperada em A.",
+        "optimality_claim": false,
+        "deliverable_orders": 2
+      }
+    },
+    {
+      "id": "capacity-impossible",
+      "description": "o1 pesa dez unidades, acima da capacidade de ambos; somente o2 é viável.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "H",
+          "items": {
+            "medicine": 5
+          },
+          "priority": 5,
+          "deadline": 30,
+          "request": "Pedido o1: entregar 5 unidades de medicine em H; prioridade 5 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "C",
+          "items": {
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 2 unidades de food em C; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "o1 pesa dez unidades, acima da capacidade de ambos; somente o2 é viável.",
+        "optimality_claim": false,
+        "deliverable_orders": 1
+      }
+    },
+    {
+      "id": "combined-incidents",
+      "description": "Atendimento parcial ou total depende da recuperação e prazos; sem alegação de ótimo.",
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          }
+        ],
+        "charging_locations": [
+          "E"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 2
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 12,
+              "medicine": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 8,
+              "medicine": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 6,
+            "battery": 65,
+            "battery_capacity": 100
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 8,
+            "battery": 80,
+            "battery_capacity": 100
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "D",
+          "items": {
+            "food": 2
+          },
+          "priority": 5,
+          "deadline": 10,
+          "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 5 (maior é mais urgente); prazo absoluto 10 minutos desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "H",
+          "items": {
+            "food": 4
+          },
+          "priority": 2,
+          "deadline": 30,
+          "request": "Pedido o2: entregar 4 unidades de food em H; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        },
+        {
+          "id": "o3",
+          "destination": "F",
+          "items": {
+            "medicine": 2
+          },
+          "priority": 1,
+          "deadline": 30,
+          "request": "Pedido o3: entregar 2 unidades de medicine em F; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+        }
+      ],
+      "incidents": [
+        {
+          "type": "block",
+          "edge": [
+            "A",
+            "C"
+          ],
+          "after_actions": 1,
+          "description": "Bloqueio A-C."
+        },
+        {
+          "type": "unavailable",
+          "vehicle": "van1",
+          "after_actions": 3,
+          "description": "Pane de van1 após três ações aceitas."
+        }
+      ],
+      "expected": {
+        "note": "Atendimento parcial ou total depende da recuperação e prazos; sem alegação de ótimo.",
+        "optimality_claim": false
+      }
+    }
+  ],
+  "collections": [
+    {
+      "directory": ".ariadne/logistics-v2/20261022T055319489855Z",
+      "raw_results_sha256": "320a9d8411245adfb905775764bbbe6e6a055bcc0f2f41585fa3f5de9d31875e",
+      "manifest": {
+        "execution_kind": "real-llm",
+        "model": "gpt-5.6-luna",
+        "max_rounds": 20,
+        "cases": [
+          {
+            "id": "easy",
+            "description": "Entrega viável dentro do prazo; não exige recarga.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "C",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Entrega viável dentro do prazo; não exige recarga.",
+              "optimality_claim": false,
+              "deliverable_orders": 1
+            }
+          }
+        ],
+        "configurations": [
+          "single-llm",
+          "ariadne"
+        ],
+        "rules": "sequential time; whole orders; incidents before next action at accepted-action threshold",
+        "backend": "docker-compose",
+        "orchestrator_addr": "localhost:55052",
+        "registry_addr": "localhost:55051",
+        "registered_agents": {
+          "OrderInterpreter": {
+            "agent_id": "OrderInterpreter",
+            "name": "OrderInterpreter",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-OrderInterpreter",
+                "name": "logistics-v2-OrderInterpreter"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "order-interpreter:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:53:18.692483337Z"
+          },
+          "MissionDecomposer": {
+            "agent_id": "MissionDecomposer",
+            "name": "MissionDecomposer",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionDecomposer",
+                "name": "logistics-v2-MissionDecomposer"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-decomposer:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:53:18.717461296Z"
+          },
+          "IncidentAnalyst": {
+            "agent_id": "IncidentAnalyst",
+            "name": "IncidentAnalyst",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-IncidentAnalyst",
+                "name": "logistics-v2-IncidentAnalyst"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "incident-analyst:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:53:18.756919712Z"
+          },
+          "OperationsReporter": {
+            "agent_id": "OperationsReporter",
+            "name": "OperationsReporter",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-OperationsReporter",
+                "name": "logistics-v2-OperationsReporter"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "operations-reporter:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:53:18.717013921Z"
+          },
+          "InventoryManager": {
+            "agent_id": "InventoryManager",
+            "name": "InventoryManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-InventoryManager",
+                "name": "logistics-v2-InventoryManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "inventory-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.941652012Z",
+            "updated_at": "2026-10-22T05:53:19.304931254Z"
+          },
+          "ResourceAllocator": {
+            "agent_id": "ResourceAllocator",
+            "name": "ResourceAllocator",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ResourceAllocator",
+                "name": "logistics-v2-ResourceAllocator"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "resource-allocator:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.921990595Z",
+            "updated_at": "2026-10-22T05:53:19.304545129Z"
+          },
+          "RoutePlanner": {
+            "agent_id": "RoutePlanner",
+            "name": "RoutePlanner",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-RoutePlanner",
+                "name": "logistics-v2-RoutePlanner"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "route-planner:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.973524178Z",
+            "updated_at": "2026-10-22T05:53:19.368660629Z"
+          },
+          "EnergyManager": {
+            "agent_id": "EnergyManager",
+            "name": "EnergyManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-EnergyManager",
+                "name": "logistics-v2-EnergyManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "energy-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.888057512Z",
+            "updated_at": "2026-10-22T05:53:19.304451421Z"
+          },
+          "ConstraintSupervisor": {
+            "agent_id": "ConstraintSupervisor",
+            "name": "ConstraintSupervisor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ConstraintSupervisor",
+                "name": "logistics-v2-ConstraintSupervisor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "constraint-supervisor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.954734470Z",
+            "updated_at": "2026-10-22T05:53:19.304588129Z"
+          },
+          "MissionExecutor": {
+            "agent_id": "MissionExecutor",
+            "name": "MissionExecutor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionExecutor",
+                "name": "logistics-v2-MissionExecutor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-executor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.949922137Z",
+            "updated_at": "2026-10-22T05:53:19.299344713Z"
+          },
+          "SingleLLM": {
+            "agent_id": "SingleLLM",
+            "name": "SingleLLM",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-SingleLLM",
+                "name": "logistics-v2-SingleLLM"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "single-llm:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:53:18.757028629Z"
+          }
+        },
+        "source_sha256": {
+          "world.py": "5335cca68bc5fdf5723914cbbce2187f7666c6a36a6895b8e9cba2609d87d3a4",
+          "run.py": "31a2f28c58ad345a32b15e12c4ec167bccc133e66247ecbfc66d0322ff47a72b",
+          "models.py": "768d7791062c8502d2b27b9d29397fba47e9a7a445f08bb4a03136d2114b7a4f",
+          "episode.py": "a995e5bd3fc66036d9b41ded373702aba63f4128bf4969b3776bdfff522f88c1",
+          "__init__.py": "0c9653ca78ed3fef4a52424a7e2b725ced675941fc1fadfb030815e5ef6a01a4",
+          "planning.py": "665f895f0584c79ce025b8ed48b374865dc4646063764da4c70e75e7ed325f85",
+          "demo.py": "17990e2fc2b14651dd85fcd14a52886c4a90b64f0b9c84e86618fc55dd48a5fe",
+          "docker/compose.yaml": "6ba4c324a102fca5fd72562a770e621c5129a7a861b7c3c00ba761af77d9c82c",
+          "agents/__init__.py": "6854d68e5ae63772aac89e84cbbbe1e1ebad3b420514deb971b7260a1d388d4e",
+          "agents/common.py": "040609fccf46696500c10de701b77107f6f5df7505ce67424d559339692f2117",
+          "agents/constraint_supervisor/Dockerfile": "56696ce19a20d5d1626a3f736c46b9473dc67139527fd49e94c61a942c638e61",
+          "agents/constraint_supervisor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/constraint_supervisor/main.py": "63afcd4421f8198f1cade7e30b4304e7921dc19505347a06abbfbacf8cc855a4",
+          "agents/incident_analyst/Dockerfile": "a091dec16521c258758cdea53a6fcd50b89242bf269bcda18340f87c68d53177",
+          "agents/incident_analyst/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/incident_analyst/main.py": "22d233e280375f585442469246b977c7fffee661a26f3e8102ce48373cecf6d0",
+          "agents/order_interpreter/Dockerfile": "d7fdb1b21d619d8a646c7ecb29a9a689a1dc5b0fb8ef0fd2753c94b01c9f7e29",
+          "agents/order_interpreter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/order_interpreter/main.py": "98f91d8b7bbed2f9cb6b115939614ddb405badfc057d7ed42bc90d78c5b28ad6",
+          "agents/mission_executor/Dockerfile": "7a6628590b4a3839a018c5043a20419e5cef5d43c65d2a388c02b2fc7c6ebf42",
+          "agents/mission_executor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_executor/main.py": "eae855192a1d7680c953d6f26639523581e7cf09ddf9777803b79a182e5ac7d8",
+          "agents/mission_decomposer/Dockerfile": "b2b0a7d3cf7f575c0ef2373c6a65a755863351815b4ad35a78d0aa6807a11124",
+          "agents/mission_decomposer/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_decomposer/main.py": "b6a35387907b55c75b10e5ff46159dc40fc73e728f385d6e14a3f7df24189d01",
+          "agents/single_llm/Dockerfile": "5ef361a358e5e5ec0a1cbbda6f54659441ef5270008855c6c431cbb1f3b2f72b",
+          "agents/single_llm/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/single_llm/main.py": "6afdefd9e9c4e60acd3a5ebfca2e58f1178040eb43d04c4aa99b92d3971ca971",
+          "agents/route_planner/Dockerfile": "f3e639e4d3e702b2b8a7bae4e05adf0bcd80ab0ebd1def4cd22296074e23c35c",
+          "agents/route_planner/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/route_planner/main.py": "be3f6540d24af1a0102356672ff80326c740d1e9c3f3415b3715bcb6c83778ad",
+          "agents/resource_allocator/Dockerfile": "e673c70f9a5188b3bf720dce8cae324a72ac389b51ee5b697bdb320f7f25dc3f",
+          "agents/resource_allocator/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/resource_allocator/main.py": "fdb52b510fd42786587896cb5126b19ced4967c5417151948c40cb0caf1be87f",
+          "agents/operations_reporter/Dockerfile": "01f00383c5b40123b8594b8204f85309611af9566e6e1711057c0416f2fa334e",
+          "agents/operations_reporter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/operations_reporter/main.py": "97ca5a8cd6a810f19ede654696e9cd39a3c349f22b6925ef65d1ca7bc6bd403e",
+          "agents/energy_manager/Dockerfile": "2b769cc668971dc12868087da6989c5369a9db5e6264318a19455e88ee673779",
+          "agents/energy_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/energy_manager/main.py": "894b817da0afc927a3af8ea677a00f00e2fb89a31c16507eeac942c455836f56",
+          "agents/inventory_manager/Dockerfile": "24f175c06322d507d9371fad0e990567fd1b7c74e2e14f44dfa00a2f88ad4d74",
+          "agents/inventory_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/inventory_manager/main.py": "5bce94174d2cc5c13df8cb8ebee8e83ac2869a937edcfff5b5f6f2303fa28acc"
+        }
+      }
+    },
+    {
+      "directory": ".ariadne/logistics-v2/20261022T055424000773Z",
+      "raw_results_sha256": "066aa38aeaa2d9cc64807f2a44933be41409c75f8c47fe2fdebb5e420b1ac332",
+      "manifest": {
+        "execution_kind": "real-llm",
+        "model": "gpt-5.6-luna",
+        "max_rounds": 20,
+        "cases": [
+          {
+            "id": "two-orders",
+            "description": "Ambos os pedidos viáveis; recursos suficientes.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "D",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "F",
+                "items": {
+                  "medicine": 2
+                },
+                "priority": 2,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de medicine em F; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Ambos os pedidos viáveis; recursos suficientes.",
+              "optimality_claim": false,
+              "deliverable_orders": 2
+            }
+          },
+          {
+            "id": "stock-contention",
+            "description": "Somente um pedido pode ser atendido: quatro unidades no total.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 4,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 0,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "C",
+                "items": {
+                  "food": 4
+                },
+                "priority": 3,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 4 unidades de food em C; prioridade 3 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "G",
+                "items": {
+                  "food": 4
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 4 unidades de food em G; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Somente um pedido pode ser atendido: quatro unidades no total.",
+              "optimality_claim": false,
+              "deliverable_orders": 1
+            }
+          },
+          {
+            "id": "one-vehicle",
+            "description": "Dois pedidos viáveis com reutilização sequencial de van1.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "D",
+                "items": {
+                  "food": 2
+                },
+                "priority": 2,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "H",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Dois pedidos viáveis com reutilização sequencial de van1.",
+              "optimality_claim": false,
+              "deliverable_orders": 2
+            }
+          },
+          {
+            "id": "recharge",
+            "description": "Entrega viável somente com recarga em E.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 30,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "H",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Entrega viável somente com recarga em E.",
+              "optimality_claim": false,
+              "deliverable_orders": 1
+            }
+          },
+          {
+            "id": "priority-deadlines",
+            "description": "Todos viáveis; o1 e o3 têm prazos apertados. A ordem de atendimento afeta atrasos.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "C",
+                "items": {
+                  "food": 2
+                },
+                "priority": 5,
+                "deadline": 5,
+                "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 5 (maior é mais urgente); prazo absoluto 5 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "H",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de food em H; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o3",
+                "destination": "F",
+                "items": {
+                  "medicine": 1
+                },
+                "priority": 3,
+                "deadline": 12,
+                "request": "Pedido o3: entregar 1 unidades de medicine em F; prioridade 3 (maior é mais urgente); prazo absoluto 12 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Todos viáveis; o1 e o3 têm prazos apertados. A ordem de atendimento afeta atrasos.",
+              "optimality_claim": false
+            }
+          },
+          {
+            "id": "road-block",
+            "description": "Entrega viável por desvio após bloqueio de D-E.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "H",
+                "items": {
+                  "food": 2
+                },
+                "priority": 2,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em H; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "G",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de food em G; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [
+              {
+                "type": "block",
+                "edge": [
+                  "D",
+                  "E"
+                ],
+                "after_actions": 2,
+                "description": "Obras bloqueiam D-E nos dois sentidos."
+              }
+            ],
+            "expected": {
+              "note": "Entrega viável por desvio após bloqueio de D-E.",
+              "optimality_claim": false,
+              "deliverable_orders": 2
+            }
+          },
+          {
+            "id": "vehicle-loss",
+            "description": "Pedidos viáveis com van2; se van1 carregar antes da pane, sua carga precisará ser recuperada em A.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "C",
+                "items": {
+                  "food": 2
+                },
+                "priority": 3,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 2 unidades de food em C; prioridade 3 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "F",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de food em F; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [
+              {
+                "type": "unavailable",
+                "vehicle": "van1",
+                "after_actions": 1,
+                "description": "van1 sofreu pane; carga pode ser transferida por veículo no mesmo local."
+              }
+            ],
+            "expected": {
+              "note": "Pedidos viáveis com van2; se van1 carregar antes da pane, sua carga precisará ser recuperada em A.",
+              "optimality_claim": false,
+              "deliverable_orders": 2
+            }
+          },
+          {
+            "id": "capacity-impossible",
+            "description": "o1 pesa dez unidades, acima da capacidade de ambos; somente o2 é viável.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "H",
+                "items": {
+                  "medicine": 5
+                },
+                "priority": 5,
+                "deadline": 30,
+                "request": "Pedido o1: entregar 5 unidades de medicine em H; prioridade 5 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "C",
+                "items": {
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 2 unidades de food em C; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "o1 pesa dez unidades, acima da capacidade de ambos; somente o2 é viável.",
+              "optimality_claim": false,
+              "deliverable_orders": 1
+            }
+          },
+          {
+            "id": "combined-incidents",
+            "description": "Atendimento parcial ou total depende da recuperação e prazos; sem alegação de ótimo.",
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                }
+              ],
+              "charging_locations": [
+                "E"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 2
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 12,
+                    "medicine": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 8,
+                    "medicine": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 6,
+                  "battery": 65,
+                  "battery_capacity": 100
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 8,
+                  "battery": 80,
+                  "battery_capacity": 100
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "D",
+                "items": {
+                  "food": 2
+                },
+                "priority": 5,
+                "deadline": 10,
+                "request": "Pedido o1: entregar 2 unidades de food em D; prioridade 5 (maior é mais urgente); prazo absoluto 10 minutos desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "H",
+                "items": {
+                  "food": 4
+                },
+                "priority": 2,
+                "deadline": 30,
+                "request": "Pedido o2: entregar 4 unidades de food em H; prioridade 2 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              },
+              {
+                "id": "o3",
+                "destination": "F",
+                "items": {
+                  "medicine": 2
+                },
+                "priority": 1,
+                "deadline": 30,
+                "request": "Pedido o3: entregar 2 unidades de medicine em F; prioridade 1 (maior é mais urgente); prazo absoluto 30 minutos desde o início."
+              }
+            ],
+            "incidents": [
+              {
+                "type": "block",
+                "edge": [
+                  "A",
+                  "C"
+                ],
+                "after_actions": 1,
+                "description": "Bloqueio A-C."
+              },
+              {
+                "type": "unavailable",
+                "vehicle": "van1",
+                "after_actions": 3,
+                "description": "Pane de van1 após três ações aceitas."
+              }
+            ],
+            "expected": {
+              "note": "Atendimento parcial ou total depende da recuperação e prazos; sem alegação de ótimo.",
+              "optimality_claim": false
+            }
+          }
+        ],
+        "configurations": [
+          "single-llm",
+          "ariadne"
+        ],
+        "rules": "sequential time; whole orders; incidents before next action at accepted-action threshold",
+        "backend": "docker-compose",
+        "orchestrator_addr": "localhost:55052",
+        "registry_addr": "localhost:55051",
+        "registered_agents": {
+          "OrderInterpreter": {
+            "agent_id": "OrderInterpreter",
+            "name": "OrderInterpreter",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-OrderInterpreter",
+                "name": "logistics-v2-OrderInterpreter"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "order-interpreter:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:54:23.930722048Z"
+          },
+          "MissionDecomposer": {
+            "agent_id": "MissionDecomposer",
+            "name": "MissionDecomposer",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionDecomposer",
+                "name": "logistics-v2-MissionDecomposer"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-decomposer:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:54:23.965190965Z"
+          },
+          "IncidentAnalyst": {
+            "agent_id": "IncidentAnalyst",
+            "name": "IncidentAnalyst",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-IncidentAnalyst",
+                "name": "logistics-v2-IncidentAnalyst"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "incident-analyst:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:54:23.964868506Z"
+          },
+          "OperationsReporter": {
+            "agent_id": "OperationsReporter",
+            "name": "OperationsReporter",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-OperationsReporter",
+                "name": "logistics-v2-OperationsReporter"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "operations-reporter:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:54:23.965023590Z"
+          },
+          "InventoryManager": {
+            "agent_id": "InventoryManager",
+            "name": "InventoryManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-InventoryManager",
+                "name": "logistics-v2-InventoryManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "inventory-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.941652012Z",
+            "updated_at": "2026-10-22T05:54:23.602297715Z"
+          },
+          "ResourceAllocator": {
+            "agent_id": "ResourceAllocator",
+            "name": "ResourceAllocator",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ResourceAllocator",
+                "name": "logistics-v2-ResourceAllocator"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "resource-allocator:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.921990595Z",
+            "updated_at": "2026-10-22T05:54:23.603381965Z"
+          },
+          "RoutePlanner": {
+            "agent_id": "RoutePlanner",
+            "name": "RoutePlanner",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-RoutePlanner",
+                "name": "logistics-v2-RoutePlanner"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "route-planner:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.973524178Z",
+            "updated_at": "2026-10-22T05:54:23.602618090Z"
+          },
+          "EnergyManager": {
+            "agent_id": "EnergyManager",
+            "name": "EnergyManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-EnergyManager",
+                "name": "logistics-v2-EnergyManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "energy-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.888057512Z",
+            "updated_at": "2026-10-22T05:54:23.603335381Z"
+          },
+          "ConstraintSupervisor": {
+            "agent_id": "ConstraintSupervisor",
+            "name": "ConstraintSupervisor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ConstraintSupervisor",
+                "name": "logistics-v2-ConstraintSupervisor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "constraint-supervisor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.954734470Z",
+            "updated_at": "2026-10-22T05:54:23.603609090Z"
+          },
+          "MissionExecutor": {
+            "agent_id": "MissionExecutor",
+            "name": "MissionExecutor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionExecutor",
+                "name": "logistics-v2-MissionExecutor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-executor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.949922137Z",
+            "updated_at": "2026-10-22T05:54:23.603179340Z"
+          },
+          "SingleLLM": {
+            "agent_id": "SingleLLM",
+            "name": "SingleLLM",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-SingleLLM",
+                "name": "logistics-v2-SingleLLM"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "single-llm:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T05:54:23.983522465Z"
+          }
+        },
+        "source_sha256": {
+          "world.py": "5335cca68bc5fdf5723914cbbce2187f7666c6a36a6895b8e9cba2609d87d3a4",
+          "run.py": "31a2f28c58ad345a32b15e12c4ec167bccc133e66247ecbfc66d0322ff47a72b",
+          "models.py": "768d7791062c8502d2b27b9d29397fba47e9a7a445f08bb4a03136d2114b7a4f",
+          "episode.py": "a995e5bd3fc66036d9b41ded373702aba63f4128bf4969b3776bdfff522f88c1",
+          "__init__.py": "0c9653ca78ed3fef4a52424a7e2b725ced675941fc1fadfb030815e5ef6a01a4",
+          "planning.py": "665f895f0584c79ce025b8ed48b374865dc4646063764da4c70e75e7ed325f85",
+          "demo.py": "17990e2fc2b14651dd85fcd14a52886c4a90b64f0b9c84e86618fc55dd48a5fe",
+          "docker/compose.yaml": "6ba4c324a102fca5fd72562a770e621c5129a7a861b7c3c00ba761af77d9c82c",
+          "agents/__init__.py": "6854d68e5ae63772aac89e84cbbbe1e1ebad3b420514deb971b7260a1d388d4e",
+          "agents/common.py": "040609fccf46696500c10de701b77107f6f5df7505ce67424d559339692f2117",
+          "agents/constraint_supervisor/Dockerfile": "56696ce19a20d5d1626a3f736c46b9473dc67139527fd49e94c61a942c638e61",
+          "agents/constraint_supervisor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/constraint_supervisor/main.py": "63afcd4421f8198f1cade7e30b4304e7921dc19505347a06abbfbacf8cc855a4",
+          "agents/incident_analyst/Dockerfile": "a091dec16521c258758cdea53a6fcd50b89242bf269bcda18340f87c68d53177",
+          "agents/incident_analyst/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/incident_analyst/main.py": "22d233e280375f585442469246b977c7fffee661a26f3e8102ce48373cecf6d0",
+          "agents/order_interpreter/Dockerfile": "d7fdb1b21d619d8a646c7ecb29a9a689a1dc5b0fb8ef0fd2753c94b01c9f7e29",
+          "agents/order_interpreter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/order_interpreter/main.py": "98f91d8b7bbed2f9cb6b115939614ddb405badfc057d7ed42bc90d78c5b28ad6",
+          "agents/mission_executor/Dockerfile": "7a6628590b4a3839a018c5043a20419e5cef5d43c65d2a388c02b2fc7c6ebf42",
+          "agents/mission_executor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_executor/main.py": "eae855192a1d7680c953d6f26639523581e7cf09ddf9777803b79a182e5ac7d8",
+          "agents/mission_decomposer/Dockerfile": "b2b0a7d3cf7f575c0ef2373c6a65a755863351815b4ad35a78d0aa6807a11124",
+          "agents/mission_decomposer/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_decomposer/main.py": "b6a35387907b55c75b10e5ff46159dc40fc73e728f385d6e14a3f7df24189d01",
+          "agents/single_llm/Dockerfile": "5ef361a358e5e5ec0a1cbbda6f54659441ef5270008855c6c431cbb1f3b2f72b",
+          "agents/single_llm/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/single_llm/main.py": "6afdefd9e9c4e60acd3a5ebfca2e58f1178040eb43d04c4aa99b92d3971ca971",
+          "agents/route_planner/Dockerfile": "f3e639e4d3e702b2b8a7bae4e05adf0bcd80ab0ebd1def4cd22296074e23c35c",
+          "agents/route_planner/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/route_planner/main.py": "be3f6540d24af1a0102356672ff80326c740d1e9c3f3415b3715bcb6c83778ad",
+          "agents/resource_allocator/Dockerfile": "e673c70f9a5188b3bf720dce8cae324a72ac389b51ee5b697bdb320f7f25dc3f",
+          "agents/resource_allocator/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/resource_allocator/main.py": "fdb52b510fd42786587896cb5126b19ced4967c5417151948c40cb0caf1be87f",
+          "agents/operations_reporter/Dockerfile": "01f00383c5b40123b8594b8204f85309611af9566e6e1711057c0416f2fa334e",
+          "agents/operations_reporter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/operations_reporter/main.py": "97ca5a8cd6a810f19ede654696e9cd39a3c349f22b6925ef65d1ca7bc6bd403e",
+          "agents/energy_manager/Dockerfile": "2b769cc668971dc12868087da6989c5369a9db5e6264318a19455e88ee673779",
+          "agents/energy_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/energy_manager/main.py": "894b817da0afc927a3af8ea677a00f00e2fb89a31c16507eeac942c455836f56",
+          "agents/inventory_manager/Dockerfile": "24f175c06322d507d9371fad0e990567fd1b7c74e2e14f44dfa00a2f88ad4d74",
+          "agents/inventory_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/inventory_manager/main.py": "5bce94174d2cc5c13df8cb8ebee8e83ac2869a937edcfff5b5f6f2303fa28acc"
+        }
+      }
+    }
+  ]
+}

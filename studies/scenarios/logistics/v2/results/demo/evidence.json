@@ -1,0 +1,6 @@
+{
+  "backend": "docker-compose",
+  "raw_evidence_directory": ".ariadne/logistics-v2/20261022T055229799588Z",
+  "raw_results_sha256": "235dee3150ddfd0e1e9bdf81bac8949d4b10b599f4e5d86aa46dcce7f737b46c",
+  "preservation": "Omitted duplicated workflow snapshots and executor output state. Final state, action history, metrics and other decisions preserved."
+}

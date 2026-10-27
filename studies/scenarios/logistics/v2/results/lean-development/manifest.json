@@ -1,0 +1,1853 @@
+{
+  "schema_version": 2,
+  "study": "logistics-v2",
+  "suite": "stress",
+  "backend": "docker-compose",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "repeat": 1,
+  "created_at": "2026-10-22T06:45:20.957023+00:00",
+  "status": "COMPLETED",
+  "planned_observations": 2,
+  "finished_observations": 2,
+  "cases": [
+    {
+      "id": "s04-recharge-detours",
+      "suite": "stress",
+      "description": "baterias iniciais baixas; recarga depende da conectividade e posição; atalhos rápidos podem consumir mais energia",
+      "design_rationale": {
+        "challenges": [
+          "baterias iniciais baixas",
+          "recarga depende da conectividade e posição",
+          "atalhos rápidos podem consumir mais energia"
+        ],
+        "selection_basis": "fixed mechanisms; no selection by winning configuration",
+        "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+      },
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "H",
+            "to": "I",
+            "minutes": 3,
+            "energy": 13,
+            "distance": 4
+          },
+          {
+            "from": "I",
+            "to": "J",
+            "minutes": 2,
+            "energy": 11,
+            "distance": 3
+          },
+          {
+            "from": "J",
+            "to": "K",
+            "minutes": 3,
+            "energy": 14,
+            "distance": 4
+          },
+          {
+            "from": "K",
+            "to": "L",
+            "minutes": 2,
+            "energy": 9,
+            "distance": 3
+          },
+          {
+            "from": "L",
+            "to": "M",
+            "minutes": 4,
+            "energy": 16,
+            "distance": 5
+          },
+          {
+            "from": "M",
+            "to": "N",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 3
+          },
+          {
+            "from": "N",
+            "to": "O",
+            "minutes": 3,
+            "energy": 12,
+            "distance": 4
+          },
+          {
+            "from": "O",
+            "to": "P",
+            "minutes": 2,
+            "energy": 9,
+            "distance": 3
+          },
+          {
+            "from": "P",
+            "to": "A",
+            "minutes": 4,
+            "energy": 17,
+            "distance": 5
+          },
+          {
+            "from": "D",
+            "to": "J",
+            "minutes": 3,
+            "energy": 23,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "K",
+            "to": "E",
+            "minutes": 3,
+            "energy": 18,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "F",
+            "to": "L",
+            "minutes": 3,
+            "energy": 22,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "G",
+            "to": "M",
+            "minutes": 4,
+            "energy": 17,
+            "distance": 5
+          },
+          {
+            "from": "C",
+            "to": "P",
+            "minutes": 3,
+            "energy": 14,
+            "distance": 4
+          },
+          {
+            "from": "I",
+            "to": "N",
+            "minutes": 4,
+            "energy": 21,
+            "distance": 5
+          },
+          {
+            "from": "B",
+            "to": "O",
+            "minutes": 4,
+            "energy": 19,
+            "distance": 5
+          },
+          {
+            "from": "J",
+            "to": "F",
+            "minutes": 2,
+            "energy": 20,
+            "distance": 3,
+            "bidirectional": false
+          },
+          {
+            "from": "N",
+            "to": "H",
+            "minutes": 3,
+            "energy": 16,
+            "distance": 4,
+            "bidirectional": false
+          }
+        ],
+        "charging_locations": [
+          "A",
+          "E",
+          "K",
+          "N"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 3,
+          "cold": 2,
+          "tools": 5,
+          "kit": 4
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 30,
+              "medicine": 12,
+              "cold": 0,
+              "tools": 8,
+              "kit": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 18,
+              "medicine": 20,
+              "cold": 24,
+              "tools": 0,
+              "kit": 6
+            }
+          },
+          "south": {
+            "location": "K",
+            "stock": {
+              "food": 26,
+              "medicine": 4,
+              "cold": 20,
+              "tools": 8,
+              "kit": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 9,
+            "battery": 16,
+            "battery_capacity": 65
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 12,
+            "battery": 21,
+            "battery_capacity": 75
+          },
+          "truck": {
+            "location": "K",
+            "capacity": 20,
+            "battery": 27,
+            "battery_capacity": 100
+          },
+          "bike": {
+            "location": "N",
+            "capacity": 4,
+            "battery": 12,
+            "battery_capacity": 42
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "P",
+          "items": {
+            "food": 2,
+            "medicine": 1
+          },
+          "priority": 5,
+          "deadline": 35,
+          "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em P. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "M",
+          "items": {
+            "cold": 4
+          },
+          "priority": 4,
+          "deadline": 55,
+          "request": "Pedido o2: entregar 4 unidades de cold em M. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+        },
+        {
+          "id": "o3",
+          "destination": "I",
+          "items": {
+            "kit": 1,
+            "food": 2
+          },
+          "priority": 3,
+          "deadline": 75,
+          "request": "Pedido o3: entregar 1 unidades de kit e 2 unidades de food em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+        },
+        {
+          "id": "o4",
+          "destination": "L",
+          "items": {
+            "tools": 2
+          },
+          "priority": 3,
+          "deadline": 95,
+          "request": "Pedido o4: entregar 2 unidades de tools em L. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+        },
+        {
+          "id": "o5",
+          "destination": "O",
+          "items": {
+            "medicine": 2
+          },
+          "priority": 2,
+          "deadline": 115,
+          "request": "Pedido o5: entregar 2 unidades de medicine em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 115 desde o início."
+        },
+        {
+          "id": "o6",
+          "destination": "J",
+          "items": {
+            "cold": 3
+          },
+          "priority": 1,
+          "deadline": 135,
+          "request": "Pedido o6: entregar 3 unidades de cold em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 135 desde o início."
+        }
+      ],
+      "incidents": [],
+      "expected": {
+        "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+        "optimality_claim": false
+      }
+    },
+    {
+      "id": "s08-cascading-disruptions",
+      "suite": "stress",
+      "description": "10 pedidos; três ocorrências sucessivas; mesmo orçamento de revisão para as duas configurações",
+      "design_rationale": {
+        "challenges": [
+          "10 pedidos",
+          "três ocorrências sucessivas",
+          "mesmo orçamento de revisão para as duas configurações"
+        ],
+        "selection_basis": "fixed mechanisms; no selection by winning configuration",
+        "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+      },
+      "world": {
+        "edges": [
+          {
+            "from": "A",
+            "to": "B",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "A",
+            "to": "C",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "B",
+            "to": "D",
+            "minutes": 3,
+            "energy": 15,
+            "distance": 3
+          },
+          {
+            "from": "C",
+            "to": "D",
+            "minutes": 1,
+            "energy": 8,
+            "distance": 1
+          },
+          {
+            "from": "B",
+            "to": "E",
+            "minutes": 4,
+            "energy": 20,
+            "distance": 4
+          },
+          {
+            "from": "D",
+            "to": "E",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 2
+          },
+          {
+            "from": "D",
+            "to": "G",
+            "minutes": 4,
+            "energy": 22,
+            "distance": 4
+          },
+          {
+            "from": "E",
+            "to": "F",
+            "minutes": 2,
+            "energy": 15,
+            "distance": 2
+          },
+          {
+            "from": "E",
+            "to": "H",
+            "minutes": 6,
+            "energy": 28,
+            "distance": 6
+          },
+          {
+            "from": "F",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "G",
+            "to": "H",
+            "minutes": 2,
+            "energy": 12,
+            "distance": 2
+          },
+          {
+            "from": "H",
+            "to": "I",
+            "minutes": 3,
+            "energy": 13,
+            "distance": 4
+          },
+          {
+            "from": "I",
+            "to": "J",
+            "minutes": 2,
+            "energy": 11,
+            "distance": 3
+          },
+          {
+            "from": "J",
+            "to": "K",
+            "minutes": 3,
+            "energy": 14,
+            "distance": 4
+          },
+          {
+            "from": "K",
+            "to": "L",
+            "minutes": 2,
+            "energy": 9,
+            "distance": 3
+          },
+          {
+            "from": "L",
+            "to": "M",
+            "minutes": 4,
+            "energy": 16,
+            "distance": 5
+          },
+          {
+            "from": "M",
+            "to": "N",
+            "minutes": 2,
+            "energy": 10,
+            "distance": 3
+          },
+          {
+            "from": "N",
+            "to": "O",
+            "minutes": 3,
+            "energy": 12,
+            "distance": 4
+          },
+          {
+            "from": "O",
+            "to": "P",
+            "minutes": 2,
+            "energy": 9,
+            "distance": 3
+          },
+          {
+            "from": "P",
+            "to": "A",
+            "minutes": 4,
+            "energy": 17,
+            "distance": 5
+          },
+          {
+            "from": "D",
+            "to": "J",
+            "minutes": 3,
+            "energy": 23,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "K",
+            "to": "E",
+            "minutes": 3,
+            "energy": 18,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "F",
+            "to": "L",
+            "minutes": 3,
+            "energy": 22,
+            "distance": 4,
+            "bidirectional": false
+          },
+          {
+            "from": "G",
+            "to": "M",
+            "minutes": 4,
+            "energy": 17,
+            "distance": 5
+          },
+          {
+            "from": "C",
+            "to": "P",
+            "minutes": 3,
+            "energy": 14,
+            "distance": 4
+          },
+          {
+            "from": "I",
+            "to": "N",
+            "minutes": 4,
+            "energy": 21,
+            "distance": 5
+          },
+          {
+            "from": "B",
+            "to": "O",
+            "minutes": 4,
+            "energy": 19,
+            "distance": 5
+          },
+          {
+            "from": "J",
+            "to": "F",
+            "minutes": 2,
+            "energy": 20,
+            "distance": 3,
+            "bidirectional": false
+          },
+          {
+            "from": "N",
+            "to": "H",
+            "minutes": 3,
+            "energy": 16,
+            "distance": 4,
+            "bidirectional": false
+          }
+        ],
+        "charging_locations": [
+          "A",
+          "E",
+          "K",
+          "N"
+        ],
+        "recharge_minutes": 3,
+        "item_weights": {
+          "food": 1,
+          "medicine": 3,
+          "cold": 2,
+          "tools": 5,
+          "kit": 4
+        },
+        "depots": {
+          "north": {
+            "location": "A",
+            "stock": {
+              "food": 30,
+              "medicine": 12,
+              "cold": 0,
+              "tools": 8,
+              "kit": 6
+            }
+          },
+          "east": {
+            "location": "E",
+            "stock": {
+              "food": 18,
+              "medicine": 20,
+              "cold": 24,
+              "tools": 0,
+              "kit": 6
+            }
+          },
+          "south": {
+            "location": "K",
+            "stock": {
+              "food": 26,
+              "medicine": 4,
+              "cold": 20,
+              "tools": 8,
+              "kit": 4
+            }
+          }
+        },
+        "vehicles": {
+          "van1": {
+            "location": "A",
+            "capacity": 9,
+            "battery": 31,
+            "battery_capacity": 65
+          },
+          "van2": {
+            "location": "E",
+            "capacity": 12,
+            "battery": 55,
+            "battery_capacity": 75
+          },
+          "truck": {
+            "location": "K",
+            "capacity": 20,
+            "battery": 72,
+            "battery_capacity": 100
+          },
+          "bike": {
+            "location": "N",
+            "capacity": 4,
+            "battery": 28,
+            "battery_capacity": 42
+          }
+        }
+      },
+      "orders": [
+        {
+          "id": "o1",
+          "destination": "C",
+          "items": {
+            "food": 2,
+            "medicine": 1
+          },
+          "priority": 5,
+          "deadline": 20,
+          "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 20 desde o início."
+        },
+        {
+          "id": "o2",
+          "destination": "F",
+          "items": {
+            "cold": 3
+          },
+          "priority": 5,
+          "deadline": 35,
+          "request": "Pedido o2: entregar 3 unidades de cold em F. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+        },
+        {
+          "id": "o3",
+          "destination": "L",
+          "items": {
+            "tools": 2
+          },
+          "priority": 4,
+          "deadline": 55,
+          "request": "Pedido o3: entregar 2 unidades de tools em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+        },
+        {
+          "id": "o4",
+          "destination": "P",
+          "items": {
+            "kit": 1,
+            "food": 3
+          },
+          "priority": 4,
+          "deadline": 75,
+          "request": "Pedido o4: entregar 1 unidades de kit e 3 unidades de food em P. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+        },
+        {
+          "id": "o5",
+          "destination": "I",
+          "items": {
+            "medicine": 2
+          },
+          "priority": 3,
+          "deadline": 90,
+          "request": "Pedido o5: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 90 desde o início."
+        },
+        {
+          "id": "o6",
+          "destination": "M",
+          "items": {
+            "cold": 4
+          },
+          "priority": 3,
+          "deadline": 110,
+          "request": "Pedido o6: entregar 4 unidades de cold em M. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+        },
+        {
+          "id": "o7",
+          "destination": "O",
+          "items": {
+            "food": 4
+          },
+          "priority": 2,
+          "deadline": 130,
+          "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 130 desde o início."
+        },
+        {
+          "id": "o8",
+          "destination": "J",
+          "items": {
+            "kit": 2
+          },
+          "priority": 2,
+          "deadline": 150,
+          "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 150 desde o início."
+        },
+        {
+          "id": "o9",
+          "destination": "H",
+          "items": {
+            "medicine": 2,
+            "food": 2
+          },
+          "priority": 1,
+          "deadline": 175,
+          "request": "Pedido o9: entregar 2 unidades de medicine e 2 unidades de food em H. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 175 desde o início."
+        },
+        {
+          "id": "o10",
+          "destination": "B",
+          "items": {
+            "cold": 3
+          },
+          "priority": 1,
+          "deadline": 195,
+          "request": "Pedido o10: entregar 3 unidades de cold em B. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 195 desde o início."
+        }
+      ],
+      "incidents": [
+        {
+          "type": "unavailable",
+          "vehicle": "van1",
+          "after_actions": 2,
+          "description": "van1 indisponível após duas ações aceitas."
+        },
+        {
+          "type": "block",
+          "edge": [
+            "E",
+            "F"
+          ],
+          "after_actions": 8,
+          "description": "Bloqueio E-F."
+        },
+        {
+          "type": "block",
+          "edge": [
+            "I",
+            "N"
+          ],
+          "after_actions": 17,
+          "description": "Bloqueio I-N; usar outro corredor."
+        }
+      ],
+      "expected": {
+        "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+        "optimality_claim": false
+      }
+    }
+  ],
+  "configurations": [
+    "ariadne-lean"
+  ],
+  "missing_observations": [],
+  "collections": [
+    {
+      "directory": ".ariadne/logistics-v2/20261022T064520956662Z",
+      "raw_results_sha256": "624ca714f55211cc3fcb9c202134b76a7af8e705037d9f2fe4cf0b7e8c8516eb",
+      "manifest": {
+        "schema_version": 2,
+        "study": "logistics-v2",
+        "suite": "stress",
+        "created_at": "2026-10-22T06:45:20.957023+00:00",
+        "status": "COMPLETED",
+        "repeat": 1,
+        "planned_observations": 2,
+        "execution_kind": "real-llm",
+        "model": "gpt-5.6-luna",
+        "max_rounds": 20,
+        "cases": [
+          {
+            "id": "s04-recharge-detours",
+            "suite": "stress",
+            "description": "baterias iniciais baixas; recarga depende da conectividade e posição; atalhos rápidos podem consumir mais energia",
+            "design_rationale": {
+              "challenges": [
+                "baterias iniciais baixas",
+                "recarga depende da conectividade e posição",
+                "atalhos rápidos podem consumir mais energia"
+              ],
+              "selection_basis": "fixed mechanisms; no selection by winning configuration",
+              "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+            },
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "H",
+                  "to": "I",
+                  "minutes": 3,
+                  "energy": 13,
+                  "distance": 4
+                },
+                {
+                  "from": "I",
+                  "to": "J",
+                  "minutes": 2,
+                  "energy": 11,
+                  "distance": 3
+                },
+                {
+                  "from": "J",
+                  "to": "K",
+                  "minutes": 3,
+                  "energy": 14,
+                  "distance": 4
+                },
+                {
+                  "from": "K",
+                  "to": "L",
+                  "minutes": 2,
+                  "energy": 9,
+                  "distance": 3
+                },
+                {
+                  "from": "L",
+                  "to": "M",
+                  "minutes": 4,
+                  "energy": 16,
+                  "distance": 5
+                },
+                {
+                  "from": "M",
+                  "to": "N",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 3
+                },
+                {
+                  "from": "N",
+                  "to": "O",
+                  "minutes": 3,
+                  "energy": 12,
+                  "distance": 4
+                },
+                {
+                  "from": "O",
+                  "to": "P",
+                  "minutes": 2,
+                  "energy": 9,
+                  "distance": 3
+                },
+                {
+                  "from": "P",
+                  "to": "A",
+                  "minutes": 4,
+                  "energy": 17,
+                  "distance": 5
+                },
+                {
+                  "from": "D",
+                  "to": "J",
+                  "minutes": 3,
+                  "energy": 23,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "K",
+                  "to": "E",
+                  "minutes": 3,
+                  "energy": 18,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "F",
+                  "to": "L",
+                  "minutes": 3,
+                  "energy": 22,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "G",
+                  "to": "M",
+                  "minutes": 4,
+                  "energy": 17,
+                  "distance": 5
+                },
+                {
+                  "from": "C",
+                  "to": "P",
+                  "minutes": 3,
+                  "energy": 14,
+                  "distance": 4
+                },
+                {
+                  "from": "I",
+                  "to": "N",
+                  "minutes": 4,
+                  "energy": 21,
+                  "distance": 5
+                },
+                {
+                  "from": "B",
+                  "to": "O",
+                  "minutes": 4,
+                  "energy": 19,
+                  "distance": 5
+                },
+                {
+                  "from": "J",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 20,
+                  "distance": 3,
+                  "bidirectional": false
+                },
+                {
+                  "from": "N",
+                  "to": "H",
+                  "minutes": 3,
+                  "energy": 16,
+                  "distance": 4,
+                  "bidirectional": false
+                }
+              ],
+              "charging_locations": [
+                "A",
+                "E",
+                "K",
+                "N"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 3,
+                "cold": 2,
+                "tools": 5,
+                "kit": 4
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 30,
+                    "medicine": 12,
+                    "cold": 0,
+                    "tools": 8,
+                    "kit": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 18,
+                    "medicine": 20,
+                    "cold": 24,
+                    "tools": 0,
+                    "kit": 6
+                  }
+                },
+                "south": {
+                  "location": "K",
+                  "stock": {
+                    "food": 26,
+                    "medicine": 4,
+                    "cold": 20,
+                    "tools": 8,
+                    "kit": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 9,
+                  "battery": 16,
+                  "battery_capacity": 65
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 12,
+                  "battery": 21,
+                  "battery_capacity": 75
+                },
+                "truck": {
+                  "location": "K",
+                  "capacity": 20,
+                  "battery": 27,
+                  "battery_capacity": 100
+                },
+                "bike": {
+                  "location": "N",
+                  "capacity": 4,
+                  "battery": 12,
+                  "battery_capacity": 42
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "P",
+                "items": {
+                  "food": 2,
+                  "medicine": 1
+                },
+                "priority": 5,
+                "deadline": 35,
+                "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em P. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "M",
+                "items": {
+                  "cold": 4
+                },
+                "priority": 4,
+                "deadline": 55,
+                "request": "Pedido o2: entregar 4 unidades de cold em M. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+              },
+              {
+                "id": "o3",
+                "destination": "I",
+                "items": {
+                  "kit": 1,
+                  "food": 2
+                },
+                "priority": 3,
+                "deadline": 75,
+                "request": "Pedido o3: entregar 1 unidades de kit e 2 unidades de food em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+              },
+              {
+                "id": "o4",
+                "destination": "L",
+                "items": {
+                  "tools": 2
+                },
+                "priority": 3,
+                "deadline": 95,
+                "request": "Pedido o4: entregar 2 unidades de tools em L. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+              },
+              {
+                "id": "o5",
+                "destination": "O",
+                "items": {
+                  "medicine": 2
+                },
+                "priority": 2,
+                "deadline": 115,
+                "request": "Pedido o5: entregar 2 unidades de medicine em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 115 desde o início."
+              },
+              {
+                "id": "o6",
+                "destination": "J",
+                "items": {
+                  "cold": 3
+                },
+                "priority": 1,
+                "deadline": 135,
+                "request": "Pedido o6: entregar 3 unidades de cold em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 135 desde o início."
+              }
+            ],
+            "incidents": [],
+            "expected": {
+              "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+              "optimality_claim": false
+            }
+          },
+          {
+            "id": "s08-cascading-disruptions",
+            "suite": "stress",
+            "description": "10 pedidos; três ocorrências sucessivas; mesmo orçamento de revisão para as duas configurações",
+            "design_rationale": {
+              "challenges": [
+                "10 pedidos",
+                "três ocorrências sucessivas",
+                "mesmo orçamento de revisão para as duas configurações"
+              ],
+              "selection_basis": "fixed mechanisms; no selection by winning configuration",
+              "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+            },
+            "world": {
+              "edges": [
+                {
+                  "from": "A",
+                  "to": "B",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "A",
+                  "to": "C",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "B",
+                  "to": "D",
+                  "minutes": 3,
+                  "energy": 15,
+                  "distance": 3
+                },
+                {
+                  "from": "C",
+                  "to": "D",
+                  "minutes": 1,
+                  "energy": 8,
+                  "distance": 1
+                },
+                {
+                  "from": "B",
+                  "to": "E",
+                  "minutes": 4,
+                  "energy": 20,
+                  "distance": 4
+                },
+                {
+                  "from": "D",
+                  "to": "E",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 2
+                },
+                {
+                  "from": "D",
+                  "to": "G",
+                  "minutes": 4,
+                  "energy": 22,
+                  "distance": 4
+                },
+                {
+                  "from": "E",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 15,
+                  "distance": 2
+                },
+                {
+                  "from": "E",
+                  "to": "H",
+                  "minutes": 6,
+                  "energy": 28,
+                  "distance": 6
+                },
+                {
+                  "from": "F",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "G",
+                  "to": "H",
+                  "minutes": 2,
+                  "energy": 12,
+                  "distance": 2
+                },
+                {
+                  "from": "H",
+                  "to": "I",
+                  "minutes": 3,
+                  "energy": 13,
+                  "distance": 4
+                },
+                {
+                  "from": "I",
+                  "to": "J",
+                  "minutes": 2,
+                  "energy": 11,
+                  "distance": 3
+                },
+                {
+                  "from": "J",
+                  "to": "K",
+                  "minutes": 3,
+                  "energy": 14,
+                  "distance": 4
+                },
+                {
+                  "from": "K",
+                  "to": "L",
+                  "minutes": 2,
+                  "energy": 9,
+                  "distance": 3
+                },
+                {
+                  "from": "L",
+                  "to": "M",
+                  "minutes": 4,
+                  "energy": 16,
+                  "distance": 5
+                },
+                {
+                  "from": "M",
+                  "to": "N",
+                  "minutes": 2,
+                  "energy": 10,
+                  "distance": 3
+                },
+                {
+                  "from": "N",
+                  "to": "O",
+                  "minutes": 3,
+                  "energy": 12,
+                  "distance": 4
+                },
+                {
+                  "from": "O",
+                  "to": "P",
+                  "minutes": 2,
+                  "energy": 9,
+                  "distance": 3
+                },
+                {
+                  "from": "P",
+                  "to": "A",
+                  "minutes": 4,
+                  "energy": 17,
+                  "distance": 5
+                },
+                {
+                  "from": "D",
+                  "to": "J",
+                  "minutes": 3,
+                  "energy": 23,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "K",
+                  "to": "E",
+                  "minutes": 3,
+                  "energy": 18,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "F",
+                  "to": "L",
+                  "minutes": 3,
+                  "energy": 22,
+                  "distance": 4,
+                  "bidirectional": false
+                },
+                {
+                  "from": "G",
+                  "to": "M",
+                  "minutes": 4,
+                  "energy": 17,
+                  "distance": 5
+                },
+                {
+                  "from": "C",
+                  "to": "P",
+                  "minutes": 3,
+                  "energy": 14,
+                  "distance": 4
+                },
+                {
+                  "from": "I",
+                  "to": "N",
+                  "minutes": 4,
+                  "energy": 21,
+                  "distance": 5
+                },
+                {
+                  "from": "B",
+                  "to": "O",
+                  "minutes": 4,
+                  "energy": 19,
+                  "distance": 5
+                },
+                {
+                  "from": "J",
+                  "to": "F",
+                  "minutes": 2,
+                  "energy": 20,
+                  "distance": 3,
+                  "bidirectional": false
+                },
+                {
+                  "from": "N",
+                  "to": "H",
+                  "minutes": 3,
+                  "energy": 16,
+                  "distance": 4,
+                  "bidirectional": false
+                }
+              ],
+              "charging_locations": [
+                "A",
+                "E",
+                "K",
+                "N"
+              ],
+              "recharge_minutes": 3,
+              "item_weights": {
+                "food": 1,
+                "medicine": 3,
+                "cold": 2,
+                "tools": 5,
+                "kit": 4
+              },
+              "depots": {
+                "north": {
+                  "location": "A",
+                  "stock": {
+                    "food": 30,
+                    "medicine": 12,
+                    "cold": 0,
+                    "tools": 8,
+                    "kit": 6
+                  }
+                },
+                "east": {
+                  "location": "E",
+                  "stock": {
+                    "food": 18,
+                    "medicine": 20,
+                    "cold": 24,
+                    "tools": 0,
+                    "kit": 6
+                  }
+                },
+                "south": {
+                  "location": "K",
+                  "stock": {
+                    "food": 26,
+                    "medicine": 4,
+                    "cold": 20,
+                    "tools": 8,
+                    "kit": 4
+                  }
+                }
+              },
+              "vehicles": {
+                "van1": {
+                  "location": "A",
+                  "capacity": 9,
+                  "battery": 31,
+                  "battery_capacity": 65
+                },
+                "van2": {
+                  "location": "E",
+                  "capacity": 12,
+                  "battery": 55,
+                  "battery_capacity": 75
+                },
+                "truck": {
+                  "location": "K",
+                  "capacity": 20,
+                  "battery": 72,
+                  "battery_capacity": 100
+                },
+                "bike": {
+                  "location": "N",
+                  "capacity": 4,
+                  "battery": 28,
+                  "battery_capacity": 42
+                }
+              }
+            },
+            "orders": [
+              {
+                "id": "o1",
+                "destination": "C",
+                "items": {
+                  "food": 2,
+                  "medicine": 1
+                },
+                "priority": 5,
+                "deadline": 20,
+                "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 20 desde o início."
+              },
+              {
+                "id": "o2",
+                "destination": "F",
+                "items": {
+                  "cold": 3
+                },
+                "priority": 5,
+                "deadline": 35,
+                "request": "Pedido o2: entregar 3 unidades de cold em F. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+              },
+              {
+                "id": "o3",
+                "destination": "L",
+                "items": {
+                  "tools": 2
+                },
+                "priority": 4,
+                "deadline": 55,
+                "request": "Pedido o3: entregar 2 unidades de tools em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+              },
+              {
+                "id": "o4",
+                "destination": "P",
+                "items": {
+                  "kit": 1,
+                  "food": 3
+                },
+                "priority": 4,
+                "deadline": 75,
+                "request": "Pedido o4: entregar 1 unidades de kit e 3 unidades de food em P. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+              },
+              {
+                "id": "o5",
+                "destination": "I",
+                "items": {
+                  "medicine": 2
+                },
+                "priority": 3,
+                "deadline": 90,
+                "request": "Pedido o5: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 90 desde o início."
+              },
+              {
+                "id": "o6",
+                "destination": "M",
+                "items": {
+                  "cold": 4
+                },
+                "priority": 3,
+                "deadline": 110,
+                "request": "Pedido o6: entregar 4 unidades de cold em M. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+              },
+              {
+                "id": "o7",
+                "destination": "O",
+                "items": {
+                  "food": 4
+                },
+                "priority": 2,
+                "deadline": 130,
+                "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 130 desde o início."
+              },
+              {
+                "id": "o8",
+                "destination": "J",
+                "items": {
+                  "kit": 2
+                },
+                "priority": 2,
+                "deadline": 150,
+                "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 150 desde o início."
+              },
+              {
+                "id": "o9",
+                "destination": "H",
+                "items": {
+                  "medicine": 2,
+                  "food": 2
+                },
+                "priority": 1,
+                "deadline": 175,
+                "request": "Pedido o9: entregar 2 unidades de medicine e 2 unidades de food em H. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 175 desde o início."
+              },
+              {
+                "id": "o10",
+                "destination": "B",
+                "items": {
+                  "cold": 3
+                },
+                "priority": 1,
+                "deadline": 195,
+                "request": "Pedido o10: entregar 3 unidades de cold em B. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 195 desde o início."
+              }
+            ],
+            "incidents": [
+              {
+                "type": "unavailable",
+                "vehicle": "van1",
+                "after_actions": 2,
+                "description": "van1 indisponível após duas ações aceitas."
+              },
+              {
+                "type": "block",
+                "edge": [
+                  "E",
+                  "F"
+                ],
+                "after_actions": 8,
+                "description": "Bloqueio E-F."
+              },
+              {
+                "type": "block",
+                "edge": [
+                  "I",
+                  "N"
+                ],
+                "after_actions": 17,
+                "description": "Bloqueio I-N; usar outro corredor."
+              }
+            ],
+            "expected": {
+              "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+              "optimality_claim": false
+            }
+          }
+        ],
+        "configurations": [
+          "ariadne-lean"
+        ],
+        "policies": {
+          "ariadne": "original-ten-agents",
+          "ariadne-lean": "lean-v1"
+        },
+        "rules": "sequential time; whole orders; incidents before next action at accepted-action threshold",
+        "backend": "docker-compose",
+        "orchestrator_addr": "localhost:55052",
+        "registry_addr": "localhost:55051",
+        "registered_agents": {
+          "OrderInterpreter": {
+            "agent_id": "OrderInterpreter",
+            "name": "OrderInterpreter",
+            "runtime": "logistics-v2-llm",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-OrderInterpreter",
+                "name": "logistics-v2-OrderInterpreter"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "order-interpreter:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T06:45:20.139116504Z"
+          },
+          "MissionCoordinator": {
+            "agent_id": "MissionCoordinator",
+            "name": "MissionCoordinator",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionCoordinator",
+                "name": "logistics-v2-MissionCoordinator"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-coordinator:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T06:45:02.560078594Z",
+            "updated_at": "2026-10-22T06:45:20.633758713Z"
+          },
+          "InventoryManager": {
+            "agent_id": "InventoryManager",
+            "name": "InventoryManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-InventoryManager",
+                "name": "logistics-v2-InventoryManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "inventory-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.941652012Z",
+            "updated_at": "2026-10-22T06:45:20.013779754Z"
+          },
+          "ResourceAllocator": {
+            "agent_id": "ResourceAllocator",
+            "name": "ResourceAllocator",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ResourceAllocator",
+                "name": "logistics-v2-ResourceAllocator"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "resource-allocator:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.921990595Z",
+            "updated_at": "2026-10-22T06:45:20.139077796Z"
+          },
+          "RoutePlanner": {
+            "agent_id": "RoutePlanner",
+            "name": "RoutePlanner",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-RoutePlanner",
+                "name": "logistics-v2-RoutePlanner"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "route-planner:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.973524178Z",
+            "updated_at": "2026-10-22T06:45:20.138232588Z"
+          },
+          "EnergyManager": {
+            "agent_id": "EnergyManager",
+            "name": "EnergyManager",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-EnergyManager",
+                "name": "logistics-v2-EnergyManager"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "energy-manager:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "updated_at": "2026-10-22T06:45:20.633744713Z"
+          },
+          "ConstraintSupervisor": {
+            "agent_id": "ConstraintSupervisor",
+            "name": "ConstraintSupervisor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-ConstraintSupervisor",
+                "name": "logistics-v2-ConstraintSupervisor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "constraint-supervisor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.954734470Z",
+            "updated_at": "2026-10-22T06:45:20.137661796Z"
+          },
+          "MissionExecutor": {
+            "agent_id": "MissionExecutor",
+            "name": "MissionExecutor",
+            "runtime": "python-sdk",
+            "contract_version": "1.0.0",
+            "capabilities": [
+              {
+                "capability_id": "logistics-v2-MissionExecutor",
+                "name": "logistics-v2-MissionExecutor"
+              }
+            ],
+            "endpoint": {
+              "protocol": "grpc",
+              "address": "mission-executor:60051"
+            },
+            "status": "AGENT_STATUS_ALIVE",
+            "created_at": "2026-10-22T05:51:34.949922137Z",
+            "updated_at": "2026-10-22T06:45:20.015656421Z"
+          }
+        },
+        "source_sha256": {
+          "world.py": "5335cca68bc5fdf5723914cbbce2187f7666c6a36a6895b8e9cba2609d87d3a4",
+          "run.py": "9a1f9d58240306dcaeb7069ec52cff1ab553e65b08f3350a99c8e95d9b525f28",
+          "models.py": "768d7791062c8502d2b27b9d29397fba47e9a7a445f08bb4a03136d2114b7a4f",
+          "episode.py": "02783429145f2db631e7e15ffd92be231f6dc627ad05f36be16b2b23ede7e87a",
+          "__init__.py": "0c9653ca78ed3fef4a52424a7e2b725ced675941fc1fadfb030815e5ef6a01a4",
+          "planning.py": "fd8957629bbc0019cb64a575cb57c7ae4a74e58b86f3f1fe3ff5deaa01e12567",
+          "lean.py": "656f621e3ce059d6b956f7fee6e9e36b2745a30b989b4f1b1f51b813f1d6dd15",
+          "demo.py": "17990e2fc2b14651dd85fcd14a52886c4a90b64f0b9c84e86618fc55dd48a5fe",
+          "docker/compose.yaml": "8178e81b9b5af7fcca80e36cce2a08de1b52039fb8fa8c5467f57408c7e0d2fa",
+          "agents/__init__.py": "6854d68e5ae63772aac89e84cbbbe1e1ebad3b420514deb971b7260a1d388d4e",
+          "agents/common.py": "040609fccf46696500c10de701b77107f6f5df7505ce67424d559339692f2117",
+          "agents/constraint_supervisor/Dockerfile": "56696ce19a20d5d1626a3f736c46b9473dc67139527fd49e94c61a942c638e61",
+          "agents/constraint_supervisor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/constraint_supervisor/main.py": "63afcd4421f8198f1cade7e30b4304e7921dc19505347a06abbfbacf8cc855a4",
+          "agents/incident_analyst/Dockerfile": "a091dec16521c258758cdea53a6fcd50b89242bf269bcda18340f87c68d53177",
+          "agents/incident_analyst/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/incident_analyst/main.py": "22d233e280375f585442469246b977c7fffee661a26f3e8102ce48373cecf6d0",
+          "agents/order_interpreter/Dockerfile": "d7fdb1b21d619d8a646c7ecb29a9a689a1dc5b0fb8ef0fd2753c94b01c9f7e29",
+          "agents/order_interpreter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/order_interpreter/main.py": "98f91d8b7bbed2f9cb6b115939614ddb405badfc057d7ed42bc90d78c5b28ad6",
+          "agents/mission_executor/Dockerfile": "7a6628590b4a3839a018c5043a20419e5cef5d43c65d2a388c02b2fc7c6ebf42",
+          "agents/mission_executor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_executor/main.py": "eae855192a1d7680c953d6f26639523581e7cf09ddf9777803b79a182e5ac7d8",
+          "agents/mission_decomposer/Dockerfile": "b2b0a7d3cf7f575c0ef2373c6a65a755863351815b4ad35a78d0aa6807a11124",
+          "agents/mission_decomposer/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/mission_decomposer/main.py": "b6a35387907b55c75b10e5ff46159dc40fc73e728f385d6e14a3f7df24189d01",
+          "agents/single_llm/Dockerfile": "5ef361a358e5e5ec0a1cbbda6f54659441ef5270008855c6c431cbb1f3b2f72b",
+          "agents/single_llm/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/single_llm/main.py": "6afdefd9e9c4e60acd3a5ebfca2e58f1178040eb43d04c4aa99b92d3971ca971",
+          "agents/route_planner/Dockerfile": "f3e639e4d3e702b2b8a7bae4e05adf0bcd80ab0ebd1def4cd22296074e23c35c",
+          "agents/route_planner/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/route_planner/main.py": "be3f6540d24af1a0102356672ff80326c740d1e9c3f3415b3715bcb6c83778ad",
+          "agents/mission_coordinator/Dockerfile": "1794fc8b53df8952c1dd3ee323f80cfc06ec78b6baa5fa9377e832c943684722",
+          "agents/mission_coordinator/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "agents/mission_coordinator/main.py": "376ca80a1fec3afa86552b4553528186ca2fa03248bdcfc40c9e379999f08533",
+          "agents/resource_allocator/Dockerfile": "e673c70f9a5188b3bf720dce8cae324a72ac389b51ee5b697bdb320f7f25dc3f",
+          "agents/resource_allocator/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/resource_allocator/main.py": "fdb52b510fd42786587896cb5126b19ced4967c5417151948c40cb0caf1be87f",
+          "agents/operations_reporter/Dockerfile": "01f00383c5b40123b8594b8204f85309611af9566e6e1711057c0416f2fa334e",
+          "agents/operations_reporter/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/operations_reporter/main.py": "97ca5a8cd6a810f19ede654696e9cd39a3c349f22b6925ef65d1ca7bc6bd403e",
+          "agents/energy_manager/Dockerfile": "2b769cc668971dc12868087da6989c5369a9db5e6264318a19455e88ee673779",
+          "agents/energy_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/energy_manager/main.py": "988ead45b1004b29dc11709fd8aeb7425f749197550755068050600c8d2d1d23",
+          "agents/inventory_manager/Dockerfile": "24f175c06322d507d9371fad0e990567fd1b7c74e2e14f44dfa00a2f88ad4d74",
+          "agents/inventory_manager/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "agents/inventory_manager/main.py": "5bce94174d2cc5c13df8cb8ebee8e83ac2869a937edcfff5b5f6f2303fa28acc"
+        },
+        "finished_observations": 2,
+        "completed_at": "2026-10-22T06:45:30.765341+00:00"
+      }
+    }
+  ]
+}

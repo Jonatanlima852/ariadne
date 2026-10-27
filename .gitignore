@@ -45,6 +45,19 @@ studies/scenarios/*/benchmarks/results/*
 !studies/scenarios/*/benchmarks/results/README.md
 !studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/
 
+# Logística v2: apenas coleções selecionadas entram no versionamento.
+# Os caminhos existentes são preservados por proveniência.
+studies/scenarios/logistics/v2/results/*
+!studies/scenarios/logistics/v2/results/README.md
+!studies/scenarios/logistics/v2/results/summary.json
+!studies/scenarios/logistics/v2/results/demo/
+!studies/scenarios/logistics/v2/results/real/
+!studies/scenarios/logistics/v2/results/lean-development/
+!studies/scenarios/logistics/v2/results/stress-demo/
+!studies/scenarios/logistics/v2/results/stress-original-partial/
+!studies/scenarios/logistics/v2/results/stress-lean/
+!studies/scenarios/logistics/v2/results/presentation/
+
 # ── Variáveis de ambiente ─────────────────────
 .env
 .env.*

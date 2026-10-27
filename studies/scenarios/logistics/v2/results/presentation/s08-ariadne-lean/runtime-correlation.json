@@ -1,0 +1,13 @@
+{
+  "trace_id": "fd25dedb-4f75-4fa0-a407-65d19e8c524c",
+  "checked_calls": 92,
+  "matched_calls": 92,
+  "missing_task_ids": [],
+  "runtime_event_count": 458,
+  "events_file": "runtime-events.jsonl",
+  "events_sha256": "e3c196a6b39ca796e2d357d06c02dcb2a170c36aed02124a6d4531b6f290c078",
+  "snapshot_path": ".ariadne/logistics-v2/inspector-validation/flow-runtime-events.jsonl",
+  "snapshot_sha256": "749fb27ed6bb3a24d4f47ec2548a4b12d735267a6ea2b4e6e92061d3f6ba175d",
+  "interpretation": "Task IDs and trace correlate calls to actual orchestrator events. Animation timing remains didactic.",
+  "matched_task_completions": 92
+}

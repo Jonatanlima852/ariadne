@@ -1,0 +1,21 @@
+observation,case,configuration,execution_kind,model,suite,repetition,total_orders,delivered,on_time,delivery_pct,on_time_pct,wall_seconds,total_tokens,distance,energy_consumed,rejected_actions,input_tokens,output_tokens,result,error,stop_reason
+1,easy,single-llm,real-llm,gpt-5.6-luna,,,1,1,1,100.0,100.0,3.7624,1495.0,2,10,0,1298.0,197.0,complete,,all orders delivered
+2,easy,ariadne,real-llm,gpt-5.6-luna,,,1,1,1,100.0,100.0,13.7127,4645.0,2.0,10.0,0,3844.0,801.0,complete,,all orders delivered
+3,two-orders,single-llm,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,5.9941,1897.0,7,42,0,1411.0,486.0,complete,,all orders delivered
+4,two-orders,ariadne,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,15.7443,6513.0,5.0,33.0,0,5322.0,1191.0,complete,,all orders delivered
+5,stock-contention,single-llm,real-llm,gpt-5.6-luna,,,2,1,1,50.0,50.0,6.7008,3482.0,2,10,0,3026.0,456.0,partial,,"No executable actions remain: order o2 requires 4 units of food, but both depots have 0 food in stock. The available vehicles cannot load or deliver this order."
+6,stock-contention,ariadne,real-llm,gpt-5.6-luna,,,2,1,1,50.0,50.0,21.7125,6138.0,2.0,10.0,0,4451.0,1687.0,partial,,no remaining stock/vehicle/route candidate
+7,one-vehicle,single-llm,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,9.6529,2257.0,9,55,0,1366.0,891.0,complete,,all orders delivered
+8,one-vehicle,ariadne,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,20.1664,6841.0,9.0,55.0,0,5339.0,1502.0,complete,,all orders delivered
+9,recharge,single-llm,real-llm,gpt-5.6-luna,,,1,1,1,100.0,100.0,6.0497,1793.0,9,55,0,1253.0,540.0,complete,,all orders delivered
+10,recharge,ariadne,real-llm,gpt-5.6-luna,,,1,1,1,100.0,100.0,14.3422,5385.0,9.0,55.0,0,4410.0,975.0,complete,,all orders delivered
+11,priority-deadlines,single-llm,real-llm,gpt-5.6-luna,,,3,3,3,100.0,100.0,9.8796,2500.0,11,70,0,1523.0,977.0,complete,,all orders delivered
+12,priority-deadlines,ariadne,real-llm,gpt-5.6-luna,,,3,3,3,100.0,100.0,20.4361,8447.0,10.0,67.0,0,6742.0,1705.0,complete,,all orders delivered
+13,road-block,single-llm,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,12.5677,4263.0,13,76,0,3053.0,1210.0,complete,,all orders delivered
+14,road-block,ariadne,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,35.6171,12441.0,11.0,67.0,0,9689.0,2752.0,complete,,all orders delivered
+15,vehicle-loss,single-llm,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,11.6499,4096.0,12,71,0,2995.0,1101.0,complete,,all orders delivered
+16,vehicle-loss,ariadne,real-llm,gpt-5.6-luna,,,2,2,2,100.0,100.0,43.6504,13342.0,12.0,71.0,0,9959.0,3383.0,complete,,all orders delivered
+17,capacity-impossible,single-llm,real-llm,gpt-5.6-luna,,,2,1,1,50.0,50.0,8.0286,3549.0,2,10,0,3025.0,524.0,partial,,"Order o1 requires 5 medicine units at 2.0 weight each, for a total cargo weight of 10.0. van1 has capacity 6.0 and van2 capacity 8.0, so neither vehicle can load the whole order. o2 is already delivered; no executable actions remain."
+18,capacity-impossible,ariadne,real-llm,gpt-5.6-luna,,,2,1,1,50.0,50.0,17.9457,5818.0,2.0,10.0,0,4434.0,1384.0,partial,,no remaining stock/vehicle/route candidate
+19,combined-incidents,single-llm,real-llm,gpt-5.6-luna,,,3,3,3,100.0,100.0,23.1246,7367.0,13,74,0,5073.0,2294.0,complete,,all orders delivered
+20,combined-incidents,ariadne,real-llm,gpt-5.6-luna,,,3,3,3,100.0,100.0,64.1424,20683.0,14.0,89.0,0,15726.0,4957.0,complete,,all orders delivered

@@ -1,0 +1,35 @@
+{
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v2/results/stress-original-partial/results.json",
+  "source_sha256": "b74b93a46e184103b4462244711e5b5441796fd7ba903129cf5f1ef97ab2642e",
+  "created_at": "2026-10-22T06:55:26.119577+00:00",
+  "title": "Logística complexa: desenvolvimento da equipe original",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "observations": 15,
+  "comparisons": {
+    "ariadne": {
+      "paired_cases": [
+        "s01-distributed-mixed-orders",
+        "s02-scarce-stock-coupling",
+        "s03-capacity-and-source",
+        "s04-recharge-detours",
+        "s05-directed-connections",
+        "s06-progressive-roadblocks",
+        "s07-loaded-vehicle-loss"
+      ],
+      "baseline_only": [
+        "s08-cascading-disruptions"
+      ],
+      "hybrid_only": []
+    }
+  },
+  "figures": [
+    "single-llm-vs-ariadne-af7d6d42/01-atendimento.svg",
+    "single-llm-vs-ariadne-af7d6d42/01-atendimento.png",
+    "single-llm-vs-ariadne-af7d6d42/02-tempo-e-tokens.svg",
+    "single-llm-vs-ariadne-af7d6d42/02-tempo-e-tokens.png",
+    "single-llm-vs-ariadne-af7d6d42/03-distancia-e-energia.svg",
+    "single-llm-vs-ariadne-af7d6d42/03-distancia-e-energia.png"
+  ],
+  "aggregation": "arithmetic mean within case/configuration; per-metric valid n"
+}

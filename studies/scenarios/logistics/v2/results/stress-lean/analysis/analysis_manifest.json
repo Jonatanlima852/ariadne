@@ -1,0 +1,36 @@
+{
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v2/results/stress-lean/results.json",
+  "source_sha256": "827d1a145f665bbec58fda203d4be0c990142af7ea3d535641f2844fa16a0d62",
+  "created_at": "2026-10-22T07:32:52.735438+00:00",
+  "title": "Logística complexa: Single LLM e Ariadne enxuta",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "observations": 60,
+  "comparisons": {
+    "ariadne-lean": {
+      "paired_cases": [
+        "s01-distributed-mixed-orders",
+        "s02-scarce-stock-coupling",
+        "s03-capacity-and-source",
+        "s04-recharge-detours",
+        "s05-directed-connections",
+        "s06-progressive-roadblocks",
+        "s07-loaded-vehicle-loss",
+        "s08-cascading-disruptions",
+        "s09-deadline-and-priority-pressure",
+        "s10-infeasible-among-feasible"
+      ],
+      "baseline_only": [],
+      "hybrid_only": []
+    }
+  },
+  "figures": [
+    "single-llm-vs-ariadne-lean-7dfe317c/01-atendimento.svg",
+    "single-llm-vs-ariadne-lean-7dfe317c/01-atendimento.png",
+    "single-llm-vs-ariadne-lean-7dfe317c/02-tempo-e-tokens.svg",
+    "single-llm-vs-ariadne-lean-7dfe317c/02-tempo-e-tokens.png",
+    "single-llm-vs-ariadne-lean-7dfe317c/03-distancia-e-energia.svg",
+    "single-llm-vs-ariadne-lean-7dfe317c/03-distancia-e-energia.png"
+  ],
+  "aggregation": "arithmetic mean within case/configuration; per-metric valid n"
+}

@@ -1,0 +1,14 @@
+{
+  "backend": "docker-compose",
+  "collections": [
+    {
+      "directory": ".ariadne/logistics-v2/20261022T055319489855Z",
+      "raw_results_sha256": "320a9d8411245adfb905775764bbbe6e6a055bcc0f2f41585fa3f5de9d31875e"
+    },
+    {
+      "directory": ".ariadne/logistics-v2/20261022T055424000773Z",
+      "raw_results_sha256": "066aa38aeaa2d9cc64807f2a44933be41409c75f8c47fe2fdebb5e420b1ac332"
+    }
+  ],
+  "preservation": "Omitted duplicated workflow snapshots and executor output state. Final state, action history, metrics and other decisions preserved."
+}

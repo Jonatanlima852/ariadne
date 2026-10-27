@@ -1,0 +1,10 @@
+{
+  "backend": "docker-compose",
+  "collections": [
+    {
+      "directory": ".ariadne/logistics-v2/20261022T061244069025Z",
+      "raw_results_sha256": "06a40b10e7aaa400e1b8bf271c511665139b1c1a7be84fa75ee838d6055dc975"
+    }
+  ],
+  "preservation": "Repeated workflow and executor-state copies omitted; final state, history, metrics and specialist decisions preserved."
+}

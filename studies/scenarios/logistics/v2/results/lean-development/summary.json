@@ -1,0 +1,19 @@
+[
+  {
+    "configuration": "ariadne-lean",
+    "observations": 2,
+    "delivered": 16,
+    "total_orders": 16,
+    "on_time": 16,
+    "rejected_actions": 0,
+    "wall_seconds": 9.7632,
+    "wall_seconds_before_report": 9.7632,
+    "reporting_seconds": 0,
+    "distance": 158.0,
+    "energy_consumed": 627.0,
+    "llm_calls": 2,
+    "input_tokens": 1540.0,
+    "output_tokens": 590.0,
+    "operational_errors": 0
+  }
+]

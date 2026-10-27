@@ -1,0 +1,66 @@
+{
+  "verified_at": "2026-10-22T11:24:53.853908+00:00",
+  "observations": 60,
+  "paired_case_repetitions": 30,
+  "missing_or_duplicate_observations": false,
+  "frozen_source_mismatches": [],
+  "docker_images": {
+    "order-interpreter": {
+      "expected": "2dacb845965f89d452b934aebf8f2d81420dc97cb25478d8392502837faf7d48",
+      "observed": "2dacb845965f89d452b934aebf8f2d81420dc97cb25478d8392502837faf7d48",
+      "matches": true
+    },
+    "mission-coordinator": {
+      "expected": "52bf8c062d92884edd042601272c855073281b6def5a051c50e9226d8ccc3596",
+      "observed": "52bf8c062d92884edd042601272c855073281b6def5a051c50e9226d8ccc3596",
+      "matches": true
+    },
+    "inventory-manager": {
+      "expected": "00058a4f01e2159aa80b0a07332a7ca7cc1fe5cfdc0423fd51da9e1956363ae8",
+      "observed": "00058a4f01e2159aa80b0a07332a7ca7cc1fe5cfdc0423fd51da9e1956363ae8",
+      "matches": true
+    },
+    "resource-allocator": {
+      "expected": "51c312d40d3e295020499d507ff44d143ad2285381fb295efaadd8025875241f",
+      "observed": "51c312d40d3e295020499d507ff44d143ad2285381fb295efaadd8025875241f",
+      "matches": true
+    },
+    "route-planner": {
+      "expected": "d8a1fab8c96ccac2d2a992d8c0bf61af6d3414417f7a554139c57309778d1111",
+      "observed": "d8a1fab8c96ccac2d2a992d8c0bf61af6d3414417f7a554139c57309778d1111",
+      "matches": true
+    },
+    "energy-manager": {
+      "expected": "010be5b4ec1acc195b1251a3268f58202787e430e164226f76055ad5ed1a39a0",
+      "observed": "010be5b4ec1acc195b1251a3268f58202787e430e164226f76055ad5ed1a39a0",
+      "matches": true
+    },
+    "constraint-supervisor": {
+      "expected": "39742ffb02bb86c170312074a1e34deb1965e7b15f3ed871eeb985731c52cd9f",
+      "observed": "39742ffb02bb86c170312074a1e34deb1965e7b15f3ed871eeb985731c52cd9f",
+      "matches": true
+    },
+    "mission-executor": {
+      "expected": "3db5307f1accdc3a6d838955681bced320eeb8f15421180d0c5ed4d55eae7bbd",
+      "observed": "3db5307f1accdc3a6d838955681bced320eeb8f15421180d0c5ed4d55eae7bbd",
+      "matches": true
+    },
+    "single-llm": {
+      "expected": "03a5bc44327aafde78bd8d6d83398335e3ba2bee60b4d14458d165f0d678b57c",
+      "observed": "03a5bc44327aafde78bd8d6d83398335e3ba2bee60b4d14458d165f0d678b57c",
+      "matches": true
+    }
+  },
+  "files_sha256": {
+    ".ariadne/logistics-v2/20261022T064642689772Z/results.json": "4c3c4a81a17c1b93f5b49978ea1315319d80599ddcdc84576614185d723c1ee8",
+    ".ariadne/logistics-v2/20261022T064642689772Z/runtime-events.jsonl": "5ea70696918b0a9cb26979e597d8c72d797e13704e75aaa37f345c3b95a4e92d",
+    "studies/scenarios/logistics/v2/results/stress-lean/results.json": "827d1a145f665bbec58fda203d4be0c990142af7ea3d535641f2844fa16a0d62",
+    "studies/scenarios/logistics/v2/experiments/lean-v1-confirmation.json": "5485a792a909c514cbe984d3d9ffe35c1ba3db53fc4813064d15b0aa96fa60ee"
+  },
+  "state_replay": "60 final states and domain metrics reproduced by archive.py; same world transitions, not an independent oracle.",
+  "preservation": "Archive differs from raw only by removing repeated workflow/executor-state copies.",
+  "collection_status": "FAILED",
+  "completed_observations": 60,
+  "planned_observations": 60,
+  "operational_errors": 1
+}

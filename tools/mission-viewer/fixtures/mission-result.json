@@ -1,0 +1,1940 @@
+{
+  "mission_id": "mission-demo-0001",
+  "status": "MISSION_STATUS_COMPLETED",
+  "output": {
+    "note": "pallet seco P2 fica para a janela das 20h; rota não calculada no prazo",
+    "split": {
+      "dry_route": null,
+      "cold_route": [
+        "W1",
+        "Hub-N",
+        "Client-o17",
+        "Client-o18"
+      ]
+    },
+    "pending": [
+      "P2"
+    ],
+    "delivered_by_18h": [
+      "o-18"
+    ]
+  },
+  "context": {
+    "deadline": "18:00",
+    "route": [
+      "W1",
+      "Hub-N",
+      "Client-o17",
+      "Client-o18"
+    ],
+    "split_delivery": true,
+    "eta": "17:20",
+    "orders": [
+      "o-17",
+      "o-18"
+    ],
+    "distance_km": 18.4,
+    "warehouse": "W1",
+    "stage": "routing"
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_PLAN",
+      "plan": {
+        "workflow_id": "round-1",
+        "steps": [
+          {
+            "step_id": "pick_o17",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Separar os itens do pedido o-17",
+              "payload": {
+                "order": "o-17",
+                "warehouse": "W1"
+              },
+              "required_capabilities": [
+                "picking"
+              ],
+              "bdi": {
+                "goal": "order o-17 picked"
+              }
+            }
+          },
+          {
+            "step_id": "pick_o18",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Separar os itens do pedido o-18",
+              "payload": {
+                "order": "o-18",
+                "warehouse": "W1"
+              },
+              "required_capabilities": [
+                "picking"
+              ],
+              "bdi": {
+                "goal": "order o-18 picked"
+              }
+            }
+          },
+          {
+            "step_id": "consolidate",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+              "payload": {
+                "cold_chain": true
+              },
+              "required_capabilities": [
+                "consolidation"
+              ]
+            },
+            "depends_on": [
+              "pick_o17",
+              "pick_o18"
+            ],
+            "input_bindings": [
+              {
+                "source_step_id": "pick_o17",
+                "source_path": "output.items",
+                "target_field": "orders.o17"
+              },
+              {
+                "source_step_id": "pick_o18",
+                "source_path": "output.items",
+                "target_field": "orders.o18"
+              }
+            ]
+          },
+          {
+            "step_id": "route",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Planejar a rota de entrega até as 18h",
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ]
+            },
+            "depends_on": [
+              "consolidate"
+            ],
+            "input_bindings": [
+              {
+                "source_step_id": "consolidate",
+                "source_path": "output.load_id",
+                "target_field": "load_id"
+              }
+            ]
+          }
+        ],
+        "final_step_id": "route"
+      },
+      "result": {
+        "workflow_id": "round-1",
+        "run_id": "run-0001",
+        "root_task_id": "root-demo-0001",
+        "status": "WORKFLOW_STATUS_FAILED",
+        "step_results": [
+          {
+            "step_id": "pick_o17",
+            "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+            "result": {
+              "task_id": "t-pick-o17",
+              "agent_id": "picker-bdi-01",
+              "status": "TASK_STATUS_COMPLETED",
+              "completed_at": "2026-10-27T14:00:07Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {
+                "items": [
+                  {
+                    "cold": true,
+                    "sku": "MILK-1L",
+                    "qty": 6.0
+                  },
+                  {
+                    "cold": false,
+                    "sku": "RICE-5KG",
+                    "qty": 2.0
+                  }
+                ],
+                "bins": [
+                  "A-03",
+                  "C-11"
+                ]
+              },
+              "started_at": "2026-10-27T14:00:04Z",
+              "metadata": {
+                "agent_kind": "bdi",
+                "selected_plan": "pick_by_zone"
+              },
+              "bdi": {
+                "goal": "order o-17 picked",
+                "selected_plan": "pick_by_zone",
+                "trace": {
+                  "cycles": [
+                    {
+                      "cycle": 1,
+                      "beliefs_added": [
+                        "order(o-17)",
+                        "zone(A)",
+                        "zone(C)"
+                      ],
+                      "goal": "order o-17 picked",
+                      "selected_plan": "pick_by_zone",
+                      "action": "visit A-03",
+                      "outcome": "continue"
+                    },
+                    {
+                      "cycle": 2,
+                      "beliefs_added": [
+                        "picked(MILK-1L)"
+                      ],
+                      "goal": "order o-17 picked",
+                      "selected_plan": "pick_by_zone",
+                      "action": "visit C-11",
+                      "outcome": "achieved"
+                    }
+                  ],
+                  "cycle_count": 2,
+                  "final_status": "achieved"
+                }
+              }
+            },
+            "task": {
+              "task_id": "t-pick-o17",
+              "type": "MISSION_STEP",
+              "goal": "Separar os itens do pedido o-17",
+              "payload": {
+                "order": "o-17",
+                "warehouse": "W1"
+              },
+              "required_capabilities": [
+                "picking"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              },
+              "bdi": {
+                "goal": "order o-17 picked"
+              }
+            }
+          },
+          {
+            "step_id": "pick_o18",
+            "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+            "result": {
+              "task_id": "t-pick-o18",
+              "agent_id": "picker-bdi-02",
+              "status": "TASK_STATUS_COMPLETED",
+              "completed_at": "2026-10-27T14:00:06Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {
+                "items": [
+                  {
+                    "cold": true,
+                    "sku": "ICE-CREAM",
+                    "qty": 3.0
+                  }
+                ],
+                "bins": [
+                  "F-01"
+                ]
+              },
+              "started_at": "2026-10-27T14:00:04Z",
+              "metadata": {
+                "agent_kind": "bdi",
+                "selected_plan": "pick_by_zone"
+              }
+            },
+            "task": {
+              "task_id": "t-pick-o18",
+              "type": "MISSION_STEP",
+              "goal": "Separar os itens do pedido o-18",
+              "payload": {
+                "order": "o-18",
+                "warehouse": "W1"
+              },
+              "required_capabilities": [
+                "picking"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              },
+              "bdi": {
+                "goal": "order o-18 picked"
+              }
+            }
+          },
+          {
+            "step_id": "consolidate",
+            "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+            "result": {
+              "task_id": "t-consolidate",
+              "agent_id": "consolidator-01",
+              "status": "TASK_STATUS_COMPLETED",
+              "completed_at": "2026-10-27T14:00:09Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {
+                "pallets": [
+                  {
+                    "cold": true,
+                    "id": "P1",
+                    "skus": [
+                      "MILK-1L",
+                      "ICE-CREAM"
+                    ]
+                  },
+                  {
+                    "cold": false,
+                    "id": "P2",
+                    "skus": [
+                      "RICE-5KG"
+                    ]
+                  }
+                ],
+                "load_id": "LOAD-42"
+              },
+              "started_at": "2026-10-27T14:00:07Z",
+              "metadata": {
+                "agent_kind": "generic"
+              }
+            },
+            "task": {
+              "task_id": "t-consolidate",
+              "type": "MISSION_STEP",
+              "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+              "payload": {
+                "cold_chain": true,
+                "orders": {
+                  "o18": [
+                    {
+                      "cold": true,
+                      "sku": "ICE-CREAM",
+                      "qty": 3.0
+                    }
+                  ],
+                  "o17": [
+                    {
+                      "cold": true,
+                      "sku": "MILK-1L",
+                      "qty": 6.0
+                    },
+                    {
+                      "cold": false,
+                      "sku": "RICE-5KG",
+                      "qty": 2.0
+                    }
+                  ]
+                }
+              },
+              "required_capabilities": [
+                "consolidation"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              }
+            }
+          },
+          {
+            "step_id": "route",
+            "status": "WORKFLOW_STEP_STATUS_FAILED",
+            "result": {
+              "task_id": "t-route",
+              "agent_id": "router-bdi-01",
+              "status": "TASK_STATUS_FAILED",
+              "completed_at": "2026-10-27T14:00:16Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {},
+              "error": {
+                "code": "ERROR_CODE_EXECUTION_FAILED",
+                "message": "no route satisfies deadline 18:00 with cold chain constraint"
+              },
+              "started_at": "2026-10-27T14:00:09Z",
+              "metadata": {}
+            },
+            "task": {
+              "task_id": "t-route",
+              "type": "MISSION_STEP",
+              "goal": "Planejar a rota de entrega até as 18h",
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00",
+                "load_id": "LOAD-42"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "attempt": 1,
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              }
+            }
+          }
+        ],
+        "error": {
+          "code": "ERROR_CODE_EXECUTION_FAILED",
+          "message": "step route failed after 2 attempts"
+        },
+        "trace": {
+          "trace_id": "trace-demo-0001",
+          "correlation_id": "logistics-demo"
+        },
+        "created_at": "2026-10-27T14:00:04Z",
+        "completed_at": "2026-10-27T14:00:16Z"
+      },
+      "context_after": {
+        "deadline": "18:00",
+        "warehouse": "W1",
+        "stage": "picking",
+        "orders": [
+          "o-17",
+          "o-18"
+        ]
+      },
+      "started_at": "2026-10-27T14:00:00Z",
+      "completed_at": "2026-10-27T14:00:16Z",
+      "planner_summary": "Separar os dois pedidos em paralelo, consolidar a carga e roteirizar.",
+      "planner_result": {
+        "task_id": "t-plan-1",
+        "agent_id": "planner-llm-01",
+        "status": "TASK_STATUS_COMPLETED",
+        "completed_at": "2026-10-27T14:00:03.800Z",
+        "trace": {
+          "trace_id": "trace-demo-0001"
+        },
+        "output": {
+          "action": "PLAN",
+          "context_update": {
+            "stage": "picking"
+          },
+          "plan": {
+            "final_step_id": "route",
+            "steps": [
+              {
+                "goal": "Separar os itens do pedido o-17",
+                "depends_on": [],
+                "required_capabilities": [
+                  "picking"
+                ],
+                "payload": {
+                  "order": "o-17",
+                  "warehouse": "W1"
+                },
+                "bdi_goal": "order o-17 picked",
+                "step_id": "pick_o17",
+                "type": "MISSION_STEP",
+                "input_bindings": []
+              },
+              {
+                "goal": "Separar os itens do pedido o-18",
+                "depends_on": [],
+                "required_capabilities": [
+                  "picking"
+                ],
+                "payload": {
+                  "order": "o-18",
+                  "warehouse": "W1"
+                },
+                "bdi_goal": "order o-18 picked",
+                "step_id": "pick_o18",
+                "type": "MISSION_STEP",
+                "input_bindings": []
+              },
+              {
+                "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+                "depends_on": [
+                  "pick_o17",
+                  "pick_o18"
+                ],
+                "required_capabilities": [
+                  "consolidation"
+                ],
+                "payload": {
+                  "cold_chain": true
+                },
+                "bdi_goal": "",
+                "step_id": "consolidate",
+                "type": "MISSION_STEP",
+                "input_bindings": [
+                  {
+                    "source_path": "output.items",
+                    "source_step_id": "pick_o17",
+                    "target_field": "orders.o17"
+                  },
+                  {
+                    "source_path": "output.items",
+                    "source_step_id": "pick_o18",
+                    "target_field": "orders.o18"
+                  }
+                ]
+              },
+              {
+                "goal": "Planejar a rota de entrega até as 18h",
+                "depends_on": [
+                  "consolidate"
+                ],
+                "required_capabilities": [
+                  "route-planning"
+                ],
+                "payload": {
+                  "origin": "W1",
+                  "deadline": "18:00"
+                },
+                "bdi_goal": "",
+                "step_id": "route",
+                "type": "MISSION_STEP",
+                "input_bindings": [
+                  {
+                    "source_path": "output.load_id",
+                    "source_step_id": "consolidate",
+                    "target_field": "load_id"
+                  }
+                ]
+              }
+            ],
+            "workflow_id": "round-1"
+          },
+          "summary": "Separar os dois pedidos em paralelo, consolidar a carga e roteirizar."
+        },
+        "started_at": "2026-10-27T14:00:00.200Z",
+        "metadata": {
+          "usage": {
+            "total_tokens": 1222.0,
+            "output_tokens": 310.0,
+            "input_tokens": 912.0
+          },
+          "latency_ms": 3599.9999999999995,
+          "model": "gpt-5.6-luna",
+          "provider": "openai"
+        }
+      }
+    },
+    {
+      "round": 2,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_PLAN",
+      "plan": {
+        "workflow_id": "round-2",
+        "steps": [
+          {
+            "step_id": "route_cold",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Planejar rota prioritária apenas para o pallet refrigerado P1",
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00",
+                "pallets": [
+                  "P1"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ]
+            }
+          },
+          {
+            "step_id": "route_dry",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Planejar rota do pallet seco P2 com prazo 20h",
+              "payload": {
+                "origin": "W1",
+                "deadline": "20:00",
+                "pallets": [
+                  "P2"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ]
+            }
+          },
+          {
+            "step_id": "notify",
+            "task_template": {
+              "type": "MISSION_STEP",
+              "goal": "Avisar o cliente do pedido o-17 sobre a entrega em duas partes",
+              "payload": {
+                "order": "o-17"
+              },
+              "required_capabilities": [
+                "notification"
+              ]
+            },
+            "depends_on": [
+              "route_cold",
+              "route_dry"
+            ]
+          }
+        ],
+        "final_step_id": "route_cold"
+      },
+      "result": {
+        "workflow_id": "round-2",
+        "run_id": "run-0002",
+        "root_task_id": "root-demo-0001",
+        "status": "WORKFLOW_STATUS_FAILED",
+        "step_results": [
+          {
+            "step_id": "route_cold",
+            "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+            "result": {
+              "task_id": "t-route-cold",
+              "agent_id": "router-bdi-01",
+              "status": "TASK_STATUS_COMPLETED",
+              "completed_at": "2026-10-27T14:00:24Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {
+                "route": [
+                  "W1",
+                  "Hub-N",
+                  "Client-o17",
+                  "Client-o18"
+                ],
+                "distance_km": 18.4,
+                "eta": "17:20"
+              },
+              "started_at": "2026-10-27T14:00:20Z",
+              "metadata": {
+                "agent_kind": "bdi",
+                "selected_plan": "shortest_cold"
+              }
+            },
+            "task": {
+              "task_id": "t-route-cold",
+              "type": "MISSION_STEP",
+              "goal": "Planejar rota prioritária apenas para o pallet refrigerado P1",
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00",
+                "pallets": [
+                  "P1"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              }
+            }
+          },
+          {
+            "step_id": "route_dry",
+            "status": "WORKFLOW_STEP_STATUS_FAILED",
+            "result": {
+              "task_id": "t-route-dry",
+              "agent_id": "router-bdi-02",
+              "status": "TASK_STATUS_FAILED",
+              "completed_at": "2026-10-27T14:00:30Z",
+              "trace": {
+                "trace_id": "trace-demo-0001"
+              },
+              "output": {},
+              "error": {
+                "code": "ERROR_CODE_TIMEOUT",
+                "message": "task deadline exceeded",
+                "retryable": true
+              },
+              "started_at": "2026-10-27T14:00:20Z",
+              "metadata": {}
+            },
+            "task": {
+              "task_id": "t-route-dry",
+              "type": "MISSION_STEP",
+              "goal": "Planejar rota do pallet seco P2 com prazo 20h",
+              "payload": {
+                "origin": "W1",
+                "deadline": "20:00",
+                "pallets": [
+                  "P2"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "attempt": 1,
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              }
+            }
+          },
+          {
+            "step_id": "notify",
+            "status": "WORKFLOW_STEP_STATUS_SKIPPED",
+            "task": {
+              "task_id": "t-notify",
+              "type": "MISSION_STEP",
+              "goal": "Avisar o cliente do pedido o-17 sobre a entrega em duas partes",
+              "payload": {
+                "order": "o-17"
+              },
+              "required_capabilities": [
+                "notification"
+              ],
+              "trace": {
+                "trace_id": "trace-demo-0001",
+                "correlation_id": "logistics-demo"
+              },
+              "deadline_ms": "10000",
+              "parent_task_id": "root-demo-0001",
+              "retry_policy": {
+                "max_attempts": 2,
+                "backoff_ms": "200",
+                "exclude_failed_agent": true
+              }
+            }
+          }
+        ],
+        "error": {
+          "code": "ERROR_CODE_TIMEOUT",
+          "message": "step route_dry timed out"
+        },
+        "trace": {
+          "trace_id": "trace-demo-0001",
+          "correlation_id": "logistics-demo"
+        },
+        "created_at": "2026-10-27T14:00:20Z",
+        "completed_at": "2026-10-27T14:00:31Z"
+      },
+      "context_after": {
+        "deadline": "18:00",
+        "route": [
+          "W1",
+          "Hub-N",
+          "Client-o17",
+          "Client-o18"
+        ],
+        "split_delivery": true,
+        "eta": "17:20",
+        "orders": [
+          "o-17",
+          "o-18"
+        ],
+        "warehouse": "W1",
+        "distance_km": 18.4,
+        "stage": "routing"
+      },
+      "started_at": "2026-10-27T14:00:16Z",
+      "completed_at": "2026-10-27T14:00:31Z",
+      "planner_summary": "Dividir a carga: refrigerados até as 18h, secos até as 20h.",
+      "planner_result": {
+        "task_id": "t-plan-2",
+        "agent_id": "planner-llm-01",
+        "status": "TASK_STATUS_COMPLETED",
+        "completed_at": "2026-10-27T14:00:19.900Z",
+        "trace": {
+          "trace_id": "trace-demo-0001"
+        },
+        "output": {
+          "action": "PLAN",
+          "context_update": {
+            "split_delivery": true,
+            "stage": "routing"
+          },
+          "plan": {
+            "final_step_id": "route_cold",
+            "steps": [
+              {
+                "goal": "Planejar rota prioritária apenas para o pallet refrigerado P1",
+                "depends_on": [],
+                "required_capabilities": [
+                  "route-planning"
+                ],
+                "payload": {
+                  "origin": "W1",
+                  "deadline": "18:00",
+                  "pallets": [
+                    "P1"
+                  ],
+                  "load_id": "LOAD-42"
+                },
+                "bdi_goal": "",
+                "step_id": "route_cold",
+                "type": "MISSION_STEP",
+                "input_bindings": []
+              },
+              {
+                "goal": "Planejar rota do pallet seco P2 com prazo 20h",
+                "depends_on": [],
+                "required_capabilities": [
+                  "route-planning"
+                ],
+                "payload": {
+                  "origin": "W1",
+                  "deadline": "20:00",
+                  "pallets": [
+                    "P2"
+                  ],
+                  "load_id": "LOAD-42"
+                },
+                "bdi_goal": "",
+                "step_id": "route_dry",
+                "type": "MISSION_STEP",
+                "input_bindings": []
+              },
+              {
+                "goal": "Avisar o cliente do pedido o-17 sobre a entrega em duas partes",
+                "depends_on": [
+                  "route_cold",
+                  "route_dry"
+                ],
+                "required_capabilities": [
+                  "notification"
+                ],
+                "payload": {
+                  "order": "o-17"
+                },
+                "bdi_goal": "",
+                "step_id": "notify",
+                "type": "MISSION_STEP",
+                "input_bindings": []
+              }
+            ],
+            "workflow_id": "round-2"
+          },
+          "summary": "Dividir a carga: refrigerados até as 18h, secos até as 20h."
+        },
+        "started_at": "2026-10-27T14:00:16.300Z",
+        "metadata": {
+          "usage": {
+            "total_tokens": 2392.0,
+            "output_tokens": 288.0,
+            "input_tokens": 2104.0
+          },
+          "latency_ms": 3599.9999999999977,
+          "model": "gpt-5.6-luna",
+          "provider": "openai"
+        }
+      }
+    },
+    {
+      "round": 3,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_DONE",
+      "started_at": "2026-10-27T14:00:31Z",
+      "completed_at": "2026-10-27T14:00:36Z",
+      "planner_summary": "Rota refrigerada garantida; carga seca adiada por timeout do roteirizador.",
+      "planner_result": {
+        "task_id": "t-plan-3",
+        "agent_id": "planner-llm-01",
+        "status": "TASK_STATUS_COMPLETED",
+        "completed_at": "2026-10-27T14:00:35.600Z",
+        "trace": {
+          "trace_id": "trace-demo-0001"
+        },
+        "output": {
+          "action": "DONE",
+          "output": {
+            "note": "pallet seco P2 fica para a janela das 20h; rota não calculada no prazo",
+            "split": {
+              "dry_route": null,
+              "cold_route": [
+                "W1",
+                "Hub-N",
+                "Client-o17",
+                "Client-o18"
+              ]
+            },
+            "pending": [
+              "P2"
+            ],
+            "delivered_by_18h": [
+              "o-18"
+            ]
+          },
+          "summary": "Rota refrigerada garantida; carga seca adiada por timeout do roteirizador."
+        },
+        "started_at": "2026-10-27T14:00:31.100Z",
+        "metadata": {
+          "usage": {
+            "total_tokens": 3580.0,
+            "output_tokens": 190.0,
+            "input_tokens": 3390.0
+          },
+          "latency_ms": 4500.0,
+          "model": "gpt-5.6-luna",
+          "provider": "openai"
+        }
+      }
+    }
+  ],
+  "trace": {
+    "trace_id": "trace-demo-0001",
+    "correlation_id": "logistics-demo"
+  },
+  "created_at": "2026-10-27T14:00:00Z",
+  "completed_at": "2026-10-27T14:00:36Z",
+  "root_task_id": "root-demo-0001",
+  "request": {
+    "mission_id": "mission-demo-0001",
+    "goal": "Entregar os pedidos o-17 e o-18 do armazém W1 até as 18h sem misturar itens refrigerados",
+    "context": {
+      "deadline": "18:00",
+      "warehouse": "W1",
+      "orders": [
+        "o-17",
+        "o-18"
+      ]
+    },
+    "planner_capability": "mission-planning",
+    "limits": {
+      "max_rounds": 5,
+      "max_parallel": 4,
+      "round_deadline_ms": "30000",
+      "planner_deadline_ms": "120000"
+    },
+    "trace": {
+      "trace_id": "trace-demo-0001",
+      "correlation_id": "logistics-demo"
+    },
+    "metadata": {}
+  },
+  "planner_calls": [
+    {
+      "round": 1,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_PLAN",
+      "request": {
+        "mission_id": "mission-demo-0001",
+        "goal": "Entregar os pedidos o-17 e o-18 do armazém W1 até as 18h sem misturar itens refrigerados",
+        "round": 1,
+        "context": {
+          "deadline": "18:00",
+          "warehouse": "W1",
+          "orders": [
+            "o-17",
+            "o-18"
+          ]
+        },
+        "limits": {
+          "max_rounds": 5,
+          "max_parallel": 4,
+          "round_deadline_ms": "30000",
+          "planner_deadline_ms": "120000"
+        }
+      },
+      "response": {
+        "action": "PLAN",
+        "context_update": {
+          "stage": "picking"
+        },
+        "plan": {
+          "final_step_id": "route",
+          "steps": [
+            {
+              "goal": "Separar os itens do pedido o-17",
+              "depends_on": [],
+              "required_capabilities": [
+                "picking"
+              ],
+              "payload": {
+                "order": "o-17",
+                "warehouse": "W1"
+              },
+              "bdi_goal": "order o-17 picked",
+              "step_id": "pick_o17",
+              "type": "MISSION_STEP",
+              "input_bindings": []
+            },
+            {
+              "goal": "Separar os itens do pedido o-18",
+              "depends_on": [],
+              "required_capabilities": [
+                "picking"
+              ],
+              "payload": {
+                "order": "o-18",
+                "warehouse": "W1"
+              },
+              "bdi_goal": "order o-18 picked",
+              "step_id": "pick_o18",
+              "type": "MISSION_STEP",
+              "input_bindings": []
+            },
+            {
+              "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+              "depends_on": [
+                "pick_o17",
+                "pick_o18"
+              ],
+              "required_capabilities": [
+                "consolidation"
+              ],
+              "payload": {
+                "cold_chain": true
+              },
+              "bdi_goal": "",
+              "step_id": "consolidate",
+              "type": "MISSION_STEP",
+              "input_bindings": [
+                {
+                  "source_path": "output.items",
+                  "source_step_id": "pick_o17",
+                  "target_field": "orders.o17"
+                },
+                {
+                  "source_path": "output.items",
+                  "source_step_id": "pick_o18",
+                  "target_field": "orders.o18"
+                }
+              ]
+            },
+            {
+              "goal": "Planejar a rota de entrega até as 18h",
+              "depends_on": [
+                "consolidate"
+              ],
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00"
+              },
+              "bdi_goal": "",
+              "step_id": "route",
+              "type": "MISSION_STEP",
+              "input_bindings": [
+                {
+                  "source_path": "output.load_id",
+                  "source_step_id": "consolidate",
+                  "target_field": "load_id"
+                }
+              ]
+            }
+          ],
+          "workflow_id": "round-1"
+        },
+        "summary": "Separar os dois pedidos em paralelo, consolidar a carga e roteirizar."
+      }
+    },
+    {
+      "round": 2,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_PLAN",
+      "request": {
+        "mission_id": "mission-demo-0001",
+        "goal": "Entregar os pedidos o-17 e o-18 do armazém W1 até as 18h sem misturar itens refrigerados",
+        "round": 2,
+        "context": {
+          "deadline": "18:00",
+          "warehouse": "W1",
+          "stage": "picking",
+          "orders": [
+            "o-17",
+            "o-18"
+          ]
+        },
+        "history": [
+          {
+            "round": 1,
+            "action": "PLANNER_ACTION_PLAN",
+            "step_results": [
+              {
+                "step_id": "pick_o17",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-pick-o17",
+                  "agent_id": "picker-bdi-01",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:07Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "items": [
+                      {
+                        "cold": true,
+                        "sku": "MILK-1L",
+                        "qty": 6.0
+                      },
+                      {
+                        "cold": false,
+                        "sku": "RICE-5KG",
+                        "qty": 2.0
+                      }
+                    ],
+                    "bins": [
+                      "A-03",
+                      "C-11"
+                    ]
+                  },
+                  "started_at": "2026-10-27T14:00:04Z",
+                  "metadata": {
+                    "agent_kind": "bdi",
+                    "selected_plan": "pick_by_zone"
+                  },
+                  "bdi": {
+                    "goal": "order o-17 picked",
+                    "selected_plan": "pick_by_zone",
+                    "trace": {
+                      "cycles": [
+                        {
+                          "cycle": 1,
+                          "beliefs_added": [
+                            "order(o-17)",
+                            "zone(A)",
+                            "zone(C)"
+                          ],
+                          "goal": "order o-17 picked",
+                          "selected_plan": "pick_by_zone",
+                          "action": "visit A-03",
+                          "outcome": "continue"
+                        },
+                        {
+                          "cycle": 2,
+                          "beliefs_added": [
+                            "picked(MILK-1L)"
+                          ],
+                          "goal": "order o-17 picked",
+                          "selected_plan": "pick_by_zone",
+                          "action": "visit C-11",
+                          "outcome": "achieved"
+                        }
+                      ],
+                      "cycle_count": 2,
+                      "final_status": "achieved"
+                    }
+                  }
+                },
+                "task": {
+                  "task_id": "t-pick-o17",
+                  "type": "MISSION_STEP",
+                  "goal": "Separar os itens do pedido o-17",
+                  "payload": {
+                    "order": "o-17",
+                    "warehouse": "W1"
+                  },
+                  "required_capabilities": [
+                    "picking"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  },
+                  "bdi": {
+                    "goal": "order o-17 picked"
+                  }
+                }
+              },
+              {
+                "step_id": "pick_o18",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-pick-o18",
+                  "agent_id": "picker-bdi-02",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:06Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "items": [
+                      {
+                        "cold": true,
+                        "sku": "ICE-CREAM",
+                        "qty": 3.0
+                      }
+                    ],
+                    "bins": [
+                      "F-01"
+                    ]
+                  },
+                  "started_at": "2026-10-27T14:00:04Z",
+                  "metadata": {
+                    "agent_kind": "bdi",
+                    "selected_plan": "pick_by_zone"
+                  }
+                },
+                "task": {
+                  "task_id": "t-pick-o18",
+                  "type": "MISSION_STEP",
+                  "goal": "Separar os itens do pedido o-18",
+                  "payload": {
+                    "order": "o-18",
+                    "warehouse": "W1"
+                  },
+                  "required_capabilities": [
+                    "picking"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  },
+                  "bdi": {
+                    "goal": "order o-18 picked"
+                  }
+                }
+              },
+              {
+                "step_id": "consolidate",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-consolidate",
+                  "agent_id": "consolidator-01",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:09Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "pallets": [
+                      {
+                        "cold": true,
+                        "id": "P1",
+                        "skus": [
+                          "MILK-1L",
+                          "ICE-CREAM"
+                        ]
+                      },
+                      {
+                        "cold": false,
+                        "id": "P2",
+                        "skus": [
+                          "RICE-5KG"
+                        ]
+                      }
+                    ],
+                    "load_id": "LOAD-42"
+                  },
+                  "started_at": "2026-10-27T14:00:07Z",
+                  "metadata": {
+                    "agent_kind": "generic"
+                  }
+                },
+                "task": {
+                  "task_id": "t-consolidate",
+                  "type": "MISSION_STEP",
+                  "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+                  "payload": {
+                    "cold_chain": true,
+                    "orders": {
+                      "o18": [
+                        {
+                          "cold": true,
+                          "sku": "ICE-CREAM",
+                          "qty": 3.0
+                        }
+                      ],
+                      "o17": [
+                        {
+                          "cold": true,
+                          "sku": "MILK-1L",
+                          "qty": 6.0
+                        },
+                        {
+                          "cold": false,
+                          "sku": "RICE-5KG",
+                          "qty": 2.0
+                        }
+                      ]
+                    }
+                  },
+                  "required_capabilities": [
+                    "consolidation"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              },
+              {
+                "step_id": "route",
+                "status": "WORKFLOW_STEP_STATUS_FAILED",
+                "result": {
+                  "task_id": "t-route",
+                  "agent_id": "router-bdi-01",
+                  "status": "TASK_STATUS_FAILED",
+                  "completed_at": "2026-10-27T14:00:16Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {},
+                  "error": {
+                    "code": "ERROR_CODE_EXECUTION_FAILED",
+                    "message": "no route satisfies deadline 18:00 with cold chain constraint"
+                  },
+                  "started_at": "2026-10-27T14:00:09Z",
+                  "metadata": {}
+                },
+                "task": {
+                  "task_id": "t-route",
+                  "type": "MISSION_STEP",
+                  "goal": "Planejar a rota de entrega até as 18h",
+                  "payload": {
+                    "origin": "W1",
+                    "deadline": "18:00",
+                    "load_id": "LOAD-42"
+                  },
+                  "required_capabilities": [
+                    "route-planning"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "attempt": 1,
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              }
+            ],
+            "status": "WORKFLOW_STATUS_FAILED",
+            "planner_summary": "Separar os dois pedidos em paralelo, consolidar a carga e roteirizar."
+          }
+        ],
+        "limits": {
+          "max_rounds": 5,
+          "max_parallel": 4,
+          "round_deadline_ms": "30000",
+          "planner_deadline_ms": "120000"
+        }
+      },
+      "response": {
+        "action": "PLAN",
+        "context_update": {
+          "split_delivery": true,
+          "stage": "routing"
+        },
+        "plan": {
+          "final_step_id": "route_cold",
+          "steps": [
+            {
+              "goal": "Planejar rota prioritária apenas para o pallet refrigerado P1",
+              "depends_on": [],
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "payload": {
+                "origin": "W1",
+                "deadline": "18:00",
+                "pallets": [
+                  "P1"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "bdi_goal": "",
+              "step_id": "route_cold",
+              "type": "MISSION_STEP",
+              "input_bindings": []
+            },
+            {
+              "goal": "Planejar rota do pallet seco P2 com prazo 20h",
+              "depends_on": [],
+              "required_capabilities": [
+                "route-planning"
+              ],
+              "payload": {
+                "origin": "W1",
+                "deadline": "20:00",
+                "pallets": [
+                  "P2"
+                ],
+                "load_id": "LOAD-42"
+              },
+              "bdi_goal": "",
+              "step_id": "route_dry",
+              "type": "MISSION_STEP",
+              "input_bindings": []
+            },
+            {
+              "goal": "Avisar o cliente do pedido o-17 sobre a entrega em duas partes",
+              "depends_on": [
+                "route_cold",
+                "route_dry"
+              ],
+              "required_capabilities": [
+                "notification"
+              ],
+              "payload": {
+                "order": "o-17"
+              },
+              "bdi_goal": "",
+              "step_id": "notify",
+              "type": "MISSION_STEP",
+              "input_bindings": []
+            }
+          ],
+          "workflow_id": "round-2"
+        },
+        "summary": "Dividir a carga: refrigerados até as 18h, secos até as 20h."
+      }
+    },
+    {
+      "round": 3,
+      "planner_agent_id": "planner-llm-01",
+      "action": "PLANNER_ACTION_DONE",
+      "request": {
+        "mission_id": "mission-demo-0001",
+        "goal": "Entregar os pedidos o-17 e o-18 do armazém W1 até as 18h sem misturar itens refrigerados",
+        "round": 3,
+        "context": {
+          "deadline": "18:00",
+          "route": [
+            "W1",
+            "Hub-N",
+            "Client-o17",
+            "Client-o18"
+          ],
+          "split_delivery": true,
+          "eta": "17:20",
+          "orders": [
+            "o-17",
+            "o-18"
+          ],
+          "distance_km": 18.4,
+          "warehouse": "W1",
+          "stage": "routing"
+        },
+        "history": [
+          {
+            "round": 1,
+            "action": "PLANNER_ACTION_PLAN",
+            "step_results": [
+              {
+                "step_id": "pick_o17",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-pick-o17",
+                  "agent_id": "picker-bdi-01",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:07Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "items": [
+                      {
+                        "cold": true,
+                        "sku": "MILK-1L",
+                        "qty": 6.0
+                      },
+                      {
+                        "cold": false,
+                        "sku": "RICE-5KG",
+                        "qty": 2.0
+                      }
+                    ],
+                    "bins": [
+                      "A-03",
+                      "C-11"
+                    ]
+                  },
+                  "started_at": "2026-10-27T14:00:04Z",
+                  "metadata": {
+                    "agent_kind": "bdi",
+                    "selected_plan": "pick_by_zone"
+                  },
+                  "bdi": {
+                    "goal": "order o-17 picked",
+                    "selected_plan": "pick_by_zone",
+                    "trace": {
+                      "cycles": [
+                        {
+                          "cycle": 1,
+                          "beliefs_added": [
+                            "order(o-17)",
+                            "zone(A)",
+                            "zone(C)"
+                          ],
+                          "goal": "order o-17 picked",
+                          "selected_plan": "pick_by_zone",
+                          "action": "visit A-03",
+                          "outcome": "continue"
+                        },
+                        {
+                          "cycle": 2,
+                          "beliefs_added": [
+                            "picked(MILK-1L)"
+                          ],
+                          "goal": "order o-17 picked",
+                          "selected_plan": "pick_by_zone",
+                          "action": "visit C-11",
+                          "outcome": "achieved"
+                        }
+                      ],
+                      "cycle_count": 2,
+                      "final_status": "achieved"
+                    }
+                  }
+                },
+                "task": {
+                  "task_id": "t-pick-o17",
+                  "type": "MISSION_STEP",
+                  "goal": "Separar os itens do pedido o-17",
+                  "payload": {
+                    "order": "o-17",
+                    "warehouse": "W1"
+                  },
+                  "required_capabilities": [
+                    "picking"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  },
+                  "bdi": {
+                    "goal": "order o-17 picked"
+                  }
+                }
+              },
+              {
+                "step_id": "pick_o18",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-pick-o18",
+                  "agent_id": "picker-bdi-02",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:06Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "items": [
+                      {
+                        "cold": true,
+                        "sku": "ICE-CREAM",
+                        "qty": 3.0
+                      }
+                    ],
+                    "bins": [
+                      "F-01"
+                    ]
+                  },
+                  "started_at": "2026-10-27T14:00:04Z",
+                  "metadata": {
+                    "agent_kind": "bdi",
+                    "selected_plan": "pick_by_zone"
+                  }
+                },
+                "task": {
+                  "task_id": "t-pick-o18",
+                  "type": "MISSION_STEP",
+                  "goal": "Separar os itens do pedido o-18",
+                  "payload": {
+                    "order": "o-18",
+                    "warehouse": "W1"
+                  },
+                  "required_capabilities": [
+                    "picking"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  },
+                  "bdi": {
+                    "goal": "order o-18 picked"
+                  }
+                }
+              },
+              {
+                "step_id": "consolidate",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-consolidate",
+                  "agent_id": "consolidator-01",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:09Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "pallets": [
+                      {
+                        "cold": true,
+                        "id": "P1",
+                        "skus": [
+                          "MILK-1L",
+                          "ICE-CREAM"
+                        ]
+                      },
+                      {
+                        "cold": false,
+                        "id": "P2",
+                        "skus": [
+                          "RICE-5KG"
+                        ]
+                      }
+                    ],
+                    "load_id": "LOAD-42"
+                  },
+                  "started_at": "2026-10-27T14:00:07Z",
+                  "metadata": {
+                    "agent_kind": "generic"
+                  }
+                },
+                "task": {
+                  "task_id": "t-consolidate",
+                  "type": "MISSION_STEP",
+                  "goal": "Consolidar os dois pedidos em uma carga, separando refrigerados",
+                  "payload": {
+                    "cold_chain": true,
+                    "orders": {
+                      "o18": [
+                        {
+                          "cold": true,
+                          "sku": "ICE-CREAM",
+                          "qty": 3.0
+                        }
+                      ],
+                      "o17": [
+                        {
+                          "cold": true,
+                          "sku": "MILK-1L",
+                          "qty": 6.0
+                        },
+                        {
+                          "cold": false,
+                          "sku": "RICE-5KG",
+                          "qty": 2.0
+                        }
+                      ]
+                    }
+                  },
+                  "required_capabilities": [
+                    "consolidation"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              },
+              {
+                "step_id": "route",
+                "status": "WORKFLOW_STEP_STATUS_FAILED",
+                "result": {
+                  "task_id": "t-route",
+                  "agent_id": "router-bdi-01",
+                  "status": "TASK_STATUS_FAILED",
+                  "completed_at": "2026-10-27T14:00:16Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {},
+                  "error": {
+                    "code": "ERROR_CODE_EXECUTION_FAILED",
+                    "message": "no route satisfies deadline 18:00 with cold chain constraint"
+                  },
+                  "started_at": "2026-10-27T14:00:09Z",
+                  "metadata": {}
+                },
+                "task": {
+                  "task_id": "t-route",
+                  "type": "MISSION_STEP",
+                  "goal": "Planejar a rota de entrega até as 18h",
+                  "payload": {
+                    "origin": "W1",
+                    "deadline": "18:00",
+                    "load_id": "LOAD-42"
+                  },
+                  "required_capabilities": [
+                    "route-planning"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "attempt": 1,
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              }
+            ],
+            "status": "WORKFLOW_STATUS_FAILED",
+            "planner_summary": "Separar os dois pedidos em paralelo, consolidar a carga e roteirizar."
+          },
+          {
+            "round": 2,
+            "action": "PLANNER_ACTION_PLAN",
+            "step_results": [
+              {
+                "step_id": "route_cold",
+                "status": "WORKFLOW_STEP_STATUS_COMPLETED",
+                "result": {
+                  "task_id": "t-route-cold",
+                  "agent_id": "router-bdi-01",
+                  "status": "TASK_STATUS_COMPLETED",
+                  "completed_at": "2026-10-27T14:00:24Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {
+                    "route": [
+                      "W1",
+                      "Hub-N",
+                      "Client-o17",
+                      "Client-o18"
+                    ],
+                    "distance_km": 18.4,
+                    "eta": "17:20"
+                  },
+                  "started_at": "2026-10-27T14:00:20Z",
+                  "metadata": {
+                    "agent_kind": "bdi",
+                    "selected_plan": "shortest_cold"
+                  }
+                },
+                "task": {
+                  "task_id": "t-route-cold",
+                  "type": "MISSION_STEP",
+                  "goal": "Planejar rota prioritária apenas para o pallet refrigerado P1",
+                  "payload": {
+                    "origin": "W1",
+                    "deadline": "18:00",
+                    "pallets": [
+                      "P1"
+                    ],
+                    "load_id": "LOAD-42"
+                  },
+                  "required_capabilities": [
+                    "route-planning"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              },
+              {
+                "step_id": "route_dry",
+                "status": "WORKFLOW_STEP_STATUS_FAILED",
+                "result": {
+                  "task_id": "t-route-dry",
+                  "agent_id": "router-bdi-02",
+                  "status": "TASK_STATUS_FAILED",
+                  "completed_at": "2026-10-27T14:00:30Z",
+                  "trace": {
+                    "trace_id": "trace-demo-0001"
+                  },
+                  "output": {},
+                  "error": {
+                    "code": "ERROR_CODE_TIMEOUT",
+                    "message": "task deadline exceeded",
+                    "retryable": true
+                  },
+                  "started_at": "2026-10-27T14:00:20Z",
+                  "metadata": {}
+                },
+                "task": {
+                  "task_id": "t-route-dry",
+                  "type": "MISSION_STEP",
+                  "goal": "Planejar rota do pallet seco P2 com prazo 20h",
+                  "payload": {
+                    "origin": "W1",
+                    "deadline": "20:00",
+                    "pallets": [
+                      "P2"
+                    ],
+                    "load_id": "LOAD-42"
+                  },
+                  "required_capabilities": [
+                    "route-planning"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "attempt": 1,
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              },
+              {
+                "step_id": "notify",
+                "status": "WORKFLOW_STEP_STATUS_SKIPPED",
+                "task": {
+                  "task_id": "t-notify",
+                  "type": "MISSION_STEP",
+                  "goal": "Avisar o cliente do pedido o-17 sobre a entrega em duas partes",
+                  "payload": {
+                    "order": "o-17"
+                  },
+                  "required_capabilities": [
+                    "notification"
+                  ],
+                  "trace": {
+                    "trace_id": "trace-demo-0001",
+                    "correlation_id": "logistics-demo"
+                  },
+                  "deadline_ms": "10000",
+                  "parent_task_id": "root-demo-0001",
+                  "retry_policy": {
+                    "max_attempts": 2,
+                    "backoff_ms": "200",
+                    "exclude_failed_agent": true
+                  }
+                }
+              }
+            ],
+            "status": "WORKFLOW_STATUS_FAILED",
+            "planner_summary": "Dividir a carga: refrigerados até as 18h, secos até as 20h."
+          }
+        ],
+        "limits": {
+          "max_rounds": 5,
+          "max_parallel": 4,
+          "round_deadline_ms": "30000",
+          "planner_deadline_ms": "120000"
+        }
+      },
+      "response": {
+        "action": "DONE",
+        "output": {
+          "note": "pallet seco P2 fica para a janela das 20h; rota não calculada no prazo",
+          "split": {
+            "dry_route": null,
+            "cold_route": [
+              "W1",
+              "Hub-N",
+              "Client-o17",
+              "Client-o18"
+            ]
+          },
+          "pending": [
+            "P2"
+          ],
+          "delivered_by_18h": [
+            "o-18"
+          ]
+        },
+        "summary": "Rota refrigerada garantida; carga seca adiada por timeout do roteirizador."
+      }
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Viewer</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9; --panel: #ffffff; --ink: #1f2328; --muted: #6b7280; --line: #d0d4da;
+    --edge: #8a919c; --accent: #2563eb;
+    --completed: #2e9e5b; --failed: #d64545; --skipped: #9aa0a6; --cancelled: #e08a1e;
+    --timeout: #8b5cf6; --running: #3b82f6; --pending: #b4b9c0; --plan: #2563eb; --done: #2e9e5b; --abort: #d64545;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111417; --panel: #1a1e23; --ink: #e6e8eb; --muted: #9aa3ad; --line: #2e343b; --edge: #6b7480; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 16px; margin: 0; }
+  header .muted { color: var(--muted); }
+  header label { cursor: pointer; color: var(--accent); }
+  header input[type=file] { display: none; }
+  #summary { width: 100%; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  #summary:empty { display: none; }
+  main { display: flex; height: calc(100vh - 57px); }
+  #canvas { flex: 1; overflow: auto; padding: 16px; }
+  #empty { color: var(--muted); max-width: 480px; }
+  svg { display: block; }
+  svg text { font: 12px/1.2 system-ui, sans-serif; fill: var(--ink); pointer-events: none; }
+  svg text.small { font-size: 11px; fill: var(--muted); }
+  svg text.round { font-size: 13px; font-weight: 600; fill: var(--muted); }
+  .node rect { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; rx: 6; cursor: pointer; }
+  .node:hover rect, .node.selected rect { stroke: var(--accent); stroke-width: 2.5; }
+  .node .bar { stroke: none; rx: 0; }
+  .edge { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+  .edge.sequence { stroke-dasharray: 5 4; }
+  .node .s-completed { fill: var(--completed); } .node .s-failed { fill: var(--failed); } .node .s-skipped { fill: var(--skipped); }
+  .node .s-cancelled { fill: var(--cancelled); } .node .s-timeout { fill: var(--timeout); } .node .s-running { fill: var(--running); }
+  .node .s-pending { fill: var(--pending); } .node .s-plan { fill: var(--plan); } .node .s-done { fill: var(--done); } .node .s-abort { fill: var(--abort); }
+  #legend { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+  #legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  #panel { width: min(60vw, 900px); border-left: 1px solid var(--line); background: var(--panel); display: none; flex-direction: column; }
+  #panel.open { display: flex; }
+  #panel header { border-bottom: 1px solid var(--line); padding: 10px 14px; }
+  #panel header button { margin-left: auto; background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 4px; cursor: pointer; }
+  #views { display: flex; flex: 1; min-height: 0; }
+  #views section { flex: 1; min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+  #views section:last-child { border-right: none; }
+  #views h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  #views pre { flex: 1; margin: 0; padding: 12px; overflow: auto; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; }
+  body.dragging { outline: 3px dashed var(--accent); outline-offset: -3px; }
+  @media (max-width: 900px) { main { flex-direction: column; height: auto; } #panel { width: 100%; border-left: none; border-top: 1px solid var(--line); } #views { flex-direction: column; } #views section { border-right: none; border-bottom: 1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mission Viewer</h1>
+  <label>Abrir JSON <input type="file" id="file" accept="application/json,.json"></label>
+  <span class="muted">ou arraste um <code>mission-result.json</code> para a página, ou use <code>?file=caminho.json</code></span>
+  <div id="summary"></div>
+</header>
+<main>
+  <div id="canvas">
+    <div id="legend"></div>
+    <p id="empty">Carregue o JSON de um <code>MissionResult</code> salvo pelo SDK (<code>MissionResult.save</code>) ou de um <code>WorkflowResult</code>. Cada rodada mostra a chamada ao planejador seguida dos passos do plano; clique num quadro para ver a entrada e a saída exatamente como estão no JSON.</p>
+    <div id="graph"></div>
+  </div>
+  <aside id="panel">
+    <header><strong id="panel-title"></strong><span id="panel-sub" class="muted"></span><button id="close">Fechar</button></header>
+    <div id="views">
+      <section><h2 id="left-title">Entrada</h2><pre id="left"></pre></section>
+      <section><h2 id="right-title">Saída</h2><pre id="right"></pre></section>
+    </div>
+  </aside>
+</main>
+<script>
+// --- Modelo: do JSON do contrato para rodadas, nós e dependências -----------
+const STATUS_WORDS = ['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'running', 'pending'];
+
+function statusClass(value) {
+  const name = String(value || '').toLowerCase();
+  return STATUS_WORDS.find(word => name.endsWith(word)) || 'pending';
+}
+
+function actionClass(value) {
+  const name = String(value || '').toLowerCase();
+  return ['plan', 'done', 'abort'].find(word => name.endsWith(word)) || 'pending';
+}
+
+function stepsFromWorkflow(result, plan) {
+  const dependencies = {};
+  for (const step of (plan && plan.steps) || []) dependencies[step.step_id] = step.depends_on || [];
+  const seen = new Set();
+  const nodes = [];
+  for (const item of (result && result.step_results) || []) {
+    seen.add(item.step_id);
+    nodes.push({
+      id: item.step_id, kind: 'step', status: statusClass(item.status),
+      label: item.step_id, agent: item.result && item.result.agent_id,
+      depends: dependencies[item.step_id] || [], input: item.task || null, output: item.result || null,
+    });
+  }
+  // Passos planejados que nunca chegaram a executar (rodada abortada antes).
+  for (const step of (plan && plan.steps) || []) {
+    if (!seen.has(step.step_id)) nodes.push({
+      id: step.step_id, kind: 'step', status: 'pending', label: step.step_id,
+      depends: step.depends_on || [], input: step.task_template || null, output: null,
+    });
+  }
+  return nodes;
+}
+
+function normalize(doc) {
+  if (Array.isArray(doc.rounds)) {
+    const calls = doc.planner_calls || [];
+    return {
+      kind: 'mission', id: doc.mission_id, status: doc.status, goal: doc.request && doc.request.goal,
+      rounds: doc.rounds.map((round, index) => {
+        const call = calls.find(item => item.round === round.round) || calls[index] || {};
+        const response = call.response || (round.planner_result && round.planner_result.output) || null;
+        const planFromResponse = response && response.plan;
+        return {
+          round: round.round, action: round.action, summary: round.planner_summary,
+          planner: {
+            id: `round-${round.round}-planner`, kind: 'planner', status: actionClass(round.action),
+            label: `Rodada ${round.round}: ${String(round.action || '').replace('PLANNER_ACTION_', '')}`,
+            agent: round.planner_agent_id, input: call.request || null, output: response,
+            failed: round.planner_result && statusClass(round.planner_result.status) === 'failed',
+          },
+          steps: stepsFromWorkflow(round.result, round.plan || (planFromResponse ? { steps: planFromResponse.steps } : null)),
+        };
+      }),
+    };
+  }
+  if (Array.isArray(doc.step_results)) {
+    return { kind: 'workflow', id: doc.workflow_id || doc.run_id, status: doc.status, goal: doc.root_task_id,
+             rounds: [{ round: 1, planner: null, steps: stepsFromWorkflow(doc, doc.definition || doc.plan) }] };
+  }
+  if (doc.steps && typeof doc.steps === 'object') {
+    // result.json gravado pelo executor declarativo (ScenarioWorkflowResult.to_dict).
+    const steps = Object.entries(doc.steps).map(([id, step]) => ({
+      id, kind: 'step', status: statusClass(step.status), label: id, depends: [],
+      agent: step.result && step.result.agent_id, input: null, output: step.result,
+    }));
+    return { kind: 'workflow', id: doc.workflow_id, status: doc.status, goal: doc.root_task_id, rounds: [{ round: 1, planner: null, steps }] };
+  }
+  throw new Error('JSON não é um MissionResult (rounds) nem um WorkflowResult (step_results)');
+}
+
+// --- Layout: colunas por profundidade, linhas por paralelismo ---------------
+const BOX = { w: 190, h: 54, gapX: 56, gapY: 18, round: 44, left: 24, top: 12 };
+
+function depthOf(nodes) {
+  const byId = Object.fromEntries(nodes.map(node => [node.id, node]));
+  const memo = {};
+  const visit = (id, stack) => {
+    if (memo[id] !== undefined) return memo[id];
+    if (stack.has(id) || !byId[id]) return 1;
+    stack.add(id);
+    const deps = byId[id].depends.filter(dep => byId[dep]);
+    memo[id] = deps.length ? 1 + Math.max(...deps.map(dep => visit(dep, stack))) : 1;
+    stack.delete(id);
+    return memo[id];
+  };
+  return Object.fromEntries(nodes.map(node => [node.id, visit(node.id, new Set())]));
+}
+
+function layout(model) {
+  const boxes = [], edges = [];
+  let y = BOX.top, previousPlanner = null, width = 0;
+  for (const round of model.rounds) {
+    y += BOX.round;
+    const labelY = y - 14;
+    const depths = depthOf(round.steps);
+    const rows = {};
+    const place = (node, column) => {
+      const row = (rows[column] = (rows[column] || 0) + 1) - 1;
+      const box = { node, x: BOX.left + column * (BOX.w + BOX.gapX), y: y + row * (BOX.h + BOX.gapY), labelY: column === 0 ? labelY : null, round: round.round };
+      boxes.push(box);
+      width = Math.max(width, box.x + BOX.w);
+      return box;
+    };
+    const offset = round.planner ? 1 : 0;
+    const plannerBox = round.planner ? place(round.planner, 0) : null;
+    const stepBoxes = {};
+    for (const node of round.steps) stepBoxes[node.id] = place(node, depths[node.id] - 1 + offset);
+    for (const node of round.steps) {
+      const deps = node.depends.filter(dep => stepBoxes[dep]);
+      for (const dep of deps) edges.push({ from: stepBoxes[dep], to: stepBoxes[node.id], kind: 'depends' });
+      if (!deps.length && plannerBox) edges.push({ from: plannerBox, to: stepBoxes[node.id], kind: 'plan' });
+    }
+    if (previousPlanner && plannerBox) edges.push({ from: previousPlanner, to: plannerBox, kind: 'sequence' });
+    previousPlanner = plannerBox;
+    const rowCount = Math.max(1, ...Object.values(rows));
+    const first = boxes.find(box => box.round === round.round && box.labelY !== null);
+    if (first) first.roundLabel = `Rodada ${round.round}` + (round.summary ? ` — ${round.summary}` : '');
+    y += rowCount * (BOX.h + BOX.gapY) + 6;
+  }
+  return { boxes, edges, width: width + BOX.left, height: y + BOX.top };
+}
+
+// --- Renderização SVG -------------------------------------------------------
+const SVG = 'http://www.w3.org/2000/svg';
+let selected = null;
+
+function el(name, attributes, text) {
+  const node = document.createElementNS(SVG, name);
+  for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function clip(text, max) {
+  text = String(text || '');
+  return text.length > max ? text.slice(0, max - 1) + '…' : text;
+}
+
+function edgePath(edge) {
+  const a = edge.from, b = edge.to;
+  if (edge.kind === 'sequence') {
+    return `M ${a.x + 18} ${a.y + BOX.h} L ${b.x + 18} ${b.y - 4}`;
+  }
+  const x1 = a.x + BOX.w, y1 = a.y + BOX.h / 2, x2 = b.x - 4, y2 = b.y + BOX.h / 2;
+  const mid = (x1 + x2) / 2;
+  return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+}
+
+function render(model) {
+  const plan = layout(model);
+  const svg = el('svg', { width: plan.width, height: plan.height, viewBox: `0 0 ${plan.width} ${plan.height}` });
+  const defs = el('defs', {});
+  const marker = el('marker', { id: 'arrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
+  marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: 'var(--edge)' }));
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+  for (const edge of plan.edges) svg.appendChild(el('path', { class: `edge ${edge.kind}`, d: edgePath(edge), 'marker-end': 'url(#arrow)' }));
+  for (const box of plan.boxes) {
+    if (box.roundLabel) svg.appendChild(el('text', { class: 'round', x: box.x + 34, y: box.labelY }, clip(box.roundLabel, 110)));
+    const group = el('g', { class: 'node', transform: `translate(${box.x} ${box.y})` });
+    group.appendChild(el('rect', { width: BOX.w, height: BOX.h }));
+    group.appendChild(el('rect', { class: `bar s-${box.node.status}`, x: 1, y: 1, width: 6, height: BOX.h - 2 }));
+    group.appendChild(el('text', { x: 14, y: 20 }, clip(box.node.label, 26)));
+    group.appendChild(el('text', { class: 'small', x: 14, y: 36 }, clip(box.node.agent || '', 28)));
+    group.appendChild(el('text', { class: 'small', x: 14, y: 49 }, box.node.kind === 'planner' ? 'planejador' : (box.node.failed ? 'falhou' : box.node.status)));
+    group.addEventListener('click', () => select(group, box.node));
+    svg.appendChild(group);
+  }
+  const graph = document.getElementById('graph');
+  graph.replaceChildren(svg);
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('legend').replaceChildren(...['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'pending'].map(status => {
+    const item = document.createElement('span');
+    const swatch = document.createElement('i');
+    swatch.className = `s-${status}`;
+    swatch.style.background = `var(--${status})`;
+    item.append(swatch, status);
+    return item;
+  }));
+  const summary = document.getElementById('summary');
+  summary.replaceChildren();
+  for (const [label, value] of [[model.kind === 'mission' ? 'Missão' : 'Workflow', model.id], ['Estado', model.status], ['Objetivo', model.goal]]) {
+    if (!value) continue;
+    const span = document.createElement('span');
+    span.innerHTML = `<span class="muted">${label}:</span> `;
+    span.append(document.createTextNode(value));
+    summary.appendChild(span);
+  }
+}
+
+function select(group, node) {
+  if (selected) selected.classList.remove('selected');
+  selected = group;
+  group.classList.add('selected');
+  const planner = node.kind === 'planner';
+  document.getElementById('panel-title').textContent = node.label;
+  document.getElementById('panel-sub').textContent = node.agent ? ` ${node.agent}` : '';
+  document.getElementById('left-title').textContent = planner ? 'Entrada: PlannerRequest' : 'Entrada: Task';
+  document.getElementById('right-title').textContent = planner ? 'Saída: PlannerResponse' : 'Saída: TaskResult';
+  document.getElementById('left').textContent = node.input ? JSON.stringify(node.input, null, 2) : '(não registrado no JSON)';
+  document.getElementById('right').textContent = node.output ? JSON.stringify(node.output, null, 2) : '(não registrado no JSON)';
+  document.getElementById('panel').classList.add('open');
+}
+
+// --- Carregamento: arquivo, arrastar e soltar, ?file= -----------------------
+function load(text, name) {
+  try {
+    render(normalize(JSON.parse(text)));
+    document.title = `Mission Viewer — ${name}`;
+  } catch (error) {
+    alert(`Não foi possível ler ${name}: ${error.message}`);
+  }
+}
+
+function readFile(file) {
+  if (file) file.text().then(text => load(text, file.name));
+}
+
+document.getElementById('file').addEventListener('change', event => readFile(event.target.files[0]));
+document.getElementById('close').addEventListener('click', () => document.getElementById('panel').classList.remove('open'));
+window.addEventListener('dragover', event => { event.preventDefault(); document.body.classList.add('dragging'); });
+window.addEventListener('dragleave', () => document.body.classList.remove('dragging'));
+window.addEventListener('drop', event => {
+  event.preventDefault();
+  document.body.classList.remove('dragging');
+  readFile(event.dataTransfer.files[0]);
+});
+const requested = new URLSearchParams(location.search).get('file');
+if (requested) {
+  fetch(requested).then(response => {
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.text();
+  }).then(text => load(text, requested)).catch(error => alert(`Não foi possível carregar ${requested}: ${error.message}`));
+}
+</script>
+</body>
+</html>

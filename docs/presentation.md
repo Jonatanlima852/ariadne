@@ -103,7 +103,32 @@ Se necessário, passe ao exemplo registrado, explicando a mudança. Para LLM,
 prefira preparar uma execução antes: credencial, rede, modelo e resposta são
 dependências reais, e novas chamadas podem gerar custo.
 
-O visualizador não executa cenários, não altera resultados e não agrega campanhas
-de benchmark. O material experimental selecionado permanece no guia de avaliação.
+O visualizador não executa cenários nem altera resultados. Na aba **Logística v2**,
+ele também compara as métricas já registradas por caso e configuração.
+
+## Logística com mais agentes
+
+As [figuras da logística v2](../studies/scenarios/logistics/v2/results/presentation/README.md)
+incluem PNG/SVG para slides, animação e um player HTML que abre sem serviços.
+O [roteiro específico](../studies/scenarios/logistics/v2/docs/presentation.md) reúne
+o resumo quantitativo e a explicação do percurso. A confirmação concluiu 60
+observações e está documentada com suas exceções e limites no
+[relatório do híbrido enxuto](../studies/scenarios/logistics/v2/results/stress-lean/README.md).
+O cenário original tem dez especialistas; a
+[configuração enxuta](../studies/scenarios/logistics/v2/docs/lean.md) tem um LLM e sete
+BDI. Mostre o percurso de uma tarefa, a interrupção por incidente e o novo
+planejamento antes de apresentar os totais do benchmark.
+
+No Inspector, selecione **Logística v2**, uma observação e **Percurso dos agentes**.
+As setas mostram tarefas e respostas passando pelo runtime. IDs, bindings e
+estado do episódio permitem relacionar a figura às evidências. O ritmo do player
+é didático e não representa a duração das chamadas.
+
+A [pasta de resultados](../studies/scenarios/logistics/v2/results/README.md)
+separa suíte básica, desenvolvimento, coleta interrompida e confirmação. Apresente
+o nome da configuração e a cobertura da coleta ao comparar resultados. A equipe
+original não ganha por simplesmente ter mais agentes; a versão enxuta investiga
+uma divisão de responsabilidades diferente, com menos chamadas LLM no caminho
+crítico e uma política energética revisada.
 
 [Índice](README.md) · [Primeira execução](quickstart.md) · [Avaliação](evaluation.md)

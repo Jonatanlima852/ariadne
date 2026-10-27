@@ -26,11 +26,14 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `studies/scenarios/*/docker/` | Scripts de integração e topologias de cada cenário |
 | `studies/scenarios/` | Cenários, regras, dados e avaliações próprios |
 | `studies/scenarios/logistics/` | [Estudo declarativo](../studies/scenarios/logistics/README.md), agentes, domínio, dataset e avaliação offline |
+| `studies/scenarios/logistics/v2/` | [Episódios com múltiplos pedidos](../studies/scenarios/logistics/v2/README.md), agentes especialistas e evidências preservadas |
+| `studies/scenarios/logistics/v2/benchmarks/` | [Campanhas, arquivamento e análise](../studies/scenarios/logistics/v2/benchmarks/README.md) da v2 |
 | `studies/scenarios/*/benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
 | `tools/deploy/` | Compose básico |
 | `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./ariadne` |
 | `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
+| `tools/inspector/scripts/` | [Exportação offline de fluxos e mídia](../tools/inspector/scripts/README.md) |
 | `docs/` | Documentação pública atual |
 | `internal-notes/` | Histórico interno de aprendizado; não é guia de uso |
 

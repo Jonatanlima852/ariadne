@@ -26,6 +26,17 @@ de submissão em `tools/clients/`. Benchmarks e métricas pertencem ao cenário
 correspondente; apenas o cálculo genérico de métricas permanece em `tools/`.
 Os arquivos de evidência preservam os caminhos registrados na coleta original.
 
+Na logística, `scenario.py` é a entrada do estudo original. O código é separado
+em `domain/` (simulação e planejamento), `datasets/` (mundo e casos), `agents/`,
+`evaluation/` (métricas e relatórios), `benchmarks/` (coleta) e `tests/`.
+A [v2](../studies/scenarios/logistics/v2/README.md) acrescenta `execution/`
+(controle dos episódios), `demonstrations/` (substitutos determinísticos),
+`experiments/` (protocolos congelados) e `docs/` (guias). Seus resultados
+selecionados continuam em `v2/results/`, mantendo a proveniência histórica.
+Os exportadores do Inspector ficam em
+[tools/inspector/scripts](../tools/inspector/scripts/README.md).
+
+
 ## Descrever e executar
 
 `Scenario(agents=..., tasks=...)` contém apenas a descrição. Não abre canais,

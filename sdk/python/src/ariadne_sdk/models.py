@@ -54,6 +54,66 @@ def _trace_from_mapping(value: Mapping[str, str]) -> contract_pb2.TraceContext:
     )
 
 
+def _result_bdi_supported() -> bool:
+    """O contrato 2.0.0 acrescenta BdiTrace e TaskResult.bdi; 1.0.0 não os tem."""
+    return (hasattr(contract_pb2, "BdiTrace")
+            and "bdi" in contract_pb2.TaskResult.DESCRIPTOR.fields_by_name)
+
+
+def _bdi_to_proto(value: Mapping[str, Any]) -> contract_pb2.BdiExtension:
+    message = contract_pb2.BdiExtension(
+        goal=value.get("goal", ""),
+        beliefs=value.get("beliefs", ""),
+        selected_plan=value.get("selected_plan", ""),
+        intention_id=value.get("intention_id", ""),
+        reasoning_summary=value.get("reasoning_summary", ""),
+        goals=[str(goal) for goal in value.get("goals", ())],
+    )
+    trace = value.get("trace")
+    if trace:
+        message.trace.CopyFrom(contract_pb2.BdiTrace(
+            cycles=[contract_pb2.BdiCycle(
+                cycle=int(cycle.get("cycle", 0)),
+                beliefs_added=[str(item) for item in cycle.get("beliefs_added", ())],
+                beliefs_removed=[str(item) for item in cycle.get("beliefs_removed", ())],
+                goal=cycle.get("goal", ""),
+                selected_plan=cycle.get("selected_plan", ""),
+                action=cycle.get("action", ""),
+                outcome=cycle.get("outcome", ""),
+            ) for cycle in trace.get("cycles", ())],
+            cycle_count=int(trace.get("cycle_count", 0)),
+            final_status=trace.get("final_status", ""),
+        ))
+    return message
+
+
+def _bdi_from_proto(message: contract_pb2.BdiExtension) -> dict[str, Any]:
+    value = _non_empty_fields(
+        goal=message.goal,
+        beliefs=message.beliefs,
+        selected_plan=message.selected_plan,
+        intention_id=message.intention_id,
+        reasoning_summary=message.reasoning_summary,
+    )
+    if message.goals:
+        value["goals"] = list(message.goals)
+    if message.HasField("trace"):
+        value["trace"] = {
+            "cycles": [{
+                "cycle": cycle.cycle,
+                "beliefs_added": list(cycle.beliefs_added),
+                "beliefs_removed": list(cycle.beliefs_removed),
+                "goal": cycle.goal,
+                "selected_plan": cycle.selected_plan,
+                "action": cycle.action,
+                "outcome": cycle.outcome,
+            } for cycle in message.trace.cycles],
+            "cycle_count": message.trace.cycle_count,
+            "final_status": message.trace.final_status,
+        }
+    return value
+
+
 def _selection_policy_value(value: str) -> int:
     name = value.upper()
     if not name.startswith("SELECTION_POLICY_"):
@@ -172,6 +232,10 @@ class TaskResult:
     error_message: str | None = None
     retryable: bool = False
     completed_at: datetime | None = None
+    # Rastro de deliberação (BdiExtension do resultado). Só é serializado
+    # quando os stubs do contrato 2.0.0 trazem TaskResult.bdi; o SDK
+    # também espelha o rastro em metadata["bdi_trace"].
+    bdi: Mapping[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_proto(cls, message: contract_pb2.TaskResult) -> "TaskResult":
@@ -198,6 +262,11 @@ class TaskResult:
                 message.completed_at.ToDatetime(tzinfo=timezone.utc)
                 if message.HasField("completed_at")
                 else None
+            ),
+            bdi=(
+                _bdi_from_proto(message.bdi)
+                if _result_bdi_supported() and message.HasField("bdi")
+                else {}
             ),
         )
 
@@ -230,4 +299,6 @@ class TaskResult:
                     retryable=self.retryable,
                 )
             )
+        if self.bdi and _result_bdi_supported():
+            message.bdi.CopyFrom(_bdi_to_proto(self.bdi))
         return message

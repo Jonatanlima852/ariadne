@@ -15,6 +15,12 @@ from ariadne_sdk.client import (
 )
 
 
+_DELIBERATION = {
+    "BeliefBase", "Deliberation", "DeliberationResult", "Goal", "GoalFailure", "GoalPlan",
+    "achieve", "act", "forget", "observe",
+}
+
+
 def __getattr__(name):
     """Carrega a integração LLM somente quando ela é solicitada.
 
@@ -25,11 +31,21 @@ def __getattr__(name):
         from ariadne_sdk import llm
 
         return getattr(llm, name)
+    if name in _DELIBERATION:
+        from ariadne_sdk import deliberation
+
+        return getattr(deliberation, name)
     raise AttributeError(f"module 'ariadne_sdk' has no attribute {name!r}")
 
 __all__ = [
     "Agent",
     "BdiAgent",
+    "BeliefBase",
+    "Deliberation",
+    "DeliberationResult",
+    "Goal",
+    "GoalFailure",
+    "GoalPlan",
     "Input",
     "Plan",
     "SearchProblem",
@@ -51,6 +67,10 @@ __all__ = [
     "Task",
     "Step",
     "TaskResult",
+    "achieve",
+    "act",
+    "forget",
     "llm_capability",
+    "observe",
     "plan",
 ]

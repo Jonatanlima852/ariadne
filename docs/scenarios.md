@@ -11,7 +11,7 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 | [Workflow sequencial](../studies/scenarios/sequential_workflow/docker/README.md) | Dependência `first → second` | Nenhum | Validação aprovada, saída `echo: second` |
 | [Falha e reassignment](../studies/scenarios/failure_reassignment/docker/README.md) | Timeout de `a-slow` e nova atribuição | Nenhum | Validação aprovada, agente `b-healthy` |
 | [Mensageria](../studies/scenarios/messaging/docker/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |
-| [Rota heterogênea](../studies/scenarios/routing/docker/README.md) | Planner LLM, rota BDI e explicação LLM | Chave e acesso ao modelo configurado | Rota `A → B → D`, distância 25 e relatório JSON |
+| [Rota heterogênea](../studies/scenarios/routing/docker/README.md) | Missão: planejador LLM, rota BDI deliberativa e explicação LLM | Chave e acesso ao modelo configurado; sem chave, `ROUTING_DEMO=1 ./ariadne run studies/scenarios/routing/scenario.py` | Rota `A → B → D`, distância 25, rastro BDI e `MissionResult` em JSON |
 | [Missão logística](../studies/scenarios/logistics/docker/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
 
 ```sh
@@ -28,6 +28,7 @@ resultado estruturado em `result.json`, dentro do diretório da execução.
 - Para estudar o runtime: echo, workflow e falha.
 - Para estudar comunicação iniciada por agentes: mensageria.
 - Para observar o raciocínio BDI sem Docker: [cenário de agendamento](../studies/scenarios/meeting/scenario.py).
+- Para observar o laço de missão sem credencial: [rotas](../studies/scenarios/routing/README.md) com `ROUTING_DEMO=1`.
 - Para observar interoperabilidade LLM/BDI: rota heterogênea e missão logística.
 - Para comparar resultados sistematicamente: [guia de avaliação](evaluation.md).
 
@@ -55,7 +56,7 @@ de iniciar a outra ou configure as portas do cenário. A missão logística
 possui Compose próprio em `studies/scenarios/logistics/docker/compose.yaml` e
 compartilha a porta padrão com a comparação A–D.
 
-Não envie tarefas de decomposição pelo cliente genérico esperando que ele
-mostre um workflow. Use o script da rota heterogênea ou `RuntimeClient` do SDK.
+A rota heterogênea é uma missão: use `./ariadne run` com a declaração do
+cenário, o cliente Docker do cenário ou `RuntimeClient.run_mission` do SDK.
 
 [Índice](README.md)

@@ -1,7 +1,9 @@
-# BDI declarativo e planejamento
+# BDI declarativo, deliberativo e planejamento
 
-`BdiAgent` recebe crenças, desejo e planos. O SDK resolve as entradas, avalia
-alternativas, seleciona uma intenção e executa somente o plano escolhido.
+`BdiAgent` tem dois modos, escolhidos pelo tipo dos planos. Com `Plan`, o SDK
+resolve as entradas, avalia alternativas, seleciona uma intenção e executa
+somente o plano escolhido, em um ciclo. Com `GoalPlan`, roda o
+[ciclo de deliberação](#ciclo-de-deliberação-com-goalplan) por tarefa.
 Nenhuma subclasse ou mensagem protobuf é necessária.
 
 ```python
@@ -116,21 +118,59 @@ precondições e efeitos. O avaliador offline conserva sua busca de referência;
 as duas implementações ainda compartilham as regras de domínio. Testes comparam
 os oito casos e variações de prazo, sem alegar independência completa do oráculo.
 
-## Compatibilidade e escopo
+## Ciclo de deliberação com GoalPlan
 
-Subclasses com `desire`/`extract_desire`, `@plan` e `plan_library` continuam
-funcionando. Nessa API histórica, as funções recebem **`(desire, beliefs)`**,
-calculam candidatos com metadados e são todas chamadas durante a deliberação.
-Elas não devem produzir efeitos externos. `select_plan`/`deliberate` pertencem
-a esse caminho legado. Não combine `plans` com `plan_library`.
+```python
+from ariadne_sdk import BdiAgent, GoalPlan, Input, act, observe
 
-Para migrar, declare entradas com `Input`, leve condições para `when`, custo
-para `cost` e efeitos para `execute`. Código que precisa calcular propostas
-complexas deve mantê-las sem efeitos durante avaliação; um planejador também
-pode ser chamado dentro do único plano aplicável, como no estudo logístico.
+def search_route(beliefs, goal):
+    found = yield act(find_route, beliefs["graph"], beliefs["origin"], beliefs["destination"])
+    yield observe(stops=len(found["route"]) - 2)
+    return {"route": found["route"], "distance": found["distance"]}
 
-Esta é uma abstração BDI orientada a tarefas, com crenças, desejo e intenção
-selecionada. Não implementa um interpretador AgentSpeak nem um agente autônomo
-com ciclo contínuo de percepção e revisão de objetivos.
+agent = BdiAgent(
+    name="routes", capabilities=["route-planning"],
+    beliefs=Input(), goal="plan_route",
+    plans=[
+        GoalPlan("direct_route", direct_route, goal="plan_route",
+                 context=lambda b, g: direct_edge(b) is not None, cost=lambda b, g: direct_edge(b)),
+        GoalPlan("via_intermediate", search_route, goal="plan_route",
+                 context=lambda b, g: bool(first_legs(b)), cost=lambda b, g: min(first_legs(b).values())),
+    ],
+)
+```
+
+- Crenças: `beliefs` resolve para um mapping (`Input`, literal ou função
+  `Task -> mapping`) que vira a `BeliefBase` da tarefa. Ela nasce do payload e
+  das observações durante a execução e morre com a tarefa; uma reatribuição
+  reconstrói as crenças do zero no outro agente.
+- Objetivo: `goal` é um nome, `Input` ou função `Task -> Goal`; sem ele, usa
+  `task.bdi.goal` ou `task.goal`. `Goal(name, params)` casa com `GoalPlan.goal`.
+- Plano: `GoalPlan(name, body, goal=, context=, cost=, priority=)`. `context` e
+  `cost` recebem `(beliefs, goal)` e devem ser puros; a seleção entre planos
+  aplicáveis segue a mesma regra do modo declarativo (menor custo, maior
+  prioridade, ordem; sem custo é reserva).
+- Corpo: devolve um mapping (um passo) ou é um gerador que produz passos:
+  `observe(**crenças)`, `forget(*chaves)`, `achieve("objetivo", **params)`
+  (sub-objetivo; o yield recebe o resultado) e `act(funcao, *args)` (ação; um
+  retorno mapping vira crenças). Cada ciclo executa um passo. Se o corpo
+  levanta uma exceção, o ciclo seguinte tenta o próximo plano aplicável; sem
+  alternativa, o objetivo falha (`GoalFailure` no plano pai, ou tarefa falha).
+- Limite: `max_cycles` (padrão 100) encerra com `cycle_limit`.
+
+O resultado leva `selected_plan`, `goals` e `bdi_trace` em `metadata` e o
+mesmo rastro em `TaskResult.bdi` (contrato 2.0.0): um registro por ciclo com
+crenças adicionadas e removidas, objetivo, plano, ação e desfecho
+(`continue`, `achieved`, `failed`, `no_applicable_plan`). Exemplos: o
+[planejador de rotas](../studies/scenarios/routing/agents/route_planner/main.py)
+e o [agendador em contêiner](../studies/scenarios/meeting/agents/meeting_scheduler/main.py).
+
+## Escopo
+
+Os dois modos são abstrações BDI orientadas a tarefas: o ciclo começa quando
+o runtime entrega uma tarefa e termina no `TaskResult`. Não há interpretador
+AgentSpeak, laço autônomo entre tarefas nem base de crenças persistente; quem
+decompõe um objetivo amplo em tarefas é o planejador da missão. `Plan` e
+`GoalPlan` não se misturam na mesma biblioteca.
 
 [Experimentos](experiments.md) · [Desenvolvimento](development.md)

@@ -40,16 +40,17 @@ leva a nova descoberta e tentativa, podendo excluir agentes que já falharam.
 O [executor](../runtime/services/orchestrator/internal/execution/executor.go)
 é compartilhado por tarefas simples e etapas de workflows.
 
-## Workflow heterogêneo
+## Missão heterogênea
 
-No cenário de rotas, o cliente envia uma pergunta com a capacidade
-`task-decomposition`. Esse pedido explícito aciona o planner do runtime:
+No cenário de rotas, o cliente envia um objetivo e um contexto com
+`RunMission`. O orquestrador descobre um agente `mission-planning` e roda o
+laço de missão:
 
-1. Um agente LLM devolve a definição estruturada de um workflow.
-2. O runtime valida dependências, limites e bindings.
-3. O agente BDI escolhe uma rota.
+1. O agente LLM planejador devolve um plano (passos, dependências, bindings).
+2. O runtime valida o plano e o executa como workflow.
+3. O agente BDI delibera e escolhe uma rota.
 4. Um binding entrega o resultado à etapa LLM de explicação.
-5. O runtime agrega o resultado do workflow.
+5. A rodada volta ao planejador, que responde `DONE` com a saída final.
 
 O runtime também aceita um workflow definido pelo cliente, sem planner LLM.
 Etapas independentes podem rodar em paralelo. A API assíncrona permite iniciar,

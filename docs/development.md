@@ -102,12 +102,14 @@ a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
 `localhost` dentro de um contêiner aponta para esse próprio contêiner.
 
 `execute_task()` com protobuf permanece como interface legada usada por alguns
-exemplos. Para BDI novo, prefira `BdiAgent`, `Input` e `Plan`, sem subclasse;
-veja [BDI declarativo e planejamento](bdi.md). Os métodos `@plan` do
-[agente de rotas](../studies/scenarios/routing/agents/route_planner/main.py) usam a API histórica: seu custo
-é retornado no candidato, não no decorator. Para LLM, prefira composição de `LlmCapability`, como no
-[planejador e explicador](../studies/scenarios/routing/agents/planner_explainer/main.py). Cada capacidade
-associa prompt, modelo de resposta e conversão opcional; não exige subclasse.
+exemplos. Para BDI, use `BdiAgent` com `Plan` (um ciclo, declarativo) ou com
+`GoalPlan` (ciclo de deliberação com crenças por tarefa), sem subclasse; veja
+[BDI declarativo, deliberativo e planejamento](bdi.md) e o
+[agente de rotas](../studies/scenarios/routing/agents/route_planner/main.py).
+Para LLM, prefira composição de `LlmCapability`, como no
+[planejador e explicador](../studies/scenarios/routing/agents/planner_explainer/main.py); `mission_planning`
+declara a capacidade de planejador de missão. Cada capacidade associa prompt,
+modelo de resposta e conversão opcional; não exige subclasse.
 `@llm_capability` continua disponível no SDK para agentes que precisem de métodos.
 
 ## Alterações no contrato

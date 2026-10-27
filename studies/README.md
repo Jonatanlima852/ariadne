@@ -13,7 +13,7 @@ A arquitetura do agente (BDI ou LLM) e o modo de execução não definem cenári
 | [Mensageria](scenarios/messaging/README.md) | Envelopes, entrega e correlação |
 | [Saudação](scenarios/greeting/README.md) | Resposta estruturada de um provedor LLM |
 | [Agendamento](scenarios/meeting/README.md) | Crenças, restrições e planos |
-| [Rotas](scenarios/routing/README.md) | Escolha e explicação de rota com LLM → BDI → LLM; benchmark C |
+| [Rotas](scenarios/routing/README.md) | Missão didática: planejador LLM → BDI deliberativo → explicação LLM; benchmark C |
 | [Logística](scenarios/logistics/README.md) | Missões com energia, prazo e restrições; LLM-only e híbrido |
 
 ## Estrutura de um cenário

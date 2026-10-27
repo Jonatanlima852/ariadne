@@ -605,9 +605,14 @@ class PlannerResponse:
         return self
 
     def to_output(self) -> dict[str, Any]:
-        """``PlannerResponse`` como JSON do contrato, para ``TaskResult.output``."""
+        """``PlannerResponse`` como JSON para ``TaskResult.output``.
+
+        O orquestrador aceita ``action`` como ``PLAN``/``DONE``/``ABORT``
+        (ou o nome completo do enum) e rejeita qualquer outra chave; chaves
+        não usadas são omitidas em vez de enviadas como ``null``.
+        """
         self.validate()
-        document: dict[str, Any] = {"action": f"PLANNER_ACTION_{self.action}"}
+        document: dict[str, Any] = {"action": self.action}
         if self.action == "PLAN":
             document["plan"] = self.plan
         if self.output:

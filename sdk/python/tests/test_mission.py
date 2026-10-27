@@ -73,7 +73,7 @@ def build_mission_result(request):
         ],
     )
     first_response = {
-        "action": "PLANNER_ACTION_PLAN",
+        "action": "PLAN",
         "plan": {"workflow_id": "wf-1", "final_step_id": "merge", "steps": [
             plan_step("pick", "picking", "pick items", payload={"order": "o-1"}),
             plan_step("merge", "merging", "merge", depends_on=["pick"], input_bindings=[{
@@ -84,7 +84,7 @@ def build_mission_result(request):
         "context_update": {"attempt": 1},
     }
     second_response = {
-        "action": "PLANNER_ACTION_DONE",
+        "action": "DONE",
         "output": {"items": ["a", "b"], "merged": False},
         "summary": "merge failed; returning partial result",
     }
@@ -206,7 +206,7 @@ class RunMissionTests(unittest.TestCase):
         self.assertEqual(first.step["merge"].result["error"]["message"], "agent exploded")
         self.assertEqual(second.action, "PLANNER_ACTION_DONE")
         self.assertEqual(second.steps, [])
-        self.assertEqual(second.planner_response["action"], "PLANNER_ACTION_DONE")
+        self.assertEqual(second.planner_response["action"], "DONE")
         result.assert_completed().assert_agent_used("picker-1").assert_agent_used("planner-llm")
         with self.assertRaisesRegex(AssertionError, "not used"):
             result.assert_agent_used("nobody")
@@ -220,7 +220,7 @@ class RunMissionTests(unittest.TestCase):
         self.assertEqual(first.request["context"], {"warehouse": "W1"})
         self.assertEqual(first.request["limits"], {"max_rounds": 3, "max_parallel": 2})
         self.assertNotIn("history", first.request)
-        self.assertEqual(first.response["action"], "PLANNER_ACTION_PLAN")
+        self.assertEqual(first.response["action"], "PLAN")
         self.assertEqual(PlannerResponse.from_output(first.response).plan["final_step_id"], "merge")
         self.assertEqual(second.request["round"], 2)
         self.assertEqual(second.request["context"], {"warehouse": "W1", "attempt": 1})
@@ -245,9 +245,9 @@ class RunMissionTests(unittest.TestCase):
         self.assertEqual(round_one["plan"]["steps"][1]["input_bindings"][0]["source_step_id"], "pick")
         self.assertEqual(round_one["result"]["step_results"][0]["task"]["required_capabilities"], ["picking"])
         self.assertEqual(round_one["result"]["step_results"][1]["result"]["status"], "TASK_STATUS_FAILED")
-        self.assertEqual(round_one["planner_result"]["output"]["action"], "PLANNER_ACTION_PLAN")
+        self.assertEqual(round_one["planner_result"]["output"]["action"], "PLAN")
         self.assertEqual(document["request"]["planner_capability"], "mission-planning")
-        self.assertEqual(document["planner_calls"][1]["response"]["action"], "PLANNER_ACTION_DONE")
+        self.assertEqual(document["planner_calls"][1]["response"]["action"], "DONE")
         self.assertNotIn("missionId", json.dumps(document))
         with tempfile.TemporaryDirectory() as directory:
             path = result.save(Path(directory) / "nested" / "mission-result.json")
@@ -308,14 +308,15 @@ class PlannerProtocolTests(unittest.TestCase):
                          "status": "WORKFLOW_STEP_STATUS_COMPLETED", "result": {"task_id": "t", "agent_id": "a",
                          "status": "TASK_STATUS_COMPLETED", "output": {"items": 2}}}]}],
             "available_capabilities": [{"capability_id": "picking", "name": "Picking", "agent_count": 2}],
-            "limits": {"max_rounds": 5},
+            # protojson (UseProtoNames) writes int64 fields as strings.
+            "limits": {"max_rounds": 5, "round_deadline_ms": "30000", "planner_deadline_ms": "120000"},
         }
         request = PlannerRequest.from_payload(payload)
         self.assertEqual((request.mission_id, request.goal, request.round), ("m-1", "ship it", 2))
         self.assertEqual(request.context, {"warehouse": "W1"})
         self.assertEqual(request.capability_ids, ["picking"])
         self.assertEqual(request.last_round["step_results"][0]["result"]["output"], {"items": 2})
-        self.assertEqual(request.limits, {"max_rounds": 5})
+        self.assertEqual(request.limits, {"max_rounds": 5, "round_deadline_ms": "30000", "planner_deadline_ms": "120000"})
         self.assertEqual(request.to_dict()["available_capabilities"][0]["agent_count"], 2)
         with self.assertRaisesRegex(ValueError, "invalid planner request"):
             PlannerRequest.from_payload({**payload, "bogus": 1})
@@ -329,14 +330,16 @@ class PlannerProtocolTests(unittest.TestCase):
             summary="two steps", context_update={"stage": "picking"},
         )
         output = response.to_output()
-        self.assertEqual(output["action"], "PLANNER_ACTION_PLAN")
+        self.assertEqual(output["action"], "PLAN")
         self.assertEqual(output["plan"]["final_step_id"], "merge")
         self.assertEqual(output["plan"]["steps"][1]["bdi_goal"], "merged")
         self.assertEqual(output["context_update"], {"stage": "picking"})
         self.assertNotIn("output", output)
         self.assertNotIn("reason", output)
-        self.assertEqual(json_format.ParseDict({k: v for k, v in output.items() if k != "plan"},
-                                               pb.PlannerResponse()).action, pb.PLANNER_ACTION_PLAN)
+        # The orchestrator normalizes "PLAN" to the enum name before protojson decoding.
+        envelope = {k: v for k, v in output.items() if k != "plan"}
+        envelope["action"] = "PLANNER_ACTION_" + envelope["action"]
+        self.assertEqual(json_format.ParseDict(envelope, pb.PlannerResponse()).action, pb.PLANNER_ACTION_PLAN)
         for plan, message in (
             (None, "requires a plan"),
             ({"steps": []}, "non-empty"),
@@ -353,9 +356,10 @@ class PlannerProtocolTests(unittest.TestCase):
 
     def test_done_requires_output_and_abort_requires_reason(self):
         done = PlannerResponse.done({"total": 3}, summary="finished").to_output()
-        self.assertEqual(done, {"action": "PLANNER_ACTION_DONE", "output": {"total": 3}, "summary": "finished"})
+        self.assertEqual(done, {"action": "DONE", "output": {"total": 3}, "summary": "finished"})
+        self.assertNotIn("plan", done)
         abort = PlannerResponse.abort("no capable agent").to_output()
-        self.assertEqual(abort["action"], "PLANNER_ACTION_ABORT")
+        self.assertEqual(abort["action"], "ABORT")
         self.assertEqual(abort["reason"], "no capable agent")
         with self.assertRaisesRegex(ValueError, "DONE requires"):
             PlannerResponse("done").to_output()
@@ -367,6 +371,7 @@ class PlannerProtocolTests(unittest.TestCase):
     def test_from_output_round_trips_and_rejects_unknown_fields(self):
         output = PlannerResponse.done({"x": 1}).to_output()
         self.assertEqual(PlannerResponse.from_output(output).action, "DONE")
+        self.assertEqual(PlannerResponse.from_output({**output, "action": "PLANNER_ACTION_DONE"}).action, "DONE")
         with self.assertRaisesRegex(ValueError, "unknown fields"):
             PlannerResponse.from_output({**output, "plan_id": 1})
 

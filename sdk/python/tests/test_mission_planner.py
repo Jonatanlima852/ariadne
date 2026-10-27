@@ -47,7 +47,7 @@ def plan_decision(**overrides):
 class PlannerDecisionTests(unittest.TestCase):
     def test_plan_decision_becomes_contract_response(self):
         output = decision_to_response(plan_decision())
-        self.assertEqual(output["action"], "PLANNER_ACTION_PLAN")
+        self.assertEqual(output["action"], "PLAN")
         step = output["plan"]["steps"][0]
         self.assertEqual(step["payload"], {"order": "o-1"})
         self.assertEqual(step["required_capabilities"], ["picking"])
@@ -106,7 +106,7 @@ class MissionPlanningAgentTests(unittest.TestCase):
         self.assertEqual(seen[0].capability_ids, ["picking"])
         self.assertEqual(client.responses.calls[0]["input"][1]["content"], "Entregar o pedido o-1 with ['picking']")
         self.assertIs(client.responses.calls[0]["text_format"], PlannerDecision)
-        self.assertEqual(result.output["action"], "PLANNER_ACTION_PLAN")
+        self.assertEqual(result.output["action"], "PLAN")
         self.assertEqual(result.output["plan"]["steps"][0]["step_id"], "pick")
         self.assertEqual(result.metadata["provider"], "openai")
 

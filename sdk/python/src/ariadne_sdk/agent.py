@@ -51,7 +51,7 @@ class Agent:
 
     def __init__(self, agent_id=None, name=None, capabilities=None,
                  host="127.0.0.1", port=0, registry_addr="localhost:50051",
-                 runtime="python-sdk", contract_version="1.0.0",
+                 runtime="python-sdk", contract_version="2.0.0",
                  heartbeat_interval_seconds=None, reported_load=None, handler=None,
                  listen_host="[::]"):
         self.name = name or getattr(type(self), "default_name", type(self).__name__)

@@ -192,7 +192,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
     manifest = {
         "schema_version": 1, "execution_id": directory.name, "backend": "local-processes",
         "source": str(source), "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-        "python": sys.version, "platform": platform.platform(), "contract_version": "1.0.0",
+        "python": sys.version, "platform": platform.platform(), "contract_version": "2.0.0",
         "repeat": repeat, "ready_timeout_seconds": ready_timeout, "rpc_timeout_seconds": task_timeout,
         "metadata": scenario.metadata,
         "provenance": provenance,

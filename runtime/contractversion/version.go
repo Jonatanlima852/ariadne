@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-const Current = "1.0.0"
-const SupportedMajor = 1
+const Current = "2.0.0"
+const SupportedMajor = 2
 
 func Validate(version string) error {
 	parts := strings.Split(version, ".")

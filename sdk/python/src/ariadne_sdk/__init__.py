@@ -1,6 +1,6 @@
 from ariadne_sdk.agent import Agent
 from ariadne_sdk.message import Message, MessagingClient
-from ariadne_sdk.bdi import BdiAgent, plan
+from ariadne_sdk.bdi import BdiAgent
 from ariadne_sdk.plans import Input, Plan
 from ariadne_sdk.planning import SearchProblem, SearchResult, SearchLimitExceeded, uniform_cost_search
 from ariadne_sdk.models import Task, TaskResult
@@ -88,6 +88,5 @@ __all__ = [
     "llm_capability",
     "mission_planning",
     "observe",
-    "plan",
     "plan_step",
 ]

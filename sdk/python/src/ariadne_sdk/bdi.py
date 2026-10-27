@@ -10,87 +10,60 @@ from ariadne_sdk.models import Task, TaskResult
 from ariadne_sdk.plans import Input, InputError, Plan, checked_cost, resolve_input
 
 
-def plan(_method=None, *, name=None, priority=0):
-    """Marca um método como plano BDI descoberto automaticamente."""
-    def decorate(method):
-        method._ariadne_bdi_plan = {
-            "name": name or method.__name__,
-            "priority": priority,
-        }
-        return method
-
-    if _method is None:
-        return decorate
-    return decorate(_method)
-
-
 class BdiAgent(Agent):
-    """Agente BDI deliberativo, declarativo, ou classe base para a API histórica.
+    """Agente BDI do SDK, em um de dois modos escolhidos pelo tipo dos planos.
 
     Deliberativo: BdiAgent(beliefs=Input('state'), goal='deliver',
     plans=[GoalPlan('direct', body=..., context=..., cost=...)], max_cycles=100).
-    As crenças nascem do payload e das observações; o ciclo perceber, revisar,
-    optar, selecionar, agir e observar roda até o objetivo ser alcançado, não
-    haver plano aplicável ou o limite de ciclos. O rastro vai em
-    metadata['bdi_trace'] e em TaskResult.bdi. Sem goal, usa task.bdi.goal ou
-    task.goal como nome do objetivo.
+    As crenças nascem do payload (ou de uma função Task -> mapping) e das
+    observações feitas pelo plano; morrem com a tarefa. O ciclo perceber,
+    revisar, optar, selecionar, agir e observar roda até o objetivo ser
+    alcançado, não haver plano aplicável ou o limite de ciclos. O rastro vai
+    em metadata['bdi_trace'] e em TaskResult.bdi. goal aceita um nome, Input
+    ou função Task -> Goal; sem goal, usa task.bdi.goal ou task.goal.
 
     Declarativo: BdiAgent(beliefs=Input('world'), desire=Input('mission'),
-    plans=[Plan('solve', execute=solve)], ...). Callbacks recebem
-    (beliefs, desire); apenas o plano selecionado é executado. Entradas são
-    cópias por tarefa, sem revisão persistente de crenças ou loop autônomo.
+    plans=[Plan('solve', when=..., cost=..., execute=solve)]). Callbacks
+    recebem (beliefs, desire); apenas o plano selecionado é executado, em um
+    único ciclo. Entradas são cópias por tarefa, sem revisão de crenças.
 
-    A API histórica de subclasses raciocina no estilo BDI
-    (Beliefs, Desires, Intentions).
-
-    Generaliza o ciclo comum a esse tipo de agente — extrair o desejo da
-    task, escolher um plano de uma biblioteca com base nas crenças, e
-    devolver o resultado com o plano escolhido e o raciocínio — para que
-    subclasses só precisem fornecer:
-
-      beliefs       → a base de crenças do agente (qualquer estrutura;
-                       é repassada como está para os planos)
-      plan_library  → lista ordenada de planos: funções (desire, beliefs)
-                       -> dict com {"name", "reasoning_summary", "output"}
-                       ou None se o plano não se aplica
-      extract_desire(task) → devolve o desejo extraído da task, ou None
-                       se a task não contiver as informações necessárias
+    Não se misturam Plan e GoalPlan na mesma biblioteca.
     """
 
-    def __init__(self, *args, beliefs=None, desire=None, plans=None, plan_library=None,
-                 goal=None, max_cycles=100, **kwargs):
-        if plans is not None and plan_library is not None:
-            raise ValueError("use plans or legacy plan_library, not both")
-        if plans is None and desire is not None:
-            raise ValueError("declarative desire requires plans")
+    def __init__(self, *args, beliefs=None, desire=None, plans=None, goal=None, max_cycles=100, **kwargs):
+        if plans is None:
+            raise ValueError("BdiAgent requires plans: a list of Plan or of GoalPlan")
         super().__init__(*args, **kwargs)
-        self.plans = tuple(plans) if plans is not None else None
+        self.plans = tuple(plans)
         self._deliberation = None
-        if self.plans is not None:
-            if self.plans and all(isinstance(item, GoalPlan) for item in self.plans):
-                if desire is not None:
-                    raise ValueError("GoalPlan libraries take goal, not desire")
-                self._deliberation = Deliberation(self.plans, max_cycles=max_cycles)
-            elif not self.plans or any(not isinstance(item, Plan) for item in self.plans):
-                raise ValueError("plans must contain at least one Plan, or only GoalPlan items")
-            elif len({item.name for item in self.plans}) != len(self.plans):
-                raise ValueError("plan names must be unique")
+        if self.plans and all(isinstance(item, GoalPlan) for item in self.plans):
+            if desire is not None:
+                raise ValueError("GoalPlan libraries take goal, not desire")
+            self._deliberation = Deliberation(self.plans, max_cycles=max_cycles)
+        elif not self.plans or any(not isinstance(item, Plan) for item in self.plans):
+            raise ValueError("plans must contain at least one Plan, or only GoalPlan items")
+        elif len({item.name for item in self.plans}) != len(self.plans):
+            raise ValueError("plan names must be unique")
         if goal is not None and self._deliberation is None:
             raise ValueError("goal applies to GoalPlan libraries; use desire with Plan")
         self._goal_source = goal
         self._desire_source = Input() if desire is None else desire
-        declared_beliefs = getattr(type(self), "beliefs", {})
-        if beliefs is None and self._deliberation is not None and not declared_beliefs:
-            beliefs = Input()
-        self.beliefs = (
-            dict(declared_beliefs)
-            if beliefs is None and isinstance(declared_beliefs, dict)
-            else (declared_beliefs if beliefs is None else beliefs)
-        )
-        self.plan_library = (
-            [] if self.plans is not None
-            else list(self._declared_plans() if plan_library is None else plan_library)
-        )
+        if beliefs is None:
+            beliefs = Input() if self._deliberation is not None else {}
+        self.beliefs = beliefs
+
+    def handle(self, task: Task) -> TaskResult:
+        if self._deliberation is not None:
+            return self._handle_deliberative(task)
+        return self._handle_declared(task)
+
+    def execute_task(self, task):
+        """Compatibilidade com chamadas locais baseadas em protobuf."""
+        friendly = task if isinstance(task, Task) else Task.from_proto(task)
+        result = self.handle(friendly)
+        return result if isinstance(task, Task) else result.to_proto()
+
+    # --- API declarativa: um ciclo, apenas o plano escolhido executa ---
 
     def _handle_declared(self, task):
         # Não escrever crenças recebidas em self: tarefas podem ser concorrentes.
@@ -129,11 +102,30 @@ class BdiAgent(Agent):
                 raise TypeError(f"plan {selected.name!r} must return a Mapping")
         except Exception as exc:
             return self._declared_failure(task, exc, evaluated, "execution", selected.name)
-        return self._completed_result(task, {
-            "name": selected.name,
+        metadata = {
+            "selected_plan": selected.name,
             "reasoning_summary": "plano selecionado por custo, prioridade e ordem de declaração",
-            "output": dict(output),
-        }, evaluated)
+            "evaluated_plans": evaluated,
+        }
+        # Um intention_id recebido em Task.bdi volta no resultado para correlação.
+        if task.bdi.get("intention_id"):
+            metadata["intention_id"] = task.bdi["intention_id"]
+        return TaskResult(task_id=task.task_id, agent_id=self.agent_id,
+                          status="TASK_STATUS_COMPLETED", trace=task.trace,
+                          output=dict(output), metadata=metadata)
+
+    def _declared_failure(self, task, error, evaluated, phase, selected=None):
+        code = ("ERROR_CODE_INVALID_TASK" if isinstance(error, ValueError)
+                else "ERROR_CODE_TIMEOUT" if isinstance(error, TimeoutError)
+                else "ERROR_CODE_EXECUTION_FAILED")
+        result = self._failed_result(task, code, str(error) or type(error).__name__, isinstance(error, TimeoutError))
+        result.metadata.update({"evaluated_plans": evaluated, "failure_phase": phase,
+                                "error_type": type(error).__name__})
+        if selected is not None:
+            result.metadata["selected_plan"] = selected
+        if task.bdi.get("intention_id"):
+            result.metadata["intention_id"] = task.bdi["intention_id"]
+        return result
 
     # --- ciclo de deliberação com escopo de uma tarefa ---
 
@@ -197,202 +189,6 @@ class BdiAgent(Agent):
         result = self._failed_result(task, code, message, retryable)
         result.metadata.update(metadata)
         return replace(result, bdi=bdi)
-
-    def _declared_failure(self, task, error, evaluated, phase, selected=None):
-        code = ("ERROR_CODE_INVALID_TASK" if isinstance(error, ValueError)
-                else "ERROR_CODE_TIMEOUT" if isinstance(error, TimeoutError)
-                else "ERROR_CODE_EXECUTION_FAILED")
-        result = self._failed_result(task, code, str(error) or type(error).__name__, isinstance(error, TimeoutError))
-        result.metadata.update({"evaluated_plans": evaluated, "failure_phase": phase,
-                                "error_type": type(error).__name__})
-        if selected is not None:
-            result.metadata["selected_plan"] = selected
-        if task.bdi.get("intention_id"):
-            result.metadata["intention_id"] = task.bdi["intention_id"]
-        return result
-
-    def _declared_plans(self):
-        declared = []
-        for attribute_name in dir(self):
-            method = getattr(self, attribute_name)
-            metadata = getattr(method, "_ariadne_bdi_plan", None)
-            if metadata is not None:
-                declared.append((metadata["priority"], attribute_name, method, metadata))
-        declared.sort(key=lambda item: (-item[0], item[1]))
-
-        wrapped = []
-        for _, _, method, metadata in declared:
-            def invoke(desire, beliefs, method=method, metadata=metadata):
-                candidate = method(desire, beliefs)
-                if candidate is None:
-                    return None
-                candidate = dict(candidate)
-                candidate.setdefault("name", metadata["name"])
-                candidate.setdefault(
-                    "reasoning_summary",
-                    f"plano {metadata['name']} aplicável",
-                )
-                if "output" not in candidate:
-                    reserved = {"name", "cost", "reasoning_summary"}
-                    output = {
-                        key: value
-                        for key, value in candidate.items()
-                        if key not in reserved
-                    }
-                    candidate = {
-                        key: value
-                        for key, value in candidate.items()
-                        if key in reserved
-                    }
-                    candidate["output"] = output
-                return candidate
-            invoke._ariadne_plan_name = metadata["name"]
-            invoke._ariadne_plan_priority = metadata["priority"]
-            wrapped.append(invoke)
-        return wrapped
-
-    # --- pontos de extensão: subclasses devem sobrescrever ---
-
-    def extract_desire(self, task):
-        """Lê o desejo do agente a partir da task (ex.: campos do payload,
-        ou — quando presente — task.bdi.goal).
-
-        Devolve o desejo (qualquer estrutura que os planos entendam) ou
-        None se a task não tiver as informações necessárias.
-        """
-        raise NotImplementedError("subclasses devem implementar extract_desire")
-
-    def desire(self, task):
-        """Alias amigável preferido pela API pública."""
-        return self.extract_desire(task)
-
-    def merge_external_beliefs(self, beliefs_text):
-        """Hook opcional: interpreta task.bdi.beliefs (texto livre,
-        formato decidido por quem o preencheu) e mescla em self.beliefs.
-
-        Existe para permitir que outro agente do sistema — um agente LLM,
-        por exemplo — entregue crenças prontas através do contrato comum
-        (BdiExtension.beliefs), demonstrando troca estruturada de
-        raciocínio entre agentes heterogêneos.
-
-        Por padrão não faz nada: o formato de beliefs é específico de
-        cada agente, então a interpretação fica a cargo da subclasse.
-        """
-
-    # --- consumo opcional de Task.bdi (BdiExtension) ---
-
-    def _apply_external_bdi(self, task: Task):
-        """Se a task chegar com BdiExtension preenchida, dá à subclasse
-        a chance de incorporar as crenças externas antes de deliberar."""
-        beliefs = task.bdi.get("beliefs")
-        if beliefs:
-            self.merge_external_beliefs(beliefs)
-
-    # --- comportamento genérico de seleção e execução ---
-
-    def deliberate(self, desire):
-        """Avalia todos os planos aplicáveis da biblioteca e escolhe a
-        intenção do agente — o melhor entre eles, não o primeiro.
-
-        Cada plano pode opcionalmente trazer um campo numérico "cost"
-        (quanto menor, melhor — ex.: distância, tempo, número de passos).
-        Se algum plano aplicável tiver "cost", vence o de menor custo.
-        Caso nenhum traga "cost", mantemos o critério mais simples — o
-        primeiro aplicável, na ordem da biblioteca — para não forçar
-        planos sem noção de custo a competir entre si.
-
-        Devolve None se nenhum plano se aplicar.
-        """
-        applicable = []
-        evaluated = []
-        for plan_fn in self.plan_library:
-            candidate = plan_fn(desire, self.beliefs)
-            name = getattr(plan_fn, "_ariadne_plan_name", plan_fn.__name__)
-            if candidate is None:
-                evaluated.append({"name": name, "applicable": False})
-                continue
-            applicable.append(candidate)
-            evaluated.append({
-                "name": candidate.get("name", name),
-                "applicable": True,
-                "cost": candidate.get("cost"),
-                "reasoning_summary": candidate.get("reasoning_summary", ""),
-            })
-
-        if not applicable:
-            return None, evaluated
-
-        with_cost = [plan for plan in applicable if plan.get("cost") is not None]
-        if with_cost:
-            return min(with_cost, key=lambda plan: plan["cost"]), evaluated
-
-        return applicable[0], evaluated
-
-    def select_plan(self, desire):
-        """Compatibilidade: devolve somente o plano escolhido."""
-        selected, _ = self.deliberate(desire)
-        return selected
-
-    def handle(self, task: Task) -> TaskResult:
-        if self._deliberation is not None:
-            return self._handle_deliberative(task)
-        if self.plans is not None:
-            return self._handle_declared(task)
-        self._apply_external_bdi(task)
-
-        # Subclasses novas implementam desire(); as antigas continuam
-        # compatíveis sobrescrevendo extract_desire().
-        if type(self).desire is not BdiAgent.desire:
-            desire = self.desire(task)
-        else:
-            desire = self.extract_desire(task)
-        if desire is None:
-            return self._failed_result(
-                task,
-                code="ERROR_CODE_INVALID_TASK",
-                message="não foi possível extrair o desejo da task (payload incompleto)",
-                retryable=False,
-            )
-
-        plan, evaluated = self.deliberate(desire)
-        if plan is None:
-            return self._failed_result(
-                task,
-                code="ERROR_CODE_EXECUTION_FAILED",
-                message="nenhum plano da biblioteca se aplica a esse desejo",
-                retryable=False,
-            )
-
-        return self._completed_result(task, plan, evaluated)
-
-    def execute_task(self, task):
-        """Compatibilidade temporária com chamadas locais baseadas em protobuf."""
-        friendly = task if isinstance(task, Task) else Task.from_proto(task)
-        result = self.handle(friendly)
-        return result if isinstance(task, Task) else result.to_proto()
-
-    # --- montagem do TaskResult ---
-
-    def _completed_result(self, task, plan, evaluated):
-        metadata_fields = {
-            "selected_plan": plan["name"],
-            "reasoning_summary": plan["reasoning_summary"],
-            "evaluated_plans": evaluated,
-        }
-        # se quem submeteu a task já trouxe um intention_id (BdiExtension),
-        # devolvemos o mesmo identificador — permite correlacionar a
-        # intenção combinada entre agentes através do contrato comum
-        if task.bdi.get("intention_id"):
-            metadata_fields["intention_id"] = task.bdi["intention_id"]
-
-        return TaskResult(
-            task_id=task.task_id,
-            agent_id=self.agent_id,
-            status="TASK_STATUS_COMPLETED",
-            trace=task.trace,
-            output=plan.get("output", {}),
-            metadata=metadata_fields,
-        )
 
     def _failed_result(self, task, code, message, retryable):
         return TaskResult(

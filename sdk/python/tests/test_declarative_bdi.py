@@ -4,7 +4,7 @@ from pathlib import Path
 import threading
 import unittest
 
-from ariadne_sdk import BdiAgent, Input, Plan, Task
+from ariadne_sdk import BdiAgent, GoalPlan, Input, Plan, Task
 
 
 def task(payload=None):
@@ -104,7 +104,7 @@ class DeclarativeBdiTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             agent([Plan("same", lambda b, d: {}), Plan("same", lambda b, d: {})])
         with self.assertRaises(ValueError):
-            agent([Plan("ok", lambda b, d: {})], plan_library=[])
+            agent([Plan("ok", lambda b, d: {}), GoalPlan("mixed", lambda b, g: {})])
         instance = agent([Plan("invalid", lambda b, d: self.fail("executed"), cost=lambda b, d: float("nan"))])
         result = instance._execute_contract_task(task().to_proto())
         from contract.v1 import contract_pb2

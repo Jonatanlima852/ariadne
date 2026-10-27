@@ -6,7 +6,7 @@ from google.protobuf import struct_pb2
 from pydantic import BaseModel
 
 from contract.v1 import contract_pb2
-from ariadne_sdk import BdiAgent, LlmAgent, Prompt, llm_capability, plan
+from ariadne_sdk import BdiAgent, GoalPlan, Input, LlmAgent, Prompt, llm_capability
 
 
 def task(*capabilities, payload=None):
@@ -22,27 +22,20 @@ def task(*capabilities, payload=None):
 
 
 class ExampleBdiAgent(BdiAgent):
+    """Subclasse só para configuração (from_env); o raciocínio é dos GoalPlans."""
+
     capabilities = ["choose"]
-    beliefs = {"best": "B"}
 
-    def desire(self, received):
-        return {"destination": received.payload["destination"]}
-
-    @plan(name="expensive")
-    def expensive(self, desire, beliefs):
-        return {
-            "cost": 10,
-            "reasoning_summary": "mais caro",
-            "choice": "A",
-        }
-
-    @plan(name="cheap")
-    def cheap(self, desire, beliefs):
-        return {
-            "cost": 1,
-            "reasoning_summary": "menor custo",
-            "choice": beliefs["best"],
-        }
+    def __init__(self, **options):
+        super().__init__(
+            beliefs=lambda received: {"best": "B", "destination": received.payload["destination"]},
+            goal="choose",
+            plans=[
+                GoalPlan("expensive", lambda beliefs, goal: {"choice": "A"}, goal="choose", cost=10),
+                GoalPlan("cheap", lambda beliefs, goal: {"choice": beliefs["best"]}, goal="choose", cost=1),
+            ],
+            **options,
+        )
 
 
 class Explanation(BaseModel):
@@ -69,7 +62,7 @@ class ExampleLlmAgent(LlmAgent):
 
 
 class AuthoringApiTests(unittest.TestCase):
-    def test_bdi_discovers_decorated_plans_and_selects_lowest_cost(self):
+    def test_bdi_selects_lowest_cost_goal_plan_and_reports_the_trace(self):
         agent = ExampleBdiAgent(
             agent_id="bdi",
             name="BDI",
@@ -84,9 +77,15 @@ class AuthoringApiTests(unittest.TestCase):
         self.assertEqual(result.status, contract_pb2.TASK_STATUS_COMPLETED)
         self.assertEqual(result.metadata["selected_plan"], "cheap")
         self.assertEqual(result.output["choice"], "B")
-        evaluated = list(result.metadata["evaluated_plans"])
-        self.assertEqual([item["name"] for item in evaluated], ["cheap", "expensive"])
-        self.assertTrue(all(item["applicable"] for item in evaluated))
+        self.assertEqual(result.bdi.trace.cycle_count, 1)
+        self.assertEqual(result.bdi.trace.cycles[0].selected_plan, "cheap")
+
+    def test_bdi_requires_plans_of_one_kind(self):
+        with self.assertRaises(ValueError):
+            BdiAgent(name="none", capabilities=["x"])
+        with self.assertRaises(ValueError):
+            BdiAgent(name="mixed", capabilities=["x"], beliefs=Input(), desire=Input(),
+                     plans=[GoalPlan("g", lambda b, g: {})])
 
     def test_llm_dispatches_capability_and_builds_contract_result(self):
         agent = ExampleLlmAgent(

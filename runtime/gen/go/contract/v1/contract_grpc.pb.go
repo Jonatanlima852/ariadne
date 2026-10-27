@@ -4,7 +4,7 @@
 // - protoc             v7.34.1
 // source: contract/v1/contract.proto
 
-// Ariadne Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
+// Ariadne Runtime Contract 2.0.0 — frozen for the undergraduate thesis evaluation.
 // Compatible additions must preserve existing field numbers and semantics.
 
 package contractv1
@@ -425,6 +425,10 @@ const (
 	OrchestratorService_StartWorkflow_FullMethodName  = "/contract.v1.OrchestratorService/StartWorkflow"
 	OrchestratorService_GetWorkflow_FullMethodName    = "/contract.v1.OrchestratorService/GetWorkflow"
 	OrchestratorService_CancelWorkflow_FullMethodName = "/contract.v1.OrchestratorService/CancelWorkflow"
+	OrchestratorService_RunMission_FullMethodName     = "/contract.v1.OrchestratorService/RunMission"
+	OrchestratorService_StartMission_FullMethodName   = "/contract.v1.OrchestratorService/StartMission"
+	OrchestratorService_GetMission_FullMethodName     = "/contract.v1.OrchestratorService/GetMission"
+	OrchestratorService_CancelMission_FullMethodName  = "/contract.v1.OrchestratorService/CancelMission"
 )
 
 // OrchestratorServiceClient is the client API for OrchestratorService service.
@@ -436,6 +440,10 @@ type OrchestratorServiceClient interface {
 	StartWorkflow(ctx context.Context, in *StartWorkflowRequest, opts ...grpc.CallOption) (*StartWorkflowResponse, error)
 	GetWorkflow(ctx context.Context, in *GetWorkflowRequest, opts ...grpc.CallOption) (*GetWorkflowResponse, error)
 	CancelWorkflow(ctx context.Context, in *CancelWorkflowRequest, opts ...grpc.CallOption) (*CancelWorkflowResponse, error)
+	RunMission(ctx context.Context, in *RunMissionRequest, opts ...grpc.CallOption) (*RunMissionResponse, error)
+	StartMission(ctx context.Context, in *StartMissionRequest, opts ...grpc.CallOption) (*StartMissionResponse, error)
+	GetMission(ctx context.Context, in *GetMissionRequest, opts ...grpc.CallOption) (*GetMissionResponse, error)
+	CancelMission(ctx context.Context, in *CancelMissionRequest, opts ...grpc.CallOption) (*CancelMissionResponse, error)
 }
 
 type orchestratorServiceClient struct {
@@ -496,6 +504,46 @@ func (c *orchestratorServiceClient) CancelWorkflow(ctx context.Context, in *Canc
 	return out, nil
 }
 
+func (c *orchestratorServiceClient) RunMission(ctx context.Context, in *RunMissionRequest, opts ...grpc.CallOption) (*RunMissionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RunMissionResponse)
+	err := c.cc.Invoke(ctx, OrchestratorService_RunMission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orchestratorServiceClient) StartMission(ctx context.Context, in *StartMissionRequest, opts ...grpc.CallOption) (*StartMissionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StartMissionResponse)
+	err := c.cc.Invoke(ctx, OrchestratorService_StartMission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orchestratorServiceClient) GetMission(ctx context.Context, in *GetMissionRequest, opts ...grpc.CallOption) (*GetMissionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMissionResponse)
+	err := c.cc.Invoke(ctx, OrchestratorService_GetMission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orchestratorServiceClient) CancelMission(ctx context.Context, in *CancelMissionRequest, opts ...grpc.CallOption) (*CancelMissionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CancelMissionResponse)
+	err := c.cc.Invoke(ctx, OrchestratorService_CancelMission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrchestratorServiceServer is the server API for OrchestratorService service.
 // All implementations must embed UnimplementedOrchestratorServiceServer
 // for forward compatibility.
@@ -505,6 +553,10 @@ type OrchestratorServiceServer interface {
 	StartWorkflow(context.Context, *StartWorkflowRequest) (*StartWorkflowResponse, error)
 	GetWorkflow(context.Context, *GetWorkflowRequest) (*GetWorkflowResponse, error)
 	CancelWorkflow(context.Context, *CancelWorkflowRequest) (*CancelWorkflowResponse, error)
+	RunMission(context.Context, *RunMissionRequest) (*RunMissionResponse, error)
+	StartMission(context.Context, *StartMissionRequest) (*StartMissionResponse, error)
+	GetMission(context.Context, *GetMissionRequest) (*GetMissionResponse, error)
+	CancelMission(context.Context, *CancelMissionRequest) (*CancelMissionResponse, error)
 	mustEmbedUnimplementedOrchestratorServiceServer()
 }
 
@@ -529,6 +581,18 @@ func (UnimplementedOrchestratorServiceServer) GetWorkflow(context.Context, *GetW
 }
 func (UnimplementedOrchestratorServiceServer) CancelWorkflow(context.Context, *CancelWorkflowRequest) (*CancelWorkflowResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CancelWorkflow not implemented")
+}
+func (UnimplementedOrchestratorServiceServer) RunMission(context.Context, *RunMissionRequest) (*RunMissionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RunMission not implemented")
+}
+func (UnimplementedOrchestratorServiceServer) StartMission(context.Context, *StartMissionRequest) (*StartMissionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method StartMission not implemented")
+}
+func (UnimplementedOrchestratorServiceServer) GetMission(context.Context, *GetMissionRequest) (*GetMissionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMission not implemented")
+}
+func (UnimplementedOrchestratorServiceServer) CancelMission(context.Context, *CancelMissionRequest) (*CancelMissionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CancelMission not implemented")
 }
 func (UnimplementedOrchestratorServiceServer) mustEmbedUnimplementedOrchestratorServiceServer() {}
 func (UnimplementedOrchestratorServiceServer) testEmbeddedByValue()                             {}
@@ -641,6 +705,78 @@ func _OrchestratorService_CancelWorkflow_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrchestratorService_RunMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RunMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrchestratorServiceServer).RunMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrchestratorService_RunMission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrchestratorServiceServer).RunMission(ctx, req.(*RunMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrchestratorService_StartMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrchestratorServiceServer).StartMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrchestratorService_StartMission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrchestratorServiceServer).StartMission(ctx, req.(*StartMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrchestratorService_GetMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrchestratorServiceServer).GetMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrchestratorService_GetMission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrchestratorServiceServer).GetMission(ctx, req.(*GetMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrchestratorService_CancelMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrchestratorServiceServer).CancelMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrchestratorService_CancelMission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrchestratorServiceServer).CancelMission(ctx, req.(*CancelMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrchestratorService_ServiceDesc is the grpc.ServiceDesc for OrchestratorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -667,6 +803,22 @@ var OrchestratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelWorkflow",
 			Handler:    _OrchestratorService_CancelWorkflow_Handler,
+		},
+		{
+			MethodName: "RunMission",
+			Handler:    _OrchestratorService_RunMission_Handler,
+		},
+		{
+			MethodName: "StartMission",
+			Handler:    _OrchestratorService_StartMission_Handler,
+		},
+		{
+			MethodName: "GetMission",
+			Handler:    _OrchestratorService_GetMission_Handler,
+		},
+		{
+			MethodName: "CancelMission",
+			Handler:    _OrchestratorService_CancelMission_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

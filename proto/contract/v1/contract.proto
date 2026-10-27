@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-// Ariadne Runtime Contract 1.0.0 — frozen for the undergraduate thesis evaluation.
+// Ariadne Runtime Contract 2.0.0 — frozen for the undergraduate thesis evaluation.
 // Compatible additions must preserve existing field numbers and semantics.
 
 package contract.v1;
@@ -141,12 +141,30 @@ message RetryPolicy {
   bool  exclude_failed_agent = 3;
 }
 
+message BdiCycle {
+  int32 cycle                     = 1;
+  repeated string beliefs_added   = 2;
+  repeated string beliefs_removed = 3;
+  string goal                     = 4;
+  string selected_plan            = 5;
+  string action                   = 6; // passo executado neste ciclo
+  string outcome                  = 7; // "continue" | "achieved" | "failed" | "no_applicable_plan"
+}
+
+message BdiTrace {
+  repeated BdiCycle cycles = 1;
+  int32 cycle_count        = 2;
+  string final_status      = 3; // "achieved" | "no_applicable_plan" | "cycle_limit" | "failed"
+}
+
 message BdiExtension {
   string goal           = 1;
   string beliefs        = 2;
   string selected_plan  = 3;
   string intention_id   = 4;
   string reasoning_summary = 5;
+  BdiTrace trace        = 6;
+  repeated string goals = 7;
 }
 
 message LlmExtension {
@@ -201,6 +219,8 @@ message TaskResult {
   ErrorInfo              error      = 7;
   google.protobuf.Timestamp started_at = 8;
   google.protobuf.Struct metadata   = 9;
+  BdiExtension           bdi        = 10;
+  LlmExtension           llm        = 11;
 }
 
 // ─────────────────────────────────────────────
@@ -222,6 +242,15 @@ enum TaskEventType {
   TASK_EVENT_TYPE_AGENT_SELECTED = 9;
   TASK_EVENT_TYPE_MESSAGE_SENT     = 10;
   TASK_EVENT_TYPE_MESSAGE_RECEIVED = 11;
+  TASK_EVENT_TYPE_MISSION_CREATED         = 12;
+  TASK_EVENT_TYPE_MISSION_PLANNED         = 13;
+  TASK_EVENT_TYPE_MISSION_ROUND_STARTED   = 14;
+  TASK_EVENT_TYPE_MISSION_ROUND_COMPLETED = 15;
+  TASK_EVENT_TYPE_MISSION_COMPLETED       = 16;
+  TASK_EVENT_TYPE_MISSION_FAILED          = 17;
+  TASK_EVENT_TYPE_MISSION_ABORTED         = 18;
+  TASK_EVENT_TYPE_MISSION_CANCELLED       = 19;
+  TASK_EVENT_TYPE_MISSION_TIMEOUT         = 20;
 }
 
 message TaskEvent {
@@ -412,6 +441,7 @@ message WorkflowStepResult {
   string step_id             = 1;
   WorkflowStepStatus status  = 2;
   TaskResult result          = 3;
+  Task task                  = 4; // tarefa materializada enviada ao agente (payload já resolvido pelos bindings)
 }
 
 message WorkflowResult {
@@ -454,12 +484,137 @@ message CancelWorkflowResponse {
   ErrorInfo error        = 2;
 }
 
+// ─────────────────────────────────────────────
+// Mission contract
+// O cliente entrega um objetivo amplo; um agente planejador o decompõe em
+// rodadas de workflow e o runtime coordena até DONE, ABORT ou limite.
+// ─────────────────────────────────────────────
+
+enum MissionStatus {
+  MISSION_STATUS_UNKNOWN   = 0;
+  MISSION_STATUS_CREATED   = 1;
+  MISSION_STATUS_PLANNING  = 2;
+  MISSION_STATUS_RUNNING   = 3;
+  MISSION_STATUS_COMPLETED = 4;
+  MISSION_STATUS_FAILED    = 5;
+  MISSION_STATUS_ABORTED   = 6;
+  MISSION_STATUS_CANCELLED = 7;
+  MISSION_STATUS_TIMEOUT   = 8;
+}
+
+message MissionLimits {
+  int32 max_rounds          = 1; // padrão 10
+  int32 max_parallel        = 2; // padrão 4, vira EngineOptions.Parallelism
+  int64 round_deadline_ms   = 3; // padrão 30000, timeout total do workflow da rodada
+  int64 planner_deadline_ms = 4; // padrão 120000, deadline da tarefa ao planejador
+  int64 mission_deadline_ms = 5; // padrão 0 = sem limite
+}
+
+message MissionRequest {
+  string mission_id                        = 1; // gerado se vazio
+  string goal                              = 2; // texto livre
+  google.protobuf.Struct context           = 3; // estado inicial da missão
+  string planner_capability                = 4; // padrão "mission-planning"
+  MissionLimits limits                     = 5;
+  RetryPolicy default_retry_policy         = 6; // aplicada a passos sem política própria
+  SelectionPolicy default_selection_policy = 7;
+  TraceContext trace                       = 8;
+  google.protobuf.Struct metadata          = 9;
+}
+
+enum PlannerAction {
+  PLANNER_ACTION_UNKNOWN = 0;
+  PLANNER_ACTION_PLAN    = 1;
+  PLANNER_ACTION_DONE    = 2;
+  PLANNER_ACTION_ABORT   = 3;
+}
+
+message MissionRound {
+  int32 round                            = 1;
+  string planner_agent_id                = 2;
+  PlannerAction action                   = 3;
+  WorkflowDefinition plan                = 4; // vazio em DONE/ABORT
+  WorkflowResult result                  = 5; // vazio em DONE/ABORT
+  google.protobuf.Struct context_after   = 6;
+  google.protobuf.Timestamp started_at   = 7;
+  google.protobuf.Timestamp completed_at = 8;
+  string planner_summary                 = 9;
+  TaskResult planner_result              = 10;
+}
+
+message MissionResult {
+  string mission_id                      = 1;
+  MissionStatus status                   = 2;
+  google.protobuf.Struct output          = 3; // saída declarada em DONE
+  google.protobuf.Struct context         = 4; // contexto final
+  repeated MissionRound rounds           = 5;
+  ErrorInfo error                        = 6;
+  TraceContext trace                     = 7;
+  google.protobuf.Timestamp created_at   = 8;
+  google.protobuf.Timestamp completed_at = 9;
+  string root_task_id                    = 10;
+}
+
+message RunMissionRequest     { MissionRequest mission = 1; }
+message RunMissionResponse    { MissionResult result = 1; ErrorInfo error = 2; }
+message StartMissionRequest   { MissionRequest mission = 1; }
+message StartMissionResponse  { string mission_id = 1; ErrorInfo error = 2; }
+message GetMissionRequest     { string mission_id = 1; }
+message GetMissionResponse    { MissionResult result = 1; ErrorInfo error = 2; }
+message CancelMissionRequest  { string mission_id = 1; }
+message CancelMissionResponse { MissionResult result = 1; ErrorInfo error = 2; }
+
+// ─────────────────────────────────────────────
+// Planner protocol
+// Payload estruturado trocado entre orquestrador e planejador como uma
+// tarefa comum (Task.type = "MISSION_PLANNING"). Serializado em JSON com
+// nomes de campo em snake_case (protojson com UseProtoNames).
+// ─────────────────────────────────────────────
+
+message CapabilitySummary {
+  string capability_id = 1;
+  string name          = 2;
+  string description   = 3;
+  int32  agent_count   = 4; // agentes vivos que a oferecem
+}
+
+message RoundSummary {
+  int32 round                              = 1;
+  PlannerAction action                     = 2;
+  repeated WorkflowStepResult step_results = 3; // inclui falhas e agent_id
+  WorkflowStatus status                    = 4;
+  string planner_summary                   = 5;
+}
+
+message PlannerRequest {
+  string mission_id                                 = 1;
+  string goal                                       = 2;
+  int32 round                                       = 3;
+  google.protobuf.Struct context                    = 4;
+  repeated RoundSummary history                     = 5;
+  repeated CapabilitySummary available_capabilities = 6;
+  MissionLimits limits                              = 7;
+}
+
+message PlannerResponse {
+  PlannerAction action                  = 1;
+  WorkflowDefinition plan               = 2; // obrigatório em PLAN
+  google.protobuf.Struct output         = 3; // obrigatório em DONE
+  google.protobuf.Struct context_update = 4; // mesclado no contexto antes de executar
+  string summary                        = 5; // uma frase sobre a decisão
+  string reason                         = 6; // obrigatório em ABORT
+}
+
 service OrchestratorService {
   rpc SubmitTask (SubmitTaskRequest) returns (SubmitTaskResponse);
   rpc SubmitWorkflow (SubmitWorkflowRequest) returns (SubmitWorkflowResponse);
   rpc StartWorkflow (StartWorkflowRequest) returns (StartWorkflowResponse);
   rpc GetWorkflow (GetWorkflowRequest) returns (GetWorkflowResponse);
   rpc CancelWorkflow (CancelWorkflowRequest) returns (CancelWorkflowResponse);
+  rpc RunMission (RunMissionRequest) returns (RunMissionResponse);
+  rpc StartMission (StartMissionRequest) returns (StartMissionResponse);
+  rpc GetMission (GetMissionRequest) returns (GetMissionResponse);
+  rpc CancelMission (CancelMissionRequest) returns (CancelMissionResponse);
 }
 
 // ─────────────────────────────────────────────

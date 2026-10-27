@@ -97,7 +97,7 @@ help:
 	@echo "Targets disponiveis:"
 	@echo "  make check-env   Verifica se todas as ferramentas estao instaladas"
 	@echo "  make proto       Gera stubs Go e Python a partir dos .proto"
-	@echo "  make contract-check  Confere o contrato 1.0.0 congelado"
+	@echo "  make contract-check  Confere o contrato 2.0.0 congelado"
 	@echo "  make build       Compila os servicos Go"
 	@echo "  make verify      Verifica SDK, Go, estudos e ferramentas"
 	@echo "  make up          Sobe o sistema via Docker Compose"

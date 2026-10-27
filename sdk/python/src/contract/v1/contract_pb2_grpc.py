@@ -418,6 +418,26 @@ class OrchestratorServiceStub(object):
                 request_serializer=contract_dot_v1_dot_contract__pb2.CancelWorkflowRequest.SerializeToString,
                 response_deserializer=contract_dot_v1_dot_contract__pb2.CancelWorkflowResponse.FromString,
                 _registered_method=True)
+        self.RunMission = channel.unary_unary(
+                '/contract.v1.OrchestratorService/RunMission',
+                request_serializer=contract_dot_v1_dot_contract__pb2.RunMissionRequest.SerializeToString,
+                response_deserializer=contract_dot_v1_dot_contract__pb2.RunMissionResponse.FromString,
+                _registered_method=True)
+        self.StartMission = channel.unary_unary(
+                '/contract.v1.OrchestratorService/StartMission',
+                request_serializer=contract_dot_v1_dot_contract__pb2.StartMissionRequest.SerializeToString,
+                response_deserializer=contract_dot_v1_dot_contract__pb2.StartMissionResponse.FromString,
+                _registered_method=True)
+        self.GetMission = channel.unary_unary(
+                '/contract.v1.OrchestratorService/GetMission',
+                request_serializer=contract_dot_v1_dot_contract__pb2.GetMissionRequest.SerializeToString,
+                response_deserializer=contract_dot_v1_dot_contract__pb2.GetMissionResponse.FromString,
+                _registered_method=True)
+        self.CancelMission = channel.unary_unary(
+                '/contract.v1.OrchestratorService/CancelMission',
+                request_serializer=contract_dot_v1_dot_contract__pb2.CancelMissionRequest.SerializeToString,
+                response_deserializer=contract_dot_v1_dot_contract__pb2.CancelMissionResponse.FromString,
+                _registered_method=True)
 
 
 class OrchestratorServiceServicer(object):
@@ -453,6 +473,30 @@ class OrchestratorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RunMission(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartMission(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMission(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelMission(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_OrchestratorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -480,6 +524,26 @@ def add_OrchestratorServiceServicer_to_server(servicer, server):
                     servicer.CancelWorkflow,
                     request_deserializer=contract_dot_v1_dot_contract__pb2.CancelWorkflowRequest.FromString,
                     response_serializer=contract_dot_v1_dot_contract__pb2.CancelWorkflowResponse.SerializeToString,
+            ),
+            'RunMission': grpc.unary_unary_rpc_method_handler(
+                    servicer.RunMission,
+                    request_deserializer=contract_dot_v1_dot_contract__pb2.RunMissionRequest.FromString,
+                    response_serializer=contract_dot_v1_dot_contract__pb2.RunMissionResponse.SerializeToString,
+            ),
+            'StartMission': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartMission,
+                    request_deserializer=contract_dot_v1_dot_contract__pb2.StartMissionRequest.FromString,
+                    response_serializer=contract_dot_v1_dot_contract__pb2.StartMissionResponse.SerializeToString,
+            ),
+            'GetMission': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMission,
+                    request_deserializer=contract_dot_v1_dot_contract__pb2.GetMissionRequest.FromString,
+                    response_serializer=contract_dot_v1_dot_contract__pb2.GetMissionResponse.SerializeToString,
+            ),
+            'CancelMission': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelMission,
+                    request_deserializer=contract_dot_v1_dot_contract__pb2.CancelMissionRequest.FromString,
+                    response_serializer=contract_dot_v1_dot_contract__pb2.CancelMissionResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -617,6 +681,114 @@ class OrchestratorService(object):
             '/contract.v1.OrchestratorService/CancelWorkflow',
             contract_dot_v1_dot_contract__pb2.CancelWorkflowRequest.SerializeToString,
             contract_dot_v1_dot_contract__pb2.CancelWorkflowResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RunMission(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/contract.v1.OrchestratorService/RunMission',
+            contract_dot_v1_dot_contract__pb2.RunMissionRequest.SerializeToString,
+            contract_dot_v1_dot_contract__pb2.RunMissionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartMission(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/contract.v1.OrchestratorService/StartMission',
+            contract_dot_v1_dot_contract__pb2.StartMissionRequest.SerializeToString,
+            contract_dot_v1_dot_contract__pb2.StartMissionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMission(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/contract.v1.OrchestratorService/GetMission',
+            contract_dot_v1_dot_contract__pb2.GetMissionRequest.SerializeToString,
+            contract_dot_v1_dot_contract__pb2.GetMissionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelMission(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/contract.v1.OrchestratorService/CancelMission',
+            contract_dot_v1_dot_contract__pb2.CancelMissionRequest.SerializeToString,
+            contract_dot_v1_dot_contract__pb2.CancelMissionResponse.FromString,
             options,
             channel_credentials,
             insecure,

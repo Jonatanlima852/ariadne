@@ -18,4 +18,4 @@ if [ "$ACTUAL" != "$EXPECTED" ]; then
   exit 1
 fi
 
-echo "Contrato 1.0.0 congelado e íntegro: $ACTUAL"
+echo "Contrato 2.0.0 congelado e íntegro: $ACTUAL"

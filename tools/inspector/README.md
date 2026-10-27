@@ -79,7 +79,7 @@ API: porta 8787; frontend: 4173. `ARIADNE_INSPECTOR_API_PORT` configura o proxy 
 
 ## API e limites
 
-- `GET /api/catalog?source=runs|campaigns|evaluations|samples&q=...&status=...&offset=0&limit=20`
+- `GET /api/catalog?source=runs|campaigns|evaluations|samples|logistics&q=...&status=...&offset=0&limit=20`
 - `GET /api/evidence?source=...&identifier=...`
 - `GET /api/health`
 
@@ -102,3 +102,31 @@ uv run --project tools/inspector/api --group dev pytest -q tools/inspector/api
 ```
 
 [Roteiro de apresentação](../../docs/presentation.md)
+
+## Logística v2
+
+A aba **Logística v2** reconhece o formato de episódios da comparação entre
+Single LLM e os dez especialistas. Lê `.ariadne/logistics-v2` e os resultados
+preservados em `studies/scenarios/logistics/v2/results`, mantendo coleta real
+e demonstração determinística identificadas. `ARIADNE_LOGISTICS_DIR` pode
+alterar a raiz das coletas locais.
+
+A interface mostra totais, médias por caso/configuração com número de observações,
+comparações de tempo/tokens/distância/energia, progresso de entregas e detalhes
+de ações, ocorrências, prazos e decisões dos agentes. O botão **Atualizar coleta**
+recarrega as evidências. Atendimento parcial e erro operacional são apresentados
+separadamente; relatos de LLM não substituem as métricas do estado.
+
+Depois de atualizar o código, reinicie `./ariadne inspect` se sua API já estava
+aberta. Exemplo preservado: `http://127.0.0.1:4173/#source=logistics&id=saved%2Freal`.
+
+Em cada episódio, **Percurso dos agentes** reproduz as chamadas em ordem,
+incluindo interrupções, revisões e transferência de carga registradas no
+histórico. Os vínculos passam pelo orquestrador; não representam mensagens
+diretas entre agentes. **Panorama para apresentação** e **Baixar figura SVG**
+exportam a visão estática. A variante `ariadne-lean` também é reconhecida.
+
+Há [figuras PNG/SVG, GIFs e apresentações HTML offline](../../studies/scenarios/logistics/v2/results/presentation/README.md)
+da arquitetura original e da variante enxuta, com IDs e hashes de proveniência.
+O utilitário `scripts/export-logistics-flow.mjs` reutiliza o mesmo renderizador do
+Inspector; `scripts/render-logistics-media.py` gera os PNGs e GIF opcional.

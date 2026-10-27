@@ -6,6 +6,7 @@ const SOURCES = {
   runs: "Minhas execuções",
   campaigns: "Campanhas",
   evaluations: "Avaliações",
+  logistics: "Logística v2",
 };
 const SIZE = 12;
 export default function RunBrowser({ source, onSource, onSelect, onSample }) {

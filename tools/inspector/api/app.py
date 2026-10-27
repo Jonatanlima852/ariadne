@@ -3,6 +3,7 @@ import json
 import os
 import re
 from pathlib import Path
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -31,16 +32,20 @@ app = FastAPI(title="Ariadne Runtime Inspector API", version="0.1.0")
 CAMPAIGNS_ROOT = Path(os.getenv("ARIADNE_CAMPAIGNS_DIR", REPOSITORY_ROOT / ".ariadne/campaigns")).resolve()
 EVALUATIONS_ROOT = Path(os.getenv("ARIADNE_EVALUATIONS_DIR", REPOSITORY_ROOT / ".ariadne/evaluations")).resolve()
 SAMPLES_ROOT = REPOSITORY_ROOT / "tools/inspector/samples"
+LOGISTICS_ROOT = Path(os.getenv("ARIADNE_LOGISTICS_DIR", REPOSITORY_ROOT / ".ariadne/logistics-v2")).resolve()
+LOGISTICS_SAVED_ROOT = REPOSITORY_ROOT / "studies/scenarios/logistics/v2/results"
 
 
 def roots():
     return {"runs": RUNS_ROOT, "campaigns": CAMPAIGNS_ROOT,
-            "evaluations": EVALUATIONS_ROOT, "samples": SAMPLES_ROOT}
+            "evaluations": EVALUATIONS_ROOT, "samples": SAMPLES_ROOT, "logistics": LOGISTICS_ROOT}
 
 
 def evidence_path(source, identifier):
     root = roots().get(source)
     parts = identifier.split("/")
+    if source == "logistics" and len(parts) == 2 and parts[0] == "saved":
+        root, parts = LOGISTICS_SAVED_ROOT, parts[1:]
     if root is None or any(not RUN_ID.fullmatch(part) or part in (".", "..") for part in parts):
         raise HTTPException(400, "invalid evidence reference")
     if len(parts) != 1 and not (source == "campaigns" and len(parts) == 3 and parts[1] == "runs"):
@@ -57,6 +62,29 @@ def evidence_path(source, identifier):
 
 def catalog_entry(path, source):
     reference = {"source": source, "id": path.name}
+    if source == "logistics":
+        manifest, rows = logistics_document(path)
+        kind = manifest.get("execution_kind") or (rows[0].get("execution_kind") if rows else "unknown")
+        suite = manifest.get("suite") or ", ".join(sorted({row.get("suite", "basic") for row in rows})) or "basic"
+        planned = manifest.get("planned_observations", len(manifest.get("cases", [])) * len(manifest.get("configurations", [])) * manifest.get("repeat", 1))
+        status = manifest.get("status") or ("FAILED" if any(row.get("error") for row in rows) else "COMPLETED" if rows and (not planned or len(rows) == planned) else "UNKNOWN")
+        dates = []
+        directories = [path.name] + [Path(item.get("directory", "")).name
+                                    for item in manifest.get("collections", []) if isinstance(item, dict)]
+        for directory in directories:
+            try:
+                dates.append(datetime.strptime(directory, "%Y%m%dT%H%M%S%fZ").replace(tzinfo=timezone.utc))
+            except ValueError:
+                pass
+        recorded = (min(dates) if dates else datetime.fromtimestamp((path / "results.json").stat().st_mtime, timezone.utc)).isoformat()
+        labels = {"single-llm": "Single LLM", "ariadne": "Ariadne original", "ariadne-lean": "Ariadne enxuta"}
+        configurations = " / ".join(labels[config] for config in labels if any(row.get("configuration") == config for row in rows))
+        label = "LLM real" if kind == "real-llm" else "Integração determinística" if kind == "deterministic-integration-demo" else kind
+        return {**reference, "scenario":"logistics-v2", "status":status,
+                "started_at":manifest.get("created_at", recorded), "observations":len(rows),
+                "elapsed_ms":sum(row.get("wall_seconds", 0) * 1000 for row in rows),
+                "presentation":{"title":f"Logística v2 · {suite} · {label}",
+                                "description":f"{len(rows)} observações · {len({row.get('case') for row in rows})} casos · {manifest.get('model') or 'sem modelo real'} · {configurations}"}}
     if source == "campaigns":
         data = collection_document(path / "campaign.json", "runs")
         return {**reference, "scenario": data.get("name", path.name), "status": data.get("status", "UNKNOWN"),
@@ -73,6 +101,19 @@ def catalog_entry(path, source):
             "case_id": metadata.get("case", {}).get("id"), "demo": demo,
             "presentation": metadata.get("presentation", {}),
             "participant_count": len(manifest.get("agents", [])), "step_count": len(manifest.get("steps", []))}
+
+
+def logistics_document(path):
+    manifest = _read_json(path / "manifest.json")
+    if manifest.get("backend") != "docker-compose":
+        raise HTTPException(422, "not a logistics v2 Docker collection")
+    try:
+        rows = json.loads(_read_text(path / "results.json") or "[]")
+    except json.JSONDecodeError:
+        raise HTTPException(422, "invalid logistics results.json")
+    if not isinstance(rows, list) or any(not isinstance(row, dict) or not isinstance(row.get("case"), str) or row.get("configuration") not in ("single-llm", "ariadne", "ariadne-lean") for row in rows):
+        raise HTTPException(422, "expected logistics episode array")
+    return manifest, rows
 
 
 def analysis_links(path):
@@ -123,11 +164,17 @@ def catalog(source: str = "runs", q: str = "", status: str = "",
     if root is None:
         raise HTTPException(400, "unknown source")
     items, warnings = [], []
-    for path in root.iterdir() if root.is_dir() else []:
+    candidates = [(path, path.name) for path in root.iterdir()] if root.is_dir() else []
+    if source == "logistics" and LOGISTICS_SAVED_ROOT.is_dir():
+        candidates += [(path, "saved/" + path.name) for path in LOGISTICS_SAVED_ROOT.iterdir()]
+    for path, identifier in candidates:
         if not path.is_dir() or path.is_symlink() or not RUN_ID.fullmatch(path.name):
             continue
         try:
+            if source == "logistics" and (not _is_regular_file(path / "results.json") or _read_json(path / "manifest.json").get("backend") != "docker-compose"):
+                continue
             item = catalog_entry(path, source)
+            item["id"] = identifier
             if q.casefold() not in json.dumps(item, ensure_ascii=False).casefold():
                 continue
             if status and item.get("status") != status:
@@ -142,6 +189,9 @@ def catalog(source: str = "runs", q: str = "", status: str = "",
 @app.get("/api/evidence")
 def evidence(source: str, identifier: str):
     path = evidence_path(source, identifier)
+    if source == "logistics":
+        manifest, rows = logistics_document(path)
+        return {"kind":"logistics", "document":manifest, "rows":rows}
     if source == "evaluations" or (source == "samples" and (path / "logistics-results.json").is_file()):
         document = collection_document(path / "logistics-results.json", "rows")
         references = {Path(value).name: reference_for_path(value) for value in document.get("sources", [])}

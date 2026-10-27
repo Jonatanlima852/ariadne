@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {inspectorApi} from './api.js';
 import Overview from './components/Overview.jsx';
 import RawData from './components/RawData.jsx';
@@ -9,6 +9,7 @@ import Timeline from './components/Timeline.jsx';
 import Workflow from './components/Workflow.jsx';
 import Demonstration from './components/Demonstration.jsx';
 import Collection from './components/Collection.jsx';
+import Logistics from './components/Logistics.jsx';
 import {Footer, TopBar} from './components/TopBar.jsx';
 const location = () => Object.fromEntries(new URLSearchParams(window.location.hash.slice(1)));
 export default function App() {
@@ -16,6 +17,8 @@ export default function App() {
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [revision, setRevision] = useState(0);
+  const evidenceKey = useRef('');
   useEffect(() => {
     const changed = () => setRoute(location());
     window.addEventListener('hashchange', changed);
@@ -25,7 +28,10 @@ export default function App() {
   const source = route.source || 'samples';
   useEffect(() => {
     let cancelled = false;
-    setDetail(null); setError('');
+    const nextKey = `${source}/${route.id || ''}`;
+    if (evidenceKey.current !== nextKey) setDetail(null);
+    evidenceKey.current = nextKey;
+    setError('');
     if (!route.id) {setLoading(false); return;}
     setLoading(true);
     const pending = source === 'embedded' ? Promise.resolve({kind: 'run', files: window.TGInspectorSample.files}) : inspectorApi.evidence(source, route.id);
@@ -33,7 +39,7 @@ export default function App() {
       .catch(failure => {if (!cancelled) setError(failure.message);})
       .finally(() => {if (!cancelled) setLoading(false);});
     return () => {cancelled = true;};
-  }, [source, route.id]);
+  }, [source, route.id, revision]);
   const parsed = useMemo(() => {
     if (detail?.kind !== 'run') return {};
     try {
@@ -55,7 +61,8 @@ export default function App() {
     {!route.id && <RunBrowser source={source} onSource={value => navigate({source: value})} onSelect={select} onSample={() => navigate({source: 'embedded', id: 'recovery'})}/>}
     {loading && <main className="content-card"><p role="status">Preparando a demonstração…</p></main>}
     {(error || parsed.parseError) && <main className="content-card"><p role="alert">{error || parsed.parseError}</p><button onClick={reset}>Voltar</button></main>}
-    {detail && detail.kind !== 'run' && <Collection key={`${source}/${route.id}`} detail={detail} onSelect={select}/>}
+    {detail?.kind === 'logistics' && <Logistics key={`${source}/${route.id}`} detail={detail} onRefresh={() => setRevision(value => value + 1)}/>}
+    {detail && !['run', 'logistics'].includes(detail.kind) && <Collection key={`${source}/${route.id}`} detail={detail} onSelect={select}/>}
     {report && <div className="workspace story-layout">
       <Sidebar active={active} onChange={tab} report={report}/>
       <main className="report-main">

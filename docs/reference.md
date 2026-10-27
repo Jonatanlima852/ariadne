@@ -3,8 +3,8 @@
 ## Versão e fonte de verdade
 
 O [contract.proto](../proto/contract/v1/contract.proto) define os campos e RPCs
-executáveis. A versão está em [VERSION](../proto/contract/v1/VERSION): `1.0.0`.
-O Registry verifica o major declarado pelo agente; o SDK usa `1.0.0` por padrão.
+executáveis. A versão está em [VERSION](../proto/contract/v1/VERSION): `2.0.0`.
+O Registry verifica o major declarado pelo agente; o SDK usa `2.0.0` por padrão.
 Consulte a [validação de versão](../runtime/contractversion/version.go).
 
 Para conferir o checksum sem compilar nem regenerar arquivos:

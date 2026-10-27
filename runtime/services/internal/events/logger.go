@@ -19,6 +19,8 @@ type Event struct {
 	RunID      string `json:"run_id,omitempty"`
 	StepID     string `json:"step_id,omitempty"`
 	Attempt    int32  `json:"attempt,omitempty"`
+	MissionID  string `json:"mission_id,omitempty"`
+	Round      int32  `json:"round,omitempty"`
 	Details    string `json:"details,omitempty"`
 }
 

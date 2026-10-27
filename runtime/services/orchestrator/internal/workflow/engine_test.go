@@ -82,6 +82,9 @@ func TestEngineExecutesSequentialWorkflowAndAggregatesFinalOutput(t *testing.T) 
 		if stepResult.Result.StartedAt == nil || stepResult.Result.CompletedAt == nil {
 			t.Fatalf("step timestamps = %v", stepResult.Result)
 		}
+		if stepResult.Task == nil || stepResult.Task.ParentTaskId != "root-1" || stepResult.Task.TaskId != stepResult.Result.TaskId || stepResult.Task.Goal != stepResult.StepId {
+			t.Fatalf("materialized task on step result = %v", stepResult.Task)
+		}
 	}
 	stored, err := store.Get(result.RunId)
 	if err != nil || stored.Status != pb.WorkflowStatus_WORKFLOW_STATUS_COMPLETED || len(stored.StepResults) != 2 {
@@ -147,6 +150,10 @@ func TestEngineResolvesBindingsIntoNestedPayload(t *testing.T) {
 	}
 	if got := executor.received.Payload.Fields["planner_agent"].GetStringValue(); got != "planner" {
 		t.Fatalf("bound agent = %q", got)
+	}
+	// O resultado do passo guarda a tarefa materializada: payload com bindings resolvidos.
+	if got := result.StepResults[1].Task.Payload.Fields["route_result"].GetStructValue().Fields["next"].GetStringValue(); got != "BDI" {
+		t.Fatalf("step result task payload = %v", result.StepResults[1].Task)
 	}
 }
 

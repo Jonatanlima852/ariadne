@@ -252,7 +252,9 @@ func classifyStepResult(stepID string, task *pb.Task, taskResult *pb.TaskResult,
 	if contextError == nil && taskResult != nil && taskResult.Status == pb.TaskStatus_TASK_STATUS_COMPLETED {
 		status = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_COMPLETED
 	}
-	return &pb.WorkflowStepResult{StepId: stepID, Status: status, Result: taskResult}
+	// Task carrega a tarefa como foi enviada ao agente (payload já resolvido
+	// pelos bindings, attempt e assigned_agent_id preenchidos pelo executor).
+	return &pb.WorkflowStepResult{StepId: stepID, Status: status, Result: taskResult, Task: task}
 }
 
 func dependencyFailed(step *pb.WorkflowStep, statuses map[string]pb.WorkflowStepStatus) bool {

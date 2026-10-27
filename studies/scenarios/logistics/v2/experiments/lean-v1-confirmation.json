@@ -1,0 +1,79 @@
+{
+  "experiment": "lean-v1-confirmation",
+  "frozen_at": "2026-10-22T06:46:42.496294+00:00",
+  "model": "gpt-5.6-luna",
+  "suite": "stress",
+  "configurations": [
+    "single-llm",
+    "ariadne-lean"
+  ],
+  "repeat": 3,
+  "planned_observations": 60,
+  "cases": [
+    "s01-distributed-mixed-orders",
+    "s02-scarce-stock-coupling",
+    "s03-capacity-and-source",
+    "s04-recharge-detours",
+    "s05-directed-connections",
+    "s06-progressive-roadblocks",
+    "s07-loaded-vehicle-loss",
+    "s08-cascading-disruptions",
+    "s09-deadline-and-priority-pressure",
+    "s10-infeasible-among-feasible"
+  ],
+  "limits": {
+    "rounds_per_episode": 20,
+    "actions_per_proposal": 200,
+    "llm_timeout_seconds": 90,
+    "provider_retries": 0,
+    "search_expansions": 10000
+  },
+  "changes_from_original": [
+    "One OrderInterpreter LLM call per episode; BDI MissionCoordinator replaces LLM decomposition and incident analysis.",
+    "Deterministic measured summary replaces OperationsReporter.",
+    "EnergyManager requires retaining reachability to a charger while pending work remains."
+  ],
+  "baseline": "Original SingleLLM prompt, contracts and transition rules unchanged.",
+  "selection": "All ten fixed stress cases; no removal after inspecting outcomes.",
+  "development_sources": [
+    ".ariadne/logistics-v2/20261022T061629592385Z",
+    ".ariadne/logistics-v2/20261022T061918320935Z",
+    ".ariadne/logistics-v2/20261022T064520956662Z"
+  ],
+  "limitations": [
+    "Development used outcomes of this suite; repeated observations estimate variation within fixed cases, not generalization to unseen cases.",
+    "Ablation changes both role composition and energy policy; do not attribute gains solely to runtime orchestration.",
+    "Sequential global simulation time; no vehicle concurrency."
+  ],
+  "source_sha256": {
+    "world.py": "5335cca68bc5fdf5723914cbbce2187f7666c6a36a6895b8e9cba2609d87d3a4",
+    "episode.py": "02783429145f2db631e7e15ffd92be231f6dc627ad05f36be16b2b23ede7e87a",
+    "lean.py": "656f621e3ce059d6b956f7fee6e9e36b2745a30b989b4f1b1f51b813f1d6dd15",
+    "run.py": "9a1f9d58240306dcaeb7069ec52cff1ab553e65b08f3350a99c8e95d9b525f28",
+    "planning.py": "fd8957629bbc0019cb64a575cb57c7ae4a74e58b86f3f1fe3ff5deaa01e12567",
+    "cases_stress.json": "09260174f57963ecdc38d8f9527447e98e21163e39128e383002ac8800ecc8b2",
+    "agents/constraint_supervisor/main.py": "63afcd4421f8198f1cade7e30b4304e7921dc19505347a06abbfbacf8cc855a4",
+    "agents/incident_analyst/main.py": "22d233e280375f585442469246b977c7fffee661a26f3e8102ce48373cecf6d0",
+    "agents/order_interpreter/main.py": "98f91d8b7bbed2f9cb6b115939614ddb405badfc057d7ed42bc90d78c5b28ad6",
+    "agents/mission_executor/main.py": "eae855192a1d7680c953d6f26639523581e7cf09ddf9777803b79a182e5ac7d8",
+    "agents/mission_decomposer/main.py": "b6a35387907b55c75b10e5ff46159dc40fc73e728f385d6e14a3f7df24189d01",
+    "agents/single_llm/main.py": "6afdefd9e9c4e60acd3a5ebfca2e58f1178040eb43d04c4aa99b92d3971ca971",
+    "agents/route_planner/main.py": "be3f6540d24af1a0102356672ff80326c740d1e9c3f3415b3715bcb6c83778ad",
+    "agents/mission_coordinator/main.py": "376ca80a1fec3afa86552b4553528186ca2fa03248bdcfc40c9e379999f08533",
+    "agents/resource_allocator/main.py": "fdb52b510fd42786587896cb5126b19ced4967c5417151948c40cb0caf1be87f",
+    "agents/operations_reporter/main.py": "97ca5a8cd6a810f19ede654696e9cd39a3c349f22b6925ef65d1ca7bc6bd403e",
+    "agents/energy_manager/main.py": "988ead45b1004b29dc11709fd8aeb7425f749197550755068050600c8d2d1d23",
+    "agents/inventory_manager/main.py": "5bce94174d2cc5c13df8cb8ebee8e83ac2869a937edcfff5b5f6f2303fa28acc"
+  },
+  "docker_image_ids": {
+    "order-interpreter": "2dacb845965f89d452b934aebf8f2d81420dc97cb25478d8392502837faf7d48",
+    "mission-coordinator": "52bf8c062d92884edd042601272c855073281b6def5a051c50e9226d8ccc3596",
+    "inventory-manager": "00058a4f01e2159aa80b0a07332a7ca7cc1fe5cfdc0423fd51da9e1956363ae8",
+    "resource-allocator": "51c312d40d3e295020499d507ff44d143ad2285381fb295efaadd8025875241f",
+    "route-planner": "d8a1fab8c96ccac2d2a992d8c0bf61af6d3414417f7a554139c57309778d1111",
+    "energy-manager": "010be5b4ec1acc195b1251a3268f58202787e430e164226f76055ad5ed1a39a0",
+    "constraint-supervisor": "39742ffb02bb86c170312074a1e34deb1965e7b15f3ed871eeb985731c52cd9f",
+    "mission-executor": "3db5307f1accdc3a6d838955681bced320eeb8f15421180d0c5ed4d55eae7bbd",
+    "single-llm": "03a5bc44327aafde78bd8d6d83398335e3ba2bee60b4d14458d165f0d678b57c"
+  }
+}

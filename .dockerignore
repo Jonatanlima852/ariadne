@@ -10,6 +10,7 @@ runtime/bin
 runtime/.cache
 studies/scenarios/*/runtime_metrics/results/*.jsonl
 studies/scenarios/*/runtime_metrics/results/*.csv
+studies/scenarios/logistics/v2/results
 docs
 internal-notes
 *.md

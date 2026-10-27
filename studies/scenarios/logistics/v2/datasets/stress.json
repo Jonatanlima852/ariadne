@@ -1,0 +1,3892 @@
+[
+  {
+    "id": "s01-distributed-mixed-orders",
+    "suite": "stress",
+    "description": "8 pedidos com múltiplos itens; 16 locais e 4 veículos heterogêneos; fonte de estoque altera a rota e o consumo",
+    "design_rationale": {
+      "challenges": [
+        "8 pedidos com múltiplos itens",
+        "16 locais e 4 veículos heterogêneos",
+        "fonte de estoque altera a rota e o consumo"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "C",
+        "items": {
+          "food": 3,
+          "medicine": 1
+        },
+        "priority": 5,
+        "deadline": 18,
+        "request": "Pedido o1: entregar 3 unidades de food e 1 unidades de medicine em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 18 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "F",
+        "items": {
+          "cold": 4
+        },
+        "priority": 4,
+        "deadline": 25,
+        "request": "Pedido o2: entregar 4 unidades de cold em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 25 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "tools": 2,
+          "food": 2
+        },
+        "priority": 4,
+        "deadline": 45,
+        "request": "Pedido o3: entregar 2 unidades de tools e 2 unidades de food em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 45 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "P",
+        "items": {
+          "kit": 1,
+          "food": 3
+        },
+        "priority": 3,
+        "deadline": 55,
+        "request": "Pedido o4: entregar 1 unidades de kit e 3 unidades de food em P. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "I",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 3,
+        "deadline": 65,
+        "request": "Pedido o5: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 65 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "cold": 3,
+          "food": 2
+        },
+        "priority": 2,
+        "deadline": 85,
+        "request": "Pedido o6: entregar 3 unidades de cold e 2 unidades de food em M. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 85 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "food": 4
+        },
+        "priority": 2,
+        "deadline": 95,
+        "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "kit": 2
+        },
+        "priority": 1,
+        "deadline": 110,
+        "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s02-scarce-stock-coupling",
+    "suite": "stress",
+    "description": "estoque de medicine escasso e compartilhado; itens da mesma ordem precisam estar no mesmo depósito; prioridades competem por estoque",
+    "design_rationale": {
+      "challenges": [
+        "estoque de medicine escasso e compartilhado",
+        "itens da mesma ordem precisam estar no mesmo depósito",
+        "prioridades competem por estoque"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 3,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 4,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 0,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "F",
+        "items": {
+          "medicine": 2,
+          "cold": 2
+        },
+        "priority": 5,
+        "deadline": 25,
+        "request": "Pedido o1: entregar 2 unidades de medicine e 2 unidades de cold em F. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 25 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "L",
+        "items": {
+          "medicine": 3
+        },
+        "priority": 4,
+        "deadline": 40,
+        "request": "Pedido o2: entregar 3 unidades de medicine em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 40 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "C",
+        "items": {
+          "medicine": 2,
+          "food": 1
+        },
+        "priority": 4,
+        "deadline": 45,
+        "request": "Pedido o3: entregar 2 unidades de medicine e 1 unidades de food em C. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 45 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "P",
+        "items": {
+          "medicine": 1,
+          "kit": 1
+        },
+        "priority": 3,
+        "deadline": 65,
+        "request": "Pedido o4: entregar 1 unidades de medicine e 1 unidades de kit em P. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 65 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "I",
+        "items": {
+          "cold": 3
+        },
+        "priority": 3,
+        "deadline": 75,
+        "request": "Pedido o5: entregar 3 unidades de cold em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "food": 4
+        },
+        "priority": 2,
+        "deadline": 90,
+        "request": "Pedido o6: entregar 4 unidades de food em M. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 90 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "food": 3,
+          "kit": 1
+        },
+        "priority": 2,
+        "deadline": 105,
+        "request": "Pedido o7: entregar 3 unidades de food e 1 unidades de kit em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 105 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 1,
+        "deadline": 120,
+        "request": "Pedido o8: entregar 2 unidades de medicine em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 120 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Demanda total de medicine é 10 e estoque total é 7: é impossível entregar todos os pedidos; nenhuma quantidade entregue ótima é presumida.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s03-capacity-and-source",
+    "suite": "stress",
+    "description": "pesos compostos próximos dos limites de carga; alguns pedidos só cabem no caminhão; um veículo de grande porte precisa ser reutilizado",
+    "design_rationale": {
+      "challenges": [
+        "pesos compostos próximos dos limites de carga",
+        "alguns pedidos só cabem no caminhão",
+        "um veículo de grande porte precisa ser reutilizado"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "L",
+        "items": {
+          "tools": 3,
+          "food": 2
+        },
+        "priority": 5,
+        "deadline": 35,
+        "request": "Pedido o1: entregar 3 unidades de tools e 2 unidades de food em L. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "M",
+        "items": {
+          "cold": 5,
+          "medicine": 1
+        },
+        "priority": 4,
+        "deadline": 60,
+        "request": "Pedido o2: entregar 5 unidades de cold e 1 unidades de medicine em M. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 60 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "F",
+        "items": {
+          "medicine": 3,
+          "food": 2
+        },
+        "priority": 4,
+        "deadline": 70,
+        "request": "Pedido o3: entregar 3 unidades de medicine e 2 unidades de food em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 70 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "C",
+        "items": {
+          "kit": 2
+        },
+        "priority": 3,
+        "deadline": 80,
+        "request": "Pedido o4: entregar 2 unidades de kit em C. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 80 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "P",
+        "items": {
+          "food": 4
+        },
+        "priority": 3,
+        "deadline": 95,
+        "request": "Pedido o5: entregar 4 unidades de food em P. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "I",
+        "items": {
+          "tools": 2,
+          "food": 1
+        },
+        "priority": 2,
+        "deadline": 110,
+        "request": "Pedido o6: entregar 2 unidades de tools e 1 unidades de food em I. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "cold": 2
+        },
+        "priority": 2,
+        "deadline": 125,
+        "request": "Pedido o7: entregar 2 unidades de cold em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 125 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "kit": 2,
+          "food": 1
+        },
+        "priority": 1,
+        "deadline": 140,
+        "request": "Pedido o8: entregar 2 unidades de kit e 1 unidades de food em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 140 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s04-recharge-detours",
+    "suite": "stress",
+    "description": "baterias iniciais baixas; recarga depende da conectividade e posição; atalhos rápidos podem consumir mais energia",
+    "design_rationale": {
+      "challenges": [
+        "baterias iniciais baixas",
+        "recarga depende da conectividade e posição",
+        "atalhos rápidos podem consumir mais energia"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 16,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 21,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 27,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 12,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "P",
+        "items": {
+          "food": 2,
+          "medicine": 1
+        },
+        "priority": 5,
+        "deadline": 35,
+        "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em P. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "M",
+        "items": {
+          "cold": 4
+        },
+        "priority": 4,
+        "deadline": 55,
+        "request": "Pedido o2: entregar 4 unidades de cold em M. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "I",
+        "items": {
+          "kit": 1,
+          "food": 2
+        },
+        "priority": 3,
+        "deadline": 75,
+        "request": "Pedido o3: entregar 1 unidades de kit e 2 unidades de food em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "L",
+        "items": {
+          "tools": 2
+        },
+        "priority": 3,
+        "deadline": 95,
+        "request": "Pedido o4: entregar 2 unidades de tools em L. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "O",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 2,
+        "deadline": 115,
+        "request": "Pedido o5: entregar 2 unidades de medicine em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 115 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "J",
+        "items": {
+          "cold": 3
+        },
+        "priority": 1,
+        "deadline": 135,
+        "request": "Pedido o6: entregar 3 unidades de cold em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 135 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s05-directed-connections",
+    "suite": "stress",
+    "description": "conexões de mão única; retorno exige caminho diferente da ida; destinos e depósitos alternam entre regiões",
+    "design_rationale": {
+      "challenges": [
+        "conexões de mão única",
+        "retorno exige caminho diferente da ida",
+        "destinos e depósitos alternam entre regiões"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "J",
+        "items": {
+          "cold": 3
+        },
+        "priority": 5,
+        "deadline": 25,
+        "request": "Pedido o1: entregar 3 unidades de cold em J. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 25 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "E",
+        "items": {
+          "tools": 2
+        },
+        "priority": 4,
+        "deadline": 45,
+        "request": "Pedido o2: entregar 2 unidades de tools em E. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 45 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "medicine": 2,
+          "food": 2
+        },
+        "priority": 4,
+        "deadline": 65,
+        "request": "Pedido o3: entregar 2 unidades de medicine e 2 unidades de food em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 65 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "H",
+        "items": {
+          "kit": 2
+        },
+        "priority": 3,
+        "deadline": 85,
+        "request": "Pedido o4: entregar 2 unidades de kit em H. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 85 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "P",
+        "items": {
+          "medicine": 1,
+          "cold": 2
+        },
+        "priority": 2,
+        "deadline": 105,
+        "request": "Pedido o5: entregar 1 unidades de medicine e 2 unidades de cold em P. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 105 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "tools": 1,
+          "food": 3
+        },
+        "priority": 1,
+        "deadline": 130,
+        "request": "Pedido o6: entregar 1 unidades de tools e 3 unidades de food em M. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 130 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s06-progressive-roadblocks",
+    "suite": "stress",
+    "description": "dois bloqueios em momentos diferentes; rotas antigas deixam de valer; recarga e estoque precisam ser reavaliados",
+    "design_rationale": {
+      "challenges": [
+        "dois bloqueios em momentos diferentes",
+        "rotas antigas deixam de valer",
+        "recarga e estoque precisam ser reavaliados"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "I",
+        "items": {
+          "cold": 3
+        },
+        "priority": 5,
+        "deadline": 25,
+        "request": "Pedido o1: entregar 3 unidades de cold em I. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 25 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "F",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 4,
+        "deadline": 35,
+        "request": "Pedido o2: entregar 2 unidades de medicine em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "tools": 2
+        },
+        "priority": 4,
+        "deadline": 60,
+        "request": "Pedido o3: entregar 2 unidades de tools em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 60 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "P",
+        "items": {
+          "food": 3,
+          "kit": 1
+        },
+        "priority": 3,
+        "deadline": 80,
+        "request": "Pedido o4: entregar 3 unidades de food e 1 unidades de kit em P. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 80 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "M",
+        "items": {
+          "cold": 3,
+          "food": 2
+        },
+        "priority": 3,
+        "deadline": 95,
+        "request": "Pedido o5: entregar 3 unidades de cold e 2 unidades de food em M. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 95 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "C",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 2,
+        "deadline": 110,
+        "request": "Pedido o6: entregar 2 unidades de medicine em C. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "food": 4
+        },
+        "priority": 2,
+        "deadline": 125,
+        "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 125 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "kit": 2
+        },
+        "priority": 1,
+        "deadline": 145,
+        "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 145 desde o início."
+      }
+    ],
+    "incidents": [
+      {
+        "type": "block",
+        "edge": [
+          "E",
+          "F"
+        ],
+        "after_actions": 3,
+        "description": "E-F bloqueada nos dois sentidos."
+      },
+      {
+        "type": "block",
+        "edge": [
+          "G",
+          "M"
+        ],
+        "after_actions": 11,
+        "description": "G-M interditada durante a operação."
+      }
+    ],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s07-loaded-vehicle-loss",
+    "suite": "stress",
+    "description": "pane após início da execução; carga carregada não retorna automaticamente ao estoque; outro veículo precisa chegar ao local para recuperar a carga",
+    "design_rationale": {
+      "challenges": [
+        "pane após início da execução",
+        "carga carregada não retorna automaticamente ao estoque",
+        "outro veículo precisa chegar ao local para recuperar a carga"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "C",
+        "items": {
+          "food": 3,
+          "medicine": 1
+        },
+        "priority": 5,
+        "deadline": 25,
+        "request": "Pedido o1: entregar 3 unidades de food e 1 unidades de medicine em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 25 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "F",
+        "items": {
+          "cold": 4
+        },
+        "priority": 4,
+        "deadline": 45,
+        "request": "Pedido o2: entregar 4 unidades de cold em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 45 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "tools": 2,
+          "food": 2
+        },
+        "priority": 4,
+        "deadline": 70,
+        "request": "Pedido o3: entregar 2 unidades de tools e 2 unidades de food em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 70 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "I",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 3,
+        "deadline": 90,
+        "request": "Pedido o4: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 90 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "P",
+        "items": {
+          "kit": 2
+        },
+        "priority": 2,
+        "deadline": 110,
+        "request": "Pedido o5: entregar 2 unidades de kit em P. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "cold": 3
+        },
+        "priority": 1,
+        "deadline": 135,
+        "request": "Pedido o6: entregar 3 unidades de cold em M. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 135 desde o início."
+      }
+    ],
+    "incidents": [
+      {
+        "type": "unavailable",
+        "vehicle": "van1",
+        "after_actions": 1,
+        "description": "Pane de van1: sua carga só pode ser recuperada por TRANSFER no mesmo local."
+      }
+    ],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s08-cascading-disruptions",
+    "suite": "stress",
+    "description": "10 pedidos; três ocorrências sucessivas; mesmo orçamento de revisão para as duas configurações",
+    "design_rationale": {
+      "challenges": [
+        "10 pedidos",
+        "três ocorrências sucessivas",
+        "mesmo orçamento de revisão para as duas configurações"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "C",
+        "items": {
+          "food": 2,
+          "medicine": 1
+        },
+        "priority": 5,
+        "deadline": 20,
+        "request": "Pedido o1: entregar 2 unidades de food e 1 unidades de medicine em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 20 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "F",
+        "items": {
+          "cold": 3
+        },
+        "priority": 5,
+        "deadline": 35,
+        "request": "Pedido o2: entregar 3 unidades de cold em F. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "tools": 2
+        },
+        "priority": 4,
+        "deadline": 55,
+        "request": "Pedido o3: entregar 2 unidades de tools em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 55 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "P",
+        "items": {
+          "kit": 1,
+          "food": 3
+        },
+        "priority": 4,
+        "deadline": 75,
+        "request": "Pedido o4: entregar 1 unidades de kit e 3 unidades de food em P. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 75 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "I",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 3,
+        "deadline": 90,
+        "request": "Pedido o5: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 90 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "cold": 4
+        },
+        "priority": 3,
+        "deadline": 110,
+        "request": "Pedido o6: entregar 4 unidades de cold em M. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 110 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "food": 4
+        },
+        "priority": 2,
+        "deadline": 130,
+        "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 130 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "kit": 2
+        },
+        "priority": 2,
+        "deadline": 150,
+        "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 150 desde o início."
+      },
+      {
+        "id": "o9",
+        "destination": "H",
+        "items": {
+          "medicine": 2,
+          "food": 2
+        },
+        "priority": 1,
+        "deadline": 175,
+        "request": "Pedido o9: entregar 2 unidades de medicine e 2 unidades de food em H. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 175 desde o início."
+      },
+      {
+        "id": "o10",
+        "destination": "B",
+        "items": {
+          "cold": 3
+        },
+        "priority": 1,
+        "deadline": 195,
+        "request": "Pedido o10: entregar 3 unidades de cold em B. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 195 desde o início."
+      }
+    ],
+    "incidents": [
+      {
+        "type": "unavailable",
+        "vehicle": "van1",
+        "after_actions": 2,
+        "description": "van1 indisponível após duas ações aceitas."
+      },
+      {
+        "type": "block",
+        "edge": [
+          "E",
+          "F"
+        ],
+        "after_actions": 8,
+        "description": "Bloqueio E-F."
+      },
+      {
+        "type": "block",
+        "edge": [
+          "I",
+          "N"
+        ],
+        "after_actions": 17,
+        "description": "Bloqueio I-N; usar outro corredor."
+      }
+    ],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s09-deadline-and-priority-pressure",
+    "suite": "stress",
+    "description": "8 prazos absolutos diferentes; carregar vários pedidos reduz viagens mas ocupa capacidade; atraso deve ser medido separadamente de entrega",
+    "design_rationale": {
+      "challenges": [
+        "8 prazos absolutos diferentes",
+        "carregar vários pedidos reduz viagens mas ocupa capacidade",
+        "atraso deve ser medido separadamente de entrega"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "C",
+        "items": {
+          "food": 2
+        },
+        "priority": 5,
+        "deadline": 5,
+        "request": "Pedido o1: entregar 2 unidades de food em C. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 5 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "F",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 4,
+        "deadline": 10,
+        "request": "Pedido o2: entregar 2 unidades de medicine em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 10 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "L",
+        "items": {
+          "tools": 2
+        },
+        "priority": 4,
+        "deadline": 18,
+        "request": "Pedido o3: entregar 2 unidades de tools em L. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 18 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "O",
+        "items": {
+          "food": 4
+        },
+        "priority": 3,
+        "deadline": 26,
+        "request": "Pedido o4: entregar 4 unidades de food em O. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 26 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "I",
+        "items": {
+          "cold": 3
+        },
+        "priority": 3,
+        "deadline": 34,
+        "request": "Pedido o5: entregar 3 unidades de cold em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 34 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "P",
+        "items": {
+          "kit": 1,
+          "food": 2
+        },
+        "priority": 2,
+        "deadline": 43,
+        "request": "Pedido o6: entregar 1 unidades de kit e 2 unidades de food em P. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 43 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "M",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 2,
+        "deadline": 52,
+        "request": "Pedido o7: entregar 2 unidades de medicine em M. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 52 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "cold": 3
+        },
+        "priority": 1,
+        "deadline": 65,
+        "request": "Pedido o8: entregar 3 unidades de cold em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 65 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "Feasibility and delivery count must be established by execution; no global optimality claim.",
+      "optimality_claim": false
+    }
+  },
+  {
+    "id": "s10-infeasible-among-feasible",
+    "suite": "stress",
+    "description": "pedido impossível misturado a pedidos executáveis; peso de o1 é 21 e capacidade máxima é 20; execução deve continuar após identificar a inviabilidade",
+    "design_rationale": {
+      "challenges": [
+        "pedido impossível misturado a pedidos executáveis",
+        "peso de o1 é 21 e capacidade máxima é 20",
+        "execução deve continuar após identificar a inviabilidade"
+      ],
+      "selection_basis": "fixed mechanisms; no selection by winning configuration",
+      "hypothesis": "symbolic validation and decomposition may help reliability; latency and token advantage are not assumed"
+    },
+    "world": {
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "minutes": 3,
+          "energy": 15,
+          "distance": 3
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "minutes": 1,
+          "energy": 8,
+          "distance": 1
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "minutes": 4,
+          "energy": 20,
+          "distance": 4
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 2
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "minutes": 4,
+          "energy": 22,
+          "distance": 4
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "minutes": 2,
+          "energy": 15,
+          "distance": 2
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "minutes": 6,
+          "energy": 28,
+          "distance": 6
+        },
+        {
+          "from": "F",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "minutes": 2,
+          "energy": 12,
+          "distance": 2
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "minutes": 3,
+          "energy": 13,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "minutes": 2,
+          "energy": 11,
+          "distance": 3
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "K",
+          "to": "L",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "minutes": 4,
+          "energy": 16,
+          "distance": 5
+        },
+        {
+          "from": "M",
+          "to": "N",
+          "minutes": 2,
+          "energy": 10,
+          "distance": 3
+        },
+        {
+          "from": "N",
+          "to": "O",
+          "minutes": 3,
+          "energy": 12,
+          "distance": 4
+        },
+        {
+          "from": "O",
+          "to": "P",
+          "minutes": 2,
+          "energy": 9,
+          "distance": 3
+        },
+        {
+          "from": "P",
+          "to": "A",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "D",
+          "to": "J",
+          "minutes": 3,
+          "energy": 23,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "K",
+          "to": "E",
+          "minutes": 3,
+          "energy": 18,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "F",
+          "to": "L",
+          "minutes": 3,
+          "energy": 22,
+          "distance": 4,
+          "bidirectional": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "minutes": 4,
+          "energy": 17,
+          "distance": 5
+        },
+        {
+          "from": "C",
+          "to": "P",
+          "minutes": 3,
+          "energy": 14,
+          "distance": 4
+        },
+        {
+          "from": "I",
+          "to": "N",
+          "minutes": 4,
+          "energy": 21,
+          "distance": 5
+        },
+        {
+          "from": "B",
+          "to": "O",
+          "minutes": 4,
+          "energy": 19,
+          "distance": 5
+        },
+        {
+          "from": "J",
+          "to": "F",
+          "minutes": 2,
+          "energy": 20,
+          "distance": 3,
+          "bidirectional": false
+        },
+        {
+          "from": "N",
+          "to": "H",
+          "minutes": 3,
+          "energy": 16,
+          "distance": 4,
+          "bidirectional": false
+        }
+      ],
+      "charging_locations": [
+        "A",
+        "E",
+        "K",
+        "N"
+      ],
+      "recharge_minutes": 3,
+      "item_weights": {
+        "food": 1,
+        "medicine": 3,
+        "cold": 2,
+        "tools": 5,
+        "kit": 4
+      },
+      "depots": {
+        "north": {
+          "location": "A",
+          "stock": {
+            "food": 30,
+            "medicine": 12,
+            "cold": 0,
+            "tools": 8,
+            "kit": 6
+          }
+        },
+        "east": {
+          "location": "E",
+          "stock": {
+            "food": 18,
+            "medicine": 20,
+            "cold": 24,
+            "tools": 0,
+            "kit": 6
+          }
+        },
+        "south": {
+          "location": "K",
+          "stock": {
+            "food": 26,
+            "medicine": 4,
+            "cold": 20,
+            "tools": 8,
+            "kit": 4
+          }
+        }
+      },
+      "vehicles": {
+        "van1": {
+          "location": "A",
+          "capacity": 9,
+          "battery": 31,
+          "battery_capacity": 65
+        },
+        "van2": {
+          "location": "E",
+          "capacity": 12,
+          "battery": 55,
+          "battery_capacity": 75
+        },
+        "truck": {
+          "location": "K",
+          "capacity": 20,
+          "battery": 72,
+          "battery_capacity": 100
+        },
+        "bike": {
+          "location": "N",
+          "capacity": 4,
+          "battery": 28,
+          "battery_capacity": 42
+        }
+      }
+    },
+    "orders": [
+      {
+        "id": "o1",
+        "destination": "L",
+        "items": {
+          "tools": 3,
+          "medicine": 2
+        },
+        "priority": 5,
+        "deadline": 35,
+        "request": "Pedido o1: entregar 3 unidades de tools e 2 unidades de medicine em L. Prioridade 5, sendo maior mais urgente. Prazo absoluto: minuto 35 desde o início."
+      },
+      {
+        "id": "o2",
+        "destination": "C",
+        "items": {
+          "food": 2,
+          "medicine": 1
+        },
+        "priority": 4,
+        "deadline": 50,
+        "request": "Pedido o2: entregar 2 unidades de food e 1 unidades de medicine em C. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 50 desde o início."
+      },
+      {
+        "id": "o3",
+        "destination": "F",
+        "items": {
+          "cold": 3
+        },
+        "priority": 4,
+        "deadline": 65,
+        "request": "Pedido o3: entregar 3 unidades de cold em F. Prioridade 4, sendo maior mais urgente. Prazo absoluto: minuto 65 desde o início."
+      },
+      {
+        "id": "o4",
+        "destination": "P",
+        "items": {
+          "kit": 1,
+          "food": 2
+        },
+        "priority": 3,
+        "deadline": 85,
+        "request": "Pedido o4: entregar 1 unidades de kit e 2 unidades de food em P. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 85 desde o início."
+      },
+      {
+        "id": "o5",
+        "destination": "I",
+        "items": {
+          "medicine": 2
+        },
+        "priority": 3,
+        "deadline": 105,
+        "request": "Pedido o5: entregar 2 unidades de medicine em I. Prioridade 3, sendo maior mais urgente. Prazo absoluto: minuto 105 desde o início."
+      },
+      {
+        "id": "o6",
+        "destination": "M",
+        "items": {
+          "cold": 4
+        },
+        "priority": 2,
+        "deadline": 125,
+        "request": "Pedido o6: entregar 4 unidades de cold em M. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 125 desde o início."
+      },
+      {
+        "id": "o7",
+        "destination": "O",
+        "items": {
+          "food": 4
+        },
+        "priority": 2,
+        "deadline": 145,
+        "request": "Pedido o7: entregar 4 unidades de food em O. Prioridade 2, sendo maior mais urgente. Prazo absoluto: minuto 145 desde o início."
+      },
+      {
+        "id": "o8",
+        "destination": "J",
+        "items": {
+          "kit": 2
+        },
+        "priority": 1,
+        "deadline": 165,
+        "request": "Pedido o8: entregar 2 unidades de kit em J. Prioridade 1, sendo maior mais urgente. Prazo absoluto: minuto 165 desde o início."
+      }
+    ],
+    "incidents": [],
+    "expected": {
+      "note": "o1 é inviável por capacidade (21 > 20). No máximo 7 de 8 pedidos podem ser entregues. A viabilidade conjunta dos demais não é presumida.",
+      "optimality_claim": false
+    }
+  }
+]

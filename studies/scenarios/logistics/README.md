@@ -1,5 +1,9 @@
 # Estudo logístico
 
+A [versão 2](v2/README.md) acrescenta múltiplos pedidos, dez especialistas LLM/BDI,
+ocorrências durante a execução e comparação direta com Single LLM.
+Os comandos abaixo preservam o estudo original (v1).
+
 Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação
 offline. [scenario.py](scenario.py) declara os participantes e tarefas;
 o SDK administra processos e o runtime Go executa o workflow.
@@ -17,9 +21,12 @@ o SDK administra processos e o runtime Go executa o workflow.
 | `evaluation/` | Avaliação offline, métricas e relatórios |
 | `docker/` | Topologia, cliente e adaptadores históricos |
 | `tests/` | Testes de domínio e reprodução do estudo |
+| [v2/](v2/README.md) | Estudo com múltiplos pedidos, incidentes e especialistas |
 
 Comece por `scenario.py`, acompanhe os agentes em `agents/` e consulte
 `domain/` para as regras. Para analisar uma coleta, siga para `evaluation/`.
+A v2 repete essa divisão e acrescenta `execution/` para o controle dos episódios
+e `demonstrations/` para os substitutos usados na integração.
 
 ## Executar um caso
 

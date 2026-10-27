@@ -71,7 +71,7 @@ func (p *Planner) Plan(ctx context.Context, root *pb.Task) (*pb.WorkflowDefiniti
 	if result == nil || result.Status != pb.TaskStatus_TASK_STATUS_COMPLETED || result.Output == nil {
 		return nil, planningError(pb.ErrorCode_ERROR_CODE_EXECUTION_FAILED, "planner did not return a completed structured output")
 	}
-	definition, err := decodeDefinition(result.Output)
+	definition, err := DecodeDefinition(result.Output)
 	if err != nil {
 		return nil, planningError(pb.ErrorCode_ERROR_CODE_INVALID_TASK, "invalid planner output: "+err.Error())
 	}
@@ -95,7 +95,15 @@ func planningMetadata(existing *structpb.Struct) *structpb.Struct {
 	return metadata
 }
 
-func decodeDefinition(output *structpb.Struct) (*pb.WorkflowDefinition, error) {
+// DecodeDefinition converte a saída estruturada de um planejador (JSON com
+// workflow_id, final_step_id e steps[step_id, type, goal, payload,
+// required_capabilities, depends_on, input_bindings, bdi_goal]) em uma
+// WorkflowDefinition do contrato. Campos desconhecidos são rejeitados. O laço
+// de missão reutiliza esta função para o campo `plan` de PlannerResponse.
+func DecodeDefinition(output *structpb.Struct) (*pb.WorkflowDefinition, error) {
+	if output == nil {
+		return nil, fmt.Errorf("plan is required")
+	}
 	encoded, err := json.Marshal(output.AsMap())
 	if err != nil {
 		return nil, err

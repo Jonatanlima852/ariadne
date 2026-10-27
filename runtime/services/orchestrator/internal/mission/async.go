@@ -27,6 +27,12 @@ func NewAsyncRunner(runner *Runner) *AsyncRunner {
 	return &AsyncRunner{runner: runner, active: make(map[string]activeMission)}
 }
 
+// Run executa a missão de forma síncrona (RunMission), preso ao contexto do
+// RPC: se o cliente desistir, o laço é cancelado cooperativamente.
+func (a *AsyncRunner) Run(ctx context.Context, request *pb.MissionRequest) (*pb.MissionResult, *pb.ErrorInfo) {
+	return a.runner.Run(ctx, request)
+}
+
 // Start valida a requisição, registra a missão como CREATED e devolve o
 // mission_id assim que ela estiver visível no Store.
 func (a *AsyncRunner) Start(request *pb.MissionRequest) (string, *pb.ErrorInfo) {

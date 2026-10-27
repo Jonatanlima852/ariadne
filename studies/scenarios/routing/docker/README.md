@@ -1,7 +1,7 @@
-# Cenário heterogêneo de rotas
+# Missão de rotas em contêineres
 
-Topologia isolada para o workflow automático `LLM -> BDI -> LLM`. Execute os
-comandos a partir da raiz do repositório.
+Topologia isolada para a missão `planejador LLM -> rota BDI -> explicação LLM`.
+Execute os comandos a partir da raiz do repositório.
 
 ## Configuração
 
@@ -12,12 +12,11 @@ cp studies/scenarios/routing/docker/.env.example \
   studies/scenarios/routing/docker/.env
 ```
 
-Variáveis:
-
 | Variável | Uso | Default |
 |---|---|---:|
 | `OPENAI_API_KEY` | credencial da Responses API; obrigatória | — |
 | `LLM_MODEL` | modelo usado pelo agente LLM | `gpt-5.6-luna` |
+| `ROUTING_DEMO` | `1` troca o modelo pelo substituto determinístico | `0` |
 | `REGISTRY_PORT` | Registry no host | `50051` |
 | `ORCHESTRATOR_PORT` | Orchestrator no host | `50052` |
 | `BDI_AGENT_PORT` | agente BDI no host | `60054` |
@@ -35,9 +34,9 @@ Com Docker e Compose >=2.24.4 e a chave configurada acima:
 ./ariadne scenario heterogeneous-route
 ```
 
-O executor roda também o cliente em contêiner, salva o relatório em
-`.ariadne/runs/ID/result.json` e encerra os serviços. Há chamadas reais à LLM.
-Veja [configuração e prazos](../../../../docs/cli.md).
+O executor roda o cliente [scenario.py](scenario.py) em contêiner, salva o
+`MissionResult` em `.ariadne/runs/ID/result.json` e encerra os serviços. Há
+chamadas reais à LLM. Veja [configuração e prazos](../../../../docs/cli.md).
 
 ## Execução manual (Python e uv no host)
 
@@ -49,10 +48,14 @@ docker compose \
 
 ORCHESTRATOR_ADDR=localhost:50052 \
 uv run --project sdk/python \
-  python studies/scenarios/routing/scenario.py
+  python studies/scenarios/routing/docker/scenario.py
 ```
 
-O relatório é salvo em `studies/scenarios/routing/runtime_metrics/results/heterogeneous-report.json`.
+Com `ROUTING_DEMO=1` exportado antes do `up`, passe `--demo` ao cliente: ele
+confere que os agentes LLM usaram o substituto. O relatório é salvo em
+`studies/scenarios/routing/runtime_metrics/results/mission-result.json`.
+Sem Docker, a mesma missão roda com `./ariadne run` (veja o
+[README do cenário](../README.md)).
 
 ## Logs e limpeza
 
@@ -70,10 +73,11 @@ Use `down -v` somente quando também quiser apagar os eventos. O nome de
 projeto `ariadne-heterogeneous-route` mantém rede e volume separados do Compose
 baseline em `tools/deploy/`.
 
-O cliente envia somente a pergunta com a capability `task-decomposition`. O
-Orchestrator solicita o DAG ao agente LLM, valida-o, executa o agente BDI,
-injeta o resultado por bindings no step de explicação e agrega a resposta. O
-relatório inclui `workflow_id`, `run_id`, métricas de duração e resultados por
-step.
+O cliente envia apenas o objetivo e o contexto (`origin`, `destination`,
+`graph`) com `RunMission`. O Orchestrator pede o plano ao agente
+`mission-planning`, executa o passo BDI, injeta o resultado por binding no
+passo de explicação, devolve a rodada ao planejador e termina com `DONE`.
+O cliente confere o resultado com `check_mission` (estado, agentes LLM e BDI,
+rota `A -> B -> D` com distância 25 e rastro de deliberação).
 
 [Catálogo de cenários](../../../../docs/scenarios.md)

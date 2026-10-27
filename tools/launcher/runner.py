@@ -22,7 +22,7 @@ AGENTS = {
     "workflow-sequential": {"workflow-echo": "echo"},
     "failure-reassignment": {"a-slow": "recovery-test", "b-healthy": "recovery-test"},
     "messaging-basic": {},
-    "heterogeneous-route": {"route-planner-01": "route-planning", "planner-explainer-01": "task-decomposition"},
+    "heterogeneous-route": {"route-planner-01": "route-planning", "planner-explainer-01": "mission-planning"},
     "logistics-mission": {"mission-planner-01": "logistics-execution", "mission-assistant-01": "logistics-interpret"},
 }
 
@@ -119,7 +119,7 @@ def main():
                 if scenario == "demo":
                     demo()
                 else:
-                    runpy.run_path(str(ROOT / "studies/scenarios" / {"workflow-sequential": "sequential_workflow", "failure-reassignment": "failure_reassignment", "messaging-basic": "messaging", "heterogeneous-route": "routing", "logistics-mission": "logistics"}[scenario] / ("scenario.py" if scenario in {"heterogeneous-route", "messaging-basic"} else "docker/scenario.py")), run_name="__main__")
+                    runpy.run_path(str(ROOT / "studies/scenarios" / {"workflow-sequential": "sequential_workflow", "failure-reassignment": "failure_reassignment", "messaging-basic": "messaging", "heterogeneous-route": "routing", "logistics-mission": "logistics"}[scenario] / ("scenario.py" if scenario == "messaging-basic" else "docker/scenario.py")), run_name="__main__")
         summary["status"] = "COMPLETED"
         code = 0
         print(f"Cenário aprovado: {scenario}")

@@ -47,7 +47,7 @@ def summarize(case, samples, **extra):
     latencies = [sample["latency_ms"] for sample in samples]
     completed = [
         sample for sample in samples
-        if sample["status"] in ("TASK_STATUS_COMPLETED", "WORKFLOW_STATUS_COMPLETED")
+        if sample["status"] in ("TASK_STATUS_COMPLETED", "WORKFLOW_STATUS_COMPLETED", "MISSION_STATUS_COMPLETED")
     ]
     agents = Counter(
         sample["agent_id"] for sample in samples if sample.get("agent_id")

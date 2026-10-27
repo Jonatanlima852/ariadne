@@ -29,14 +29,16 @@ campo do proto (snake_case), mais duas chaves do SDK:
 | `rounds[].plan.steps[].depends_on` | `WorkflowDefinition` | setas entre passos |
 | `rounds[].result.step_results[].task` | `WorkflowStepResult.task` | entrada de um passo |
 | `rounds[].result.step_results[].result` | `WorkflowStepResult.result` | saída de um passo e cor do quadro (`status`) |
+| `rounds[].planner_task.payload` | `Task` enviada ao planejador | entrada do planejador (`PlannerRequest`, com `available_capabilities`) |
 | `rounds[].planner_result.output` | `TaskResult` do planejador | saída do planejador (`PlannerResponse`) |
 | `request` | `MissionRequest` enviado pelo cliente | objetivo no resumo |
-| `planner_calls[].request` | reconstruído pelo SDK | entrada do planejador (`PlannerRequest`) |
+| `planner_calls[].request` | `planner_task.payload`, ou reconstruído pelo SDK | entrada do planejador quando a rodada não traz `planner_task` |
 | `planner_calls[].response` | `planner_result.output` | saída do planejador |
 
-`planner_calls[].request` é remontado pelo SDK a partir do objetivo, do
-contexto anterior à rodada, do histórico e dos limites; o contrato não guarda
-`available_capabilities` no resultado, então essa lista fica vazia.
+A entrada do planejador é lida de `rounds[].planner_task.payload`. Só em
+arquivos gravados antes desse campo existir o visualizador cai em
+`planner_calls[].request`, que o SDK remonta a partir do objetivo, do contexto
+anterior à rodada, do histórico e dos limites, sem `available_capabilities`.
 
 Um `WorkflowResult` do contrato (`step_results` na raiz) é desenhado como uma
 única rodada sem quadro de planejador; como ele não carrega a definição, não

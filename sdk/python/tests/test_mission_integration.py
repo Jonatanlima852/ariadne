@@ -78,6 +78,14 @@ class MissionIntegrationTests(unittest.TestCase):
         self.assertEqual(step["result"]["output"], {"text": "OLÁ, MISSÃO"})
         self.assertEqual(step["result"]["agent_id"], "echo")
         self.assertEqual(second["action"], "PLANNER_ACTION_DONE")
+        # The task sent to the planner is stored with the PlannerRequest as payload.
+        planner_task = first["planner_task"]
+        self.assertEqual(planner_task["type"], "MISSION_PLANNING")
+        self.assertEqual(planner_task["assigned_agent_id"], "planner")
+        self.assertEqual(planner_task["payload"]["round"], 1)
+        self.assertIn("echo", [item["capability_id"] for item in planner_task["payload"]["available_capabilities"]])
+        self.assertEqual(saved["planner_calls"][0]["request"], planner_task["payload"])
+        self.assertEqual(saved["planner_calls"][1]["request"]["round"], 2)
         self.assertEqual(second["planner_result"]["output"]["action"], "DONE")
         calls = saved["planner_calls"]
         self.assertEqual(calls[0]["request"]["context"], {"text": "olá, missão"})

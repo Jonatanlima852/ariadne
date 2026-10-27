@@ -126,7 +126,7 @@ function normalize(doc) {
           planner: {
             id: `round-${round.round}-planner`, kind: 'planner', status: actionClass(round.action),
             label: `Rodada ${round.round}: ${String(round.action || '').replace('PLANNER_ACTION_', '')}`,
-            agent: round.planner_agent_id, input: call.request || null, output: response,
+            agent: round.planner_agent_id, input: (round.planner_task && round.planner_task.payload) || call.request || null, output: response,
             failed: round.planner_result && statusClass(round.planner_result.status) === 'failed',
           },
           steps: stepsFromWorkflow(round.result, round.plan || (planFromResponse ? { steps: planFromResponse.steps } : null)),

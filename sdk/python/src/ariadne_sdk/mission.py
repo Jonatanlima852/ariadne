@@ -263,6 +263,15 @@ class MissionRound:
             if message.HasField("planner_result") else None
         )
         self.planner_response = dict(self.planner_result.output) if self.planner_result else {}
+        self.planner_task = (
+            message_to_dict(message.planner_task) if message.HasField("planner_task") else {}
+        )
+        # Payload da tarefa enviada ao planejador: o PlannerRequest como JSON.
+        self.planner_request = (
+            struct_to_dict(message.planner_task.payload)
+            if message.HasField("planner_task") and message.planner_task.HasField("payload")
+            else {}
+        )
 
     @property
     def step(self) -> dict[str, MissionStep]:
@@ -296,10 +305,11 @@ class PlannerCall:
 class MissionResult:
     """Resultado de ``RunMission``/``GetMission``/``CancelMission``.
 
-    ``to_dict`` devolve o ``MissionResult`` do contrato (nomes do proto) mais
-    duas chaves do SDK: ``request`` (o ``MissionRequest`` enviado, quando
-    conhecido) e ``planner_calls`` (``PlannerRequest``/``PlannerResponse`` de
-    cada rodada). O visualizador em ``tools/mission-viewer`` lê esse arquivo.
+    ``to_dict`` devolve o ``MissionResult`` do contrato (nomes do proto,
+    incluindo ``rounds[].planner_task``) mais duas chaves do SDK: ``request``
+    (o ``MissionRequest`` enviado, quando conhecido) e ``planner_calls``
+    (``PlannerRequest``/``PlannerResponse`` de cada rodada). O visualizador em
+    ``tools/mission-viewer`` lê esse arquivo.
     """
 
     def __init__(self, message: contract_pb2.MissionResult, request: contract_pb2.MissionRequest | None = None):
@@ -348,12 +358,14 @@ class MissionResult:
 
     @property
     def planner_calls(self) -> list[PlannerCall]:
-        """Reconstrói o ``PlannerRequest`` de cada rodada e decodifica a resposta.
+        """Entrada e saída do planejador em cada rodada.
 
-        O contrato guarda a resposta (``planner_result.output``), mas não a
-        requisição; ela é remontada a partir do objetivo, do contexto anterior
-        e do histórico. ``available_capabilities`` não é preservado pelo
-        ``MissionResult`` e fica vazio.
+        A entrada é o payload de ``MissionRound.planner_task`` (o
+        ``PlannerRequest`` que o orquestrador enviou, com
+        ``available_capabilities``). Quando a rodada não traz esse campo
+        (resultados gravados antes dele existir), a requisição é remontada a
+        partir do objetivo, do contexto anterior e do histórico, sem a lista
+        de capacidades.
         """
         calls = []
         context = struct_to_dict(self.request.context) if (
@@ -361,20 +373,24 @@ class MissionResult:
         ) else {}
         history: list[contract_pb2.RoundSummary] = []
         for item in self.rounds:
-            request = contract_pb2.PlannerRequest(
-                mission_id=self.mission_id,
-                goal=self.goal,
-                round=item.round,
-                context=mapping_to_struct(context),
-                history=list(history),
-            )
-            if self.request is not None and self.request.HasField("limits"):
-                request.limits.CopyFrom(self.request.limits)
+            if item.planner_request:
+                request_document = dict(item.planner_request)
+            else:
+                request = contract_pb2.PlannerRequest(
+                    mission_id=self.mission_id,
+                    goal=self.goal,
+                    round=item.round,
+                    context=mapping_to_struct(context),
+                    history=list(history),
+                )
+                if self.request is not None and self.request.HasField("limits"):
+                    request.limits.CopyFrom(self.request.limits)
+                request_document = message_to_dict(request)
             calls.append(PlannerCall(
                 round=item.round,
                 planner_agent_id=item.planner_agent_id,
                 action=item.action,
-                request=message_to_dict(request),
+                request=request_document,
                 response=dict(item.planner_response),
                 result=item.planner_result,
             ))

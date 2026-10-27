@@ -88,6 +88,20 @@ def build_mission_result(request):
         "output": {"items": ["a", "b"], "merged": False},
         "summary": "merge failed; returning partial result",
     }
+    first_request = pb.PlannerRequest(
+        mission_id=request.mission_id, goal=request.goal, round=1, context=request.context,
+        limits=request.limits, available_capabilities=[
+            pb.CapabilitySummary(capability_id="merging", name="Merging", agent_count=1),
+            pb.CapabilitySummary(capability_id="mission-planning", name="Planning", agent_count=1),
+            pb.CapabilitySummary(capability_id="picking", name="Picking", agent_count=2),
+        ],
+    )
+    first_task = pb.Task(
+        task_id="t-plan-1", type="MISSION_PLANNING", goal=request.goal,
+        payload=mapping_to_struct(json_format.MessageToDict(first_request, preserving_proto_field_name=True)),
+        required_capabilities=["mission-planning"], assigned_agent_id="planner-llm", attempt=1,
+        parent_task_id="root-1",
+    )
     return pb.MissionResult(
         mission_id=request.mission_id, status=pb.MISSION_STATUS_COMPLETED,
         output=mapping_to_struct({"items": ["a", "b"], "merged": False}),
@@ -101,7 +115,9 @@ def build_mission_result(request):
                 context_after=mapping_to_struct({"warehouse": "W1", "attempt": 1}),
                 started_at=_timestamp(100), completed_at=_timestamp(102),
                 planner_result=planner_result("t-plan-1", "planner-llm", first_response),
+                planner_task=first_task,
             ),
+            # A rodada 2 não traz planner_task de propósito: exercita a reconstrução.
             pb.MissionRound(
                 round=2, planner_agent_id="planner-llm", action=pb.PLANNER_ACTION_DONE,
                 planner_summary="merge failed; returning partial result",
@@ -211,15 +227,29 @@ class RunMissionTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "not used"):
             result.assert_agent_used("nobody")
 
-    def test_planner_calls_rebuild_request_and_decode_response(self):
+    def test_planner_calls_read_stored_task_or_rebuild_request_and_decode_response(self):
         _, _, result = self.run_mission()
         calls = result.planner_calls
         self.assertEqual([call.round for call in calls], [1, 2])
         first, second = calls
+        # Rodada 1: a entrada vem de planner_task.payload, com as capacidades.
         self.assertEqual(first.request["goal"], "Separe e consolide o pedido o-1")
         self.assertEqual(first.request["context"], {"warehouse": "W1"})
         self.assertEqual(first.request["limits"], {"max_rounds": 3, "max_parallel": 2})
         self.assertNotIn("history", first.request)
+        self.assertEqual(
+            [item["capability_id"] for item in first.request["available_capabilities"]],
+            ["merging", "mission-planning", "picking"],
+        )
+        self.assertEqual(PlannerRequest.from_payload(first.request).capability_ids[2], "picking")
+        self.assertEqual(result.rounds[0].planner_task["assigned_agent_id"], "planner-llm")
+        self.assertEqual(result.rounds[0].planner_task["attempt"], 1)
+        self.assertEqual(result.rounds[0].planner_request, first.request)
+        # Rodada 2: sem planner_task, a entrada é reconstruída (sem capacidades).
+        self.assertEqual(result.rounds[1].planner_task, {})
+        self.assertNotIn("available_capabilities", second.request)
+        self.assertEqual(second.request["goal"], "Separe e consolide o pedido o-1")
+        self.assertEqual(second.request["limits"], {"max_rounds": 3, "max_parallel": 2})
         self.assertEqual(first.response["action"], "PLAN")
         self.assertEqual(PlannerResponse.from_output(first.response).plan["final_step_id"], "merge")
         self.assertEqual(second.request["round"], 2)
@@ -246,6 +276,10 @@ class RunMissionTests(unittest.TestCase):
         self.assertEqual(round_one["result"]["step_results"][0]["task"]["required_capabilities"], ["picking"])
         self.assertEqual(round_one["result"]["step_results"][1]["result"]["status"], "TASK_STATUS_FAILED")
         self.assertEqual(round_one["planner_result"]["output"]["action"], "PLAN")
+        self.assertEqual(round_one["planner_task"]["type"], "MISSION_PLANNING")
+        self.assertEqual(round_one["planner_task"]["payload"]["round"], 1)
+        self.assertEqual(round_one["planner_task"]["payload"], document["planner_calls"][0]["request"])
+        self.assertNotIn("planner_task", document["rounds"][1])
         self.assertEqual(document["request"]["planner_capability"], "mission-planning")
         self.assertEqual(document["planner_calls"][1]["response"]["action"], "DONE")
         self.assertNotIn("missionId", json.dumps(document))

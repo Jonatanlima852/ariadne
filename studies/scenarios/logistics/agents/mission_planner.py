@@ -1,6 +1,6 @@
 """Declaração reutilizável; o SDK administra o ciclo do agente."""
 from ariadne_sdk import BdiAgent, Input, Plan
-from ..planning import plan_mission
+from studies.scenarios.logistics.domain.planning import plan_mission
 
 
 def mission_planner(**options):

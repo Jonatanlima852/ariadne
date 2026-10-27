@@ -2,10 +2,10 @@ import json
 import unittest
 from pathlib import Path
 
-from studies.scenarios.logistics.domain import evaluate_plan, plan_mission
+from studies.scenarios.logistics.domain.simulation import evaluate_plan, plan_mission
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1] / "datasets"
 
 
 class LogisticsDomainTests(unittest.TestCase):

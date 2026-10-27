@@ -87,7 +87,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         source.write_text(
             "import os, sys\nfrom unittest.mock import patch\n"
             f"sys.path.insert(0, {str(ROOT)!r})\n"
-            "from studies.scenarios.logistics.test_study import FakeClient\n"
+            "from studies.scenarios.logistics.tests.test_study import FakeClient\n"
             "from ariadne_sdk.execution import load_scenario\n"
             "with patch.dict(os.environ, {'LOGISTICS_STRATEGY':'hybrid', 'LOGISTICS_CASE':'avoid-contamination', 'LLM_MODEL':'test-only'}):\n"
             f"    scenario = load_scenario({str(ROOT / 'studies/scenarios/logistics/scenario.py')!r})\n"

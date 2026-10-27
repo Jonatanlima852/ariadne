@@ -37,7 +37,7 @@ def main(argv=None):
             run(['go', 'build', '-o', binaries / f'ariadne-{service}', f'./services/{service}/cmd'], cwd=ROOT / 'runtime')
         environment['ARIADNE_TEST_RUNTIME_DIR'] = str(binaries)
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'sdk/python/tests', '-q'])
-    run([sys.executable, '-m', 'unittest', 'studies.scenarios.logistics.test_domain', 'studies.scenarios.logistics.test_study', 'studies.scenarios.routing.test_agents', 'studies.test_layout', '-q'])
+    run([sys.executable, '-m', 'unittest', 'studies.scenarios.logistics.tests.test_domain', 'studies.scenarios.logistics.tests.test_study', 'studies.scenarios.routing.test_agents', 'studies.test_layout', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/launcher', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/runtime_metrics', '-q'])
 

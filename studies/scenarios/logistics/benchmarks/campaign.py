@@ -4,7 +4,7 @@ from pathlib import Path
 
 from ariadne_sdk import Campaign
 from ariadne_sdk.campaign import run_campaign
-from studies.scenarios.logistics.data import load_cases
+from studies.scenarios.logistics.datasets.loader import load_cases
 
 
 def main(argv=None):

@@ -5,9 +5,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from studies.scenarios.logistics.data import load_case, load_cases, load_world
-from studies.scenarios.logistics.domain import plan_mission
-from studies.scenarios.logistics.evaluate import evaluate_run, summarize, main as evaluate
+from studies.scenarios.logistics.datasets.loader import load_case, load_cases, load_world
+from studies.scenarios.logistics.domain.simulation import plan_mission
+from studies.scenarios.logistics.evaluation.evaluate import evaluate_run, summarize, main as evaluate
 
 
 class FakeClient:
@@ -67,7 +67,7 @@ class StudyTests(unittest.TestCase):
 
     def test_all_strategy_descriptions_have_labels_and_share_domain(self):
         from ariadne_sdk.execution import load_scenario
-        source = Path(__file__).with_name("scenario.py")
+        source = (Path(__file__).resolve().parents[1] / "scenario.py")
         for strategy in ("llm-only", "hybrid"):
             with patch.dict(os.environ, {"LOGISTICS_STRATEGY": strategy}), patch("openai.OpenAI", return_value=FakeClient()):
                 scenario = load_scenario(source)
@@ -82,10 +82,10 @@ class StudyTests(unittest.TestCase):
         from ariadne_sdk.execution import load_scenario
         with patch.dict(os.environ, {"LOGISTICS_STRATEGY": "bdi-only"}):
             with self.assertRaisesRegex(ValueError, "unknown logistics strategy"):
-                load_scenario(Path(__file__).with_name("scenario.py"))
+                load_scenario((Path(__file__).resolve().parents[1] / "scenario.py"))
 
     def test_two_strategy_report_does_not_require_standalone_bdi(self):
-        from studies.scenarios.logistics.reporting import aggregate
+        from studies.scenarios.logistics.evaluation.reporting import aggregate
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
             self.make_run(directory, "avoid-contamination")
@@ -133,13 +133,13 @@ class StudyTests(unittest.TestCase):
     @unittest.skipUnless(os.getenv("ARIADNE_TEST_RUNTIME_DIR"), "requires real local runtime binaries")
     def test_hybrid_through_runtime_with_explicit_fake_provider(self):
         from ariadne_sdk.execution import run_experiment
-        experiment = Path(__file__).with_name("scenario.py").resolve()
+        experiment = (Path(__file__).resolve().parents[1] / "scenario.py").resolve()
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
             source = directory / "fake_hybrid.py"
             source.write_text(
                 "import os\nfrom unittest.mock import patch\n"
-                "from studies.scenarios.logistics.test_study import FakeClient\n"
+                "from studies.scenarios.logistics.tests.test_study import FakeClient\n"
                 "from ariadne_sdk.execution import load_scenario\n"
                 "with patch.dict(os.environ, {'LOGISTICS_STRATEGY':'hybrid', 'LOGISTICS_CASE':'avoid-contamination', 'LLM_MODEL':'test-only'}), "
                 "patch('openai.OpenAI', return_value=FakeClient()):\n"

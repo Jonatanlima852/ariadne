@@ -1,14 +1,14 @@
 """Entradas Docker dos mesmos agentes usados pelo cenário local."""
 import os
 import sys
-from .mission_planner import mission_planner
+from studies.scenarios.logistics.agents.mission_planner import mission_planner
 
 
 def make_agent(kind):
     if kind == "planner":
         factory, name, port = mission_planner, "mission-planner", 60054
     elif kind == "assistant":
-        from .mission_assistant import mission_assistant
+        from studies.scenarios.logistics.agents.mission_assistant import mission_assistant
         factory, name, port = mission_assistant, "mission-assistant", 60056
     else:
         raise ValueError(f"unknown logistics agent: {kind}")

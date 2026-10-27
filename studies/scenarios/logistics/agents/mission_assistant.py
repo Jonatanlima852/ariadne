@@ -1,7 +1,7 @@
 """Capacidades logísticas reutilizáveis, sem subclasse de agente."""
 import json
 from ariadne_sdk import LlmAgent, LlmCapability, Prompt
-from .mission_models import LogisticsPlan, LogisticsInterpretation
+from studies.scenarios.logistics.agents.mission_models import LogisticsPlan, LogisticsInterpretation
 
 
 def normalize_logistics_plan(plan):

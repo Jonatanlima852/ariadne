@@ -7,9 +7,9 @@ from pathlib import Path
 import statistics
 import uuid
 
-from studies.scenarios.logistics.domain import evaluate_plan, plan_mission
+from studies.scenarios.logistics.domain.simulation import evaluate_plan, plan_mission
 from studies.evidence import analysis_provenance
-from studies.scenarios.logistics.reporting import write_csv, write_chart
+from studies.scenarios.logistics.evaluation.reporting import write_csv, write_chart
 
 
 def evaluate_run(directory):
@@ -124,7 +124,7 @@ def main(argv=None):
                 "sources": [str(path) for path in dict.fromkeys(runs)], "campaigns": campaigns,
                 "rows": rows, "summary": summaries,
                 "provenance": analysis_provenance(__file__, list(dict.fromkeys(runs)),
-                    [Path(__file__).with_name("domain.py"), Path(__file__).with_name("reporting.py")]),
+                    [Path(__file__).resolve().parents[1] / "domain/simulation.py", Path(__file__).with_name("reporting.py")]),
                 "limitations": ["shared domain rules between planner and evaluator", "correct rejections count as optimal",
                                 "consistency requires at least two observations of the same case and world",
                                 "new workflow latencies are not identical to historical single-task measurements"]}

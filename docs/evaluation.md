@@ -77,7 +77,7 @@ Artefatos para inspeção:
 - [Sumário CSV](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
 - [Gráfico registrado](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
 - [Eventos JSONL](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
-- [Mundo](../studies/scenarios/logistics/world.json), [casos](../studies/scenarios/logistics/cases.json) e [avaliador](../studies/scenarios/logistics/domain.py)
+- [Mundo](../studies/scenarios/logistics/datasets/world.json), [casos](../studies/scenarios/logistics/datasets/cases.json) e [avaliador](../studies/scenarios/logistics/domain/simulation.py)
 
 Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
 Na execução declarativa atual, o BDI usa a busca genérica do SDK e o avaliador
@@ -100,7 +100,7 @@ O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scen
 ```sh
 ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
 uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
-python3 -m studies.scenarios.logistics.evaluate .ariadne/campaigns/logistics-ID
+python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/campaigns/logistics-ID
 ```
 
 Os dois primeiros comandos usam o fluxo híbrido por padrão e fazem chamadas LLM.

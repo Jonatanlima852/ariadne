@@ -15,8 +15,8 @@ sys.path.insert(0, str(ROOT / "sdk/python/src"))
 
 from studies.scenarios.logistics import evaluate_plan, plan_mission
 from ariadne_sdk import RuntimeClient
-from studies.scenarios.logistics.reporting import aggregate, write_csv, write_chart
-from studies.scenarios.logistics.legacy import run_llm, run_hybrid
+from studies.scenarios.logistics.evaluation.reporting import aggregate, write_csv, write_chart
+from studies.scenarios.logistics.docker.legacy_client import run_llm, run_hybrid
 
 
 def measured(operation):
@@ -47,8 +47,8 @@ def extract(strategy, result):
 
 
 def main():
-    world = json.loads((ROOT / "studies/scenarios/logistics/world.json").read_text())
-    cases = json.loads((ROOT / "studies/scenarios/logistics/cases.json").read_text())
+    world = json.loads((ROOT / "studies/scenarios/logistics/datasets/world.json").read_text())
+    cases = json.loads((ROOT / "studies/scenarios/logistics/datasets/cases.json").read_text())
     repetitions = int(os.getenv("LOGISTICS_REPETITIONS", "2"))
     output_dir = Path(os.getenv("LOGISTICS_OUTPUT_DIR", ROOT / "studies/scenarios/logistics/benchmarks/results/logistics-current"))
     output_dir.mkdir(parents=True, exist_ok=True)

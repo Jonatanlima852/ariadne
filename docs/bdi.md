@@ -111,7 +111,7 @@ memória; geradores de ações devem terminar e a tarefa continua sujeita aos
 prazos do runtime. Um estado inicial que já satisfaz o objetivo exige zero
 expansões.
 
-A [logística](../studies/scenarios/logistics/planning.py) usa esse algoritmo com suas
+A [logística](../studies/scenarios/logistics/domain/planning.py) usa esse algoritmo com suas
 precondições e efeitos. O avaliador offline conserva sua busca de referência;
 as duas implementações ainda compartilham as regras de domínio. Testes comparam
 os oito casos e variações de prazo, sem alegar independência completa do oráculo.

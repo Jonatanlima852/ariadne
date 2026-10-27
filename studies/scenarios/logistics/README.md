@@ -3,7 +3,23 @@
 Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação
 offline. [scenario.py](scenario.py) declara os participantes e tarefas;
 o SDK administra processos e o runtime Go executa o workflow.
-[evaluate.py](evaluate.py) analisa evidências depois, sem iniciar serviços.
+[evaluate.py](evaluation/evaluate.py) analisa evidências depois, sem iniciar serviços.
+
+## Mapa de leitura
+
+| Pasta/entrada | O que ler aqui |
+|---|---|
+| `scenario.py` | Declaração do estudo original, agentes e tarefas |
+| `domain/` | Simulação de referência e adaptação ao planejador do SDK |
+| `datasets/` | Mundo, casos fixos e carregamento de dados |
+| `agents/` | Interpretação LLM e planejamento BDI |
+| `benchmarks/` | Coleta de campanhas e comparação histórica |
+| `evaluation/` | Avaliação offline, métricas e relatórios |
+| `docker/` | Topologia, cliente e adaptadores históricos |
+| `tests/` | Testes de domínio e reprodução do estudo |
+
+Comece por `scenario.py`, acompanhe os agentes em `agents/` e consulte
+`domain/` para as regras. Para analisar uma coleta, siga para `evaluation/`.
 
 ## Executar um caso
 
@@ -34,7 +50,7 @@ no híbrido, `interpret.output["mission"]` transfere a interpretação ao BDI.
 
 O mundo, os oito casos, os prompts logísticos e as regras foram preservados.
 Os consumidores Docker históricos reutilizam os agentes e domínio movidos;
-os adaptadores antigos de cliente estão em [legacy.py](legacy.py).
+os adaptadores antigos de cliente estão em [legacy_client.py](docker/legacy_client.py).
 
 ## Coletar uma campanha
 
@@ -67,8 +83,8 @@ caminho informado no terminal, por exemplo `./ariadne status CAMINHO/DA/EXECUCAO
 O avaliador usa somente a biblioteca padrão do Python:
 
 ```sh
-python3 -m studies.scenarios.logistics.evaluate .ariadne/runs/ariadne-ID
-python3 -m studies.scenarios.logistics.evaluate .ariadne/campaigns/logistics-ID
+python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/runs/ariadne-ID
+python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/campaigns/logistics-ID
 ```
 
 Substitua os IDs pelos caminhos reais. É possível fornecer várias entradas.
@@ -87,8 +103,8 @@ e quantas execuções foram registradas. Observações que nem chegaram a inicia
 não entram nas taxas; essa incompletude fica explicitada no relatório.
 
 O BDI declara entradas e um plano em [mission_planner.py](agents/mission_planner.py), usando a busca genérica
-do SDK por meio de [planning.py](planning.py). O avaliador conserva sua busca
-de referência em `domain.py`; as regras de domínio ainda são compartilhadas.
+do SDK por meio de [planning.py](domain/planning.py). O avaliador conserva sua busca
+de referência em `domain/simulation.py`; as regras de domínio ainda são compartilhadas.
 A otimalidade agregada inclui rejeições corretas. Preserve a revisão do avaliador para reproduzir
 uma análise. Tokens nos resultados podem não incluir tentativas que falharam
 antes de retornar metadados.
@@ -104,7 +120,7 @@ disponível no avaliador, sem recolher BDI isolado.
 
 ```sh
 uv run --project sdk/python --extra llm python -m unittest \
-  studies.scenarios.logistics.test_domain studies.scenarios.logistics.test_study -q
+  studies.scenarios.logistics.tests.test_domain studies.scenarios.logistics.tests.test_study -q
 ```
 
 Com `ARIADNE_TEST_RUNTIME_DIR="$PWD/.ariadne/bin"`, inclui integração híbrida com Go real

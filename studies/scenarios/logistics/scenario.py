@@ -2,7 +2,7 @@
 import os
 from ariadne_sdk import Scenario, Step
 from studies.scenarios.logistics.agents.mission_planner import mission_planner
-from studies.scenarios.logistics.data import load_case, load_world
+from studies.scenarios.logistics.datasets.loader import load_case, load_world
 
 case = load_case(os.getenv("LOGISTICS_CASE", "avoid-contamination"))
 world = load_world()
@@ -23,7 +23,7 @@ else:
 
 scenario = Scenario(
     name=f"logistics-{strategy}-{case['id']}", agents=agents, tasks=tasks,
-    artifacts=["world.json", "cases.json"],
+    artifacts=["datasets/world.json", "datasets/cases.json"],
     metadata={"study": "logistics", "strategy": strategy, "case": case, "world": world,
               "model": getattr(agents[0], "model", None)},
 )

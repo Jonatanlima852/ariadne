@@ -27,7 +27,8 @@ from studies.scenarios.logistics.v3.agents.common import llm_runtime
 from studies.scenarios.logistics.v3.domain.adapters import DELIVERY_CAPABILITY, EXECUTE_CAPABILITY
 from studies.scenarios.logistics.v3.domain.cases import load_cases
 from studies.scenarios.logistics.v3.mission import (
-    CONFIGURATIONS, DELIVERY_AGENTS, DEMO_PROVIDER, MAX_ROUNDS, RETRY_POLICY, episode_metrics, limits, mission_for,
+    CONFIGURATIONS, DELIVERY_AGENTS, DEMO_PROVIDER, MAX_ROUNDS, RETRY_POLICY, SELECTION_POLICY, episode_metrics, limits,
+    mission_for,
 )
 
 HERE = Path(__file__).resolve().parents[1]
@@ -126,7 +127,7 @@ def main(argv=None):
                 'repeat': args.repeat, 'planned_observations': len(cases) * len(args.configurations) * args.repeat,
                 'execution_kind': kind, 'model': None if args.demo else args.model,
                 'max_rounds': args.max_rounds, 'limits': limits(args.max_rounds, args.delivery_agents).to_dict(),
-                'retry_policy': RETRY_POLICY, 'delivery_agents': args.delivery_agents,
+                'retry_policy': RETRY_POLICY, 'selection_policy': SELECTION_POLICY, 'delivery_agents': args.delivery_agents,
                 'cases': cases, 'configurations': args.configurations,
                 'planner_capabilities': {c: CONFIGURATIONS[c] for c in args.configurations},
                 'rules': RULES.strip(), 'loop': 'Go mission loop (contract 2.0.0); incidents fired by the execute agent',
@@ -155,7 +156,8 @@ def main(argv=None):
                         with RuntimeClient(f'logistics-v3-{name}', args.orchestrator_addr) as client:
                             result = client.run_mission(mission.goal, context=mission.context, limits=mission.limits,
                                                         planner_capability=mission.planner_capability,
-                                                        retry_policy=mission.retry_policy, metadata=mission.metadata,
+                                                        retry_policy=mission.retry_policy, selection_policy=mission.selection_policy,
+                                                        metadata=mission.metadata,
                                                         rpc_timeout=args.rpc_timeout)
                             document = result.to_dict()
                             check_provider(document, demo=args.demo, model=args.model)

@@ -18,6 +18,8 @@ CONFIGURATIONS = {'ariadne-v3': PLANNER_CAPABILITY, 'single-llm-v3': SINGLE_LLM_
 DELIVERY_AGENTS = 3
 MAX_ROUNDS = 20
 RETRY_POLICY = {'max_attempts': 2, 'exclude_failed_agent': True}
+# Passos paralelos se distribuem entre os entregadores; FIRST_AVAILABLE mandaria todos ao primeiro.
+SELECTION_POLICY = 'round_robin'
 DEMO_PROVIDER = 'deterministic-integration-substitute'
 
 
@@ -32,7 +34,7 @@ def mission_for(case, configuration, *, max_rounds=MAX_ROUNDS, delivery_agents=D
         raise ValueError(f'unknown configuration: {configuration}')
     return Mission(goal=mission_goal(case), context=mission_context(case),
                    limits=limits(max_rounds, delivery_agents), planner_capability=CONFIGURATIONS[configuration],
-                   retry_policy=RETRY_POLICY,
+                   retry_policy=RETRY_POLICY, selection_policy=SELECTION_POLICY,
                    metadata={'study': 'logistics-v3', 'case': case['id'], 'suite': case.get('suite', 'basic'),
                              'configuration': configuration})
 

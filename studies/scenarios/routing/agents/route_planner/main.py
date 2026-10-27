@@ -1,120 +1,104 @@
-import json
-import logging
+"""Planejador de rotas: agente BDI deliberativo com crenças por tarefa.
+
+As crenças nascem do payload da tarefa (mapa, origem, destino, limite de
+escalas) e morrem com ela. O objetivo é sempre ``plan_route``; dois planos o
+atendem, e o ciclo de deliberação escolhe entre eles pelo custo estimado.
+"""
 import os
-import re
+
+from ariadne_sdk import BdiAgent, GoalPlan, SearchProblem, act, observe, uniform_cost_search
+from ariadne_sdk.plans import InputError
+
+# Mapa padrão do exemplo: arestas dirigidas origem -> {destino: distância}.
+# A ligação direta A->D existe (30), mas A->B->D (10 + 15 = 25) é mais curta:
+# é isso que mostra o agente escolhendo o melhor plano, não o primeiro.
+DEFAULT_GRAPH = {
+    "A": {"B": 10, "C": 25, "D": 30},
+    "B": {"C": 8, "D": 15},
+    "C": {"D": 6},
+}
 
 
-from ariadne_sdk import BdiAgent, plan
-
-from studies.scenarios.routing.agents.route_planner.beliefs import KNOWN_ROUTES
-from studies.scenarios.routing.agents.route_planner.plans import direct_route_plan, via_intermediate_plan, unknown_route_plan
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s [route-planner] %(message)s",
-)
-log = logging.getLogger(__name__)
-
-# casa frases como "de A para B" ou "from A to B" no goal em linguagem
-# natural — usado como reserva quando o payload estruturado não traz
-# origin/destination (ex.: outro agente só preencheu task.bdi.goal)
-_GOAL_ROUTE_PATTERN = re.compile(
-    r"(?:de|from)\s+(?P<origin>\w+)\s+(?:para|to)\s+(?P<destination>\w+)",
-    re.IGNORECASE,
-)
+def perceive(task):
+    """Crenças iniciais a partir do payload; campos faltantes invalidam a tarefa."""
+    payload = task.payload
+    if "origin" not in payload or "destination" not in payload:
+        raise InputError("missing payload input: origin and destination")
+    return {
+        "origin": str(payload["origin"]),
+        "destination": str(payload["destination"]),
+        "graph": payload.get("graph") or DEFAULT_GRAPH,
+        "max_stops": int(payload.get("max_stops", 1)),
+    }
 
 
-class RoutePlanningAgent(BdiAgent):
-    """Agente BDI de planejamento de rotas: o desejo é "ir de uma origem
-    a um destino"; ariadne_sdk.BdiAgent cuida de selecionar o plano e montar
-    o resultado — este agente só sabe extrair o desejo da task e
-    interpretar crenças externas vindas via BdiExtension."""
+def find_route(graph, origin, destination, max_stops):
+    """Ação: busca de custo uniforme sobre o mapa, com no máximo max_stops escalas.
 
-    capabilities = ["route-planning"]
-    beliefs = KNOWN_ROUTES
-    default_agent_id = "route-planner-01"
-    default_name = "Route Planner"
-    default_port = 60054
-    runtime_name = "python-sdk-bdi"
-
-    def desire(self, task):
-        """Lê origem e destino, com dois caminhos possíveis:
-
-        1. task.payload (campos 'origin'/'destination') — caminho
-           estruturado, preferido.
-        2. task.bdi.goal — reserva para quando outro agente (ex.: um
-           agente LLM) descreveu o objetivo em linguagem natural via
-           BdiExtension em vez de montar o payload estruturado.
-        """
-        origin = task.payload.get("origin")
-        destination = task.payload.get("destination")
-        if origin is not None and destination is not None:
-            return {"kind": "route", "origin": str(origin), "destination": str(destination)}
-
-        if task.bdi.get("goal"):
-            match = _GOAL_ROUTE_PATTERN.search(task.bdi["goal"])
-            if match:
-                log.info(
-                    "desejo extraído de task.bdi.goal task_id=%s goal=%r",
-                    task.task_id, task.bdi["goal"],
-                )
-                return {"kind": "route", "origin": match.group("origin"), "destination": match.group("destination")}
-
-        return None
-
-    @plan(name="direct_route")
-    def direct_route(self, desire, beliefs):
-        if desire.get("kind") == "route":
-            return direct_route_plan(desire, beliefs)
-
-    @plan(name="via_intermediate")
-    def via_intermediate(self, desire, beliefs):
-        if desire.get("kind") == "route":
-            return via_intermediate_plan(desire, beliefs)
-
-    @plan(name="unknown_route", priority=-100)
-    def unknown_route(self, desire, beliefs):
-        if desire.get("kind") == "route":
-            return unknown_route_plan(desire, beliefs)
-
-    def merge_external_beliefs(self, beliefs_text):
-        """Interpreta task.bdi.beliefs como uma lista JSON de rotas, ex.:
-
-            [{"from": "A", "to": "E", "distance": 12}, ...]
-
-        e mescla no mapa de crenças do agente. Esse é o ponto que permite
-        a outro agente (ex.: um agente LLM que consultou um mapa externo)
-        entregar conhecimento novo através do contrato comum, em vez de
-        cada agente viver isolado com suas próprias crenças fixas.
-        """
-        try:
-            routes = json.loads(beliefs_text)
-        except (json.JSONDecodeError, TypeError):
-            log.warning("task.bdi.beliefs não é um JSON válido — ignorando")
-            return
-
-        added = 0
-        for route in routes:
-            try:
-                key = (route["from"], route["to"])
-                self.beliefs[key] = route["distance"]
-                added += 1
-            except (KeyError, TypeError):
-                log.warning("entrada de crença externa ignorada (formato inesperado): %r", route)
-
-        if added:
-            log.info("crenças externas mescladas via task.bdi.beliefs: %d rota(s)", added)
-
-    def handle(self, task):
-        log.info("task received task_id=%s goal=%s", task.task_id, task.goal)
-        result = super().handle(task)
-        log.info("task finished task_id=%s status=%s", task.task_id, result.status)
-        return result
+    O estado é (nó, trechos percorridos) para que o limite de escalas faça
+    parte da busca e não seja checado depois.
+    """
+    result = uniform_cost_search(SearchProblem(
+        initial=(origin, 0),
+        actions=lambda state: sorted(graph.get(state[0], {}).items()),
+        transition=lambda state, edge: (edge[0], state[1] + 1) if state[1] <= max_stops else None,
+        is_goal=lambda state: state[0] == destination,
+        cost=lambda state, edge, following: edge[1],
+    ))
+    if not result.found:
+        raise RuntimeError(f"no route from {origin} to {destination} with {max_stops} stop(s)")
+    return {"route": [origin, *(edge[0] for edge in result.actions)], "distance": result.cost}
 
 
-def main():
-    RoutePlanningAgent.from_env().run()
+# --- planos: gatilho plan_route, contexto sobre as crenças, custo estimado, corpo ---
+
+def direct_edge(beliefs):
+    return beliefs["graph"].get(beliefs["origin"], {}).get(beliefs["destination"])
+
+
+def first_legs(beliefs):
+    """Trechos que saem da origem sem chegar direto ao destino."""
+    return {node: distance for node, distance in beliefs["graph"].get(beliefs["origin"], {}).items()
+            if node != beliefs["destination"]}
+
+
+def direct_route(beliefs, goal):
+    return {"origin": beliefs["origin"], "destination": beliefs["destination"],
+            "route": [beliefs["origin"], beliefs["destination"]], "distance": direct_edge(beliefs)}
+
+
+def via_intermediate(beliefs, goal):
+    # Cada yield é um passo do ciclo: a ação roda e o retorno vira crença.
+    found = yield act(find_route, beliefs["graph"], beliefs["origin"], beliefs["destination"],
+                      beliefs["max_stops"])
+    yield observe(stops=len(found["route"]) - 2)
+    return {"origin": beliefs["origin"], "destination": beliefs["destination"],
+            "route": found["route"], "distance": found["distance"]}
+
+
+PLANS = [
+    GoalPlan("direct_route", direct_route, goal="plan_route",
+             context=lambda beliefs, goal: direct_edge(beliefs) is not None,
+             cost=lambda beliefs, goal: direct_edge(beliefs)),
+    # Custo estimado de forma otimista (o menor primeiro trecho): a busca só
+    # roda depois que o plano vira intenção. Se ela falhar, o ciclo tenta o outro.
+    GoalPlan("via_intermediate", via_intermediate, goal="plan_route",
+             context=lambda beliefs, goal: beliefs["max_stops"] > 0 and bool(first_legs(beliefs)),
+             cost=lambda beliefs, goal: min(first_legs(beliefs).values())),
+]
+
+
+def route_planner(**options):
+    configuration = dict(
+        agent_id=os.getenv("AGENT_ID", "route-planner-01"),
+        name=os.getenv("AGENT_NAME", "Route Planner"),
+        port=int(os.getenv("AGENT_PORT", "60054")),
+        capabilities=["route-planning"],
+        runtime="python-sdk-bdi",
+        beliefs=perceive, goal="plan_route", plans=PLANS,
+    )
+    return BdiAgent.from_env(**(configuration | options))
 
 
 if __name__ == "__main__":
-    main()
+    route_planner().run()

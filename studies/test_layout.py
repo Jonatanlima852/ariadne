@@ -22,13 +22,14 @@ class StudyLayoutTests(unittest.TestCase):
                 self.assertTrue(scenario.agents)
 
     def test_bdi_packages_do_not_share_bare_beliefs_imports(self):
-        from studies.scenarios.routing.agents.route_planner.main import RoutePlanningAgent
+        from studies.scenarios.routing.agents.route_planner.main import route_planner
         from studies.scenarios.meeting.agents.meeting_scheduler.main import MeetingSchedulerAgent
         from studies.scenarios.meeting.agents.meeting_scheduler.plans import PLAN_LIBRARY
-        planner = RoutePlanningAgent()
+        planner = route_planner()
         scheduler = MeetingSchedulerAgent(plan_library=PLAN_LIBRARY)
         result = planner.handle(Task(task_id="route", goal="route", payload={"origin": "A", "destination": "D"}))
         self.assertEqual(result.output["route"], ["A", "B", "D"])
+        self.assertEqual(result.metadata["bdi_trace"]["final_status"], "achieved")
         result = scheduler.handle(Task(task_id="meeting", goal="meeting", payload={
             "participants": ["alice", "bob"], "duration_hours": 1, "preferred_start_hour": 13}))
         self.assertEqual(result.status, "TASK_STATUS_COMPLETED")

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -5,12 +6,15 @@ import threading
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from typing import Literal
+
 try:
-    from pydantic import BaseModel
+    from pydantic import BaseModel, ConfigDict, Field
 except ImportError as error:
     raise ImportError("LLM support requires ariadne-sdk[llm]; in this checkout use uv sync --project sdk/python --extra llm") from error
 
 from ariadne_sdk.agent import Agent
+from ariadne_sdk.mission import DEFAULT_PLANNER_CAPABILITY, PlannerRequest, planner_response_from_json
 from ariadne_sdk.models import Task, TaskResult
 
 log = logging.getLogger(__name__)
@@ -64,6 +68,101 @@ def llm_capability(capability_id, *, output_schema, result_mapper=None):
         return method
 
     return decorate
+
+
+class PlanBindingDraft(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    source_step_id: str
+    source_path: str
+    target_field: str
+
+
+class PlanStepDraft(BaseModel):
+    """Passo de um plano no formato que o orquestrador decodifica.
+
+    ``payload_json`` é um objeto JSON serializado: saídas estruturadas não
+    aceitam objetos livres.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    step_id: str
+    type: str
+    goal: str
+    payload_json: str = Field(description="JSON object serialized as a string")
+    required_capabilities: list[str] = Field(min_length=1)
+    depends_on: list[str]
+    input_bindings: list[PlanBindingDraft]
+    bdi_goal: str = ""
+
+
+class PlanDraft(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    workflow_id: str
+    final_step_id: str
+    steps: list[PlanStepDraft] = Field(min_length=1, max_length=10)
+
+
+class PlannerDecision(BaseModel):
+    """Saída estruturada de um planejador LLM (``PlannerResponse`` em rascunho).
+
+    ``PLAN`` exige ``plan``; ``DONE`` exige ``output_json`` com um objeto;
+    ``ABORT`` exige ``reason``. A validação acontece em ``decision_to_response``.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    action: Literal["PLAN", "DONE", "ABORT"]
+    summary: str = Field(description="One sentence about the decision")
+    reason: str = Field(description="Required for ABORT, otherwise empty")
+    plan: PlanDraft | None = Field(description="Required for PLAN, otherwise null")
+    output_json: str = Field(description="For DONE: the final output as a JSON object string; otherwise empty")
+    context_update_json: str = Field(description="JSON object string merged into the mission context, or empty")
+
+
+def decision_to_response(decision: PlannerDecision) -> dict:
+    """Converte a decisão validada no ``PlannerResponse`` JSON do contrato."""
+    plan = None
+    if decision.plan is not None:
+        steps = []
+        for step in decision.plan.steps:
+            try:
+                payload = json.loads(step.payload_json) if step.payload_json.strip() else {}
+            except json.JSONDecodeError as error:
+                raise LlmValidationError(f"step {step.step_id} payload_json is not valid JSON: {error}") from error
+            if not isinstance(payload, dict):
+                raise LlmValidationError(f"step {step.step_id} payload_json must decode to an object")
+            steps.append({
+                "step_id": step.step_id, "type": step.type, "goal": step.goal, "payload": payload,
+                "required_capabilities": step.required_capabilities, "depends_on": step.depends_on,
+                "input_bindings": [binding.model_dump() for binding in step.input_bindings],
+                "bdi_goal": step.bdi_goal,
+            })
+        plan = {"workflow_id": decision.plan.workflow_id,
+                "final_step_id": decision.plan.final_step_id, "steps": steps}
+    return planner_response_from_json(
+        decision.action, plan=plan, output_json=decision.output_json,
+        context_update_json=decision.context_update_json,
+        summary=decision.summary, reason=decision.reason,
+    )
+
+
+def mission_planning(prompt, *, capability=DEFAULT_PLANNER_CAPABILITY):
+    """Declara a capacidade de planejador de missão para um ``LlmAgent``.
+
+    ``prompt`` recebe o ``PlannerRequest`` decodificado (objetivo, contexto,
+    histórico, capacidades disponíveis, limites) e devolve ``Prompt``. O SDK
+    valida a decisão e monta ``TaskResult.output`` no formato do contrato.
+    """
+    if isinstance(prompt, Prompt):
+        handler = lambda goal, payload, value=prompt: value
+    elif callable(prompt):
+        handler = lambda goal, payload: prompt(PlannerRequest.from_payload(payload))
+    else:
+        raise TypeError("prompt must be Prompt or callable(request)")
+    return LlmCapability(capability, handler, PlannerDecision, decision_to_response)
 
 
 _OPERATIONAL_FIELDS = {

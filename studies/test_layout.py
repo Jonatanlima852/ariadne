@@ -23,10 +23,9 @@ class StudyLayoutTests(unittest.TestCase):
 
     def test_bdi_packages_do_not_share_bare_beliefs_imports(self):
         from studies.scenarios.routing.agents.route_planner.main import route_planner
-        from studies.scenarios.meeting.agents.meeting_scheduler.main import MeetingSchedulerAgent
-        from studies.scenarios.meeting.agents.meeting_scheduler.plans import PLAN_LIBRARY
+        from studies.scenarios.meeting.agents.meeting_scheduler.main import meeting_scheduler
         planner = route_planner()
-        scheduler = MeetingSchedulerAgent(plan_library=PLAN_LIBRARY)
+        scheduler = meeting_scheduler()
         result = planner.handle(Task(task_id="route", goal="route", payload={"origin": "A", "destination": "D"}))
         self.assertEqual(result.output["route"], ["A", "B", "D"])
         self.assertEqual(result.metadata["bdi_trace"]["final_status"], "achieved")

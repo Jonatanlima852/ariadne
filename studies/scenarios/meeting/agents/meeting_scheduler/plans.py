@@ -1,8 +1,9 @@
-# Biblioteca de planos para o desejo "marcar uma reunião com certos
-# participantes, duração e horário preferido". Cada plano recebe
-# (desire, beliefs) e devolve um dict {"name", "reasoning_summary",
-# "output", "cost"?} — formato esperado por ariadne_sdk.BdiAgent — ou None
-# se não se aplica.
+# Biblioteca de planos para o objetivo "schedule_meeting" (participantes,
+# duração e horário preferido nos parâmetros do objetivo; agendas nas
+# crenças). Cada proposta recebe (params, calendars) e devolve
+# {"cost", "output"} ou None se não se aplica; goal_plan a transforma em um
+# GoalPlan do SDK: o contexto é "há proposta", o custo é o da proposta e o
+# corpo devolve a saída.
 #
 # Convenção de custo (menor = melhor): reuniões com todos presentes
 # custam menos que reuniões parciais, e entre reuniões com todos
@@ -12,129 +13,70 @@
 #   partial_attendance  -> custo 10..       (peso forte em quem falta)
 #   no_feasible_slot    -> sem custo (puro fallback)
 
+from ariadne_sdk import GoalPlan
+
 from .beliefs import WORKDAY_END, candidate_start_hours, free_participants
 
+GOAL = "schedule_meeting"
 
-def preferred_slot_plan(desire, beliefs):
-    participants = desire["participants"]
-    duration = desire["duration_hours"]
-    preferred = desire["preferred_start_hour"]
+
+def preferred_slot(params, calendars):
+    participants, duration, preferred = params["participants"], params["duration_hours"], params["preferred_start_hour"]
     end = preferred + duration
-
     if end > WORKDAY_END:
         return None
-
-    free = free_participants(participants, preferred, end, beliefs)
+    free = free_participants(participants, preferred, end, calendars)
     if len(free) != len(participants):
         return None
-
-    return {
-        "name": "preferred_slot",
-        "cost": 0,
-        "reasoning_summary": (
-            f"horário preferido ({preferred}h-{end}h) está livre para "
-            f"todos os {len(participants)} participantes; nenhum ajuste necessário."
-        ),
-        "output": {
-            "start_hour": preferred,
-            "end_hour": end,
-            "attendees": free,
-            "missing": [],
-        },
-    }
+    return {"cost": 0, "output": {"start_hour": preferred, "end_hour": end, "attendees": free, "missing": []}}
 
 
-def earliest_full_slot_plan(desire, beliefs):
-    participants = desire["participants"]
-    duration = desire["duration_hours"]
-    preferred = desire["preferred_start_hour"]
-
+def earliest_full_slot(params, calendars):
+    participants, duration, preferred = params["participants"], params["duration_hours"], params["preferred_start_hour"]
     for start in candidate_start_hours(duration):
         end = start + duration
-        free = free_participants(participants, start, end, beliefs)
+        free = free_participants(participants, start, end, calendars)
         if len(free) == len(participants):
-            deviation = abs(start - preferred)
-            return {
-                "name": "earliest_full_slot",
-                "cost": deviation + 1,
-                "reasoning_summary": (
-                    f"primeiro horário em que os {len(participants)} participantes "
-                    f"estão todos livres é {start}h-{end}h "
-                    f"(desvio de {deviation}h em relação ao horário preferido)."
-                ),
-                "output": {
-                    "start_hour": start,
-                    "end_hour": end,
-                    "attendees": free,
-                    "missing": [],
-                },
-            }
+            return {"cost": abs(start - preferred) + 1,
+                    "output": {"start_hour": start, "end_hour": end, "attendees": free, "missing": []}}
     return None
 
 
-def partial_attendance_plan(desire, beliefs):
-    participants = desire["participants"]
-    duration = desire["duration_hours"]
-    preferred = desire["preferred_start_hour"]
+def partial_attendance(params, calendars):
+    participants, duration, preferred = params["participants"], params["duration_hours"], params["preferred_start_hour"]
     quorum = len(participants) // 2 + 1
-
     best = None
     for start in candidate_start_hours(duration):
         end = start + duration
-        free = free_participants(participants, start, end, beliefs)
+        free = free_participants(participants, start, end, calendars)
         if len(free) < quorum or len(free) == len(participants):
             continue
-
         missing = [person for person in participants if person not in free]
-        deviation = abs(start - preferred)
-        cost = len(missing) * 10 + deviation
+        cost = len(missing) * 10 + abs(start - preferred)
         if best is None or cost < best["cost"]:
-            best = {
-                "start": start, "end": end, "free": free,
-                "missing": missing, "deviation": deviation, "cost": cost,
-            }
-
-    if best is None:
-        return None
-
-    return {
-        "name": "partial_attendance",
-        "cost": best["cost"],
-        "reasoning_summary": (
-            f"nenhum horário reúne todos; melhor compromisso encontrado é "
-            f"{best['start']}h-{best['end']}h com {len(best['free'])}/{len(participants)} "
-            f"participantes (faltam: {', '.join(best['missing'])}; "
-            f"desvio de {best['deviation']}h em relação ao preferido)."
-        ),
-        "output": {
-            "start_hour": best["start"],
-            "end_hour": best["end"],
-            "attendees": best["free"],
-            "missing": best["missing"],
-        },
-    }
+            best = {"cost": cost, "output": {"start_hour": start, "end_hour": end, "attendees": free, "missing": missing}}
+    return best
 
 
-def no_feasible_slot_plan(desire, beliefs):
-    participants = desire["participants"]
-    return {
-        "name": "no_feasible_slot",
-        "reasoning_summary": (
-            "nenhum horário do expediente reúne ao menos a maioria dos "
-            "participantes; reunião não pôde ser agendada automaticamente."
-        ),
-        "output": {
-            "start_hour": None,
-            "end_hour": None,
-            "attendees": [],
-            "missing": participants,
-        },
-    }
+def no_feasible_slot(params, calendars):
+    return {"cost": None, "output": {"start_hour": None, "end_hour": None, "attendees": [],
+                                     "missing": list(params["participants"])}}
 
 
-PLAN_LIBRARY = [
-    preferred_slot_plan,
-    earliest_full_slot_plan,
-    partial_attendance_plan,
-    no_feasible_slot_plan,
+def goal_plan(name, proposal, *, fallback=False):
+    def candidate(beliefs, goal):
+        return proposal(goal.params, beliefs["calendars"])
+    return GoalPlan(
+        name, goal=GOAL,
+        context=lambda beliefs, goal: candidate(beliefs, goal) is not None,
+        cost=None if fallback else (lambda beliefs, goal: candidate(beliefs, goal)["cost"]),
+        body=lambda beliefs, goal: candidate(beliefs, goal)["output"],
+    )
+
+
+PLANS = [
+    goal_plan("preferred_slot", preferred_slot),
+    goal_plan("earliest_full_slot", earliest_full_slot),
+    goal_plan("partial_attendance", partial_attendance),
+    goal_plan("no_feasible_slot", no_feasible_slot, fallback=True),
 ]

@@ -1,70 +1,46 @@
-import logging
+"""Agendador de reuniões: agente BDI deliberativo com agendas como crenças.
+
+O objetivo é "encontrar um horário, dentro do expediente, em que os
+participantes possam se reunir, o mais perto possível do horário
+preferido". Nem sempre existe solução perfeita: os planos avaliam
+compromissos (quórum parcial, desvio de horário) pelo custo.
+"""
 import os
 
-
 from ariadne_sdk import BdiAgent
+from ariadne_sdk.plans import InputError
 
 from studies.scenarios.meeting.agents.meeting_scheduler.beliefs import CALENDARS
-from studies.scenarios.meeting.agents.meeting_scheduler.plans import PLAN_LIBRARY
+from studies.scenarios.meeting.agents.meeting_scheduler.plans import GOAL, PLANS
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s [meeting-scheduler] %(message)s",
-)
-log = logging.getLogger(__name__)
+FIELDS = ("participants", "duration_hours", "preferred_start_hour")
 
 
-class MeetingSchedulerAgent(BdiAgent):
-    """Agente BDI que tenta marcar uma reunião: o desejo é "encontrar um
-    horário, dentro do expediente, em que os participantes possam se
-    reunir, o mais perto possível do horário preferido". Diferente do
-    agente de rotas, aqui nem sempre existe uma solução perfeita — o
-    agente precisa avaliar compromissos (quórum parcial, desvio de
-    horário) e justificar a escolha."""
-
-    default_agent_id = "meeting-scheduler-01"
-    default_port = 60055
-    runtime_name = "python-sdk-bdi"
-    capabilities = ["meeting-scheduling"]
-    beliefs = CALENDARS
-
-    def desire(self, task):
-        """Lê participantes, duração e horário preferido de task.payload.
-
-        Campos esperados:
-          participants         → lista de strings (nomes/IDs)
-          duration_hours       → número (duração da reunião em horas)
-          preferred_start_hour → número (horário preferido de início)
-        """
-        participants = task.payload.get("participants")
-        duration = task.payload.get("duration_hours")
-        preferred = task.payload.get("preferred_start_hour")
-
-        if participants is None or duration is None or preferred is None:
-            return None
-
-        return {
-            "participants": list(participants),
-            "duration_hours": int(duration),
-            "preferred_start_hour": int(preferred),
-        }
-
-    def handle(self, task):
-        log.info("task received task_id=%s goal=%s", task.task_id, task.goal)
-        result = super().handle(task)
-        log.info("task finished task_id=%s status=%s", task.task_id, result.status)
-        return result
+def desire(task):
+    """Objetivo com parâmetros lidos de task.payload; campos faltantes invalidam a tarefa."""
+    missing = [field for field in FIELDS if field not in task.payload]
+    if missing:
+        raise InputError("missing payload input: " + ", ".join(missing))
+    return {
+        "name": GOAL,
+        "participants": list(task.payload["participants"]),
+        "duration_hours": int(task.payload["duration_hours"]),
+        "preferred_start_hour": int(task.payload["preferred_start_hour"]),
+    }
 
 
-def main():
+def meeting_scheduler(**options):
     agent_id = os.getenv("AGENT_ID", "meeting-scheduler-01")
-    agent = MeetingSchedulerAgent.from_env(
-        name=f"Meeting Scheduler Agent ({agent_id})",
+    configuration = dict(
+        agent_id=agent_id,
+        name=os.getenv("AGENT_NAME", f"Meeting Scheduler Agent ({agent_id})"),
+        port=int(os.getenv("AGENT_PORT", "60055")),
         capabilities=[os.getenv("CAPABILITY", "meeting-scheduling")],
-        plan_library=PLAN_LIBRARY,
+        runtime="python-sdk-bdi",
+        beliefs={"calendars": CALENDARS}, goal=desire, plans=PLANS,
     )
-    agent.run()
+    return BdiAgent.from_env(**(configuration | options))
 
 
 if __name__ == "__main__":
-    main()
+    meeting_scheduler().run()

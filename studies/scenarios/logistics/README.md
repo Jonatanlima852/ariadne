@@ -2,6 +2,9 @@
 
 A [versão 2](v2/README.md) acrescenta múltiplos pedidos, dez especialistas LLM/BDI,
 ocorrências durante a execução e comparação direta com Single LLM.
+A [versão 3](v3/README.md) executa o mesmo domínio como missão no laço do
+orquestrador Go: planejador LLM, entregadores BDI deliberativos em paralelo e
+executor determinístico, contra o Single LLM embrulhado como planejador.
 Os comandos abaixo preservam o estudo original (v1).
 
 Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação

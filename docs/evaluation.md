@@ -39,7 +39,53 @@ respostas com a execução publicada.
 Os testes automatizados verificam comportamentos específicos. Eles não
 substituem uma avaliação experimental nem provam generalidade dos resultados.
 
-## Resultados logísticos selecionados
+## Logística v3: missão no laço do orquestrador
+
+A avaliação atual do estudo logístico é a [v3](../studies/scenarios/logistics/v3/README.md).
+Ela responde à crítica feita à v2 (o laço de episódio vivia em um controlador
+Python e a variante enxuta reduzia o LLM a interpretação): o laço passa a ser
+a missão do contrato 2.0.0, executada pelo orquestrador Go. As duas
+configurações usam o mesmo domínio, os mesmos casos (`basic` e `stress` da
+v2) e o mesmo modelo:
+
+- `ariadne-v3`: um planejador LLM (`mission-planning`) interpreta os pedidos,
+  decide quais atacar em paralelo e delega cada um a um agente BDI
+  deliberativo (`logistics-v3-delivery`, três instâncias); um executor
+  determinístico (`logistics-v3-execute`) aplica as propostas, rejeita ações
+  inválidas e dispara incidentes; o novo estado volta ao planejador pelo
+  contexto da missão e ele replaneja ou responde `DONE`.
+- `single-llm-v3`: o Single LLM da v2, com o mesmo prompt, embrulhado como
+  planejador de missão que emite um único passo `execute` por rodada.
+
+O que se compara, por caso e configuração: pedidos entregues e no prazo,
+ações rejeitadas, distância, energia, tempo real, rodadas, chamadas e tokens
+do planejador, ciclos de deliberação BDI, passos paralelos por rodada e
+reatribuições. Tudo sai do `MissionResult` de cada missão, salvo inteiro em
+`missions/` e legível no [visualizador de missão](../tools/mission-viewer/README.md).
+
+```sh
+# sem credencial: substitutos determinísticos (não mede um modelo)
+LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py
+
+# campanha real em contêineres (credencial só nos contêineres LLM)
+LOGISTICS_V3_DEMO=0 docker compose --env-file .env \
+  -f studies/scenarios/logistics/v3/docker/compose.yaml up --build --wait -d
+uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run \
+  --suite stress --configurations ariadne-v3 single-llm-v3 --repeat 3
+python -m studies.scenarios.logistics.v3.benchmarks.analyze \
+  --input .ariadne/logistics-v3/<coleta>/results.json --output /tmp/logistics-v3-analysis --no-plots
+```
+
+Para avaliar: separe `execution_kind` demo de real; compare atendimento e
+prazo antes de custos; leia rodadas e rejeições junto com os incidentes de
+cada caso; use `comparison.md` da coleta para as colunas que o analisador da
+v2 não cobre (rodadas, ciclos BDI, paralelismo, reatribuições). Não há
+resultados reais da v3 registrados ainda; as tabelas abaixo são históricas.
+
+## Resultados logísticos selecionados (histórico: v1 e v2)
+
+As tabelas desta seção registram as avaliações anteriores (v1 com workflow
+fixo; v2 com controlador Python) e não representam a avaliação atual.
 
 Execução `logistics-20261004T-final-v2`, registrada em 4 de outubro de 2026:
 oito casos, duas repetições e 16 respostas por estratégia, com modelo

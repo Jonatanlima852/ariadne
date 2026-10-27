@@ -210,6 +210,9 @@ func (m *run) executeRound(round int32) bool {
 
 	// Regra 2: o planejador é uma tarefa comum, com retry e reassignment.
 	plannerResult, failure := m.runner.deps.Executor.Execute(m.ctx, task)
+	// Clonada depois da execução para preservar assigned_agent_id e attempt,
+	// que o executor preenche na própria tarefa.
+	record.PlannerTask = proto.Clone(task).(*pb.Task)
 	record.PlannerResult = plannerResult
 	if plannerResult != nil {
 		record.PlannerAgentId = plannerResult.AgentId

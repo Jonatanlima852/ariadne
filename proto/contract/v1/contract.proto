@@ -540,6 +540,7 @@ message MissionRound {
   google.protobuf.Timestamp completed_at = 8;
   string planner_summary                 = 9;
   TaskResult planner_result              = 10;
+  Task planner_task                      = 11; // tarefa enviada ao planejador; payload é o PlannerRequest
 }
 
 message MissionResult {

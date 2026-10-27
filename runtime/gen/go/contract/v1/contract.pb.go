@@ -3869,6 +3869,7 @@ type MissionRound struct {
 	CompletedAt    *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
 	PlannerSummary string                 `protobuf:"bytes,9,opt,name=planner_summary,json=plannerSummary,proto3" json:"planner_summary,omitempty"`
 	PlannerResult  *TaskResult            `protobuf:"bytes,10,opt,name=planner_result,json=plannerResult,proto3" json:"planner_result,omitempty"`
+	PlannerTask    *Task                  `protobuf:"bytes,11,opt,name=planner_task,json=plannerTask,proto3" json:"planner_task,omitempty"` // tarefa enviada ao planejador; payload é o PlannerRequest
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -3969,6 +3970,13 @@ func (x *MissionRound) GetPlannerSummary() string {
 func (x *MissionRound) GetPlannerResult() *TaskResult {
 	if x != nil {
 		return x.PlannerResult
+	}
+	return nil
+}
+
+func (x *MissionRound) GetPlannerTask() *Task {
+	if x != nil {
+		return x.PlannerTask
 	}
 	return nil
 }
@@ -5149,7 +5157,7 @@ const file_contract_v1_contract_proto_rawDesc = "" +
 	"\x14default_retry_policy\x18\x06 \x01(\v2\x18.contract.v1.RetryPolicyR\x12defaultRetryPolicy\x12V\n" +
 	"\x18default_selection_policy\x18\a \x01(\x0e2\x1c.contract.v1.SelectionPolicyR\x16defaultSelectionPolicy\x12/\n" +
 	"\x05trace\x18\b \x01(\v2\x19.contract.v1.TraceContextR\x05trace\x123\n" +
-	"\bmetadata\x18\t \x01(\v2\x17.google.protobuf.StructR\bmetadata\"\x8d\x04\n" +
+	"\bmetadata\x18\t \x01(\v2\x17.google.protobuf.StructR\bmetadata\"\xc3\x04\n" +
 	"\fMissionRound\x12\x14\n" +
 	"\x05round\x18\x01 \x01(\x05R\x05round\x12(\n" +
 	"\x10planner_agent_id\x18\x02 \x01(\tR\x0eplannerAgentId\x122\n" +
@@ -5162,7 +5170,8 @@ const file_contract_v1_contract_proto_rawDesc = "" +
 	"\fcompleted_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12'\n" +
 	"\x0fplanner_summary\x18\t \x01(\tR\x0eplannerSummary\x12>\n" +
 	"\x0eplanner_result\x18\n" +
-	" \x01(\v2\x17.contract.v1.TaskResultR\rplannerResult\"\xf4\x03\n" +
+	" \x01(\v2\x17.contract.v1.TaskResultR\rplannerResult\x124\n" +
+	"\fplanner_task\x18\v \x01(\v2\x11.contract.v1.TaskR\vplannerTask\"\xf4\x03\n" +
 	"\rMissionResult\x12\x1d\n" +
 	"\n" +
 	"mission_id\x18\x01 \x01(\tR\tmissionId\x122\n" +
@@ -5539,75 +5548,76 @@ var file_contract_v1_contract_proto_depIdxs = []int32{
 	73,  // 85: contract.v1.MissionRound.started_at:type_name -> google.protobuf.Timestamp
 	73,  // 86: contract.v1.MissionRound.completed_at:type_name -> google.protobuf.Timestamp
 	22,  // 87: contract.v1.MissionRound.planner_result:type_name -> contract.v1.TaskResult
-	8,   // 88: contract.v1.MissionResult.status:type_name -> contract.v1.MissionStatus
-	72,  // 89: contract.v1.MissionResult.output:type_name -> google.protobuf.Struct
-	72,  // 90: contract.v1.MissionResult.context:type_name -> google.protobuf.Struct
-	56,  // 91: contract.v1.MissionResult.rounds:type_name -> contract.v1.MissionRound
-	11,  // 92: contract.v1.MissionResult.error:type_name -> contract.v1.ErrorInfo
-	10,  // 93: contract.v1.MissionResult.trace:type_name -> contract.v1.TraceContext
-	73,  // 94: contract.v1.MissionResult.created_at:type_name -> google.protobuf.Timestamp
-	73,  // 95: contract.v1.MissionResult.completed_at:type_name -> google.protobuf.Timestamp
-	55,  // 96: contract.v1.RunMissionRequest.mission:type_name -> contract.v1.MissionRequest
-	57,  // 97: contract.v1.RunMissionResponse.result:type_name -> contract.v1.MissionResult
-	11,  // 98: contract.v1.RunMissionResponse.error:type_name -> contract.v1.ErrorInfo
-	55,  // 99: contract.v1.StartMissionRequest.mission:type_name -> contract.v1.MissionRequest
-	11,  // 100: contract.v1.StartMissionResponse.error:type_name -> contract.v1.ErrorInfo
-	57,  // 101: contract.v1.GetMissionResponse.result:type_name -> contract.v1.MissionResult
-	11,  // 102: contract.v1.GetMissionResponse.error:type_name -> contract.v1.ErrorInfo
-	57,  // 103: contract.v1.CancelMissionResponse.result:type_name -> contract.v1.MissionResult
-	11,  // 104: contract.v1.CancelMissionResponse.error:type_name -> contract.v1.ErrorInfo
-	9,   // 105: contract.v1.RoundSummary.action:type_name -> contract.v1.PlannerAction
-	45,  // 106: contract.v1.RoundSummary.step_results:type_name -> contract.v1.WorkflowStepResult
-	6,   // 107: contract.v1.RoundSummary.status:type_name -> contract.v1.WorkflowStatus
-	72,  // 108: contract.v1.PlannerRequest.context:type_name -> google.protobuf.Struct
-	67,  // 109: contract.v1.PlannerRequest.history:type_name -> contract.v1.RoundSummary
-	66,  // 110: contract.v1.PlannerRequest.available_capabilities:type_name -> contract.v1.CapabilitySummary
-	54,  // 111: contract.v1.PlannerRequest.limits:type_name -> contract.v1.MissionLimits
-	9,   // 112: contract.v1.PlannerResponse.action:type_name -> contract.v1.PlannerAction
-	43,  // 113: contract.v1.PlannerResponse.plan:type_name -> contract.v1.WorkflowDefinition
-	72,  // 114: contract.v1.PlannerResponse.output:type_name -> google.protobuf.Struct
-	72,  // 115: contract.v1.PlannerResponse.context_update:type_name -> google.protobuf.Struct
-	21,  // 116: contract.v1.ExecuteTaskRequest.task:type_name -> contract.v1.Task
-	22,  // 117: contract.v1.ExecuteTaskResponse.result:type_name -> contract.v1.TaskResult
-	26,  // 118: contract.v1.MessagingService.PublishMessage:input_type -> contract.v1.PublishMessageRequest
-	28,  // 119: contract.v1.MessagingService.StreamMessages:input_type -> contract.v1.StreamMessagesRequest
-	29,  // 120: contract.v1.RegistryService.RegisterAgent:input_type -> contract.v1.RegisterAgentRequest
-	31,  // 121: contract.v1.RegistryService.UnregisterAgent:input_type -> contract.v1.UnregisterAgentRequest
-	33,  // 122: contract.v1.RegistryService.GetAgent:input_type -> contract.v1.GetAgentRequest
-	35,  // 123: contract.v1.RegistryService.DiscoverAgents:input_type -> contract.v1.DiscoverAgentsRequest
-	37,  // 124: contract.v1.RegistryService.ReportHealth:input_type -> contract.v1.ReportHealthRequest
-	39,  // 125: contract.v1.OrchestratorService.SubmitTask:input_type -> contract.v1.SubmitTaskRequest
-	44,  // 126: contract.v1.OrchestratorService.SubmitWorkflow:input_type -> contract.v1.SubmitWorkflowRequest
-	48,  // 127: contract.v1.OrchestratorService.StartWorkflow:input_type -> contract.v1.StartWorkflowRequest
-	50,  // 128: contract.v1.OrchestratorService.GetWorkflow:input_type -> contract.v1.GetWorkflowRequest
-	52,  // 129: contract.v1.OrchestratorService.CancelWorkflow:input_type -> contract.v1.CancelWorkflowRequest
-	58,  // 130: contract.v1.OrchestratorService.RunMission:input_type -> contract.v1.RunMissionRequest
-	60,  // 131: contract.v1.OrchestratorService.StartMission:input_type -> contract.v1.StartMissionRequest
-	62,  // 132: contract.v1.OrchestratorService.GetMission:input_type -> contract.v1.GetMissionRequest
-	64,  // 133: contract.v1.OrchestratorService.CancelMission:input_type -> contract.v1.CancelMissionRequest
-	70,  // 134: contract.v1.AgentService.ExecuteTask:input_type -> contract.v1.ExecuteTaskRequest
-	27,  // 135: contract.v1.MessagingService.PublishMessage:output_type -> contract.v1.PublishMessageResponse
-	24,  // 136: contract.v1.MessagingService.StreamMessages:output_type -> contract.v1.MessageEnvelope
-	30,  // 137: contract.v1.RegistryService.RegisterAgent:output_type -> contract.v1.RegisterAgentResponse
-	32,  // 138: contract.v1.RegistryService.UnregisterAgent:output_type -> contract.v1.UnregisterAgentResponse
-	34,  // 139: contract.v1.RegistryService.GetAgent:output_type -> contract.v1.GetAgentResponse
-	36,  // 140: contract.v1.RegistryService.DiscoverAgents:output_type -> contract.v1.DiscoverAgentsResponse
-	38,  // 141: contract.v1.RegistryService.ReportHealth:output_type -> contract.v1.ReportHealthResponse
-	40,  // 142: contract.v1.OrchestratorService.SubmitTask:output_type -> contract.v1.SubmitTaskResponse
-	47,  // 143: contract.v1.OrchestratorService.SubmitWorkflow:output_type -> contract.v1.SubmitWorkflowResponse
-	49,  // 144: contract.v1.OrchestratorService.StartWorkflow:output_type -> contract.v1.StartWorkflowResponse
-	51,  // 145: contract.v1.OrchestratorService.GetWorkflow:output_type -> contract.v1.GetWorkflowResponse
-	53,  // 146: contract.v1.OrchestratorService.CancelWorkflow:output_type -> contract.v1.CancelWorkflowResponse
-	59,  // 147: contract.v1.OrchestratorService.RunMission:output_type -> contract.v1.RunMissionResponse
-	61,  // 148: contract.v1.OrchestratorService.StartMission:output_type -> contract.v1.StartMissionResponse
-	63,  // 149: contract.v1.OrchestratorService.GetMission:output_type -> contract.v1.GetMissionResponse
-	65,  // 150: contract.v1.OrchestratorService.CancelMission:output_type -> contract.v1.CancelMissionResponse
-	71,  // 151: contract.v1.AgentService.ExecuteTask:output_type -> contract.v1.ExecuteTaskResponse
-	135, // [135:152] is the sub-list for method output_type
-	118, // [118:135] is the sub-list for method input_type
-	118, // [118:118] is the sub-list for extension type_name
-	118, // [118:118] is the sub-list for extension extendee
-	0,   // [0:118] is the sub-list for field type_name
+	21,  // 88: contract.v1.MissionRound.planner_task:type_name -> contract.v1.Task
+	8,   // 89: contract.v1.MissionResult.status:type_name -> contract.v1.MissionStatus
+	72,  // 90: contract.v1.MissionResult.output:type_name -> google.protobuf.Struct
+	72,  // 91: contract.v1.MissionResult.context:type_name -> google.protobuf.Struct
+	56,  // 92: contract.v1.MissionResult.rounds:type_name -> contract.v1.MissionRound
+	11,  // 93: contract.v1.MissionResult.error:type_name -> contract.v1.ErrorInfo
+	10,  // 94: contract.v1.MissionResult.trace:type_name -> contract.v1.TraceContext
+	73,  // 95: contract.v1.MissionResult.created_at:type_name -> google.protobuf.Timestamp
+	73,  // 96: contract.v1.MissionResult.completed_at:type_name -> google.protobuf.Timestamp
+	55,  // 97: contract.v1.RunMissionRequest.mission:type_name -> contract.v1.MissionRequest
+	57,  // 98: contract.v1.RunMissionResponse.result:type_name -> contract.v1.MissionResult
+	11,  // 99: contract.v1.RunMissionResponse.error:type_name -> contract.v1.ErrorInfo
+	55,  // 100: contract.v1.StartMissionRequest.mission:type_name -> contract.v1.MissionRequest
+	11,  // 101: contract.v1.StartMissionResponse.error:type_name -> contract.v1.ErrorInfo
+	57,  // 102: contract.v1.GetMissionResponse.result:type_name -> contract.v1.MissionResult
+	11,  // 103: contract.v1.GetMissionResponse.error:type_name -> contract.v1.ErrorInfo
+	57,  // 104: contract.v1.CancelMissionResponse.result:type_name -> contract.v1.MissionResult
+	11,  // 105: contract.v1.CancelMissionResponse.error:type_name -> contract.v1.ErrorInfo
+	9,   // 106: contract.v1.RoundSummary.action:type_name -> contract.v1.PlannerAction
+	45,  // 107: contract.v1.RoundSummary.step_results:type_name -> contract.v1.WorkflowStepResult
+	6,   // 108: contract.v1.RoundSummary.status:type_name -> contract.v1.WorkflowStatus
+	72,  // 109: contract.v1.PlannerRequest.context:type_name -> google.protobuf.Struct
+	67,  // 110: contract.v1.PlannerRequest.history:type_name -> contract.v1.RoundSummary
+	66,  // 111: contract.v1.PlannerRequest.available_capabilities:type_name -> contract.v1.CapabilitySummary
+	54,  // 112: contract.v1.PlannerRequest.limits:type_name -> contract.v1.MissionLimits
+	9,   // 113: contract.v1.PlannerResponse.action:type_name -> contract.v1.PlannerAction
+	43,  // 114: contract.v1.PlannerResponse.plan:type_name -> contract.v1.WorkflowDefinition
+	72,  // 115: contract.v1.PlannerResponse.output:type_name -> google.protobuf.Struct
+	72,  // 116: contract.v1.PlannerResponse.context_update:type_name -> google.protobuf.Struct
+	21,  // 117: contract.v1.ExecuteTaskRequest.task:type_name -> contract.v1.Task
+	22,  // 118: contract.v1.ExecuteTaskResponse.result:type_name -> contract.v1.TaskResult
+	26,  // 119: contract.v1.MessagingService.PublishMessage:input_type -> contract.v1.PublishMessageRequest
+	28,  // 120: contract.v1.MessagingService.StreamMessages:input_type -> contract.v1.StreamMessagesRequest
+	29,  // 121: contract.v1.RegistryService.RegisterAgent:input_type -> contract.v1.RegisterAgentRequest
+	31,  // 122: contract.v1.RegistryService.UnregisterAgent:input_type -> contract.v1.UnregisterAgentRequest
+	33,  // 123: contract.v1.RegistryService.GetAgent:input_type -> contract.v1.GetAgentRequest
+	35,  // 124: contract.v1.RegistryService.DiscoverAgents:input_type -> contract.v1.DiscoverAgentsRequest
+	37,  // 125: contract.v1.RegistryService.ReportHealth:input_type -> contract.v1.ReportHealthRequest
+	39,  // 126: contract.v1.OrchestratorService.SubmitTask:input_type -> contract.v1.SubmitTaskRequest
+	44,  // 127: contract.v1.OrchestratorService.SubmitWorkflow:input_type -> contract.v1.SubmitWorkflowRequest
+	48,  // 128: contract.v1.OrchestratorService.StartWorkflow:input_type -> contract.v1.StartWorkflowRequest
+	50,  // 129: contract.v1.OrchestratorService.GetWorkflow:input_type -> contract.v1.GetWorkflowRequest
+	52,  // 130: contract.v1.OrchestratorService.CancelWorkflow:input_type -> contract.v1.CancelWorkflowRequest
+	58,  // 131: contract.v1.OrchestratorService.RunMission:input_type -> contract.v1.RunMissionRequest
+	60,  // 132: contract.v1.OrchestratorService.StartMission:input_type -> contract.v1.StartMissionRequest
+	62,  // 133: contract.v1.OrchestratorService.GetMission:input_type -> contract.v1.GetMissionRequest
+	64,  // 134: contract.v1.OrchestratorService.CancelMission:input_type -> contract.v1.CancelMissionRequest
+	70,  // 135: contract.v1.AgentService.ExecuteTask:input_type -> contract.v1.ExecuteTaskRequest
+	27,  // 136: contract.v1.MessagingService.PublishMessage:output_type -> contract.v1.PublishMessageResponse
+	24,  // 137: contract.v1.MessagingService.StreamMessages:output_type -> contract.v1.MessageEnvelope
+	30,  // 138: contract.v1.RegistryService.RegisterAgent:output_type -> contract.v1.RegisterAgentResponse
+	32,  // 139: contract.v1.RegistryService.UnregisterAgent:output_type -> contract.v1.UnregisterAgentResponse
+	34,  // 140: contract.v1.RegistryService.GetAgent:output_type -> contract.v1.GetAgentResponse
+	36,  // 141: contract.v1.RegistryService.DiscoverAgents:output_type -> contract.v1.DiscoverAgentsResponse
+	38,  // 142: contract.v1.RegistryService.ReportHealth:output_type -> contract.v1.ReportHealthResponse
+	40,  // 143: contract.v1.OrchestratorService.SubmitTask:output_type -> contract.v1.SubmitTaskResponse
+	47,  // 144: contract.v1.OrchestratorService.SubmitWorkflow:output_type -> contract.v1.SubmitWorkflowResponse
+	49,  // 145: contract.v1.OrchestratorService.StartWorkflow:output_type -> contract.v1.StartWorkflowResponse
+	51,  // 146: contract.v1.OrchestratorService.GetWorkflow:output_type -> contract.v1.GetWorkflowResponse
+	53,  // 147: contract.v1.OrchestratorService.CancelWorkflow:output_type -> contract.v1.CancelWorkflowResponse
+	59,  // 148: contract.v1.OrchestratorService.RunMission:output_type -> contract.v1.RunMissionResponse
+	61,  // 149: contract.v1.OrchestratorService.StartMission:output_type -> contract.v1.StartMissionResponse
+	63,  // 150: contract.v1.OrchestratorService.GetMission:output_type -> contract.v1.GetMissionResponse
+	65,  // 151: contract.v1.OrchestratorService.CancelMission:output_type -> contract.v1.CancelMissionResponse
+	71,  // 152: contract.v1.AgentService.ExecuteTask:output_type -> contract.v1.ExecuteTaskResponse
+	136, // [136:153] is the sub-list for method output_type
+	119, // [119:136] is the sub-list for method input_type
+	119, // [119:119] is the sub-list for extension type_name
+	119, // [119:119] is the sub-list for extension extendee
+	0,   // [0:119] is the sub-list for field type_name
 }
 
 func init() { file_contract_v1_contract_proto_init() }

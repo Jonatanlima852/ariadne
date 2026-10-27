@@ -242,6 +242,17 @@ func TestRunnerCompletesAfterPlanAndDoneMergingContext(t *testing.T) {
 	if first.Result.StepResults[0].Task == nil || first.Result.StepResults[0].Task.TaskId != step.TaskId {
 		t.Fatalf("materialized task on step result = %v", first.Result.StepResults[0].Task)
 	}
+	// A tarefa enviada ao planejador fica na rodada, com o PlannerRequest no payload.
+	if first.PlannerTask == nil || first.PlannerTask.TaskId != planner.TaskId || first.PlannerTask.Type != "MISSION_PLANNING" {
+		t.Fatalf("planner task on round 1 = %v", first.PlannerTask)
+	}
+	stored := decodePlannerRequest(first.PlannerTask.Payload)
+	if stored.Round != 1 || stored.Goal != "deliver" || len(stored.AvailableCapabilities) != 3 || stored.Context.AsMap()["a"] != 1.0 {
+		t.Fatalf("stored planner request = %v", stored)
+	}
+	if second.PlannerTask == nil || decodePlannerRequest(second.PlannerTask.Payload).Round != 2 {
+		t.Fatalf("planner task on round 2 = %v", second.PlannerTask)
+	}
 }
 
 func TestRunnerAbortsWhenPlannerAborts(t *testing.T) {

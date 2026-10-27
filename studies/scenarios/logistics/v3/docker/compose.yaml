@@ -1,0 +1,125 @@
+name: ariadne-logistics-v3
+
+x-agent: &agent
+  depends_on:
+    registry:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 60051), 2).close()"]
+    interval: 2s
+    timeout: 3s
+    retries: 30
+  environment: &agent-env
+    AGENT_PORT: "60051"
+    REGISTRY_ADDR: "registry:50051"
+    HEARTBEAT_INTERVAL_SECONDS: "1"
+
+x-llm-env: &llm-env
+  <<: *agent-env
+  LLM_MODEL: "${LLM_MODEL:-gpt-5.6-luna}"
+  LOGISTICS_V3_DEMO: "${LOGISTICS_V3_DEMO:-0}"
+  OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+
+x-delivery: &delivery
+  <<: *agent
+  build:
+    context: ../../../../..
+    dockerfile: studies/scenarios/logistics/v3/agents/delivery/Dockerfile
+
+services:
+  registry:
+    build:
+      context: ../../../../..
+      dockerfile: runtime/services/registry/Dockerfile
+    ports:
+      - "127.0.0.1:${LOGISTICS_V3_REGISTRY_PORT:-55061}:50051"
+    environment:
+      REGISTRY_ADDR: ":50051"
+      FAILURE_SCAN_INTERVAL: "1s"
+      SUSPECTED_TIMEOUT: "10s"
+      DEAD_TIMEOUT: "20s"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "50051"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  orchestrator:
+    build:
+      context: ../../../../..
+      dockerfile: runtime/services/orchestrator/Dockerfile
+    ports:
+      - "127.0.0.1:${LOGISTICS_V3_ORCHESTRATOR_PORT:-55062}:50052"
+    environment:
+      ORCHESTRATOR_ADDR: ":50052"
+      REGISTRY_ADDR: "registry:50051"
+      EXECUTION_TIMEOUT: "180s"
+      EVENTS_PATH: "/data/events.jsonl"
+    volumes:
+      - events_data:/data
+    depends_on:
+      registry:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "50052"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  # Planejador LLM da configuração cooperativa (capacidade mission-planning).
+  planner:
+    <<: *agent
+    build:
+      context: ../../../../..
+      dockerfile: studies/scenarios/logistics/v3/agents/planner/Dockerfile
+    environment:
+      <<: *llm-env
+      AGENT_ID: "planner"
+      AGENT_HOST: "planner"
+
+  # Single LLM da v2 como planejador de missão (capacidade logistics-v3-single-llm).
+  single-llm:
+    <<: *agent
+    build:
+      context: ../../../../..
+      dockerfile: studies/scenarios/logistics/v3/agents/single_llm/Dockerfile
+    environment:
+      <<: *llm-env
+      AGENT_ID: "single-llm"
+      AGENT_HOST: "single-llm"
+
+  # Três entregadores BDI com a mesma capacidade: passos paralelos e reatribuição.
+  delivery-1:
+    <<: *delivery
+    environment:
+      <<: *agent-env
+      AGENT_ID: "delivery-1"
+      AGENT_HOST: "delivery-1"
+
+  delivery-2:
+    <<: *delivery
+    environment:
+      <<: *agent-env
+      AGENT_ID: "delivery-2"
+      AGENT_HOST: "delivery-2"
+
+  delivery-3:
+    <<: *delivery
+    environment:
+      <<: *agent-env
+      AGENT_ID: "delivery-3"
+      AGENT_HOST: "delivery-3"
+
+  # Executor determinístico: o mundo da missão.
+  execute:
+    <<: *agent
+    build:
+      context: ../../../../..
+      dockerfile: studies/scenarios/logistics/v3/agents/execute/Dockerfile
+    environment:
+      <<: *agent-env
+      AGENT_ID: "execute"
+      AGENT_HOST: "execute"
+
+volumes:
+  events_data:

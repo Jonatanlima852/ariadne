@@ -268,3 +268,22 @@ class FakeLoopTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class RunnerTests(unittest.TestCase):
+    def test_runner_validates_arguments_before_connecting(self):
+        import contextlib
+        import io
+        from studies.scenarios.logistics.v3.benchmarks.run import check_provider, main, table
+        with patch('grpc.insecure_channel') as channel, contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as error:
+                main(['--suite', 'all', '--cases', 'unknown-layout-check'])
+        self.assertEqual(error.exception.code, 2)
+        channel.assert_not_called()
+        row = episode_metrics({'status': 'MISSION_STATUS_FAILED', 'rounds': []}, case=find_case('easy'),
+                              configuration='ariadne-v3', demo=True)
+        self.assertIn('| easy | ariadne-v3 | 0/1 |', table([row]))
+        document = {'rounds': [{'round': 1, 'planner_result': {'metadata': {'provider': 'openai', 'model': 'm'}}}]}
+        check_provider(document, demo=False, model='m')
+        with self.assertRaises(ValueError):
+            check_provider(document, demo=True, model='m')

@@ -15,26 +15,34 @@ def llm_runtime(demo):
 
 
 def serve(factory):
-    factory(host=os.getenv('AGENT_HOST', 'localhost'),
-            port=int(os.getenv('AGENT_PORT', '60051')),
-            registry_addr=os.getenv('REGISTRY_ADDR', 'localhost:50051')).run()
+    """Processo de um agente; AGENT_ID distingue réplicas da mesma capacidade."""
+    options = dict(host=os.getenv('AGENT_HOST', 'localhost'),
+                   port=int(os.getenv('AGENT_PORT', '60051')),
+                   registry_addr=os.getenv('REGISTRY_ADDR', 'localhost:50051'))
+    if os.getenv('AGENT_ID'):
+        options['agent_id'] = os.environ['AGENT_ID']
+    factory(**options).run()
 
 
 class DemoClient:
     """Substituto determinístico do cliente OpenAI, só para integração.
 
-    Decide pelo esquema pedido (``text_format``): a proposta do Single LLM
-    reutiliza o substituto da v2; o plano cooperativo usa uma política fixa.
-    Nenhum dos dois mede capacidade de um modelo.
+    Decide pelo papel declarado na primeira linha do prompt de sistema
+    (``ROLE=...``), como na v2: o plano cooperativo usa uma política fixa; a
+    proposta do Single LLM reutiliza o substituto da v2. Nenhum dos dois mede
+    capacidade de um modelo. (Não compara classes: um agente iniciado com
+    ``python -m`` tem seu módulo como ``__main__``, e a mesma classe
+    reimportada seria outro objeto.)
     """
 
     def __init__(self):
         self.responses = self
 
     def parse(self, *, model, input, text_format):
+        role = input[0]['content'].splitlines()[0].split('=', 1)[1]
         context = json.loads(input[1]['content'])
-        from studies.scenarios.logistics.v3.agents.planner.main import CooperativePlan, substitute_plan
-        if text_format is CooperativePlan:
+        if role == 'CooperativePlanner':
+            from studies.scenarios.logistics.v3.agents.planner.main import substitute_plan
             value = substitute_plan(context)
         else:
             from studies.scenarios.logistics.v2.demonstrations.substitutes import deterministic

@@ -47,7 +47,7 @@ def load_scenario(source):
         sys.path[:] = previous_path
     scenario = namespace.get("scenario")
     if not isinstance(scenario, Scenario) or scenario.tasks is None:
-        raise ValueError("declare scenario = Scenario(agents=[...], tasks=[...])")
+        raise ValueError("declare scenario = Scenario(agents=[...], tasks=[...]) or Scenario(agents=[...], mission=Mission(...))")
     if not scenario.agents or any(not isinstance(agent, Agent) for agent in scenario.agents):
         raise ValueError("scenario.agents must contain Agent instances")
     ids = [agent.agent_id for agent in scenario.agents]
@@ -58,7 +58,11 @@ def load_scenario(source):
     steps = scenario.definition()
     json.dumps(scenario.metadata, allow_nan=False)
     capabilities = {capability for agent in scenario.agents for capability in agent.capabilities}
-    missing = {capability for step in steps for capability in step["capabilities"]} - capabilities
+    required = {capability for step in steps for capability in step["capabilities"]}
+    if scenario.mission is not None:
+        # The planner decides the other capabilities at run time; only it is known now.
+        required.add(scenario.mission.planner_capability)
+    missing = required - capabilities
     if missing:
         raise ValueError("no declared agent provides: " + ", ".join(sorted(missing)))
     if scenario.name == "experiment":
@@ -173,6 +177,16 @@ def build_runtime(source, destination, processes):
         processes.children.remove(("build", child))
 
 
+def run_mission_sample(client, mission, *, rpc_timeout=None):
+    """Envia a missão declarada pelo cliente de cenário e devolve ``MissionResult``."""
+    return client.run_mission(
+        mission.goal, context=mission.context, limits=mission.limits,
+        planner_capability=mission.planner_capability, retry_policy=mission.retry_policy,
+        selection_policy=mission.selection_policy, metadata=mission.metadata,
+        rpc_timeout=rpc_timeout,
+    )
+
+
 def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None,
                    ready_timeout=30, task_timeout=60, repeat=1, execution_id=None):
     source = Path(source).resolve(strict=True)
@@ -198,6 +212,7 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         "provenance": provenance,
         "agents": [{"agent_id": agent.agent_id, "capabilities": agent.capabilities}
                    for agent in scenario.agents], "steps": definition,
+        "mission": scenario.mission.to_dict() if scenario.mission is not None else None,
     }
     write_json(directory / "manifest.json", manifest)
     # Keep the authored description with its evidence; never copy environment files.
@@ -267,12 +282,19 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
                 events.emit("SAMPLE_STARTED", sample=sample, trace_id=client.trace_id)
                 sample_start = time.perf_counter()
                 try:
-                    result = client.submit_workflow(
-                        scenario.name, steps=definition, final_step_id=definition[-1]["step_id"],
-                        rpc_timeout=task_timeout,
-                    )
-                    record = result.to_dict()
-                    failed = failed or result.status != "WORKFLOW_STATUS_COMPLETED"
+                    if scenario.mission is not None:
+                        result = run_mission_sample(client, scenario.mission, rpc_timeout=task_timeout)
+                        record = result.to_dict()
+                        # The contract JSON alone is what tools/mission-viewer reads.
+                        result.save(directory / "mission-result.json")
+                        failed = failed or result.status != "MISSION_STATUS_COMPLETED"
+                    else:
+                        result = client.submit_workflow(
+                            scenario.name, steps=definition, final_step_id=definition[-1]["step_id"],
+                            rpc_timeout=task_timeout,
+                        )
+                        record = result.to_dict()
+                        failed = failed or result.status != "WORKFLOW_STATUS_COMPLETED"
                 except KeyboardInterrupt:
                     events.emit("SAMPLE_CANCELLED", sample=sample, trace_id=client.trace_id)
                     raise

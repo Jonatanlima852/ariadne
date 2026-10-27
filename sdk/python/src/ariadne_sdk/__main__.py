@@ -150,7 +150,8 @@ def main(argv=None):
             return 0
         if args.command == "check":
             scenario = load_scenario(args.file)
-            print(f"Descrição válida: {scenario.name}; {len(scenario.agents)} agentes; {len(scenario.tasks)} etapas")
+            shape = "1 missão" if scenario.mission is not None else f"{len(scenario.tasks)} etapas"
+            print(f"Descrição válida: {scenario.name}; {len(scenario.agents)} agentes; {shape}")
             return 0
         _, summary = run_experiment(
             args.file, output_root=args.output, runtime_dir=args.runtime_dir,

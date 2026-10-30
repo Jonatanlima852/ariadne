@@ -89,6 +89,12 @@ down:
 logs:
 	docker compose -f tools/deploy/docker-compose.yml logs -f
 
+# viewer — abre o Mission Viewer com as missoes gravadas em .ariadne e nos estudos
+
+.PHONY: viewer
+viewer:
+	python3 tools/mission-viewer/serve.py $(VIEWER_ARGS)
+
 # help — lista todos os targets
 
 .PHONY: help
@@ -105,5 +111,6 @@ help:
 	@echo "  make doctor      Verifica Docker e configuracao via ./ariadne doctor"
 	@echo "  make down        Para e remove os conteineres"
 	@echo "  make logs        Mostra logs de todos os servicos"
+	@echo "  make viewer      Abre o Mission Viewer com as missoes de .ariadne/runs e dos estudos"
 	@echo "  ./ariadne help        Cenarios isolados, logs, status e encerramento"
 	@echo ""

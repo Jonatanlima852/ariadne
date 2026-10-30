@@ -254,9 +254,20 @@ func TestEngineDispatchesNextReadyStepWhileAnotherIsStillRunning(t *testing.T) {
 			t.Fatalf("step %q did not start", want)
 		}
 	}
-	expectStarted("slow")
-	expectStarted("b")
-	executor.release <- struct{}{} // libera b (o primeiro a ler release é indefinido; ambos aguardam)
+	// slow e b partem juntos em goroutines distintas; a ordem em que sinalizam é indefinida.
+	first := map[string]bool{}
+	for len(first) < 2 {
+		select {
+		case got := <-executor.started:
+			first[got] = true
+		case <-time.After(time.Second):
+			t.Fatalf("first wave did not start: %v", first)
+		}
+	}
+	if !first["slow"] || !first["b"] {
+		t.Fatalf("first wave = %v, want slow and b", first)
+	}
+	executor.release <- struct{}{} // libera slow ou b (o primeiro a ler release é indefinido; ambos aguardam)
 	expectStarted("c")             // c começa com slow ainda em execução
 	executor.mu.Lock()
 	maximum := executor.maximum

@@ -206,7 +206,7 @@ inclusive na demonstração. Falhas antes de retornar uso podem não ter tokens
 contabilizados. Não calculamos preço monetário.
 
 Os resultados preservados estão em [results](results/README.md).
-Para visualizá-los, abra `./ariadne inspect` e selecione **Logística v2**.
+O visualizador que os exibia (Inspector) foi removido; os arquivos continuam legíveis diretamente.
 A mesma aba lista as coletas em `.ariadne/logistics-v2`, com comparação por caso,
 gráficos, histórico de ações e incidentes, prazos e consumo por agente.
 A interface apenas lê as evidências; não inicia episódios nem chama modelos.

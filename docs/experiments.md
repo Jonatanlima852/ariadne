@@ -196,7 +196,9 @@ controlada de overhead. A ferramenta não gera gráficos, CSV agregado ou
 métricas de qualidade. Os runners históricos de benchmark continuam separados.
 
 `Scenario(metadata={...})` permite preservar configuração de domínio no
-manifesto. Esses dados não são injetados nos payloads dos agentes. Arquivos de
+manifesto. Esses dados não são injetados nos payloads dos agentes. A chave
+`presentation` desse dicionário fornece título, descrição e rótulos de agentes
+e passos ao [Mission Viewer](../tools/mission-viewer/README.md). Arquivos de
 experimento podem pertencer a pacotes Python com `__init__.py`; o loader resolve
 a raiz do pacote também ao executar fora do checkout.
 

@@ -11,7 +11,7 @@ Da raiz do repositório:
 ```
 
 A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
-eventos em `.ariadne/runs/`; abra-os com `./ariadne inspect`.
+eventos em `.ariadne/runs/`.
 
 Campanha de repetições independentes: `./ariadne campaign studies/scenarios/basic_task/benchmarks/campaign.py`.
 

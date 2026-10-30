@@ -20,11 +20,10 @@ a última execução iniciada, não necessariamente a que está sendo apresentad
 ./ariadne run studies/scenarios/fanout/scenario.py
 ```
 
-Abra `make viewer` para as missões ou o [Inspector](../tools/inspector/README.md)
-para os workflows e escolha uma das execuções listadas de `.ariadne/runs`.
+Abra `make viewer` e escolha uma das missões listadas de `.ariadne/runs`.
 
-Para apresentar sem executar nada, escolha um item no catálogo **Demonstrações**
-do Inspector. Ele mostra registros reais incluídos no repositório e identificados como exemplos.
+Para apresentar sem executar nada, o Viewer também lista as missões preservadas
+em `studies/**/results/` e as fixtures de `tools/mission-viewer/fixtures/`.
 Para outros cenários, preserve previamente as pastas de resultados. Diga
 explicitamente quando estiver mostrando uma execução registrada.
 
@@ -46,17 +45,16 @@ Para uma conversa curta, use problema → exemplo de recuperação → arquitetu
 Os cenários determinísticos usam agentes de teste; eles não demonstram, sozinhos,
 cooperação entre raciocínio LLM e BDI.
 
-## Ler o cenário de recuperação na tela
+## Ler uma missão na tela
 
-1. Abra a demonstração de recuperação e apresente o pedido e os dois agentes.
-2. Clique em **Reproduzir**: a tarefa chega ao primeiro agente, o prazo esgota
-   e o Ariadne atribui o trabalho ao agente alternativo. Use as setas para pausar
-   a explicação em cada acontecimento.
-3. Mostre a resposta em **Desfecho registrado**, separada do instante do replay.
-   O ritmo da animação é didático; os tempos reais aparecem na legenda.
-4. Explique por que sucesso final não significa ausência de falhas intermediárias.
-5. Em **Detalhes técnicos**, abra a linha do tempo ou os dados brutos para
-   relacionar a figura aos IDs e eventos originais.
+1. Abra a missão de fan-out ou de rotas no Mission Viewer e mostre o cartão de
+   apresentação: título, descrição e o papel de cada agente.
+2. Na vista **Dependências**, cada rodada é uma faixa: o planejador à esquerda
+   e os passos que ele propôs, ligados por setas de binding.
+3. Na vista **Linha do tempo**, cada agente tem uma pista; blocos lado a lado
+   executaram em paralelo e a tentativa que estourou o prazo aparece hachurada.
+4. Clique num bloco para ver a entrada, a saída e o rastro BDI daquela chamada.
+5. Explique por que sucesso final não significa ausência de falhas intermediárias.
 
 O reassignment depende da política e da existência de alternativa. O timeout
 não garante que o agente original tenha parado seus efeitos; o cenário não
@@ -103,35 +101,18 @@ Se necessário, passe ao exemplo registrado, explicando a mudança. Para LLM,
 prefira preparar uma execução antes: credencial, rede, modelo e resposta são
 dependências reais, e novas chamadas podem gerar custo.
 
-O visualizador não executa cenários nem altera resultados. Na aba **Logística v2**,
-ele também compara as métricas já registradas por caso e configuração.
-Para missões (contrato 2.0.0), `make viewer` abre o
+O visualizador não executa cenários nem altera resultados. `make viewer` abre o
 [Mission Viewer](../tools/mission-viewer/README.md) com a lista das execuções
 de `.ariadne/runs` e dos estudos; clique numa para ver o grafo das rodadas.
 
-## Logística com mais agentes
+## Logística
 
-As [figuras da logística v2](../studies/scenarios/logistics/v2/results/presentation/README.md)
-incluem PNG/SVG para slides, animação e um player HTML que abre sem serviços.
-O [roteiro específico](../studies/scenarios/logistics/v2/docs/presentation.md) reúne
-o resumo quantitativo e a explicação do percurso. A confirmação concluiu 60
-observações e está documentada com suas exceções e limites no
-[relatório do híbrido enxuto](../studies/scenarios/logistics/v2/results/stress-lean/README.md).
-O cenário original tem dez especialistas; a
-[configuração enxuta](../studies/scenarios/logistics/v2/docs/lean.md) tem um LLM e sete
-BDI. Mostre o percurso de uma tarefa, a interrupção por incidente e o novo
-planejamento antes de apresentar os totais do benchmark.
-
-No Inspector, selecione **Logística v2**, uma observação e **Percurso dos agentes**.
-As setas mostram tarefas e respostas passando pelo runtime. IDs, bindings e
-estado do episódio permitem relacionar a figura às evidências. O ritmo do player
-é didático e não representa a duração das chamadas.
-
-A [pasta de resultados](../studies/scenarios/logistics/v2/results/README.md)
-separa suíte básica, desenvolvimento, coleta interrompida e confirmação. Apresente
-o nome da configuração e a cobertura da coleta ao comparar resultados. A equipe
-original não ganha por simplesmente ter mais agentes; a versão enxuta investiga
-uma divisão de responsabilidades diferente, com menos chamadas LLM no caminho
-crítico e uma política energética revisada.
+A versão corrente é a [v3](../studies/scenarios/logistics/v3/README.md), que
+roda como missão e aparece no Mission Viewer como as demais. A v2 é um estudo
+histórico: suas [figuras](../studies/scenarios/logistics/v2/results/presentation/README.md),
+o [roteiro](../studies/scenarios/logistics/v2/docs/presentation.md) e o
+[relatório do híbrido enxuto](../studies/scenarios/logistics/v2/results/stress-lean/README.md)
+continuam disponíveis como material preservado. Apresente o nome da
+configuração e a cobertura da coleta ao comparar resultados.
 
 [Índice](README.md) · [Primeira execução](quickstart.md) · [Avaliação](evaluation.md)

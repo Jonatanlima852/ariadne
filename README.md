@@ -33,7 +33,7 @@ versão `2.0.0`; os stubs Go e Python estão incluídos no repositório.
 | Explorar cooperação, falhas e mensagens | [Catálogo de cenários](docs/scenarios.md) |
 | Desenvolver ou estender o projeto | [Guia de desenvolvimento](docs/development.md) |
 | Avaliar o trabalho de graduação | [Guia de avaliação e evidências](docs/evaluation.md) |
-| Apresentar o projeto ou explorar resultados | [Roteiro de apresentação](docs/presentation.md) e [visualizador local](tools/inspector/README.md) |
+| Apresentar o projeto ou explorar resultados | [Roteiro de apresentação](docs/presentation.md) e [Mission Viewer](tools/mission-viewer/README.md) |
 
 ## Primeira experiência
 
@@ -53,7 +53,7 @@ e reconhecer a resposta esperada. Depois, explore
 as missões de [rotas](studies/scenarios/routing/README.md) e
 [fan-out](studies/scenarios/fanout/README.md) e o
 [estudo logístico](studies/scenarios/logistics/README.md). `make viewer` abre o
-Mission Viewer com as missões gravadas; `./ariadne inspect` abre o Inspector.
+Mission Viewer com as missões gravadas, com grafo de dependências e linha do tempo.
 
 ## O que está implementado
 

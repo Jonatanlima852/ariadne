@@ -12,7 +12,7 @@ do repositório, salvo indicação explícita.
 | Entender a solução | [Arquitetura](architecture.md) → [contrato e configuração](reference.md) |
 | Alterar o código | [Desenvolvimento](development.md) → referência e testes do componente |
 | Avaliar o TCC | [Avaliação](evaluation.md) → artefatos → [limitações](limitations.md) |
-| Apresentar para outras pessoas | [Roteiro](presentation.md) → [visualizador local](../tools/inspector/README.md) |
+| Apresentar para outras pessoas | [Roteiro](presentation.md) → [Mission Viewer](../tools/mission-viewer/README.md) |
 
 ## Guias e referência
 
@@ -31,7 +31,7 @@ do repositório, salvo indicação explícita.
 - [Contrato e configuração](reference.md): APIs, versões, políticas e variáveis.
 - [Avaliação e evidências](evaluation.md): perguntas, resultados e reprodução.
 - [Apresentação](presentation.md): roteiro de demonstração, leitura dos resultados e vínculo ao TCC.
-- [Visualizador local](../tools/inspector/README.md): frontend React e API local somente leitura para tarefas, agentes e timeline.
+- [Mission Viewer](../tools/mission-viewer/README.md): página estática com grafo de dependências, linha do tempo por agente e rótulos de apresentação.
 - [Escopo e limitações](limitations.md): fronteiras operacionais e experimentais.
 
 ## Como manter estes guias

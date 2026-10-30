@@ -40,20 +40,12 @@ def main(argv=None):
     campaign.add_argument("file", type=Path)
     campaign.add_argument("--output", type=Path, default=Path(".ariadne/campaigns"))
     commands.add_parser("help", help="mostra os comandos disponíveis")
-    inspector = commands.add_parser("inspect", help="inicia API e interface local para explorar evidências")
-    inspector.add_argument('--port', type=positive, default=4173)
-    inspector.add_argument('--api-port', type=positive, default=8787)
-    inspector.add_argument('--ready-timeout', type=positive, default=90)
-    for option in ('runs-dir', 'campaigns-dir', 'evaluations-dir'):
-        inspector.add_argument('--' + option, type=Path)
     verify = commands.add_parser("verify", help="verifica SDK, runtime, estudos e ferramentas do checkout")
     verify.add_argument("--unit-only", action="store_true")
-    verify.add_argument("--no-inspector", action="store_true")
     doctor = commands.add_parser("doctor", help="confere Python, SDK, Docker, Compose e destino das evidências")
     doctor.add_argument("--file", type=Path, help="valida também uma descrição Python (importa o arquivo)")
     doctor.add_argument("--output", type=Path, default=runs_dir)
     doctor.add_argument("--llm", action="store_true", help="confere extra LLM e presença de credencial, sem chamada externa")
-    doctor.add_argument("--inspector", action="store_true", help="confere Node, npm e uv")
     supplied = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(supplied or ["help"])
 
@@ -62,27 +54,15 @@ def main(argv=None):
 
     previous = signal.signal(signal.SIGTERM, interrupt)
     try:
-        if args.command == 'inspect':
-            root = Path(os.getenv('ARIADNE_ROOT', Path(__file__).resolve().parents[4]))
-            script = root / 'tools/inspector/serve.py'
-            if not script.is_file():
-                raise ValueError('inspect exige o checkout; configure ARIADNE_ROOT')
-            options = ['--port', str(args.port), '--api-port', str(args.api_port),
-                       '--ready-timeout', str(args.ready_timeout)]
-            for option in ('runs-dir', 'campaigns-dir', 'evaluations-dir'):
-                value = getattr(args, option.replace('-', '_'))
-                if value is not None:
-                    options.extend(['--' + option, str(value.resolve())])
-            os.execv(sys.executable, [sys.executable, str(script), *options])
         if args.command == "doctor":
             from ariadne_sdk.doctor import diagnose
-            return diagnose(output=args.output, source=args.file, llm=args.llm, inspector=args.inspector)
+            return diagnose(output=args.output, source=args.file, llm=args.llm)
         if args.command == "verify":
             root = Path(os.getenv("ARIADNE_ROOT", Path(__file__).resolve().parents[4]))
             script = root / "tools/verify.py"
             if not script.is_file():
                 raise ValueError("verify requires a checkout; configure ARIADNE_ROOT")
-            options = [flag for flag, enabled in (("--unit-only", args.unit_only), ("--no-inspector", args.no_inspector)) if enabled]
+            options = ["--unit-only"] if args.unit_only else []
             os.execv(sys.executable, [sys.executable, str(script), *options])
         if args.command == "help":
             parser.print_help()

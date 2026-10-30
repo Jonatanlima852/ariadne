@@ -70,10 +70,11 @@ e o [catálogo de cenários](scenarios.md).
 
 ## 5. Abrir a visualização
 
-Para missões, `make viewer` abre o [Mission Viewer](../tools/mission-viewer/README.md)
-com as execuções de `.ariadne/runs`. O [Inspector](../tools/inspector/README.md)
-(`./ariadne inspect`, exige Node e npm) mostra workflows, campanhas e as
-avaliações históricas da logística.
+`make viewer` abre o [Mission Viewer](../tools/mission-viewer/README.md) com as
+missões de `.ariadne/runs`: grafo de dependências por rodada, linha do tempo por
+agente e, ao clicar num bloco, a entrada e a saída daquela chamada. Cenários de
+workflow (eco, workflow sequencial, falha) são lidos nos arquivos `result.json`
+e `events.jsonl` da execução.
 
 ## Diagnóstico rápido
 

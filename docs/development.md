@@ -30,8 +30,6 @@ agente usa Python 3.12. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `studies/scenarios/*/benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
 | `tools/mission-viewer/` | [Mission Viewer](../tools/mission-viewer/README.md) das missões do contrato 2.0.0 |
-| `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
-| `tools/inspector/scripts/` | [Exportação offline de fluxos e mídia](../tools/inspector/scripts/README.md) |
 | `docs/` | Documentação pública atual |
 | `internal-notes/` | Histórico interno de aprendizado; não é guia de uso |
 
@@ -51,11 +49,9 @@ make verify
 ```
 
 A rotina cobre contrato, links da documentação, Go, SDK, integrações reais em
-contêineres, estudos, métricas, Inspector (parser, API e build React/Vite com
-`npm ci`) e a instalação mínima do SDK sem OpenAI/Pydantic. Usa clientes
-falsos para LLM; requer Docker, Go, uv, npm e Node `^20.19.0 || >=22.12.0`.
-`--unit-only` omite as integrações em contêineres; `--no-inspector` omite o
-visualizador. `make test-go` mantém a verificação isolada de Go; para
+contêineres, estudos, métricas e a instalação mínima do SDK sem OpenAI/Pydantic.
+Usa clientes falsos para LLM; requer Docker, Go e uv. `--unit-only` omite as
+integrações em contêineres. `make test-go` mantém a verificação isolada de Go; para
 alterações concorrentes do runtime, execute também `go test -race ./...`
 dentro de `runtime/`. A mesma rotina está em
 [.github/workflows/verify.yml](../.github/workflows/verify.yml).
@@ -153,13 +149,9 @@ O comando `make verify` executa a rotina integrada também usada pelo CI em
 do frontend. O verificador de links confere destinos de links inline; não
 consulta URLs externas nem valida âncoras.
 
-O visualizador usa React, Vite e uma API FastAPI somente leitura. Instale as dependências com
-`npm ci --prefix tools/inspector` e use Node 22 >=22.12 (linha do CI).
-O intervalo aceito é `^20.19.0 || >=22.12.0`. Execute
-`npm test --prefix tools/inspector` para o parser e
-`npm run build --prefix tools/inspector` para validar a interface. Durante o
-desenvolvimento, use `npm run api --prefix tools/inspector` e
-`npm run dev --prefix tools/inspector` em terminais separados. Verifique a
-listagem de execuções, navegação, busca e troca de fontes.
+O [Mission Viewer](../tools/mission-viewer/README.md) é uma página estática
+sem dependências: `tools/mission-viewer/index.html` e um servidor de índice em
+`serve.py`, só biblioteca padrão. Para mudar o desenho, edite o HTML e abra
+com `make viewer`.
 
 [Referência](reference.md) · [Índice](README.md)

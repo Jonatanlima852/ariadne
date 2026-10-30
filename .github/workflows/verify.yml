@@ -15,8 +15,5 @@ jobs:
         with:
           go-version-file: runtime/go.mod
           cache-dependency-path: runtime/go.sum
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: tools/inspector/.nvmrc
       - run: python -m pip install uv==0.11.14
       - run: make verify

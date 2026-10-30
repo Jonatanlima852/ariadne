@@ -6,17 +6,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ariadne_sdk.doctor import compose_supported, diagnose, node_supported, writable_destination
+from ariadne_sdk.doctor import compose_supported, diagnose, writable_destination
 from ariadne_sdk.__main__ import main
 
 
 class DoctorTests(unittest.TestCase):
-    def test_node_versions_match_frontend_requirements(self):
-        for version in ('v18.20.0', 'v20.18.9', 'v21.7.0', 'v22.11.0'):
-            self.assertFalse(node_supported(version), version)
-        for version in ('v20.19.0', 'v22.12.0', 'v24.16.0'):
-            self.assertTrue(node_supported(version), version)
-
     def test_compose_versions_follow_the_minimum(self):
         for version in ('2.24.3', '2.20.0', 'v1.29.2'):
             self.assertFalse(compose_supported(version), version)
@@ -59,8 +53,7 @@ class DoctorTests(unittest.TestCase):
 
     def test_cli_passes_options(self):
         with patch('ariadne_sdk.doctor.diagnose', return_value=1) as diagnose_mock:
-            self.assertEqual(main(['doctor', '--inspector', '--llm']), 1)
-            self.assertTrue(diagnose_mock.call_args.kwargs['inspector'])
+            self.assertEqual(main(['doctor', '--llm']), 1)
             self.assertTrue(diagnose_mock.call_args.kwargs['llm'])
             self.assertIsNone(diagnose_mock.call_args.kwargs['source'])
 

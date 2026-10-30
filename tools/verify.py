@@ -14,13 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--unit-only', action='store_true', help='omite as integrações em contêineres Docker')
-    parser.add_argument('--no-inspector', action='store_true', help='omite verificações do visualizador')
     args = parser.parse_args(argv)
-    if not args.no_inspector:
-        from ariadne_sdk.doctor import node_supported, tool_version, NODE_REQUIREMENT
-        installed = tool_version('node', '--version')
-        if not node_supported(installed):
-            raise SystemExit(f'Inspector exige Node {NODE_REQUIREMENT}; encontrado {installed}')
     environment = dict(os.environ)
     environment.pop('ARIADNE_TEST_DOCKER', None)
     environment['GOCACHE'] = str(ROOT / '.ariadne/cache/go')
@@ -54,13 +48,6 @@ for path in ("studies/scenarios/basic_task/scenario.py", "sdk/python/tests/fixtu
     load_scenario(path).definition()
 print("Core SDK works without OpenAI/Pydantic")
 '''])
-    if not args.no_inspector:
-        run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/inspector', '-p', 'test_serve.py', '-q'])
-        run(['npm', 'ci', '--no-audit', '--no-fund'], cwd=ROOT / 'tools/inspector')
-        run(['node', '--test', 'model.test.js', 'presentation.test.js'], cwd=ROOT / 'tools/inspector')
-        run(['npm', 'run', 'build'], cwd=ROOT / 'tools/inspector')
-        run(['uv', 'run', '--locked', '--project', 'tools/inspector/api', 'python', '-m', 'pytest',
-             'tools/inspector/api/test_app.py', '-q'])
     print('\nVerificação concluída. Nenhuma chamada LLM real foi feita.')
     return 0
 

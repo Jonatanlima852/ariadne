@@ -11,7 +11,7 @@ experimental. O domínio logístico é um estudo de caso dessa infraestrutura.
 
 O [roteiro de apresentação](presentation.md) organiza uma fala de 10–15 minutos
 e relaciona os artefatos à argumentação acadêmica. Para inspecionar uma execução
-de cenário, use o [visualizador local](../tools/inspector/README.md); ele mostra
+de missão, use o [Mission Viewer](../tools/mission-viewer/README.md); ele mostra
 eventos e resultados, sem recalcular métricas dos benchmarks.
 
 1. Leia a [arquitetura](architecture.md) e a separação entre runtime e agentes.

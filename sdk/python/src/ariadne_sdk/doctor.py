@@ -8,7 +8,6 @@ import subprocess
 import sys
 
 
-NODE_REQUIREMENT = "^20.19.0 || >=22.12.0"
 COMPOSE_REQUIREMENT = (2, 24, 4)
 
 
@@ -17,11 +16,6 @@ def version_tuple(value):
     if not match:
         raise ValueError(f"versão não reconhecida: {value}")
     return tuple(int(part or 0) for part in match.groups())
-
-
-def node_supported(value):
-    version = version_tuple(value)
-    return (version[0] == 20 and version >= (20, 19, 0)) or version >= (22, 12, 0)
 
 
 def compose_supported(value):
@@ -41,7 +35,7 @@ def writable_destination(path):
     return path.is_dir() and os.access(path, os.W_OK | os.X_OK)
 
 
-def diagnose(*, output=".ariadne/runs", source=None, llm=False, inspector=False):
+def diagnose(*, output=".ariadne/runs", source=None, llm=False):
     checks = []
 
     def check(label, operation):
@@ -85,13 +79,6 @@ def diagnose(*, output=".ariadne/runs", source=None, llm=False, inspector=False)
         check("Credencial LLM", lambda: require(bool(os.getenv("OPENAI_API_KEY", "").strip()),
               "exporte OPENAI_API_KEY no terminal; o executor repassa a variável aos contêineres e não lê .env",
               "presente (não validada no provedor)"))
-    if inspector:
-        def node():
-            installed = tool_version("node", "--version")
-            return require(node_supported(installed), f"use Node {NODE_REQUIREMENT}; encontrado {installed}", installed)
-        check("Node", node)
-        check("npm", lambda: tool_version("npm", "--version"))
-        check("uv para API do Inspector", lambda: tool_version("uv", "--version"))
     for label, ok, detail in checks:
         print(f"{'OK' if ok else 'FALHA'} · {label}: {detail}")
     print("Diagnóstico concluído. Não constrói imagens nem verifica rede ou acesso ao modelo.")

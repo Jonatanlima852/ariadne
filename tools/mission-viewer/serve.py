@@ -49,11 +49,17 @@ def summarize(doc, path):
         'case': metadata.get('case') or case.get('id'), 'suite': metadata.get('suite') or case.get('suite'),
         'configuration': metadata.get('configuration'),
         'scenario': metadata.get('study') or (request.get('trace') or {}).get('correlation_id'),
+        'presentation': metadata.get('presentation') if isinstance(metadata.get('presentation'), dict) else None,
     }
     manifest = os.path.join(os.path.dirname(path), 'manifest.json')
     if os.path.isfile(manifest):
         try:
-            entry['scenario'] = scenario_from_source(_read_json(manifest).get('source')) or entry['scenario']
+            document = _read_json(manifest)
+            entry['scenario'] = scenario_from_source(document.get('source')) or entry['scenario']
+            # Rótulos editoriais declarados em Scenario(metadata={'presentation': {...}}).
+            presentation = (document.get('metadata') or {}).get('presentation')
+            if isinstance(presentation, dict):
+                entry['presentation'] = presentation
         except (OSError, ValueError):
             pass
     return entry

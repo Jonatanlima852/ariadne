@@ -39,6 +39,29 @@ escolhe Entrada, Saída ou Rastro, `&theme=dark|light` força o tema e
 `&zoom=1.5&pan=-120,-60` abre com aquele zoom e deslocamento (em pixels da
 tela) em vez de ajustar à janela.
 
+## Rótulos de apresentação
+
+`Scenario(metadata={"presentation": {...}})` troca os nomes exibidos sem tocar
+em eventos, resultados ou identificadores. O Viewer lê o bloco do
+`manifest.json` ao lado do `mission-result.json` (ou de
+`request.metadata.presentation`, quando a missão o carrega):
+
+```python
+metadata={"presentation": {
+    "title": "Rota heterogênea",
+    "description": "Um planejador LLM decompõe o objetivo e um agente BDI escolhe a rota.",
+    "request": "texto do pedido, se diferente do objetivo",
+    "agents": {"route-planner-01": {"label": "Planejador de rotas", "role": "BDI: delibera entre rotas"}},
+    "steps": {"route": {"label": "Escolher rota"}},
+}}
+```
+
+Com o bloco presente, o cabeçalho ganha um cartão com título, descrição e a
+lista de agentes com seus papéis; os quadros, as pistas da linha do tempo e a
+gaveta usam os rótulos, mantendo o identificador original como dica. Sem o
+bloco, nada muda. O [cenário de rotas](../../studies/scenarios/routing/scenario.py)
+é o exemplo.
+
 ## A lista
 
 Barra lateral recolhível (botão "Lista"; ela se recolhe ao escolher uma

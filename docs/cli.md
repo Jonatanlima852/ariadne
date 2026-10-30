@@ -16,9 +16,8 @@ escritas à mão.
 | `./ariadne status [ID]` | Estado salvo e localização dos resultados |
 | `./ariadne logs [ID]` | Logs salvos de serviços e agentes |
 | `./ariadne stop [ID]` | Remove contêineres que uma interrupção abrupta tenha deixado |
-| `./ariadne doctor [--file ARQUIVO.py] [--llm] [--inspector]` | Confere Python, SDK, Docker, Compose, destino e, opcionalmente, descrição, extra LLM e Node |
+| `./ariadne doctor [--file ARQUIVO.py] [--llm]` | Confere Python, SDK, Docker, Compose, destino e, opcionalmente, descrição e extra LLM |
 | `./ariadne verify` | Verificação integrada do checkout; use o extra `llm` |
-| `./ariadne inspect` | Inicia API e frontend do Inspector |
 | `./ariadne help` | Ajuda |
 
 Opções de `run`: `--repeat N` repete o cenário na mesma topologia, preservando

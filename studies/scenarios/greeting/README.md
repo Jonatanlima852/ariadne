@@ -11,7 +11,7 @@ ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/greeting/scenario.py
 ```
 
 A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
-eventos em `.ariadne/runs/`; abra-os com `./ariadne inspect`.
+eventos em `.ariadne/runs/`.
 
 Requer credencial do provedor para as etapas LLM e pode gerar custos.
 

@@ -87,6 +87,11 @@
   #summary.on { display: flex; }
   #summary .goal { width: 100%; color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
   #summary .goal.open { -webkit-line-clamp: unset; }
+  #summary .pres { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; box-sizing: border-box; }
+  #summary .pres h2 { font-size: 15px; margin: 0 0 4px; }
+  #summary .pres p { margin: 0 0 6px; color: var(--muted); font-size: 13px; white-space: pre-line; }
+  #summary .pres ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+  #summary .pres li { margin: 2px 0; }
   #summary .stat { font-size: 13px; }
   #summary .stat b { font-weight: 600; }
   #bar { display: none; padding: 6px 16px; border-bottom: 1px solid var(--line); background: var(--surface); flex-direction: column; gap: 2px; }
@@ -274,7 +279,7 @@ function attemptsOf(output) {
 }
 
 // Resumo de uma missão para a lista (mesmos campos que serve.py produz).
-function summarize(doc, path, manifestSource) {
+function summarize(doc, path, manifestSource, manifestPresentation) {
   if (!doc || !Array.isArray(doc.rounds)) return null;
   const request = doc.request || {}, metadata = request.metadata || {}, context = request.context || {};
   const kase = context.case && typeof context.case === 'object' ? context.case : {};
@@ -284,8 +289,17 @@ function summarize(doc, path, manifestSource) {
     duration_ms: durationMs(doc.created_at, doc.completed_at), rounds: doc.rounds.length,
     case: metadata.case || kase.id, suite: metadata.suite || kase.suite, configuration: metadata.configuration,
     scenario: scenarioFromSource(manifestSource) || metadata.study || (request.trace || {}).correlation_id,
+    presentation: manifestPresentation || (metadata.presentation && typeof metadata.presentation === 'object' ? metadata.presentation : null),
   };
 }
+
+// --- Rótulos de apresentação: Scenario(metadata={'presentation': {title, description, request, agents: {id: {label, role}}, steps: {id: {label}}}})
+// São editoriais: trocam nomes exibidos, nunca eventos, resultados ou identificadores.
+let pres = {};
+const presentationOf = (run, doc) => (run && run.presentation) || (doc && doc.request && doc.request.metadata && doc.request.metadata.presentation) || {};
+const agentLabel = id => (id && pres.agents && pres.agents[id] && pres.agents[id].label) || id;
+const agentRole = id => (id && pres.agents && pres.agents[id] && pres.agents[id].role) || '';
+const stepLabel = id => (pres.steps && pres.steps[id] && pres.steps[id].label) || id;
 
 // --- Modelo: do JSON do contrato para rodadas, nós e dependências ---------------
 function stepsFromWorkflow(result, plan) {
@@ -536,10 +550,10 @@ function renderNode(box) {
   const group = el('g', { class: `node s-${node.status} k-${node.agentKind || 'none'}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
   group.appendChild(el('rect', { class: 'card', width: G.w, height: G.h }));
   group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 5, height: G.h, 'clip-path': 'url(#card-clip)' }));
-  group.appendChild(el('text', { class: 'title', x: 16, y: 24 }, clip(node.label, 22)));
+  group.appendChild(el('text', { class: 'title', x: 16, y: 24 }, clip(node.kind === 'planner' ? node.label : stepLabel(node.id), 22)));
   tag(group, G.w - 8 - ((node.agentKind || '?').length * 7 + 10), 10, node.agentKind);
   group.appendChild(el('text', { class: 'cap', x: 16, y: 43 }, clip(node.kind === 'planner' ? node.action.toUpperCase() + (node.capability ? ' · ' + node.capability : '') : node.capability || node.status, node.attempt > 1 ? 14 : 30)));
-  group.appendChild(el('text', { class: 'small', x: 16, y: 61 }, clip(node.agent || (node.kind === 'planner' ? '' : 'sem agente'), has(node.duration) ? 22 : 30)));
+  group.appendChild(el('text', { class: 'small', x: 16, y: 61 }, clip(agentLabel(node.agent) || (node.kind === 'planner' ? '' : 'sem agente'), has(node.duration) ? 22 : 30)));
   if (has(node.duration)) group.appendChild(el('text', { class: 'small', x: G.w - 12, y: 61, 'text-anchor': 'end' }, fmtDuration(node.duration)));
   if (node.attempt > 1) {
     const text = `${node.attempt}ª tentativa · reatribuído`, width = text.length * 5.6 + 12;
@@ -555,7 +569,7 @@ function renderBlock(box) {
   const group = el('g', { class: `block s-${node.status} k-${node.agentKind || 'none'}${box.ghost ? ' ghost' : ''}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
   group.appendChild(el('rect', { class: 'body', width: box.w, height: box.h }));
   if (!box.ghost) group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 4, height: box.h, rx: 2 }));
-  const label = box.ghost ? (box.attemptInfo ? `${node.label} · tentativa ${box.attemptInfo.attempt} (${box.attemptInfo.outcome})` : 'tentativa anterior (inferida)') : (node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label) + (node.attempt > 1 ? ` · ${node.attempt}ª tentativa` : '');
+  const label = box.ghost ? (box.attemptInfo ? `${stepLabel(node.id)} · tentativa ${box.attemptInfo.attempt} (${box.attemptInfo.outcome})` : 'tentativa anterior (inferida)') : (node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : stepLabel(node.id)) + (node.attempt > 1 ? ` · ${node.attempt}ª tentativa` : '');
   const tagWidth = box.ghost ? 0 : (node.agentKind || '?').length * 7 + 10;
   if (box.w >= 44) group.appendChild(el('text', { class: 'blk', x: 9, y: 19 }, clip(label, (box.w - 14 - (box.w >= 96 ? tagWidth + 6 : 0)) / 6.3)));
   if (!box.ghost && box.w >= 96) tag(group, box.w - tagWidth - 6, 8, node.agentKind);
@@ -581,8 +595,9 @@ function renderTimeline(svg, plan) {
   svg.appendChild(el('line', { class: 'orch-line', x1: T.margin + T.label, x2: right, y1: lineY, y2: lineY }));
   for (const lane of plan.lanes) {
     rule(lane.y);
-    svg.appendChild(el('text', { class: 'title', x: T.margin + 8, y: lane.y + 20 }, clip(lane.id, 20)));
+    svg.appendChild(el('text', { class: 'title', x: T.margin + 8, y: lane.y + 20 }, clip(agentLabel(lane.id), 20)));
     tag(svg, T.margin + 8, lane.y + 26, lane.kind);
+    if (agentRole(lane.id)) svg.appendChild(el('text', { class: 'small', x: T.margin + 48, y: lane.y + 38 }, clip(agentRole(lane.id), 19)));
   }
   rule(plan.bottom);
   const many = plan.boxes.length > 40, paths = [];
@@ -627,6 +642,24 @@ function render(doc, name) {
     button.addEventListener('click', () => setView(id)); seg.appendChild(button);
   }
   summary.appendChild(seg);
+  if (pres.title || pres.description || pres.request || (pres.agents && Object.keys(pres.agents).length)) {
+    const card = document.createElement('div'); card.className = 'pres';
+    if (pres.title) card.appendChild(Object.assign(document.createElement('h2'), { textContent: pres.title }));
+    if (pres.description) card.appendChild(Object.assign(document.createElement('p'), { textContent: pres.description }));
+    if (pres.request) card.appendChild(Object.assign(document.createElement('p'), { textContent: pres.request }));
+    const declared = Object.entries(pres.agents || {});
+    if (declared.length) {
+      const list = document.createElement('ul');
+      for (const [id, info] of declared) {
+        const item = document.createElement('li'); item.title = id;
+        item.appendChild(Object.assign(document.createElement('b'), { textContent: (info && info.label) || id }));
+        if (info && info.role) item.append(` — ${info.role}`);
+        list.appendChild(item);
+      }
+      card.appendChild(list);
+    }
+    summary.appendChild(card);
+  }
   if (model.goal) { const goal = document.createElement('div'); goal.className = 'goal'; goal.textContent = model.goal; goal.title = 'Clique para expandir'; goal.addEventListener('click', () => goal.classList.toggle('open')); summary.appendChild(goal); }
   if (model.kind === 'mission') summary.appendChild(Object.assign(document.createElement('div'), { className: 'hint', textContent: 'Cada rodada = uma chamada ao planejador seguida dos passos que ele propôs; a missão termina quando o planejador responde DONE.' }));
   summary.classList.add('on');
@@ -812,10 +845,10 @@ function select(box) {
     if (edge.marker) path.setAttribute('marker-end', `url(#${edge.marker}${active ? '-active' : ''})`);
   }
   const node = box.node, planner = node.kind === 'planner';
-  $('d-title').textContent = planner ? `Planejador · rodada ${node.id.split('-')[1]}` : node.label;
+  $('d-title').textContent = planner ? `Planejador · rodada ${node.id.split('-')[1]}` : stepLabel(node.id);
   const status = $('d-status'); status.className = `pill s-${node.status}`; status.textContent = planner ? node.action : node.status;
   const kindTag = Object.assign(document.createElement('span'), { className: `tag k-${node.agentKind || 'none'}`, textContent: node.agentKind || '?', title: 'Tipo do agente, inferido do TaskResult' });
-  $('d-line').replaceChildren(kindTag, ...[node.agent && `agente ${node.agent}`, node.capability && `capacidade ${node.capability}`, node.attempt && `tentativa ${node.attempt}`, has(node.duration) && `duração ${fmtDuration(node.duration)}`]
+  $('d-line').replaceChildren(kindTag, ...[node.agent && `agente ${agentLabel(node.agent)}${agentLabel(node.agent) !== node.agent ? ` (${node.agent})` : ''}`, agentRole(node.agent) && `papel: ${agentRole(node.agent)}`, node.capability && `capacidade ${node.capability}`, node.attempt && `tentativa ${node.attempt}`, has(node.duration) && `duração ${fmtDuration(node.duration)}`]
     .filter(Boolean).map(text => Object.assign(document.createElement('span'), { textContent: text })));
   const out = node.output || {};
   const cycles = (out.bdi && out.bdi.trace && out.bdi.trace.cycles) || (out.metadata && out.metadata.bdi_trace && out.metadata.bdi_trace.cycles) || null;
@@ -889,6 +922,7 @@ async function openRun(run, nodeId) {
     const doc = run.doc || (run.handle ? JSON.parse(await (await run.handle.getFile()).text()) : await fetchJson(run.path));
     activePath = run.path;
     store.set('lastPath', run.path);
+    pres = presentationOf(run, doc);
     render(doc, run.name);
     renderList();
     const box = nodeId && findBox(nodeId);
@@ -927,16 +961,16 @@ const SKIP_DIRS = new Set(['.git', 'node_modules', '.venv', '__pycache__', 'cach
 async function scanDirectory(dir, path, depth, out) {
   const entries = [];
   for await (const entry of dir.values()) entries.push(entry);
-  let manifestSource = null;
+  let manifestSource = null, manifestPresentation = null;
   const manifest = entries.find(entry => entry.kind === 'file' && entry.name === 'manifest.json');
-  if (manifest) try { manifestSource = JSON.parse(await (await manifest.getFile()).text()).source; } catch {}
+  if (manifest) try { const parsed = JSON.parse(await (await manifest.getFile()).text()); manifestSource = parsed.source; manifestPresentation = parsed.metadata && parsed.metadata.presentation; } catch {}
   for (const entry of entries) {
     const full = path ? `${path}/${entry.name}` : entry.name;
     if (entry.kind === 'directory') { if (depth < 4 && !SKIP_DIRS.has(entry.name)) await scanDirectory(entry, full, depth + 1, out); continue; }
     if (!entry.name.endsWith('.json') || !(entry.name === 'mission-result.json' || path.endsWith('missions') || depth === 0)) continue;
     try {
       const file = await entry.getFile();
-      const summary = summarize(JSON.parse(await file.text()), full, manifestSource);
+      const summary = summarize(JSON.parse(await file.text()), full, manifestSource, manifestPresentation);
       if (summary) { summary.handle = entry; summary.mtime = file.lastModified; out.push(summary); }
     } catch {}
   }

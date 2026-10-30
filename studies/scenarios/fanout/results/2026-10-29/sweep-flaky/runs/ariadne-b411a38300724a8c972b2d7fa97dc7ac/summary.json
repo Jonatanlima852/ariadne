@@ -1,0 +1,7 @@
+{
+  "scenario": "fanout-k4-n8-flaky",
+  "started_at": "2026-10-30T01:11:23.867175+00:00",
+  "status": "COMPLETED",
+  "completed_at": "2026-10-30T01:11:33.164811+00:00",
+  "elapsed_ms": 9297.67120903125
+}

@@ -827,9 +827,9 @@ def speedup_png(rows: list[dict], path: Path) -> bool:
 def write_outputs(report: dict, output: Path, *, figures: bool = True, gantt: str = "all") -> list[Path]:
     output.mkdir(parents=True, exist_ok=True)
     written = []
-    saved = {key: value for key, value in report.items() if key != "samples"}
-    saved["samples"] = [{key: value for key, value in sample.items() if key != "rounds"} for sample in report["samples"]]
-    (output / "report.json").write_text(json.dumps(saved, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # report.json guarda tudo (inclusive intervalos por passo e tentativas): dá
+    # para regenerar as figuras sem o results.jsonl, que é grande.
+    (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output / "report.md").write_text(markdown_report(report), encoding="utf-8")
     written += [output / "report.json", output / "report.md"]
     if not figures:

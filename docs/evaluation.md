@@ -82,6 +82,40 @@ cada caso; use `comparison.md` da coleta para as colunas que o analisador da
 v2 não cobre (rodadas, ciclos BDI, paralelismo, reatribuições). Não há
 resultados reais da v3 registrados ainda; as tabelas abaixo são históricas.
 
+## Paralelismo, reatribuição e rastro
+
+O [estudo de fan-out](../studies/scenarios/fanout/README.md) isola três
+propriedades do runtime sem LLM e sem Docker: a execução paralela de passos
+independentes de uma missão, a reatribuição de um passo cujo agente não
+cumpriu o prazo e a completude do rastro de eventos. A missão conta as
+palavras de um texto dividido em N fragmentos: um planejador determinístico
+pede N passos `map` em paralelo e um `reduce` dependente de todos; K
+contadores idênticos oferecem a capacidade, e um contador lento, com a mesma
+capacidade, demora mais que o prazo do passo. As métricas saem do
+`mission-result.json` (intervalos por passo) e do `events.jsonl`
+(`TASK_TIMEOUT`, `TASK_REASSIGNED`, conjunto esperado por missão):
+
+- speedup e fator de paralelismo por K (varredura K em {1, 2, 4, 8});
+- contagem de reatribuições, detecção do prazo, recuperação
+  (`TASK_REASSIGNED - TASK_TIMEOUT`) e conclusão após o timeout, com
+  mediana, média, desvio e p95 entre repetições;
+- completude do rastro: eventos esperados presentes sobre esperados;
+- um Gantt por amostra com os passos por agente e a tentativa reatribuída.
+
+```sh
+./ariadne run studies/scenarios/fanout/scenario.py --repeat 5
+uv run --project sdk/python python -m studies.scenarios.fanout.campaign --workers 1 2 4 8 --repeat 3 --flaky 0
+uv run --project sdk/python python -m studies.scenarios.fanout.analysis <runs> --output <analysis>
+```
+
+Resultados de 29 de outubro de 2026 em
+[results/2026-10-29](../studies/scenarios/fanout/results/2026-10-29/README.md):
+speedup 1,97, 3,82 e 7,04 para K = 2, 4 e 8 (N = 8, 300 ms por fragmento);
+recuperação mediana de 1,7 ms e p95 de 4,8 ms em oito prazos estourados;
+rastro completo nas vinte missões. O trabalho é simulado (`sleep`), a
+coleta é local e só a falha por prazo é exercitada; leia as limitações no
+README do estudo.
+
 ## Resultados logísticos selecionados (histórico: v1 e v2)
 
 As tabelas desta seção registram as avaliações anteriores (v1 com workflow

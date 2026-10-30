@@ -13,6 +13,7 @@ exigir ferramentas adicionais. Execute da raiz do repositório.
 | [Mensageria](../studies/scenarios/messaging/docker/README.md) | Envelope e correlação preservados | Nenhum | Validação aprovada, mesmo message ID |
 | [Rota heterogênea](../studies/scenarios/routing/docker/README.md) | Missão: planejador LLM, rota BDI deliberativa e explicação LLM | Chave e acesso ao modelo configurado; sem chave, `ROUTING_DEMO=1 ./ariadne run studies/scenarios/routing/scenario.py` | Rota `A → B → D`, distância 25, rastro BDI e `MissionResult` em JSON |
 | [Missão logística](../studies/scenarios/logistics/docker/README.md) | Interpretação LLM e plano BDI com restrições | Chave e acesso ao modelo configurado | Plano aceito pelo avaliador do domínio |
+| [Fan-out](../studies/scenarios/fanout/README.md) | N passos de mapa em paralelo, prazo estourado e reatribuição, rastro completo | Nenhum: `./ariadne run studies/scenarios/fanout/scenario.py` | `COMPLETED`, um passo com tentativa 2 em outro contador, `TASK_TIMEOUT` e `TASK_REASSIGNED` nos eventos |
 
 ```sh
 ./ariadne scenario workflow-sequential
@@ -29,6 +30,7 @@ resultado estruturado em `result.json`, dentro do diretório da execução.
 - Para estudar comunicação iniciada por agentes: mensageria.
 - Para observar o raciocínio BDI sem Docker: [cenário de agendamento](../studies/scenarios/meeting/scenario.py).
 - Para observar o laço de missão sem credencial: [rotas](../studies/scenarios/routing/README.md) com `ROUTING_DEMO=1`.
+- Para ver paralelismo e reatribuição num Gantt: [fan-out](../studies/scenarios/fanout/README.md), sem credencial.
 - Para observar interoperabilidade LLM/BDI: rota heterogênea e missão logística.
 - Para comparar resultados sistematicamente: [guia de avaliação](evaluation.md).
 

@@ -15,6 +15,7 @@ A arquitetura do agente (BDI ou LLM) e o modo de execução não definem cenári
 | [Agendamento](scenarios/meeting/README.md) | Crenças, restrições e planos |
 | [Rotas](scenarios/routing/README.md) | Missão didática: planejador LLM → BDI deliberativo → explicação LLM; benchmark C |
 | [Logística](scenarios/logistics/README.md) | Missões com energia, prazo e restrições; LLM-only e híbrido |
+| [Fan-out](scenarios/fanout/README.md) | Paralelismo de passos, reatribuição após prazo e completude do rastro; determinístico, sem LLM |
 
 ## Estrutura de um cenário
 

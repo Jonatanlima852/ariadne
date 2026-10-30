@@ -47,6 +47,9 @@ class FanoutMissionIntegrationTests(unittest.TestCase):
         self.assertEqual(sample["steps_completed"], 9)
         # Paralelismo: com K=4 há quatro passos de mapa em execução ao mesmo tempo.
         self.assertGreaterEqual(sample["map_concurrency_peak"], 2)
+        self.assertGreater(sample["map_concurrency_mean"], 1.0)
+        # Numa execução nova o rodízio entrega um único passo ao contador lento;
+        # a soma das durações dos passos ainda supera o intervalo da rodada.
         self.assertGreater(sample["map_parallelism_factor"], 1.0)
         # Reatribuição: a tentativa 1 no contador lento estourou o prazo; a tentativa 2 foi para outro contador.
         reassigned = sample["reassignments"]["steps"]

@@ -1,0 +1,6266 @@
+{
+  "runs": [
+    {
+      "directory": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+      "settings": {
+        "workers": 1,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "samples": 3,
+      "scenario": "fanout",
+      "execution_id": "ariadne-5744c74583784bf8a430be5370ec391f"
+    },
+    {
+      "directory": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+      "settings": {
+        "workers": 4,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "samples": 3,
+      "scenario": "fanout",
+      "execution_id": "ariadne-8816a1d3f31e4dd19a92008ad2d00e3e"
+    },
+    {
+      "directory": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+      "settings": {
+        "workers": 2,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "samples": 3,
+      "scenario": "fanout",
+      "execution_id": "ariadne-b8ceffd13f6246f5b848b446ce0aa622"
+    },
+    {
+      "directory": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+      "settings": {
+        "workers": 8,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "samples": 3,
+      "scenario": "fanout",
+      "execution_id": "ariadne-d9dc9cadd6e748509e4477b53cc75b31"
+    }
+  ],
+  "groups": {
+    "K=1 N=8 no-flaky": {
+      "settings": {
+        "workers": 1,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "summary": {
+        "samples": 3,
+        "completed": 3,
+        "wall_ms": {
+          "n": 3,
+          "median": 2550.5869140625,
+          "mean": 2544.8618977864585,
+          "std": 16.6688601804748,
+          "p95": 2557.913818359375,
+          "min": 2526.0849609375,
+          "max": 2557.913818359375
+        },
+        "client_ms": {
+          "n": 3,
+          "median": 2577.4479169631377,
+          "mean": 2569.624930329155,
+          "std": 17.786357158724115,
+          "p95": 2582.158958015498,
+          "min": 2549.26791600883,
+          "max": 2582.158958015498
+        },
+        "parallelism_factor": {
+          "n": 3,
+          "median": 0.9791799502096822,
+          "mean": 0.9771610633524511,
+          "std": 0.0037899097914160505,
+          "p95": 0.9795141320978428,
+          "min": 0.9727891077498285,
+          "max": 0.9795141320978428
+        },
+        "map_parallelism_factor": {
+          "n": 3,
+          "median": 0.9818604329988794,
+          "mean": 0.9811904775944348,
+          "std": 0.002867438094713071,
+          "p95": 0.9836636257875478,
+          "min": 0.978047373996877,
+          "max": 0.9836636257875478
+        },
+        "map_concurrency_peak": {
+          "n": 3,
+          "median": 1.0,
+          "mean": 1.0,
+          "std": 0.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "map_concurrency_mean": {
+          "n": 3,
+          "median": 0.9939382781522464,
+          "mean": 0.9935481723855797,
+          "std": 0.0015578213470699353,
+          "p95": 0.9948738661831557,
+          "min": 0.991832372821337,
+          "max": 0.9948738661831557
+        },
+        "round_1_span_ms": {
+          "n": 3,
+          "median": 2521.718017578125,
+          "mean": 2518.8203125,
+          "std": 14.436459522406452,
+          "p95": 2531.588134765625,
+          "min": 2503.15478515625,
+          "max": 2531.588134765625
+        },
+        "reassignment_events": 0,
+        "timeout_events": 0,
+        "steps_with_attempt_gt_1": 0,
+        "samples_with_reassignment": 0,
+        "timeout_detection_ms": null,
+        "recovery_ms": null,
+        "completion_after_timeout_ms": null,
+        "completeness": {
+          "n": 3,
+          "median": 1.0,
+          "mean": 1.0,
+          "std": 0.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "missing_events": 0
+      },
+      "samples": [
+        {
+          "mission_id": "60457704-893d-47b7-bf73-e427aa8b3092",
+          "sample": 1,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 1,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 2550.5869140625,
+          "client_ms": 2577.4479169631377,
+          "parallelism_factor": 0.9791799502096822,
+          "map_parallelism_factor": 0.9836636257875478,
+          "map_concurrency_peak": 1,
+          "map_concurrency_mean": 0.9948738661831557,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.28662109375
+            },
+            {
+              "round": 2,
+              "at_ms": 2523.228759765625
+            }
+          ],
+          "output": {
+            "map_steps": 8.0,
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "reassigned_steps": [],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "distinct_words": 71.0,
+            "counted_by": {
+              "6": "counter-1",
+              "5": "counter-1",
+              "8": "counter-1",
+              "2": "counter-1",
+              "1": "counter-1",
+              "4": "counter-1",
+              "7": "counter-1",
+              "3": "counter-1"
+            },
+            "total_words": 1600.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+          "group": "K=1 N=8 no-flaky"
+        },
+        {
+          "mission_id": "9cb2a7f4-670d-4340-a44f-1ec2a1eaa99e",
+          "sample": 2,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 1,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 2557.913818359375,
+          "client_ms": 2582.158958015498,
+          "parallelism_factor": 0.9727891077498285,
+          "map_parallelism_factor": 0.978047373996877,
+          "map_concurrency_peak": 1,
+          "map_concurrency_mean": 0.991832372821337,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.054931640625
+            },
+            {
+              "round": 2,
+              "at_ms": 2533.35595703125
+            }
+          ],
+          "output": {
+            "map_steps": 8.0,
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "reassigned_steps": [],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "distinct_words": 71.0,
+            "counted_by": {
+              "6": "counter-1",
+              "8": "counter-1",
+              "5": "counter-1",
+              "2": "counter-1",
+              "1": "counter-1",
+              "4": "counter-1",
+              "7": "counter-1",
+              "3": "counter-1"
+            },
+            "total_words": 1600.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+          "group": "K=1 N=8 no-flaky"
+        },
+        {
+          "mission_id": "3310dfa1-db38-414f-ac3b-43f614b60c85",
+          "sample": 3,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 1,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 2526.0849609375,
+          "client_ms": 2549.26791600883,
+          "parallelism_factor": 0.9795141320978428,
+          "map_parallelism_factor": 0.9818604329988794,
+          "map_concurrency_peak": 1,
+          "map_concurrency_mean": 0.9939382781522464,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.055908203125
+            },
+            {
+              "round": 2,
+              "at_ms": 2503.989013671875
+            }
+          ],
+          "output": {
+            "map_steps": 8.0,
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "reassigned_steps": [],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "distinct_words": 71.0,
+            "counted_by": {
+              "6": "counter-1",
+              "5": "counter-1",
+              "8": "counter-1",
+              "2": "counter-1",
+              "1": "counter-1",
+              "4": "counter-1",
+              "7": "counter-1",
+              "3": "counter-1"
+            },
+            "total_words": 1600.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+          "group": "K=1 N=8 no-flaky"
+        }
+      ]
+    },
+    "K=4 N=8 no-flaky": {
+      "settings": {
+        "workers": 4,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "summary": {
+        "samples": 3,
+        "completed": 3,
+        "wall_ms": {
+          "n": 3,
+          "median": 666.84716796875,
+          "mean": 665.9525553385416,
+          "std": 5.442028354227549,
+          "p95": 670.891845703125,
+          "min": 660.11865234375,
+          "max": 670.891845703125
+        },
+        "client_ms": {
+          "n": 3,
+          "median": 690.3220829553902,
+          "mean": 690.1107219746336,
+          "std": 5.904296529504645,
+          "p95": 695.9064999828115,
+          "min": 684.1035829856992,
+          "max": 695.9064999828115
+        },
+        "parallelism_factor": {
+          "n": 3,
+          "median": 3.865862581022784,
+          "mean": 3.8673662099948327,
+          "std": 0.01635083872118768,
+          "p95": 3.8844169278740948,
+          "min": 3.851819121087619,
+          "max": 3.8844169278740948
+        },
+        "map_parallelism_factor": {
+          "n": 3,
+          "median": 3.944201829611064,
+          "mean": 3.943476770359107,
+          "std": 0.018298971877060317,
+          "p95": 3.961402436066958,
+          "min": 3.924826045399299,
+          "max": 3.961402436066958
+        },
+        "map_concurrency_peak": {
+          "n": 3,
+          "median": 4.0,
+          "mean": 4.0,
+          "std": 0.0,
+          "p95": 4.0,
+          "min": 4.0,
+          "max": 4.0
+        },
+        "map_concurrency_mean": {
+          "n": 3,
+          "median": 3.974559939795233,
+          "mean": 3.96920264545444,
+          "std": 0.012018349424389469,
+          "p95": 3.9776107142493915,
+          "min": 3.9554372823186954,
+          "max": 3.9776107142493915
+        },
+        "round_1_span_ms": {
+          "n": 3,
+          "median": 643.267333984375,
+          "mean": 641.4637858072916,
+          "std": 4.255045870975599,
+          "p95": 644.52001953125,
+          "min": 636.60400390625,
+          "max": 644.52001953125
+        },
+        "reassignment_events": 0,
+        "timeout_events": 0,
+        "steps_with_attempt_gt_1": 0,
+        "samples_with_reassignment": 0,
+        "timeout_detection_ms": null,
+        "recovery_ms": null,
+        "completion_after_timeout_ms": null,
+        "completeness": {
+          "n": 3,
+          "median": 1.0,
+          "mean": 1.0,
+          "std": 0.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "missing_events": 0
+      },
+      "samples": [
+        {
+          "mission_id": "72a623ec-6783-4191-990b-d58dc10ead24",
+          "sample": 1,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 4,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 670.891845703125,
+          "client_ms": 695.9064999828115,
+          "parallelism_factor": 3.865862581022784,
+          "map_parallelism_factor": 3.961402436066958,
+          "map_concurrency_peak": 4,
+          "map_concurrency_mean": 3.974559939795233,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.178955078125
+            },
+            {
+              "round": 2,
+              "at_ms": 645.79296875
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "map_steps": 8.0,
+            "counted_by": {
+              "6": "counter-3",
+              "3": "counter-2",
+              "8": "counter-2",
+              "5": "counter-4",
+              "2": "counter-4",
+              "7": "counter-1",
+              "1": "counter-1",
+              "4": "counter-3"
+            },
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "distinct_words": 71.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+          "group": "K=4 N=8 no-flaky"
+        },
+        {
+          "mission_id": "22f1c5ba-45bd-4879-b928-8c3b2d757f81",
+          "sample": 2,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 4,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 660.11865234375,
+          "client_ms": 684.1035829856992,
+          "parallelism_factor": 3.8844169278740948,
+          "map_parallelism_factor": 3.924826045399299,
+          "map_concurrency_peak": 4,
+          "map_concurrency_mean": 3.9554372823186954,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.058837890625
+            },
+            {
+              "round": 2,
+              "at_ms": 637.39306640625
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "map_steps": 8.0,
+            "counted_by": {
+              "6": "counter-1",
+              "3": "counter-3",
+              "8": "counter-3",
+              "5": "counter-4",
+              "2": "counter-2",
+              "7": "counter-2",
+              "1": "counter-4",
+              "4": "counter-1"
+            },
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "distinct_words": 71.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+          "group": "K=4 N=8 no-flaky"
+        },
+        {
+          "mission_id": "ef4c6fe0-ac7a-4926-8ccd-2588a76bb8d6",
+          "sample": 3,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 4,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 666.84716796875,
+          "client_ms": 690.3220829553902,
+          "parallelism_factor": 3.851819121087619,
+          "map_parallelism_factor": 3.944201829611064,
+          "map_concurrency_peak": 4,
+          "map_concurrency_mean": 3.9776107142493915,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.06201171875
+            },
+            {
+              "round": 2,
+              "at_ms": 644.544189453125
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "map_steps": 8.0,
+            "counted_by": {
+              "6": "counter-1",
+              "3": "counter-4",
+              "8": "counter-4",
+              "5": "counter-3",
+              "2": "counter-2",
+              "7": "counter-2",
+              "1": "counter-1",
+              "4": "counter-3"
+            },
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "distinct_words": 71.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+          "group": "K=4 N=8 no-flaky"
+        }
+      ]
+    },
+    "K=2 N=8 no-flaky": {
+      "settings": {
+        "workers": 2,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "summary": {
+        "samples": 3,
+        "completed": 3,
+        "wall_ms": {
+          "n": 3,
+          "median": 1294.22900390625,
+          "mean": 1296.8216959635417,
+          "std": 4.735257323566327,
+          "p95": 1302.287109375,
+          "min": 1293.948974609375,
+          "max": 1302.287109375
+        },
+        "client_ms": {
+          "n": 3,
+          "median": 1318.2485409779474,
+          "mean": 1321.2661106372252,
+          "std": 5.338763262259933,
+          "p95": 1327.4303329526447,
+          "min": 1318.1194579810835,
+          "max": 1327.4303329526447
+        },
+        "parallelism_factor": {
+          "n": 3,
+          "median": 1.9411211361120357,
+          "mean": 1.941282269326708,
+          "std": 0.00543535670170297,
+          "p95": 1.9467964010197034,
+          "min": 1.935929270848385,
+          "max": 1.9467964010197034
+        },
+        "map_parallelism_factor": {
+          "n": 3,
+          "median": 1.9622113158356502,
+          "mean": 1.964522493729519,
+          "std": 0.010543698967747966,
+          "p95": 1.9760300598054685,
+          "min": 1.9553261055474376,
+          "max": 1.9760300598054685
+        },
+        "map_concurrency_peak": {
+          "n": 3,
+          "median": 2.0,
+          "mean": 2.0,
+          "std": 0.0,
+          "p95": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "map_concurrency_mean": {
+          "n": 3,
+          "median": 1.987877052366171,
+          "mean": 1.9878785362018654,
+          "std": 0.003463507009780301,
+          "p95": 1.9913427848911036,
+          "min": 1.9844157713483217,
+          "max": 1.9913427848911036
+        },
+        "round_1_span_ms": {
+          "n": 3,
+          "median": 1269.987060546875,
+          "mean": 1271.27001953125,
+          "std": 4.572469903097072,
+          "p95": 1276.346923828125,
+          "min": 1267.47607421875,
+          "max": 1276.346923828125
+        },
+        "reassignment_events": 0,
+        "timeout_events": 0,
+        "steps_with_attempt_gt_1": 0,
+        "samples_with_reassignment": 0,
+        "timeout_detection_ms": null,
+        "recovery_ms": null,
+        "completion_after_timeout_ms": null,
+        "completeness": {
+          "n": 3,
+          "median": 1.0,
+          "mean": 1.0,
+          "std": 0.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "missing_events": 0
+      },
+      "samples": [
+        {
+          "mission_id": "29a51a5a-16b9-49fa-9cb4-772595846d2a",
+          "sample": 1,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 2,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 1302.287109375,
+          "client_ms": 1327.4303329526447,
+          "parallelism_factor": 1.9411211361120357,
+          "map_parallelism_factor": 1.9553261055474376,
+          "map_concurrency_peak": 2,
+          "map_concurrency_mean": 1.9844157713483217,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.24609375
+            },
+            {
+              "round": 2,
+              "at_ms": 1277.506103515625
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "total_words": 1600.0,
+            "counted_by": {
+              "6": "counter-1",
+              "8": "counter-2",
+              "3": "counter-1",
+              "4": "counter-2",
+              "7": "counter-1",
+              "5": "counter-2",
+              "1": "counter-2",
+              "2": "counter-1"
+            },
+            "reassigned_steps": [],
+            "distinct_words": 71.0,
+            "map_steps": 8.0,
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ]
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+          "group": "K=2 N=8 no-flaky"
+        },
+        {
+          "mission_id": "c10743ae-dd55-4feb-9b45-5dadad5f7e50",
+          "sample": 2,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 2,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 1294.22900390625,
+          "client_ms": 1318.2485409779474,
+          "parallelism_factor": 1.9467964010197034,
+          "map_parallelism_factor": 1.9760300598054685,
+          "map_concurrency_peak": 2,
+          "map_concurrency_mean": 1.9913427848911036,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.061767578125
+            },
+            {
+              "round": 2,
+              "at_ms": 1268.600830078125
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "total_words": 1600.0,
+            "counted_by": {
+              "6": "counter-2",
+              "8": "counter-1",
+              "4": "counter-1",
+              "7": "counter-2",
+              "3": "counter-2",
+              "5": "counter-1",
+              "1": "counter-2",
+              "2": "counter-1"
+            },
+            "distinct_words": 71.0,
+            "reassigned_steps": [],
+            "map_steps": 8.0,
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ]
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+          "group": "K=2 N=8 no-flaky"
+        },
+        {
+          "mission_id": "af9d865e-60a6-4c85-98fb-498c0b23f8e7",
+          "sample": 3,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 2,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 1293.948974609375,
+          "client_ms": 1318.1194579810835,
+          "parallelism_factor": 1.935929270848385,
+          "map_parallelism_factor": 1.9622113158356502,
+          "map_concurrency_peak": 2,
+          "map_concurrency_mean": 1.987877052366171,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.06787109375
+            },
+            {
+              "round": 2,
+              "at_ms": 1271.11376953125
+            }
+          ],
+          "output": {
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "total_words": 1600.0,
+            "counted_by": {
+              "6": "counter-2",
+              "8": "counter-1",
+              "3": "counter-1",
+              "4": "counter-2",
+              "7": "counter-2",
+              "5": "counter-1",
+              "1": "counter-2",
+              "2": "counter-1"
+            },
+            "reassigned_steps": [],
+            "distinct_words": 71.0,
+            "map_steps": 8.0,
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ]
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+          "group": "K=2 N=8 no-flaky"
+        }
+      ]
+    },
+    "K=8 N=8 no-flaky": {
+      "settings": {
+        "workers": 8,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "summary": {
+        "samples": 3,
+        "completed": 3,
+        "wall_ms": {
+          "n": 3,
+          "median": 362.5390625,
+          "mean": 365.5397135416667,
+          "std": 6.656158971984915,
+          "p95": 373.16796875,
+          "min": 360.912109375,
+          "max": 373.16796875
+        },
+        "client_ms": {
+          "n": 3,
+          "median": 387.0278330286965,
+          "mean": 390.8132636764397,
+          "std": 8.5815835712556,
+          "p95": 400.6367080146447,
+          "min": 384.775249985978,
+          "max": 400.6367080146447
+        },
+        "parallelism_factor": {
+          "n": 3,
+          "median": 7.495969011051644,
+          "mean": 7.494675278228247,
+          "std": 0.013378428815272615,
+          "p95": 7.507359842688797,
+          "min": 7.480696980944298,
+          "max": 7.507359842688797
+        },
+        "map_parallelism_factor": {
+          "n": 3,
+          "median": 7.937880660304725,
+          "mean": 7.9319462106271885,
+          "std": 0.015202614901201858,
+          "p95": 7.943286544283944,
+          "min": 7.914671427292896,
+          "max": 7.943286544283944
+        },
+        "map_concurrency_peak": {
+          "n": 3,
+          "median": 8.0,
+          "mean": 8.0,
+          "std": 0.0,
+          "p95": 8.0,
+          "min": 8.0,
+          "max": 8.0
+        },
+        "map_concurrency_mean": {
+          "n": 3,
+          "median": 7.927336964409848,
+          "mean": 7.932534332589438,
+          "std": 0.01808377879929453,
+          "p95": 7.952647684208655,
+          "min": 7.917618349149813,
+          "max": 7.952647684208655
+        },
+        "round_1_span_ms": {
+          "n": 3,
+          "median": 338.1259765625,
+          "mean": 340.2368977864583,
+          "std": 5.42186182077292,
+          "p95": 346.396728515625,
+          "min": 336.18798828125,
+          "max": 346.396728515625
+        },
+        "reassignment_events": 0,
+        "timeout_events": 0,
+        "steps_with_attempt_gt_1": 0,
+        "samples_with_reassignment": 0,
+        "timeout_detection_ms": null,
+        "recovery_ms": null,
+        "completion_after_timeout_ms": null,
+        "completeness": {
+          "n": 3,
+          "median": 1.0,
+          "mean": 1.0,
+          "std": 0.0,
+          "p95": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "missing_events": 0
+      },
+      "samples": [
+        {
+          "mission_id": "4fdf1f5f-bcc0-4025-a7ea-af25a417f1fd",
+          "sample": 1,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 8,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 373.16796875,
+          "client_ms": 400.6367080146447,
+          "parallelism_factor": 7.507359842688797,
+          "map_parallelism_factor": 7.914671427292896,
+          "map_concurrency_peak": 8,
+          "map_concurrency_mean": 7.927336964409848,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.32177734375
+            },
+            {
+              "round": 2,
+              "at_ms": 348.072021484375
+            }
+          ],
+          "output": {
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "counted_by": {
+              "1": "counter-1",
+              "5": "counter-7",
+              "3": "counter-4",
+              "2": "counter-6",
+              "4": "counter-2",
+              "7": "counter-8",
+              "8": "counter-3",
+              "6": "counter-5"
+            },
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "distinct_words": 71.0,
+            "map_steps": 8.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+          "group": "K=8 N=8 no-flaky"
+        },
+        {
+          "mission_id": "d1d2c096-1085-439e-94f8-5dacc0f3d3b3",
+          "sample": 2,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 8,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 360.912109375,
+          "client_ms": 384.775249985978,
+          "parallelism_factor": 7.480696980944298,
+          "map_parallelism_factor": 7.943286544283944,
+          "map_concurrency_peak": 8,
+          "map_concurrency_mean": 7.917618349149813,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.06103515625
+            },
+            {
+              "round": 2,
+              "at_ms": 337.14794921875
+            }
+          ],
+          "output": {
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "counted_by": {
+              "5": "counter-8",
+              "7": "counter-2",
+              "1": "counter-4",
+              "4": "counter-5",
+              "2": "counter-7",
+              "3": "counter-6",
+              "8": "counter-1",
+              "6": "counter-3"
+            },
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "distinct_words": 71.0,
+            "map_steps": 8.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+          "group": "K=8 N=8 no-flaky"
+        },
+        {
+          "mission_id": "8739c751-b87b-4aa2-b7f8-bcbfd2e1a9ce",
+          "sample": 3,
+          "status": "COMPLETED",
+          "completed": true,
+          "settings": {
+            "workers": 8,
+            "shards": 8,
+            "flaky": false,
+            "step_deadline_ms": 1500,
+            "flaky_factor": 3,
+            "work_ms": 300,
+            "words_per_shard": 200,
+            "round_deadline_ms": 60000,
+            "planner_deadline_ms": 10000,
+            "flaky_delay_ms": 4500,
+            "study": "fanout",
+            "flaky_agent_id": null
+          },
+          "wall_ms": 362.5390625,
+          "client_ms": 387.0278330286965,
+          "parallelism_factor": 7.495969011051644,
+          "map_parallelism_factor": 7.937880660304725,
+          "map_concurrency_peak": 8,
+          "map_concurrency_mean": 7.952647684208655,
+          "map_steps_completed": 8,
+          "steps_completed": 9,
+          "reassignments": {
+            "events": 0,
+            "timeouts": 0,
+            "steps_with_attempt_gt_1": 0,
+            "steps": []
+          },
+          "recovery": [],
+          "completeness": {
+            "expected": 61,
+            "present": 61,
+            "missing": [],
+            "ratio": 1.0,
+            "events_observed": 61
+          },
+          "round_markers": [
+            {
+              "round": 1,
+              "at_ms": 0.06103515625
+            },
+            {
+              "round": 2,
+              "at_ms": 339.287109375
+            }
+          ],
+          "output": {
+            "reassigned_steps": [],
+            "total_words": 1600.0,
+            "shards_merged": [
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0
+            ],
+            "counted_by": {
+              "3": "counter-1",
+              "5": "counter-5",
+              "7": "counter-7",
+              "2": "counter-6",
+              "4": "counter-2",
+              "1": "counter-4",
+              "8": "counter-3",
+              "6": "counter-8"
+            },
+            "top_words": [
+              [
+                "e",
+                133.0
+              ],
+              [
+                "que",
+                84.0
+              ],
+              [
+                "da",
+                66.0
+              ],
+              [
+                "as",
+                51.0
+              ],
+              [
+                "a",
+                50.0
+              ]
+            ],
+            "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+            "distinct_words": 71.0,
+            "map_steps": 8.0
+          },
+          "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+          "group": "K=8 N=8 no-flaky"
+        }
+      ]
+    }
+  },
+  "speedup": [
+    {
+      "shards": 8,
+      "flaky": false,
+      "workers": 1,
+      "label": "K=1 N=8 no-flaky",
+      "samples": 3,
+      "wall_median_ms": 2550.5869140625,
+      "wall_p95_ms": 2557.913818359375,
+      "speedup": 1.0,
+      "round_1_span_median_ms": 2521.718017578125,
+      "round_1_speedup": 1.0,
+      "ideal": 1.0,
+      "map_parallelism_median": 0.9818604329988794
+    },
+    {
+      "shards": 8,
+      "flaky": false,
+      "workers": 2,
+      "label": "K=2 N=8 no-flaky",
+      "samples": 3,
+      "wall_median_ms": 1294.22900390625,
+      "wall_p95_ms": 1302.287109375,
+      "speedup": 1.970738490919538,
+      "round_1_span_median_ms": 1269.987060546875,
+      "round_1_speedup": 1.9856249688813652,
+      "ideal": 2.0,
+      "map_parallelism_median": 1.9622113158356502
+    },
+    {
+      "shards": 8,
+      "flaky": false,
+      "workers": 4,
+      "label": "K=4 N=8 no-flaky",
+      "samples": 3,
+      "wall_median_ms": 666.84716796875,
+      "wall_p95_ms": 670.891845703125,
+      "speedup": 3.8248447868972977,
+      "round_1_span_median_ms": 643.267333984375,
+      "round_1_speedup": 3.9201711082679935,
+      "ideal": 4.0,
+      "map_parallelism_median": 3.944201829611064
+    },
+    {
+      "shards": 8,
+      "flaky": false,
+      "workers": 8,
+      "label": "K=8 N=8 no-flaky",
+      "samples": 3,
+      "wall_median_ms": 362.5390625,
+      "wall_p95_ms": 373.16796875,
+      "speedup": 7.035343712961965,
+      "round_1_span_median_ms": 338.1259765625,
+      "round_1_speedup": 7.4579245381107375,
+      "ideal": 8.0,
+      "map_parallelism_median": 7.937880660304725
+    }
+  ],
+  "samples": [
+    {
+      "mission_id": "60457704-893d-47b7-bf73-e427aa8b3092",
+      "sample": 1,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 1,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 2550.5869140625,
+      "client_ms": 2577.4479169631377,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 2521.718017578125,
+          "planner_ms": 2.683837890625,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 14.965576171875,
+              "completed_ms": 320.163818359375,
+              "duration_ms": 305.1982421875
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 324.78173828125,
+              "completed_ms": 628.101806640625,
+              "duration_ms": 303.320068359375
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 633.136962890625,
+              "completed_ms": 939.45458984375,
+              "duration_ms": 306.317626953125
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 944.32666015625,
+              "completed_ms": 1249.185791015625,
+              "duration_ms": 304.859130859375
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1254.03271484375,
+              "completed_ms": 1562.2578125,
+              "duration_ms": 308.22509765625
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1570.286865234375,
+              "completed_ms": 1877.584716796875,
+              "duration_ms": 307.2978515625
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1886.547607421875,
+              "completed_ms": 2190.2158203125,
+              "duration_ms": 303.668212890625
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 2194.466796875,
+              "completed_ms": 2501.134765625,
+              "duration_ms": 306.66796875
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 2512.66455078125,
+              "completed_ms": 2519.51171875,
+              "duration_ms": 6.84716796875
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2452.4013671875,
+            "span_ms": 2504.546142578125,
+            "factor": 0.9791799502096822
+          },
+          "map_steps": {
+            "sum_ms": 2445.55419921875,
+            "span_ms": 2486.169189453125,
+            "factor": 0.9836636257875478
+          },
+          "parallelism_factor": 0.9791799502096822,
+          "map_parallelism_factor": 0.9836636257875478
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 26.092041015625,
+          "planner_ms": 14.7978515625,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 0.9791799502096822,
+      "map_parallelism_factor": 0.9836636257875478,
+      "map_concurrency_peak": 1,
+      "map_concurrency_mean": 0.9948738661831557,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "3af4c1df-b97b-4894-a255-e552741c0206",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 3.058837890625,
+          "end_ms": 10.502685546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 7.44384765625
+        },
+        {
+          "task_id": "ba8d0018-e3a0-476f-b304-b4f054bd1b1c",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 12.8857421875,
+          "end_ms": 322.26171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.3759765625
+        },
+        {
+          "task_id": "4bd61188-7b78-46b8-b219-913ae0e5e688",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 323.936767578125,
+          "end_ms": 630.55078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.614013671875
+        },
+        {
+          "task_id": "9dbfc46b-1932-47d1-ab56-332fa4db4442",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 631.895751953125,
+          "end_ms": 941.618896484375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.72314453125
+        },
+        {
+          "task_id": "5210939b-7ede-41f3-ae10-fa1a60915cd1",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 943.171875,
+          "end_ms": 1251.207763671875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.035888671875
+        },
+        {
+          "task_id": "b9ece77d-8050-4fac-96ea-5cf305043aaf",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1252.73291015625,
+          "end_ms": 1565.77392578125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 313.041015625
+        },
+        {
+          "task_id": "60be03e5-6fd1-46db-9729-1c079cc9f46b",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1568.272705078125,
+          "end_ms": 1881.27978515625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 313.007080078125
+        },
+        {
+          "task_id": "0f21a6a2-ab87-42bb-a261-2bd9361402ce",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1884.03076171875,
+          "end_ms": 2192.03173828125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.0009765625
+        },
+        {
+          "task_id": "c3183f01-2c84-45c2-9c77-48b541dc6f84",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 2193.455810546875,
+          "end_ms": 2504.4267578125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.970947265625
+        },
+        {
+          "task_id": "d5117bab-d4d9-4594-9d19-eaec0d22e3dd",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 2509.001953125,
+          "end_ms": 2520.646728515625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 11.644775390625
+        },
+        {
+          "task_id": "eec08ca1-9494-4adc-a0bb-bb2fae2fd288",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 2530.793701171875,
+          "end_ms": 2547.82080078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 17.027099609375
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.28662109375
+        },
+        {
+          "round": 2,
+          "at_ms": 2523.228759765625
+        }
+      ],
+      "output": {
+        "map_steps": 8.0,
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "reassigned_steps": [],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "distinct_words": 71.0,
+        "counted_by": {
+          "6": "counter-1",
+          "5": "counter-1",
+          "8": "counter-1",
+          "2": "counter-1",
+          "1": "counter-1",
+          "4": "counter-1",
+          "7": "counter-1",
+          "3": "counter-1"
+        },
+        "total_words": 1600.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+      "group": "K=1 N=8 no-flaky"
+    },
+    {
+      "mission_id": "9cb2a7f4-670d-4340-a44f-1ec2a1eaa99e",
+      "sample": 2,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 1,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 2557.913818359375,
+      "client_ms": 2582.158958015498,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 2531.588134765625,
+          "planner_ms": 0.986328125,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 5.098876953125,
+              "completed_ms": 310.86572265625,
+              "duration_ms": 305.766845703125
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 317.341064453125,
+              "completed_ms": 621.3349609375,
+              "duration_ms": 303.993896484375
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 625.576904296875,
+              "completed_ms": 932.60693359375,
+              "duration_ms": 307.030029296875
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 942.23583984375,
+              "completed_ms": 1248.70703125,
+              "duration_ms": 306.47119140625
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1258.0087890625,
+              "completed_ms": 1561.565673828125,
+              "duration_ms": 303.556884765625
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1568.414794921875,
+              "completed_ms": 1874.989990234375,
+              "duration_ms": 306.5751953125
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1884.664794921875,
+              "completed_ms": 2191.992919921875,
+              "duration_ms": 307.328125
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 2200.77685546875,
+              "completed_ms": 2508.48095703125,
+              "duration_ms": 307.7041015625
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 2522.202880859375,
+              "completed_ms": 2529.0048828125,
+              "duration_ms": 6.802001953125
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2455.228271484375,
+            "span_ms": 2523.906005859375,
+            "factor": 0.9727891077498285
+          },
+          "map_steps": {
+            "sum_ms": 2448.42626953125,
+            "span_ms": 2503.382080078125,
+            "factor": 0.978047373996877
+          },
+          "parallelism_factor": 0.9727891077498285,
+          "map_parallelism_factor": 0.978047373996877
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 23.2919921875,
+          "planner_ms": 12.580078125,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 0.9727891077498285,
+      "map_parallelism_factor": 0.978047373996877,
+      "map_concurrency_peak": 1,
+      "map_concurrency_mean": 0.991832372821337,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "a6a5e73a-6357-4f4a-901e-ffeb87158929",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.19287109375,
+          "end_ms": 3.71484375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.52197265625
+        },
+        {
+          "task_id": "18500b3a-01c7-4eca-8713-e01704197763",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 4.617919921875,
+          "end_ms": 313.48095703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.863037109375
+        },
+        {
+          "task_id": "247771d7-ef0f-43ed-a754-6ed224f01f59",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 315.653076171875,
+          "end_ms": 623.117919921875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.46484375
+        },
+        {
+          "task_id": "52740e6c-2167-4698-a418-e62400f68dd6",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 624.497802734375,
+          "end_ms": 936.037841796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.5400390625
+        },
+        {
+          "task_id": "1ea6b4f6-754b-4183-94e2-728347923ed0",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 940.0,
+          "end_ms": 1251.9677734375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.9677734375
+        },
+        {
+          "task_id": "c3ebb223-f29c-41ce-b87c-2030fe468efc",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1255.812744140625,
+          "end_ms": 1564.578857421875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.76611328125
+        },
+        {
+          "task_id": "c3d91173-abd4-46d5-ac2c-152e3092fe17",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1567.218994140625,
+          "end_ms": 1878.5849609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.365966796875
+        },
+        {
+          "task_id": "81004533-f453-489b-aadb-0d232911e0ac",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1882.39404296875,
+          "end_ms": 2196.093017578125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 313.698974609375
+        },
+        {
+          "task_id": "c2d73b6d-2ce1-43cc-9aeb-c8a37738e6e6",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 2198.781982421875,
+          "end_ms": 2514.197998046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.416015625
+        },
+        {
+          "task_id": "6f4afe8a-73c6-44ed-a241-b055ced06ad2",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 2519.645751953125,
+          "end_ms": 2530.333984375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 10.688232421875
+        },
+        {
+          "task_id": "18424081-83cd-409a-9e84-8a43d6e2a0e4",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 2540.5107421875,
+          "end_ms": 2555.491943359375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.981201171875
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.054931640625
+        },
+        {
+          "round": 2,
+          "at_ms": 2533.35595703125
+        }
+      ],
+      "output": {
+        "map_steps": 8.0,
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "reassigned_steps": [],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "distinct_words": 71.0,
+        "counted_by": {
+          "6": "counter-1",
+          "8": "counter-1",
+          "5": "counter-1",
+          "2": "counter-1",
+          "1": "counter-1",
+          "4": "counter-1",
+          "7": "counter-1",
+          "3": "counter-1"
+        },
+        "total_words": 1600.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+      "group": "K=1 N=8 no-flaky"
+    },
+    {
+      "mission_id": "3310dfa1-db38-414f-ac3b-43f614b60c85",
+      "sample": 3,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 1,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 2526.0849609375,
+      "client_ms": 2549.26791600883,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 2503.15478515625,
+          "planner_ms": 0.984130859375,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 5.861083984375,
+              "completed_ms": 311.619873046875,
+              "duration_ms": 305.7587890625
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 318.088134765625,
+              "completed_ms": 619.454833984375,
+              "duration_ms": 301.36669921875
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 623.864990234375,
+              "completed_ms": 930.198974609375,
+              "duration_ms": 306.333984375
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 936.90576171875,
+              "completed_ms": 1239.292724609375,
+              "duration_ms": 302.386962890625
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1247.2529296875,
+              "completed_ms": 1554.254150390625,
+              "duration_ms": 307.001220703125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1562.168701171875,
+              "completed_ms": 1866.4609375,
+              "duration_ms": 304.292236328125
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 1871.001953125,
+              "completed_ms": 2177.96484375,
+              "duration_ms": 306.962890625
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 2185.050048828125,
+              "completed_ms": 2491.376953125,
+              "duration_ms": 306.326904296875
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 2497.416015625,
+              "completed_ms": 2501.495849609375,
+              "duration_ms": 4.079833984375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2444.509521484375,
+            "span_ms": 2495.634765625,
+            "factor": 0.9795141320978428
+          },
+          "map_steps": {
+            "sum_ms": 2440.4296875,
+            "span_ms": 2485.515869140625,
+            "factor": 0.9818604329988794
+          },
+          "parallelism_factor": 0.9795141320978428,
+          "map_parallelism_factor": 0.9818604329988794
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 20.325927734375,
+          "planner_ms": 11.6201171875,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 0.9795141320978428,
+      "map_parallelism_factor": 0.9818604329988794,
+      "map_concurrency_peak": 1,
+      "map_concurrency_mean": 0.9939382781522464,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "787f65cd-cb62-432d-b4f0-943e4a5f587b",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.621826171875,
+          "end_ms": 4.19677734375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.574951171875
+        },
+        {
+          "task_id": "10a32a5d-6a57-42e5-a5c6-15fa7744e51c",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.364990234375,
+          "end_ms": 313.787841796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.4228515625
+        },
+        {
+          "task_id": "7f167391-61d3-4eaa-aa15-56fb68b6658f",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 316.078857421875,
+          "end_ms": 621.409912109375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 305.3310546875
+        },
+        {
+          "task_id": "4e1ce828-b228-4bf7-8ee9-bf0fdae50a55",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 622.888916015625,
+          "end_ms": 933.407958984375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.51904296875
+        },
+        {
+          "task_id": "51db5e1e-dbf8-4edd-b99e-0eb5c278c552",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 935.475830078125,
+          "end_ms": 1242.2099609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.734130859375
+        },
+        {
+          "task_id": "1a02005a-f206-4844-a60d-de1b68902ab4",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1245.14794921875,
+          "end_ms": 1557.973876953125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.825927734375
+        },
+        {
+          "task_id": "c40492ce-6e39-4bf9-8135-8c3c1b38069b",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1560.534912109375,
+          "end_ms": 1868.35595703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.821044921875
+        },
+        {
+          "task_id": "da1be0eb-1bb9-4f2d-b3dc-c21d71287253",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 1869.9169921875,
+          "end_ms": 2180.996826171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.079833984375
+        },
+        {
+          "task_id": "3b61155a-9de6-4bfd-b90f-4210a0631e45",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 2183.178955078125,
+          "end_ms": 2493.119873046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.94091796875
+        },
+        {
+          "task_id": "2646ce46-4fa0-422b-8fca-e36f586b1a6f",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 2495.81884765625,
+          "end_ms": 2502.19091796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 6.3720703125
+        },
+        {
+          "task_id": "8b6f7bba-cae3-4cac-b1ec-8b2fd0b40137",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 2509.741943359375,
+          "end_ms": 2523.5888671875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 13.846923828125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.055908203125
+        },
+        {
+          "round": 2,
+          "at_ms": 2503.989013671875
+        }
+      ],
+      "output": {
+        "map_steps": 8.0,
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "reassigned_steps": [],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "distinct_words": 71.0,
+        "counted_by": {
+          "6": "counter-1",
+          "5": "counter-1",
+          "8": "counter-1",
+          "2": "counter-1",
+          "1": "counter-1",
+          "4": "counter-1",
+          "7": "counter-1",
+          "3": "counter-1"
+        },
+        "total_words": 1600.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-5744c74583784bf8a430be5370ec391f",
+      "group": "K=1 N=8 no-flaky"
+    },
+    {
+      "mission_id": "72a623ec-6783-4191-990b-d58dc10ead24",
+      "sample": 1,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 4,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 670.891845703125,
+      "client_ms": 695.9064999828115,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 644.52001953125,
+          "planner_ms": 1.75,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 11.211669921875,
+              "completed_ms": 313.553955078125,
+              "duration_ms": 302.34228515625
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 11.44091796875,
+              "completed_ms": 315.032958984375,
+              "duration_ms": 303.592041015625
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 11.06591796875,
+              "completed_ms": 312.898681640625,
+              "duration_ms": 301.832763671875
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 11.429931640625,
+              "completed_ms": 315.1298828125,
+              "duration_ms": 303.699951171875
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 319.130859375,
+              "completed_ms": 625.1689453125,
+              "duration_ms": 306.0380859375
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 318.8896484375,
+              "completed_ms": 624.9658203125,
+              "duration_ms": 306.076171875
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 318.9228515625,
+              "completed_ms": 625.0908203125,
+              "duration_ms": 306.16796875
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 318.90185546875,
+              "completed_ms": 621.86181640625,
+              "duration_ms": 302.9599609375
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 636.36181640625,
+              "completed_ms": 641.73583984375,
+              "duration_ms": 5.3740234375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2438.083251953125,
+            "span_ms": 630.669921875,
+            "factor": 3.865862581022784
+          },
+          "map_steps": {
+            "sum_ms": 2432.709228515625,
+            "span_ms": 614.10302734375,
+            "factor": 3.961402436066958
+          },
+          "parallelism_factor": 3.865862581022784,
+          "map_parallelism_factor": 3.961402436066958
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 23.835693359375,
+          "planner_ms": 13.728271484375,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 3.865862581022784,
+      "map_parallelism_factor": 3.961402436066958,
+      "map_concurrency_peak": 4,
+      "map_concurrency_mean": 3.974559939795233,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "c3908b06-27ad-4c39-bd40-497d00632a10",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 2.98779296875,
+          "end_ms": 7.553955078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 4.566162109375
+        },
+        {
+          "task_id": "cf4dd947-279a-47d7-a134-0f1d2c049660",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 9.354736328125,
+          "end_ms": 314.69970703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 305.344970703125
+        },
+        {
+          "task_id": "489b472d-13f6-4cf7-a13b-89bdb23f0e9a",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 9.36279296875,
+          "end_ms": 314.5029296875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 305.14013671875
+        },
+        {
+          "task_id": "92f71760-19ad-4fdc-93b0-fad85cdba062",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 9.763916015625,
+          "end_ms": 316.19580078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.431884765625
+        },
+        {
+          "task_id": "cd4aaba1-5ec8-48fd-959a-2608018fd48c",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 9.994873046875,
+          "end_ms": 316.09375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.098876953125
+        },
+        {
+          "task_id": "6b623f69-047a-4409-8f10-15f2719ead00",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 317.8447265625,
+          "end_ms": 628.052001953125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.207275390625
+        },
+        {
+          "task_id": "60cbf9be-dcb4-4344-bd9f-18a4f549bac1",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 317.871826171875,
+          "end_ms": 625.623779296875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.751953125
+        },
+        {
+          "task_id": "8967820c-cc6f-48d9-940f-0f722528fb02",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 317.90380859375,
+          "end_ms": 628.67578125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.77197265625
+        },
+        {
+          "task_id": "4fd4addc-ceb4-45db-891c-6f133ec266ec",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 317.974853515625,
+          "end_ms": 628.98486328125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.010009765625
+        },
+        {
+          "task_id": "dd341770-e791-48f3-bd95-fde3e7dd0e01",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 633.44775390625,
+          "end_ms": 642.771728515625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 9.323974609375
+        },
+        {
+          "task_id": "c59d41a6-4294-444d-8136-8e58db8de557",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 652.673828125,
+          "end_ms": 668.90087890625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 16.22705078125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.178955078125
+        },
+        {
+          "round": 2,
+          "at_ms": 645.79296875
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "map_steps": 8.0,
+        "counted_by": {
+          "6": "counter-3",
+          "3": "counter-2",
+          "8": "counter-2",
+          "5": "counter-4",
+          "2": "counter-4",
+          "7": "counter-1",
+          "1": "counter-1",
+          "4": "counter-3"
+        },
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "distinct_words": 71.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+      "group": "K=4 N=8 no-flaky"
+    },
+    {
+      "mission_id": "22f1c5ba-45bd-4879-b928-8c3b2d757f81",
+      "sample": 2,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 4,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 660.11865234375,
+      "client_ms": 684.1035829856992,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 636.60400390625,
+          "planner_ms": 1.472900390625,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 6.635009765625,
+              "completed_ms": 311.36669921875,
+              "duration_ms": 304.731689453125
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 6.4208984375,
+              "completed_ms": 311.342041015625,
+              "duration_ms": 304.921142578125
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 6.625,
+              "completed_ms": 309.433837890625,
+              "duration_ms": 302.808837890625
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 6.656005859375,
+              "completed_ms": 312.40185546875,
+              "duration_ms": 305.745849609375
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 321.61767578125,
+              "completed_ms": 627.10693359375,
+              "duration_ms": 305.4892578125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 318.969970703125,
+              "completed_ms": 623.31396484375,
+              "duration_ms": 304.343994140625
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 318.98779296875,
+              "completed_ms": 623.241943359375,
+              "duration_ms": 304.254150390625
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 319.469970703125,
+              "completed_ms": 623.259765625,
+              "duration_ms": 303.789794921875
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 631.048828125,
+              "completed_ms": 634.435791015625,
+              "duration_ms": 3.386962890625
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2439.4716796875,
+            "span_ms": 628.014892578125,
+            "factor": 3.8844169278740948
+          },
+          "map_steps": {
+            "sum_ms": 2436.084716796875,
+            "span_ms": 620.68603515625,
+            "factor": 3.924826045399299
+          },
+          "parallelism_factor": 3.8844169278740948,
+          "map_parallelism_factor": 3.924826045399299
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 21.415771484375,
+          "planner_ms": 11.989990234375,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 3.8844169278740948,
+      "map_parallelism_factor": 3.924826045399299,
+      "map_concurrency_peak": 4,
+      "map_concurrency_mean": 3.9554372823186954,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "0d09f2d9-5194-4783-9762-3e1601bbf0f4",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.4169921875,
+          "end_ms": 4.350830078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.933837890625
+        },
+        {
+          "task_id": "6456cf1d-cab6-479b-8ccc-8157191a0c03",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.35205078125,
+          "end_ms": 313.666748046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.314697265625
+        },
+        {
+          "task_id": "e1dcf8c7-0947-430b-8398-a94858dc43a4",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 5.538818359375,
+          "end_ms": 312.952880859375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.4140625
+        },
+        {
+          "task_id": "23de604e-66d7-4b00-8ece-0e8c4960fbaa",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 5.621826171875,
+          "end_ms": 311.554931640625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 305.93310546875
+        },
+        {
+          "task_id": "a3251fdd-c0e8-41b8-a3f4-c470a4ff1ce3",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 5.73291015625,
+          "end_ms": 312.893798828125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.160888671875
+        },
+        {
+          "task_id": "04426cd4-adb6-4724-bd1b-1c649b7530a9",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 315.143798828125,
+          "end_ms": 624.748046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.604248046875
+        },
+        {
+          "task_id": "f9124fbe-c938-458d-aa1c-7c1a76c7ffe7",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 315.2626953125,
+          "end_ms": 624.7197265625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.45703125
+        },
+        {
+          "task_id": "b2fb1666-3b06-4d25-b5e2-0ad759f24ab1",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 318.126953125,
+          "end_ms": 624.742919921875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.615966796875
+        },
+        {
+          "task_id": "b10527d9-fa9e-4fda-b8cb-3f08e51917ea",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 318.136962890625,
+          "end_ms": 628.513671875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.376708984375
+        },
+        {
+          "task_id": "a4fe678c-4fee-47b1-b136-268cfebdf1bf",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 630.06689453125,
+          "end_ms": 635.0009765625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 4.93408203125
+        },
+        {
+          "task_id": "750d1489-0baf-49af-a9ba-bbff6586f27a",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 643.18994140625,
+          "end_ms": 658.056884765625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.866943359375
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.058837890625
+        },
+        {
+          "round": 2,
+          "at_ms": 637.39306640625
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "map_steps": 8.0,
+        "counted_by": {
+          "6": "counter-1",
+          "3": "counter-3",
+          "8": "counter-3",
+          "5": "counter-4",
+          "2": "counter-2",
+          "7": "counter-2",
+          "1": "counter-4",
+          "4": "counter-1"
+        },
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "distinct_words": 71.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+      "group": "K=4 N=8 no-flaky"
+    },
+    {
+      "mission_id": "ef4c6fe0-ac7a-4926-8ccd-2588a76bb8d6",
+      "sample": 3,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 4,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 666.84716796875,
+      "client_ms": 690.3220829553902,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 643.267333984375,
+          "planner_ms": 0.953125,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 6.026123046875,
+              "completed_ms": 311.940185546875,
+              "duration_ms": 305.9140625
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 5.9521484375,
+              "completed_ms": 311.964111328125,
+              "duration_ms": 306.011962890625
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 5.978271484375,
+              "completed_ms": 309.86328125,
+              "duration_ms": 303.885009765625
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 6.0009765625,
+              "completed_ms": 310.89208984375,
+              "duration_ms": 304.89111328125
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 318.790283203125,
+              "completed_ms": 622.109375,
+              "duration_ms": 303.319091796875
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 318.818115234375,
+              "completed_ms": 625.26708984375,
+              "duration_ms": 306.448974609375
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 318.749267578125,
+              "completed_ms": 625.111083984375,
+              "duration_ms": 306.36181640625
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 318.860107421875,
+              "completed_ms": 624.731201171875,
+              "duration_ms": 305.87109375
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 636.606201171875,
+              "completed_ms": 641.353271484375,
+              "duration_ms": 4.7470703125
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2447.4501953125,
+            "span_ms": 635.401123046875,
+            "factor": 3.851819121087619
+          },
+          "map_steps": {
+            "sum_ms": 2442.703125,
+            "span_ms": 619.31494140625,
+            "factor": 3.944201829611064
+          },
+          "parallelism_factor": 3.851819121087619,
+          "map_parallelism_factor": 3.944201829611064
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 21.037841796875,
+          "planner_ms": 12.005859375,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 3.851819121087619,
+      "map_parallelism_factor": 3.944201829611064,
+      "map_concurrency_peak": 4,
+      "map_concurrency_mean": 3.9776107142493915,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "1415c4f2-9858-4ade-86b0-4f110ebeb6d4",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.2431640625,
+          "end_ms": 3.71923828125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.47607421875
+        },
+        {
+          "task_id": "34c666f4-c6f4-4968-b3f7-3f739f4900a6",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.156982421875,
+          "end_ms": 314.68603515625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.529052734375
+        },
+        {
+          "task_id": "a0ce2d9d-811b-483b-b234-59235d7c7373",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 5.172119140625,
+          "end_ms": 314.7353515625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.563232421875
+        },
+        {
+          "task_id": "dc774465-80a5-41db-9c31-0c9f68b4b0ac",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 5.213134765625,
+          "end_ms": 314.1142578125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.901123046875
+        },
+        {
+          "task_id": "a2bacbc5-40d5-415a-a635-bf4dde3048ad",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 5.225341796875,
+          "end_ms": 314.218994140625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.99365234375
+        },
+        {
+          "task_id": "c8778776-94f2-4eec-8d0a-c073be6a7c14",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 317.227294921875,
+          "end_ms": 628.954345703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.72705078125
+        },
+        {
+          "task_id": "21bd0901-491b-4332-8457-316930fd56a1",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 317.25634765625,
+          "end_ms": 629.289306640625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.032958984375
+        },
+        {
+          "task_id": "6fc71a79-5ea6-48e5-8a66-a49009f9aec0",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 317.27099609375,
+          "end_ms": 627.55029296875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.279296875
+        },
+        {
+          "task_id": "401320ce-5935-4d30-ada7-999cadf8f669",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 317.38818359375,
+          "end_ms": 628.917236328125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.529052734375
+        },
+        {
+          "task_id": "613a647f-a02e-4b2e-ba03-713d613773ba",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 633.498291015625,
+          "end_ms": 642.1572265625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 8.658935546875
+        },
+        {
+          "task_id": "a14e3f41-23ad-4519-9d5c-8eb1c984d9e3",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 650.716064453125,
+          "end_ms": 664.8623046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.146240234375
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.06201171875
+        },
+        {
+          "round": 2,
+          "at_ms": 644.544189453125
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "map_steps": 8.0,
+        "counted_by": {
+          "6": "counter-1",
+          "3": "counter-4",
+          "8": "counter-4",
+          "5": "counter-3",
+          "2": "counter-2",
+          "7": "counter-2",
+          "1": "counter-1",
+          "4": "counter-3"
+        },
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "distinct_words": 71.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-8816a1d3f31e4dd19a92008ad2d00e3e",
+      "group": "K=4 N=8 no-flaky"
+    },
+    {
+      "mission_id": "29a51a5a-16b9-49fa-9cb4-772595846d2a",
+      "sample": 1,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 2,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 1302.287109375,
+      "client_ms": 1327.4303329526447,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 1276.346923828125,
+          "planner_ms": 1.9912109375,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 12.089111328125,
+              "completed_ms": 314.66796875,
+              "duration_ms": 302.578857421875
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 11.85107421875,
+              "completed_ms": 317.7958984375,
+              "duration_ms": 305.94482421875
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 322.255126953125,
+              "completed_ms": 628.19189453125,
+              "duration_ms": 305.936767578125
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 322.26611328125,
+              "completed_ms": 625.322021484375,
+              "duration_ms": 303.055908203125
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 633.196044921875,
+              "completed_ms": 939.401123046875,
+              "duration_ms": 306.205078125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 633.219970703125,
+              "completed_ms": 939.401123046875,
+              "duration_ms": 306.18115234375
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 950.4189453125,
+              "completed_ms": 1253.656982421875,
+              "duration_ms": 303.238037109375
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 950.433837890625,
+              "completed_ms": 1262.27001953125,
+              "duration_ms": 311.836181640625
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 1269.02294921875,
+              "completed_ms": 1273.968017578125,
+              "duration_ms": 4.945068359375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2449.921875,
+            "span_ms": 1262.116943359375,
+            "factor": 1.9411211361120357
+          },
+          "map_steps": {
+            "sum_ms": 2444.976806640625,
+            "span_ms": 1250.4189453125,
+            "factor": 1.9553261055474376
+          },
+          "parallelism_factor": 1.9411211361120357,
+          "map_parallelism_factor": 1.9553261055474376
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 23.5400390625,
+          "planner_ms": 13.4501953125,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 1.9411211361120357,
+      "map_parallelism_factor": 1.9553261055474376,
+      "map_concurrency_peak": 2,
+      "map_concurrency_mean": 1.9844157713483217,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "f19a8588-e009-439e-ad15-9bd8e10a485b",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 3.1572265625,
+          "end_ms": 8.748046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 5.5908203125
+        },
+        {
+          "task_id": "5f7e5e53-49f8-44c7-9e4c-022e6830c854",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 10.2587890625,
+          "end_ms": 319.4580078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.19921875
+        },
+        {
+          "task_id": "4a38a01d-fb6f-4748-a8a8-45ce60f4457e",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 10.291015625,
+          "end_ms": 317.428955078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.137939453125
+        },
+        {
+          "task_id": "7808eab2-531f-4fa3-923b-7aefe77ac2f9",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 321.24609375,
+          "end_ms": 629.847900390625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.601806640625
+        },
+        {
+          "task_id": "e4730bf4-0a00-40fd-a4ee-b6451a23e1c1",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 321.259033203125,
+          "end_ms": 627.97412109375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.715087890625
+        },
+        {
+          "task_id": "e775ecb2-40fb-41c1-bca0-6840cd892bb7",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 632.080078125,
+          "end_ms": 943.5341796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.4541015625
+        },
+        {
+          "task_id": "d11052f9-b93e-4af4-8e6a-d35b3e61d122",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 632.09423828125,
+          "end_ms": 943.5849609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.49072265625
+        },
+        {
+          "task_id": "7e2a3e57-0e2e-43f8-bef8-deda811c529e",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 947.291015625,
+          "end_ms": 1265.3359375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 318.044921875
+        },
+        {
+          "task_id": "255cb320-fa51-4f2e-b990-45ee1cb3378c",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 947.31298828125,
+          "end_ms": 1265.408935546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 318.095947265625
+        },
+        {
+          "task_id": "9c7cc034-6de0-4a5e-b8c6-089436cbf9fd",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 1267.468994140625,
+          "end_ms": 1275.10302734375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 7.634033203125
+        },
+        {
+          "task_id": "6909f010-3e0c-42c3-babb-2bb17f62d843",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1284.31591796875,
+          "end_ms": 1299.99609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 15.68017578125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.24609375
+        },
+        {
+          "round": 2,
+          "at_ms": 1277.506103515625
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "total_words": 1600.0,
+        "counted_by": {
+          "6": "counter-1",
+          "8": "counter-2",
+          "3": "counter-1",
+          "4": "counter-2",
+          "7": "counter-1",
+          "5": "counter-2",
+          "1": "counter-2",
+          "2": "counter-1"
+        },
+        "reassigned_steps": [],
+        "distinct_words": 71.0,
+        "map_steps": 8.0,
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ]
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+      "group": "K=2 N=8 no-flaky"
+    },
+    {
+      "mission_id": "c10743ae-dd55-4feb-9b45-5dadad5f7e50",
+      "sample": 2,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 2,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 1294.22900390625,
+      "client_ms": 1318.2485409779474,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 1267.47607421875,
+          "planner_ms": 1.05126953125,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 5.875,
+              "completed_ms": 309.573974609375,
+              "duration_ms": 303.698974609375
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 5.833984375,
+              "completed_ms": 310.751953125,
+              "duration_ms": 304.91796875
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 315.073974609375,
+              "completed_ms": 620.365966796875,
+              "duration_ms": 305.2919921875
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 315.092041015625,
+              "completed_ms": 620.41796875,
+              "duration_ms": 305.325927734375
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 624.054931640625,
+              "completed_ms": 930.248779296875,
+              "duration_ms": 306.19384765625
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 624.23876953125,
+              "completed_ms": 930.248779296875,
+              "duration_ms": 306.010009765625
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 936.381103515625,
+              "completed_ms": 1243.078857421875,
+              "duration_ms": 306.69775390625
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 936.380126953125,
+              "completed_ms": 1243.0810546875,
+              "duration_ms": 306.700927734375
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 1258.6708984375,
+              "completed_ms": 1264.81689453125,
+              "duration_ms": 6.14599609375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2450.9833984375,
+            "span_ms": 1258.98291015625,
+            "factor": 1.9467964010197034
+          },
+          "map_steps": {
+            "sum_ms": 2444.83740234375,
+            "span_ms": 1237.2470703125,
+            "factor": 1.9760300598054685
+          },
+          "parallelism_factor": 1.9467964010197034,
+          "map_parallelism_factor": 1.9760300598054685
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 23.93017578125,
+          "planner_ms": 12.47900390625,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 1.9467964010197034,
+      "map_parallelism_factor": 1.9760300598054685,
+      "map_concurrency_peak": 2,
+      "map_concurrency_mean": 1.9913427848911036,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "5457938e-d117-4a6e-aede-dda21e5b629c",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.2900390625,
+          "end_ms": 4.246826171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.956787109375
+        },
+        {
+          "task_id": "40ef56af-f5f3-443a-976c-727cb987bd1a",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.259033203125,
+          "end_ms": 312.4990234375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.239990234375
+        },
+        {
+          "task_id": "08e3e733-0d5b-4aa5-9a19-beb6ab7ff922",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 5.28076171875,
+          "end_ms": 312.050048828125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 306.769287109375
+        },
+        {
+          "task_id": "fd7e2707-a560-48b0-b657-ae3116df8a53",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 313.955810546875,
+          "end_ms": 621.885009765625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.92919921875
+        },
+        {
+          "task_id": "8053fc0e-1782-492e-810b-cd34faa80e84",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 313.964111328125,
+          "end_ms": 621.904052734375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.93994140625
+        },
+        {
+          "task_id": "dc71e6df-f420-47b9-9571-4bfc91da518a",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 622.98876953125,
+          "end_ms": 932.5830078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.59423828125
+        },
+        {
+          "task_id": "c5a30c19-fce8-4001-96d0-5e88e2a2eda4",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 623.06884765625,
+          "end_ms": 932.539794921875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.470947265625
+        },
+        {
+          "task_id": "e352ae45-dfdb-49b9-b762-cbcd94385c77",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 935.0009765625,
+          "end_ms": 1247.8720703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.87109375
+        },
+        {
+          "task_id": "7c6d10db-85bf-45f6-a79f-cd10b716c7b4",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 935.007080078125,
+          "end_ms": 1247.660888671875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.65380859375
+        },
+        {
+          "task_id": "f0904003-68b9-42b2-af9c-42fc26dd92d0",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 1254.456787109375,
+          "end_ms": 1266.06201171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 11.605224609375
+        },
+        {
+          "task_id": "e1b6b541-d41a-4d5c-a1be-ba1d4b9fd5d6",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1276.89501953125,
+          "end_ms": 1291.76904296875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.8740234375
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.061767578125
+        },
+        {
+          "round": 2,
+          "at_ms": 1268.600830078125
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "total_words": 1600.0,
+        "counted_by": {
+          "6": "counter-2",
+          "8": "counter-1",
+          "4": "counter-1",
+          "7": "counter-2",
+          "3": "counter-2",
+          "5": "counter-1",
+          "1": "counter-2",
+          "2": "counter-1"
+        },
+        "distinct_words": 71.0,
+        "reassigned_steps": [],
+        "map_steps": 8.0,
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ]
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+      "group": "K=2 N=8 no-flaky"
+    },
+    {
+      "mission_id": "af9d865e-60a6-4c85-98fb-498c0b23f8e7",
+      "sample": 3,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 2,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 1293.948974609375,
+      "client_ms": 1318.1194579810835,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 1269.987060546875,
+          "planner_ms": 0.947998046875,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 5.643798828125,
+              "completed_ms": 311.426025390625,
+              "duration_ms": 305.7822265625
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 5.640869140625,
+              "completed_ms": 311.426025390625,
+              "duration_ms": 305.78515625
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 314.718017578125,
+              "completed_ms": 616.4658203125,
+              "duration_ms": 301.747802734375
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 314.73681640625,
+              "completed_ms": 618.26806640625,
+              "duration_ms": 303.53125
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 621.68603515625,
+              "completed_ms": 927.9208984375,
+              "duration_ms": 306.23486328125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 621.681884765625,
+              "completed_ms": 927.9208984375,
+              "duration_ms": 306.239013671875
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 942.2587890625,
+              "completed_ms": 1245.075927734375,
+              "duration_ms": 302.817138671875
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 942.2568359375,
+              "completed_ms": 1248.11376953125,
+              "duration_ms": 305.85693359375
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 1262.368896484375,
+              "completed_ms": 1267.77294921875,
+              "duration_ms": 5.404052734375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2443.3984375,
+            "span_ms": 1262.132080078125,
+            "factor": 1.935929270848385
+          },
+          "map_steps": {
+            "sum_ms": 2437.994384765625,
+            "span_ms": 1242.472900390625,
+            "factor": 1.9622113158356502
+          },
+          "parallelism_factor": 1.935929270848385,
+          "map_parallelism_factor": 1.9622113158356502
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 21.577880859375,
+          "planner_ms": 12.212890625,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 1.935929270848385,
+      "map_parallelism_factor": 1.9622113158356502,
+      "map_concurrency_peak": 2,
+      "map_concurrency_mean": 1.987877052366171,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "25d49526-429b-4ab8-998d-608808da601c",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.5859375,
+          "end_ms": 4.055908203125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.469970703125
+        },
+        {
+          "task_id": "d82223e6-a0f6-4822-9d7e-e9011c92b4eb",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.06005859375,
+          "end_ms": 312.823974609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.763916015625
+        },
+        {
+          "task_id": "f00b3765-976a-4599-9cb9-cf5d6d2db8f8",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 5.071044921875,
+          "end_ms": 312.810791015625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 307.73974609375
+        },
+        {
+          "task_id": "9d462a3a-26fb-4f75-ab37-8c4ca5c9abad",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 313.871826171875,
+          "end_ms": 618.0087890625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 304.136962890625
+        },
+        {
+          "task_id": "e8bbd623-cc89-4bca-a016-082dadfc5fc3",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 313.91796875,
+          "end_ms": 619.522705078125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 305.604736328125
+        },
+        {
+          "task_id": "50e6ca8a-81e3-4c86-b0c1-3bd5d3564c98",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 620.846923828125,
+          "end_ms": 936.206787109375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.35986328125
+        },
+        {
+          "task_id": "97258e5e-2222-49f9-82ba-6e8dea8df4db",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 620.912841796875,
+          "end_ms": 936.644775390625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.73193359375
+        },
+        {
+          "task_id": "eea380a7-f97d-4f20-a951-5673ab4cff41",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 939.69580078125,
+          "end_ms": 1248.4990234375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 308.80322265625
+        },
+        {
+          "task_id": "15081507-71fa-46f9-8d61-58adb93a3872",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 939.700927734375,
+          "end_ms": 1250.659912109375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 310.958984375
+        },
+        {
+          "task_id": "efc97972-aa5d-471a-8817-4308b4600680",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 1258.77490234375,
+          "end_ms": 1268.75390625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 9.97900390625
+        },
+        {
+          "task_id": "227c218e-494b-4596-8e94-e27df8c2c14c",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1277.743896484375,
+          "end_ms": 1291.9609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.217041015625
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.06787109375
+        },
+        {
+          "round": 2,
+          "at_ms": 1271.11376953125
+        }
+      ],
+      "output": {
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "total_words": 1600.0,
+        "counted_by": {
+          "6": "counter-2",
+          "8": "counter-1",
+          "3": "counter-1",
+          "4": "counter-2",
+          "7": "counter-2",
+          "5": "counter-1",
+          "1": "counter-2",
+          "2": "counter-1"
+        },
+        "reassigned_steps": [],
+        "distinct_words": 71.0,
+        "map_steps": 8.0,
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ]
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-b8ceffd13f6246f5b848b446ce0aa622",
+      "group": "K=2 N=8 no-flaky"
+    },
+    {
+      "mission_id": "4fdf1f5f-bcc0-4025-a7ea-af25a417f1fd",
+      "sample": 1,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 8,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 373.16796875,
+      "client_ms": 400.6367080146447,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 346.396728515625,
+          "planner_ms": 2.47216796875,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 17.62890625,
+              "completed_ms": 323.169921875,
+              "duration_ms": 305.541015625
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-6",
+              "attempt": 1,
+              "started_ms": 16.01513671875,
+              "completed_ms": 323.458984375,
+              "duration_ms": 307.44384765625
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 17.0419921875,
+              "completed_ms": 326.9970703125,
+              "duration_ms": 309.955078125
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 16.876953125,
+              "completed_ms": 324.708984375,
+              "duration_ms": 307.83203125
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-7",
+              "attempt": 1,
+              "started_ms": 16.489013671875,
+              "completed_ms": 323.669921875,
+              "duration_ms": 307.180908203125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-5",
+              "attempt": 1,
+              "started_ms": 16.6650390625,
+              "completed_ms": 324.267822265625,
+              "duration_ms": 307.602783203125
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-8",
+              "attempt": 1,
+              "started_ms": 16.791748046875,
+              "completed_ms": 323.880859375,
+              "duration_ms": 307.089111328125
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 17.0078125,
+              "completed_ms": 325.682861328125,
+              "duration_ms": 308.675048828125
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 339.544921875,
+              "completed_ms": 344.533935546875,
+              "duration_ms": 4.989013671875
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2466.308837890625,
+            "span_ms": 328.518798828125,
+            "factor": 7.507359842688797
+          },
+          "map_steps": {
+            "sum_ms": 2461.31982421875,
+            "span_ms": 310.98193359375,
+            "factor": 7.914671427292896
+          },
+          "parallelism_factor": 7.507359842688797,
+          "map_parallelism_factor": 7.914671427292896
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 23.838134765625,
+          "planner_ms": 14.167236328125,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 7.507359842688797,
+      "map_parallelism_factor": 7.914671427292896,
+      "map_concurrency_peak": 8,
+      "map_concurrency_mean": 7.927336964409848,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "774a152b-bd7a-4a98-8887-45e3482d097d",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 3.535888671875,
+          "end_ms": 9.5,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 5.964111328125
+        },
+        {
+          "task_id": "70aebe2e-4274-4c21-8d23-dac7744c8823",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 12.02197265625,
+          "end_ms": 328.81591796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 316.7939453125
+        },
+        {
+          "task_id": "be6667ab-e57f-4f8b-b862-97e6316f3588",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 12.0498046875,
+          "end_ms": 331.31689453125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 319.26708984375
+        },
+        {
+          "task_id": "1a39863f-78c0-468c-ab96-3a9692dc1a53",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 12.4140625,
+          "end_ms": 331.35888671875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 318.94482421875
+        },
+        {
+          "task_id": "e294b2ae-554f-4d25-978e-dd9c6b5b2079",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 13.083984375,
+          "end_ms": 331.619140625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 318.53515625
+        },
+        {
+          "task_id": "c2b4361d-8da8-4390-b9fb-de98a2169cbf",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-5",
+          "attempt": 1,
+          "start_ms": 13.3701171875,
+          "end_ms": 328.9248046875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.5546875
+        },
+        {
+          "task_id": "73d75130-48ca-420c-a78a-b94d87a8d927",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-6",
+          "attempt": 1,
+          "start_ms": 13.6640625,
+          "end_ms": 328.658935546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 314.994873046875
+        },
+        {
+          "task_id": "76dcfaf6-bf51-4e92-81b5-981a4ade5a23",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-7",
+          "attempt": 1,
+          "start_ms": 13.783935546875,
+          "end_ms": 328.75,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 314.966064453125
+        },
+        {
+          "task_id": "f40a31df-c074-454f-b48f-c451db0912b0",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-8",
+          "attempt": 1,
+          "start_ms": 14.304931640625,
+          "end_ms": 328.802734375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 314.497802734375
+        },
+        {
+          "task_id": "d75faf0a-0dfa-4351-b659-914a85cb53d1",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 337.412841796875,
+          "end_ms": 345.44091796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 8.028076171875
+        },
+        {
+          "task_id": "2ae91313-f8c3-40c7-9d23-f9afa50a13c3",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 354.548828125,
+          "end_ms": 371.180908203125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 16.632080078125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.32177734375
+        },
+        {
+          "round": 2,
+          "at_ms": 348.072021484375
+        }
+      ],
+      "output": {
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "counted_by": {
+          "1": "counter-1",
+          "5": "counter-7",
+          "3": "counter-4",
+          "2": "counter-6",
+          "4": "counter-2",
+          "7": "counter-8",
+          "8": "counter-3",
+          "6": "counter-5"
+        },
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "distinct_words": 71.0,
+        "map_steps": 8.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+      "group": "K=8 N=8 no-flaky"
+    },
+    {
+      "mission_id": "d1d2c096-1085-439e-94f8-5dacc0f3d3b3",
+      "sample": 2,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 8,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 360.912109375,
+      "client_ms": 384.775249985978,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 336.18798828125,
+          "planner_ms": 0.930908203125,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 5.994140625,
+              "completed_ms": 309.56103515625,
+              "duration_ms": 303.56689453125
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-7",
+              "attempt": 1,
+              "started_ms": 5.990234375,
+              "completed_ms": 312.30810546875,
+              "duration_ms": 306.31787109375
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-6",
+              "attempt": 1,
+              "started_ms": 5.938232421875,
+              "completed_ms": 312.437255859375,
+              "duration_ms": 306.4990234375
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-5",
+              "attempt": 1,
+              "started_ms": 6.578125,
+              "completed_ms": 312.47412109375,
+              "duration_ms": 305.89599609375
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-8",
+              "attempt": 1,
+              "started_ms": 6.771240234375,
+              "completed_ms": 314.447998046875,
+              "duration_ms": 307.6767578125
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 5.930908203125,
+              "completed_ms": 312.343017578125,
+              "duration_ms": 306.412109375
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 6.26904296875,
+              "completed_ms": 314.317138671875,
+              "duration_ms": 308.048095703125
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 6.14111328125,
+              "completed_ms": 312.364013671875,
+              "duration_ms": 306.222900390625
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 329.416259765625,
+              "completed_ms": 334.16015625,
+              "duration_ms": 4.743896484375
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2455.383544921875,
+            "span_ms": 328.229248046875,
+            "factor": 7.480696980944298
+          },
+          "map_steps": {
+            "sum_ms": 2450.6396484375,
+            "span_ms": 308.51708984375,
+            "factor": 7.943286544283944
+          },
+          "parallelism_factor": 7.480696980944298,
+          "map_parallelism_factor": 7.943286544283944
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 22.5048828125,
+          "planner_ms": 11.938232421875,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 7.480696980944298,
+      "map_parallelism_factor": 7.943286544283944,
+      "map_concurrency_peak": 8,
+      "map_concurrency_mean": 7.917618349149813,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "5dc8f6a9-cbb3-4302-8097-eed5a4f97742",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.127197265625,
+          "end_ms": 3.508056640625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.380859375
+        },
+        {
+          "task_id": "aea6b5e3-e187-4f16-9c83-2f00171308f5",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 4.68603515625,
+          "end_ms": 321.888916015625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 317.202880859375
+        },
+        {
+          "task_id": "33b192d3-8b86-4029-9e4d-35532639dd8c",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 4.758056640625,
+          "end_ms": 322.31591796875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 317.557861328125
+        },
+        {
+          "task_id": "4cacdf11-47a1-43d5-aa00-58ca5dd8dcf9",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 4.77099609375,
+          "end_ms": 322.448974609375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 317.677978515625
+        },
+        {
+          "task_id": "af1d2187-9a09-4a10-8a70-a03f22b25178",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 4.791015625,
+          "end_ms": 314.675048828125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 309.884033203125
+        },
+        {
+          "task_id": "650965ae-1a5a-419a-9a19-3f8775051c94",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-5",
+          "attempt": 1,
+          "start_ms": 4.919189453125,
+          "end_ms": 321.908935546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 316.98974609375
+        },
+        {
+          "task_id": "ae15e4d3-cfc8-471b-81a0-456c1006e06a",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-6",
+          "attempt": 1,
+          "start_ms": 4.93310546875,
+          "end_ms": 321.98095703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 317.0478515625
+        },
+        {
+          "task_id": "052ac428-03eb-4e71-9488-08a631234ad8",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-7",
+          "attempt": 1,
+          "start_ms": 4.97314453125,
+          "end_ms": 324.92822265625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 319.955078125
+        },
+        {
+          "task_id": "1347f351-e38d-4004-978b-ca016fb756f3",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-8",
+          "attempt": 1,
+          "start_ms": 5.421142578125,
+          "end_ms": 324.6611328125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 319.239990234375
+        },
+        {
+          "task_id": "2cbd16db-3fe4-474a-b7cd-5232e9cb7d4a",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 327.89306640625,
+          "end_ms": 334.98291015625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 7.08984375
+        },
+        {
+          "task_id": "e828fd32-d20c-48bd-8369-94b8b005d667",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 343.7919921875,
+          "end_ms": 358.295166015625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.503173828125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.06103515625
+        },
+        {
+          "round": 2,
+          "at_ms": 337.14794921875
+        }
+      ],
+      "output": {
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "counted_by": {
+          "5": "counter-8",
+          "7": "counter-2",
+          "1": "counter-4",
+          "4": "counter-5",
+          "2": "counter-7",
+          "3": "counter-6",
+          "8": "counter-1",
+          "6": "counter-3"
+        },
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "distinct_words": 71.0,
+        "map_steps": 8.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+      "group": "K=8 N=8 no-flaky"
+    },
+    {
+      "mission_id": "8739c751-b87b-4aa2-b7f8-bcbfd2e1a9ce",
+      "sample": 3,
+      "status": "COMPLETED",
+      "completed": true,
+      "settings": {
+        "workers": 8,
+        "shards": 8,
+        "flaky": false,
+        "step_deadline_ms": 1500,
+        "flaky_factor": 3,
+        "work_ms": 300,
+        "words_per_shard": 200,
+        "round_deadline_ms": 60000,
+        "planner_deadline_ms": 10000,
+        "flaky_delay_ms": 4500,
+        "study": "fanout",
+        "flaky_agent_id": null
+      },
+      "wall_ms": 362.5390625,
+      "client_ms": 387.0278330286965,
+      "rounds": [
+        {
+          "round": 1,
+          "action": "PLAN",
+          "workflow_status": "COMPLETED",
+          "round_span_ms": 338.1259765625,
+          "planner_ms": 0.903076171875,
+          "steps": [
+            {
+              "step_id": "map-1",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-4",
+              "attempt": 1,
+              "started_ms": 6.987060546875,
+              "completed_ms": 315.572021484375,
+              "duration_ms": 308.5849609375
+            },
+            {
+              "step_id": "map-2",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-6",
+              "attempt": 1,
+              "started_ms": 6.7529296875,
+              "completed_ms": 313.068115234375,
+              "duration_ms": 306.315185546875
+            },
+            {
+              "step_id": "map-3",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-1",
+              "attempt": 1,
+              "started_ms": 6.446044921875,
+              "completed_ms": 312.65625,
+              "duration_ms": 306.210205078125
+            },
+            {
+              "step_id": "map-4",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-2",
+              "attempt": 1,
+              "started_ms": 6.39599609375,
+              "completed_ms": 312.68212890625,
+              "duration_ms": 306.2861328125
+            },
+            {
+              "step_id": "map-5",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-5",
+              "attempt": 1,
+              "started_ms": 6.734130859375,
+              "completed_ms": 312.654052734375,
+              "duration_ms": 305.919921875
+            },
+            {
+              "step_id": "map-6",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-8",
+              "attempt": 1,
+              "started_ms": 6.839111328125,
+              "completed_ms": 315.2451171875,
+              "duration_ms": 308.406005859375
+            },
+            {
+              "step_id": "map-7",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-7",
+              "attempt": 1,
+              "started_ms": 6.93212890625,
+              "completed_ms": 313.175048828125,
+              "duration_ms": 306.242919921875
+            },
+            {
+              "step_id": "map-8",
+              "kind": "map",
+              "status": "COMPLETED",
+              "agent_id": "counter-3",
+              "attempt": 1,
+              "started_ms": 6.43701171875,
+              "completed_ms": 312.674072265625,
+              "duration_ms": 306.237060546875
+            },
+            {
+              "step_id": "reduce",
+              "kind": "reduce",
+              "status": "COMPLETED",
+              "agent_id": "reducer",
+              "attempt": 1,
+              "started_ms": 329.167236328125,
+              "completed_ms": 334.511962890625,
+              "duration_ms": 5.3447265625
+            }
+          ],
+          "all_steps": {
+            "sum_ms": 2459.547119140625,
+            "span_ms": 328.115966796875,
+            "factor": 7.495969011051644
+          },
+          "map_steps": {
+            "sum_ms": 2454.202392578125,
+            "span_ms": 309.176025390625,
+            "factor": 7.937880660304725
+          },
+          "parallelism_factor": 7.495969011051644,
+          "map_parallelism_factor": 7.937880660304725
+        },
+        {
+          "round": 2,
+          "action": "DONE",
+          "workflow_status": null,
+          "round_span_ms": 21.990966796875,
+          "planner_ms": 12.02197265625,
+          "steps": [],
+          "all_steps": null,
+          "map_steps": null,
+          "parallelism_factor": null,
+          "map_parallelism_factor": null
+        }
+      ],
+      "parallelism_factor": 7.495969011051644,
+      "map_parallelism_factor": 7.937880660304725,
+      "map_concurrency_peak": 8,
+      "map_concurrency_mean": 7.952647684208655,
+      "map_steps_completed": 8,
+      "steps_completed": 9,
+      "reassignments": {
+        "events": 0,
+        "timeouts": 0,
+        "steps_with_attempt_gt_1": 0,
+        "steps": []
+      },
+      "recovery": [],
+      "completeness": {
+        "expected": 61,
+        "present": 61,
+        "missing": [],
+        "ratio": 1.0,
+        "events_observed": 61
+      },
+      "attempts": [
+        {
+          "task_id": "634e5a1b-b3f1-4c8b-8910-cf0d8acc9c54",
+          "step_id": "planner",
+          "round": 1,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 1.070068359375,
+          "end_ms": 3.714111328125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 2.64404296875
+        },
+        {
+          "task_id": "1f62cecc-14a5-401a-b42e-0de2ede1c89c",
+          "step_id": "map-3",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-1",
+          "attempt": 1,
+          "start_ms": 5.123046875,
+          "end_ms": 317.93896484375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.81591796875
+        },
+        {
+          "task_id": "e077f9a4-4ff4-45ea-bdb2-24e80f7ae946",
+          "step_id": "map-4",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-2",
+          "attempt": 1,
+          "start_ms": 5.14501953125,
+          "end_ms": 320.714111328125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.569091796875
+        },
+        {
+          "task_id": "7c678ebd-da4a-4eae-b2f8-1ef546367332",
+          "step_id": "map-8",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-3",
+          "attempt": 1,
+          "start_ms": 5.197998046875,
+          "end_ms": 320.699951171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.501953125
+        },
+        {
+          "task_id": "e1391f31-5f18-48f9-9e14-75f8f90ef60f",
+          "step_id": "map-1",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-4",
+          "attempt": 1,
+          "start_ms": 5.233154296875,
+          "end_ms": 320.98291015625,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.749755859375
+        },
+        {
+          "task_id": "348bad7a-a731-4363-b899-8f0d89a9e936",
+          "step_id": "map-5",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-5",
+          "attempt": 1,
+          "start_ms": 5.571044921875,
+          "end_ms": 317.533935546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 311.962890625
+        },
+        {
+          "task_id": "0183ee0a-8866-4701-8d8c-67e3e7eb78c0",
+          "step_id": "map-2",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-6",
+          "attempt": 1,
+          "start_ms": 5.5810546875,
+          "end_ms": 318.824951171875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 313.243896484375
+        },
+        {
+          "task_id": "288fab92-846c-4ae3-9587-6e11ae5aa664",
+          "step_id": "map-7",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-7",
+          "attempt": 1,
+          "start_ms": 5.943115234375,
+          "end_ms": 318.068115234375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 312.125
+        },
+        {
+          "task_id": "04f715fe-a44b-4e1b-86b8-694c5a488a13",
+          "step_id": "map-6",
+          "round": 1,
+          "kind": "map",
+          "agent_id": "counter-8",
+          "attempt": 1,
+          "start_ms": 5.97998046875,
+          "end_ms": 320.989990234375,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 315.010009765625
+        },
+        {
+          "task_id": "e9f42bc8-72e3-4cc8-bfbd-3d0c78feb5f5",
+          "step_id": "reduce",
+          "round": 1,
+          "kind": "reduce",
+          "agent_id": "reducer",
+          "attempt": 1,
+          "start_ms": 325.948974609375,
+          "end_ms": 335.5810546875,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 9.632080078125
+        },
+        {
+          "task_id": "c64187bf-a8b7-41ac-824f-1123574faddc",
+          "step_id": "planner",
+          "round": 2,
+          "kind": "planner",
+          "agent_id": "planner",
+          "attempt": 1,
+          "start_ms": 346.33984375,
+          "end_ms": 360.548095703125,
+          "outcome": "completed",
+          "reassigned": false,
+          "duration_ms": 14.208251953125
+        }
+      ],
+      "round_markers": [
+        {
+          "round": 1,
+          "at_ms": 0.06103515625
+        },
+        {
+          "round": 2,
+          "at_ms": 339.287109375
+        }
+      ],
+      "output": {
+        "reassigned_steps": [],
+        "total_words": 1600.0,
+        "shards_merged": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0
+        ],
+        "counted_by": {
+          "3": "counter-1",
+          "5": "counter-5",
+          "7": "counter-7",
+          "2": "counter-6",
+          "4": "counter-2",
+          "1": "counter-4",
+          "8": "counter-3",
+          "6": "counter-8"
+        },
+        "top_words": [
+          [
+            "e",
+            133.0
+          ],
+          [
+            "que",
+            84.0
+          ],
+          [
+            "da",
+            66.0
+          ],
+          [
+            "as",
+            51.0
+          ],
+          [
+            "a",
+            50.0
+          ]
+        ],
+        "summary": "1600.0 words in 8 shards; 0 step(s) reassigned",
+        "distinct_words": 71.0,
+        "map_steps": 8.0
+      },
+      "run": ".ariadne/fanout/2026-10-29/sweep/runs/ariadne-d9dc9cadd6e748509e4477b53cc75b31",
+      "group": "K=8 N=8 no-flaky"
+    }
+  ]
+}

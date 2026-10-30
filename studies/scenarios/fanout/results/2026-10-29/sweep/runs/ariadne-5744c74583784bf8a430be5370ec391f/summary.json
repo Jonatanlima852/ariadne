@@ -1,0 +1,7 @@
+{
+  "scenario": "fanout-k1-n8",
+  "started_at": "2026-10-30T01:10:27.385078+00:00",
+  "status": "COMPLETED",
+  "completed_at": "2026-10-30T01:10:37.462819+00:00",
+  "elapsed_ms": 10077.782084001228
+}

@@ -50,7 +50,7 @@ reconstruídas na próxima execução, mudanças em código Python não exigem r
 ## Variáveis de ambiente
 
 O executor não lê `.env`. As variáveis que a descrição consultou ao ser
-carregada (por exemplo `FANOUT_WORKERS`, `LOGISTICS_V3_CASE`, `ROUTING_DEMO`)
+carregada (por exemplo `FANOUT_WORKERS`, `LOGISTICS_V3_CASE`, `ROUTING_DEMO`, sempre com o nome do cenário como prefixo)
 e as credenciais `OPENAI_API_KEY`, `OPENAI_BASE_URL` e `LLM_MODEL` são
 repassadas por nome aos contêineres de agente quando existirem no terminal.
 Os valores não são escritos no `compose.yaml` nem nas evidências; o manifesto

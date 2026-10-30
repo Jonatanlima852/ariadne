@@ -1,21 +1,35 @@
 # Tarefa simples
 
-Descoberta, atribuição e resposta de um agente de eco.
+Um agente de eco recebe uma tarefa e devolve o texto. É o menor cenário do
+repositório e o primeiro a rodar.
+
+## Pergunta
+
+O runtime descobre um agente pela capacidade, atribui a tarefa e devolve a
+resposta ao cliente?
 
 ## Executar
-
-Da raiz do repositório:
 
 ```sh
 ./ariadne run studies/scenarios/basic_task/scenario.py
 ```
 
-A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
-eventos em `runs/`, ao lado deste README.
+Resultado esperado: `WORKFLOW_STATUS_COMPLETED` com `{"text": "Olá, Ariadne!"}`.
+A execução fica em `runs/`, ao lado deste README; `events.jsonl` mostra
+`TASK_ASSIGNED` e `TASK_COMPLETED` para o agente `echo`.
 
-Campanha de repetições independentes: `./ariadne campaign studies/scenarios/basic_task/campaign.py`.
+## Variáveis
 
-Este cenário determinístico demonstra um comportamento funcional; não mede,
-isoladamente, a qualidade de raciocínio de uma LLM.
+Nenhuma.
+
+## Repetir e analisar
+
+`./ariadne campaign studies/scenarios/basic_task/campaign.py` faz três
+execuções independentes. Não há análise própria: compare os `summary.json`.
+
+## Limites
+
+Cenário determinístico e sem LLM. Demonstra o caminho operacional, não mede
+qualidade de raciocínio nem overhead do runtime.
 
 [Todos os estudos](../../README.md)

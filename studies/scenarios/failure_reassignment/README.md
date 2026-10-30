@@ -1,24 +1,31 @@
 # Recuperação por nova atribuição
 
-Uma tentativa ultrapassa o prazo; o runtime seleciona outro agente.
+Dois agentes oferecem a mesma capacidade; um deles demora mais que o prazo
+da etapa e o runtime reatribui a tarefa ao outro.
+
+## Pergunta
+
+Com `deadline_ms`, `max_attempts=2` e `exclude_failed_agent`, o runtime
+detecta o prazo estourado e conclui a tarefa em outro agente?
 
 ## Executar
-
-Da raiz do repositório:
 
 ```sh
 ./ariadne run studies/scenarios/failure_reassignment/scenario.py
 ```
 
-A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
-eventos em `runs/`, ao lado deste README.
+Resultado esperado: concluído por `b-healthy`, com `TASK_TIMEOUT` e
+`TASK_REASSIGNED` em `events.jsonl`. A execução fica em `runs/`, ao lado
+deste README; [tools/runtime_metrics](../../../tools/runtime_metrics/README.md)
+extrai os tempos de recuperação dos eventos.
 
-Os eventos `TASK_TIMEOUT` e `TASK_REASSIGNED` ficam em `events.jsonl`;
-[tools/runtime_metrics](../../../tools/runtime_metrics/README.md) extrai os
-tempos de recuperação. Um timeout não garante que o agente anterior tenha
-interrompido efeitos externos.
+## Variáveis
 
-Este cenário determinístico demonstra um comportamento funcional; não mede,
-isoladamente, a qualidade de raciocínio de uma LLM.
+Nenhuma.
+
+## Limites
+
+Cenário determinístico e sem LLM. Um timeout não garante que o agente lento
+tenha interrompido efeitos externos; só a falha por prazo é exercitada.
 
 [Todos os estudos](../../README.md)

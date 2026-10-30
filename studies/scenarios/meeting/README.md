@@ -1,21 +1,31 @@
 # Agendamento BDI
 
-Escolha de horário compatível com agendas e preferência declaradas.
+Um agente BDI escolhe um horário compatível com as agendas e a preferência
+declaradas.
+
+## Pergunta
+
+Um agente com crenças, restrições e planos de custo resolve a tarefa pela
+mesma interface que os demais?
 
 ## Executar
-
-Da raiz do repositório:
 
 ```sh
 ./ariadne run studies/scenarios/meeting/scenario.py
 ```
 
-A definição está em [scenario.py](scenario.py), com a API declarativa (`Plan`).
-O agente [meeting_scheduler](agents/meeting_scheduler/README.md)
-usa o ciclo de deliberação (`GoalPlan`) com as mesmas regras de custo. O SDK
-registra os resultados e eventos em `runs/`, ao lado deste README.
+Resultado esperado: `start: 12`. [scenario.py](scenario.py) usa a API
+declarativa (`Plan`); o agente [meeting_scheduler](agents/meeting_scheduler/README.md)
+usa o ciclo de deliberação (`GoalPlan`) com as mesmas regras de custo. O
+rastro BDI fica em `metadata` do resultado, em `runs/`.
 
-Este cenário determinístico demonstra um comportamento funcional; não mede,
-isoladamente, a qualidade de raciocínio de uma LLM.
+## Variáveis
+
+Nenhuma.
+
+## Limites
+
+Cenário determinístico e sem LLM. O BDI é uma abstração simplificada, não um
+interpretador AgentSpeak.
 
 [Todos os estudos](../../README.md)

@@ -1,5 +1,16 @@
 # Logística v3: o estudo como missão
 
+Versão corrente do estudo logístico: o mesmo domínio e os mesmos casos da
+v2, executados como missão no laço do orquestrador Go.
+
+## Pergunta
+
+Um planejador LLM coordenando entregadores BDI em paralelo atende melhor os
+pedidos, com menos chamadas e tokens, do que um único LLM decidindo todas as
+ações, quando ambos rodam como missões sob o mesmo runtime?
+
+## Como funciona
+
 A v3 responde à crítica feita à v2: o laço de episódio saiu do controlador
 Python e passou a ser o laço de missão do orquestrador Go (contrato 2.0.0).
 O domínio (estado, transições, incidentes, métricas) e os casos são os da
@@ -31,15 +42,33 @@ plano, rejeita ações inválidas e dispara incidentes antes da próxima ação.
 | [analysis.py](analysis.py) | Linhas por missão, verificação do provedor e comparação reutilizando o analisador da v2 |
 | `tests/` | Agentes sem runtime, laço imitado e integração em contêineres |
 
-Da raiz, sem credencial (substitutos determinísticos; não mede um modelo):
+## Executar
+
+Sem credencial (substitutos determinísticos; não mede um modelo):
 
 ```sh
 LOGISTICS_V3_DEMO=1 LOGISTICS_V3_CASE=vehicle-loss ./ariadne run studies/scenarios/logistics/v3/scenario.py
 LOGISTICS_V3_DEMO=1 LOGISTICS_V3_CONFIGURATION=single-llm-v3 ./ariadne run studies/scenarios/logistics/v3/scenario.py
 ```
 
-Campanha real, com `OPENAI_API_KEY` (e `LLM_MODEL` opcional) exportadas no
-terminal; cada observação sobe e derruba sua própria topologia:
+Com modelo real, exporte `OPENAI_API_KEY` (e `LLM_MODEL` opcional) e omita
+`LOGISTICS_V3_DEMO`. Cada execução fica em `runs/`; o `mission-result.json`
+abre em `./ariadne viewer`.
+
+## Variáveis
+
+| Variável | Padrão | Efeito |
+|---|---|---|
+| `LOGISTICS_V3_CASE` | `easy` | Caso das suítes `basic` ou `stress` |
+| `LOGISTICS_V3_CONFIGURATION` | `ariadne-v3` | `ariadne-v3` ou `single-llm-v3` |
+| `LOGISTICS_V3_DEMO` | `0` | `1` usa os substitutos determinísticos |
+| `LLM_MODEL` | `gpt-5.6-luna` | Modelo pedido ao provedor no modo real |
+| `LOGISTICS_V3_CAMPAIGN_SUITE` | `basic` | Suíte da campanha: `basic`, `stress` ou `all` |
+| `LOGISTICS_V3_CAMPAIGN_CASES` | todos da suíte | IDs de casos da campanha |
+| `LOGISTICS_V3_CAMPAIGN_CONFIGURATIONS` | `ariadne-v3 single-llm-v3` | Configurações da campanha |
+| `LOGISTICS_V3_CAMPAIGN_REPEAT` | `1` | Repetições por combinação |
+
+## Repetir e analisar
 
 ```sh
 LOGISTICS_V3_CAMPAIGN_SUITE=stress LOGISTICS_V3_CAMPAIGN_REPEAT=3 \
@@ -48,12 +77,17 @@ python -m studies.scenarios.logistics.v3.analysis \
   studies/scenarios/logistics/v3/campaigns/campaign-<id> --no-plots
 ```
 
-Com `LOGISTICS_V3_DEMO=1` a mesma campanha usa os substitutos determinísticos.
+Cada observação sobe e derruba sua própria topologia. A análise transforma
+cada `mission-result.json` em uma linha (`results.json`, `comparison.md`),
+confere o provedor do planejador e reutiliza o analisador da v2 para as
+tabelas e figuras; com `LOGISTICS_V3_DEMO=1` a mesma campanha usa os
+substitutos.
 
-Cada observação é uma pasta de execução comum, com o `MissionResult` do
-contrato em `mission-result.json`, legível no
-[visualizador de missão](../../../../tools/mission-viewer/README.md).
-Testes sem LLM: `tests/test_agents.py` não sobe nada; `tests/test_mission.py`
-roda as missões em contêineres com `ARIADNE_TEST_DOCKER=1`.
+## Limites
 
-[Estudo logístico](../README.md)
+Não há resultados reais da v3 registrados ainda. Em modo demo nada é medido
+sobre um modelo. Os testes em `tests/test_agents.py` não sobem nada;
+`tests/test_mission.py` roda as missões em contêineres com
+`ARIADNE_TEST_DOCKER=1`.
+
+[Estudo logístico](../README.md) · [Todos os estudos](../../../README.md)

@@ -1,22 +1,25 @@
-# Estudo logístico
+# Logística v1
 
-A [versão 2](v2/README.md) acrescenta múltiplos pedidos, dez especialistas LLM/BDI,
-ocorrências durante a execução e comparação direta com Single LLM.
-A [versão 3](v3/README.md) executa o mesmo domínio como missão no laço do
-orquestrador Go: planejador LLM, entregadores BDI deliberativos em paralelo e
-executor determinístico, contra o Single LLM embrulhado como planejador.
-Os comandos abaixo preservam o estudo original (v1).
+Estudo original: um pedido em linguagem natural vira uma missão estruturada
+e um plano validado por um simulador. É a primeira de três versões; a
+[v3](v3/README.md) é a corrente e a [v2](v2/README.md) é histórica.
 
-Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação
-offline. [scenario.py](scenario.py) declara os participantes e tarefas;
-o executor sobe agentes e serviços em contêineres e o runtime Go executa o workflow.
-[analysis.py](analysis.py) analisa evidências depois, sem iniciar serviços.
+## Pergunta
 
-## Mapa de leitura
+Interpretar com LLM e planejar com BDI (híbrido) produz planos melhores do
+que pedir tudo ao LLM, no mesmo mundo e nos mesmos casos?
+
+## Como funciona
+
+[scenario.py](scenario.py) declara os participantes e o workflow fixo: no
+híbrido, `interpret` (LLM) extrai restrições e `execute` (BDI) planeja a
+missão recebida por binding; em LLM-only, uma etapa recebe o pedido e o
+mundo e propõe as ações. [analysis.py](analysis.py) avalia as evidências
+depois, com um simulador independente, sem iniciar serviços.
 
 | Pasta/entrada | O que ler aqui |
 |---|---|
-| `scenario.py` | Declaração do estudo original, agentes e tarefas |
+| `scenario.py` | Declaração do estudo, agentes e tarefas |
 | `domain/` | Simulação de referência e adaptação ao planejador do SDK |
 | `datasets/` | Mundo, casos fixos e carregamento de dados |
 | `agents/` | Interpretação LLM e planejamento BDI |
@@ -25,16 +28,8 @@ o executor sobe agentes e serviços em contêineres e o runtime Go executa o wor
 | `evaluation/` | Relatórios e proveniência usados pela análise |
 | `results/` | Coleta histórica preservada |
 | `tests/` | Testes de domínio e reprodução do estudo |
-| [v2/](v2/README.md) | Estudo com múltiplos pedidos, incidentes e especialistas |
 
-Comece por `scenario.py`, acompanhe os agentes em `agents/` e consulte
-`domain/` para as regras. Para analisar uma coleta, siga para `evaluation/`.
-A v2 repete essa divisão e acrescenta `execution/` para o controle dos episódios
-e `demonstrations/` para os substitutos usados na integração.
-
-## Executar um caso
-
-Da raiz, com Docker e uv:
+## Executar
 
 ```sh
 ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
@@ -61,7 +56,18 @@ no híbrido, `interpret.output["mission"]` transfere a interpretação ao BDI.
 
 O mundo, os oito casos, os prompts logísticos e as regras foram preservados.
 
-## Coletar uma campanha
+## Variáveis
+
+| Variável | Padrão | Efeito |
+|---|---|---|
+| `LOGISTICS_CASE` | `avoid-contamination` | Caso do dataset |
+| `LOGISTICS_STRATEGY` | `hybrid` | `hybrid` ou `llm-only` |
+| `LLM_MODEL` | `gpt-5.6-luna` | Modelo pedido ao provedor |
+| `LOGISTICS_CAMPAIGN_CASES` | todos | Casos da campanha |
+| `LOGISTICS_CAMPAIGN_STRATEGIES` | `hybrid` | Estratégias da campanha |
+| `LOGISTICS_CAMPAIGN_REPEAT` | `2` | Repetições por combinação |
+
+## Repetir e analisar
 
 Colete os oito casos híbridos com duas repetições (uma topologia em
 contêineres por observação):
@@ -86,8 +92,6 @@ registradas. Nenhuma figura é gerada durante a coleta.
 Essa política difere de `ariadne run --repeat N`, que reutiliza processos. Campanhas
 têm seu próprio ponteiro de última execução; consulte uma observação pelo
 caminho informado no terminal, por exemplo `./ariadne status CAMINHO/DA/EXECUCAO`.
-
-## Avaliar as evidências
 
 O avaliador usa somente a biblioteca padrão do Python:
 
@@ -126,6 +130,21 @@ da coleta histórica. Os arquivos preservados incluem BDI-only da coleta antiga;
 executam somente LLM-only e híbrido. A leitura das evidências antigas continua
 disponível no avaliador, sem recolher BDI isolado.
 
+## Resultados preservados
+
+`results/logistics-20261004T-final-v2` preserva a coleta histórica de 4 de
+outubro de 2026 (oito casos, duas repetições, `gpt-5.6-luna`), citada no
+[guia de avaliação](../../../docs/evaluation.md). Inclui BDI-only, que a
+coleta atual não executa.
+
+## Limites
+
+O avaliador compartilha regras de domínio com o BDI; a execução usa a busca
+genérica do SDK e a avaliação conserva uma busca de referência. A
+otimalidade agregada inclui rejeições corretas. Tokens podem não incluir
+tentativas que falharam antes de retornar metadados. As latências dos
+workflows não têm o mesmo escopo das tarefas simples da coleta histórica.
+
 ## Verificar
 
 ```sh
@@ -137,8 +156,4 @@ Com `ARIADNE_TEST_DOCKER=1`, inclui a integração híbrida em contêineres
 com cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
 experimental de uma LLM real.
 
-[Avaliação do TCC](../../../docs/evaluation.md) · [Interface declarativa](../../../docs/experiments.md)
-
-A coleta usa `ariadne_sdk.campaign`, compartilhado com outros estudos. Execuções
-registram revisão, pacotes e hashes de mundo/casos; a avaliação registra seu
-código e hashes das evidências. Veja [proveniência](../../../docs/experiments.md#proveniência).
+[Todos os estudos](../../README.md) · [Avaliação do TCC](../../../docs/evaluation.md) · [Proveniência](../../../docs/experiments.md#proveniência)

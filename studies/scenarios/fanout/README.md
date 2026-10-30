@@ -1,12 +1,16 @@
 # Fan-out: paralelismo e reatribuição no laço de missão
 
-Estudo pequeno e determinístico, sem LLM, feito para mostrar na
-apresentação o runtime acionando vários agentes em paralelo e reatribuindo um
-passo quando o agente responsável não cumpre o prazo. Não é um benchmark de
-modelo nem de domínio: a tarefa (contar palavras de um texto dividido em N
-fragmentos, no estilo MapReduce) é propositalmente trivial.
+Estudo pequeno e determinístico, sem LLM: contar palavras de um texto
+dividido em N fragmentos, no estilo MapReduce, com K contadores em paralelo e
+um contador lento que estoura o prazo.
 
-## O que acontece numa execução
+## Pergunta
+
+O runtime executa passos independentes de uma missão em paralelo, reatribui
+um passo cujo agente não cumpriu o prazo e deixa um rastro completo de
+eventos?
+
+## Como funciona
 
 1. O cliente envia uma missão com o texto já dividido em N fragmentos
    (`context.shards`) e `max_parallel = K`.
@@ -29,37 +33,41 @@ N é no máximo 9 porque o validador do orquestrador aceita dez passos por
 workflow e um deles é o `reduce`; o planejador descarta fragmentos além
 disso e a configuração rejeita `FANOUT_SHARDS > 9`.
 
-## Como executar
-
-Da raiz (cada execução sobe seus contêineres):
+## Executar
 
 ```sh
-# uma missão com os padrões: K=4, N=8, contador lento ligado
-./ariadne run studies/scenarios/fanout/scenario.py
+./ariadne run studies/scenarios/fanout/scenario.py              # K=4, N=8, contador lento ligado
+./ariadne run studies/scenarios/fanout/scenario.py --repeat 5   # cinco amostras na mesma topologia
+```
 
-# cinco repetições; cada amostra fica em results.jsonl, a última em mission-result.json
-./ariadne run studies/scenarios/fanout/scenario.py --repeat 5
+A execução fica em `runs/`; `mission-result.json` abre em `./ariadne viewer`.
 
-# varredura de K sem o contador lento (speedup), 3 execuções independentes por K
+## Variáveis
+
+| Variável | Padrão | Efeito |
+|---|---|---|
+| `FANOUT_WORKERS` | `4` | K contadores |
+| `FANOUT_SHARDS` | `8` | N fragmentos (máximo 9) |
+| `FANOUT_FLAKY` | `1` | `1` inclui o contador lento |
+| `FANOUT_STEP_DEADLINE_MS` | `1500` | Prazo de cada passo |
+| `FANOUT_WORK_MS` | `300` | Trabalho simulado por fragmento |
+| `FANOUT_FLAKY_FACTOR` | `3` | Demora do contador lento, em múltiplos do prazo |
+| `FANOUT_CAMPAIGN_WORKERS` | `1 2 4 8` | Valores de K da campanha |
+| `FANOUT_CAMPAIGN_FLAKY` | `0` | Contador lento na campanha |
+| `FANOUT_CAMPAIGN_REPEAT` | `3` | Execuções independentes por K |
+
+## Repetir e analisar
+
+```sh
 ./ariadne campaign studies/scenarios/fanout/campaign.py
-
-# análise de uma ou mais execuções (ou de uma campanha inteira)
 uv run --project sdk/python python -m studies.scenarios.fanout.analysis \
   studies/scenarios/fanout/campaigns/campaign-<id> --output studies/scenarios/fanout/campaigns/campaign-<id>/analysis
 ```
 
-Variáveis: `FANOUT_WORKERS` (K, padrão 4), `FANOUT_SHARDS` (N, padrão 8),
-`FANOUT_FLAKY` (1 liga o contador lento), `FANOUT_STEP_DEADLINE_MS` (1500),
-`FANOUT_WORK_MS` (300), `FANOUT_FLAKY_FACTOR` (3). A campanha varre K com
-`FANOUT_CAMPAIGN_WORKERS` (padrão `1 2 4 8`), `FANOUT_CAMPAIGN_FLAKY` (0) e
-`FANOUT_CAMPAIGN_REPEAT` (3); cada observação é uma topologia nova, diferente
-de `--repeat`, que repete amostras na mesma topologia. O prazo de passo chega ao
-orquestrador como `EXECUTION_TIMEOUT`, definido por `mission.configure_runtime`
-quando a declaração é carregada, porque o plano de uma missão não transporta
-`deadline_ms` por passo.
-
-A análise usa só a biblioteca padrão; com matplotlib disponível (por exemplo
-`uv run --with matplotlib ...`) as figuras saem também em PNG.
+A campanha sobe uma topologia nova por observação, diferente de `--repeat`,
+que repete amostras na mesma topologia. A análise aceita execuções ou
+campanhas inteiras, usa só a biblioteca padrão e, com matplotlib disponível
+(`uv run --with matplotlib ...`), gera as figuras também em PNG.
 
 ## Como ler as figuras
 
@@ -98,7 +106,7 @@ engine de ondas com barreira, preservada como o "antes" da comparação: mesmos
 comandos e parâmetros, tempo de parede mediano de 3.661 ms no caso com o
 contador lento. O README da coleta de referência traz a tabela lado a lado.
 
-## O que o estudo mostra e o que não mostra
+## Limites
 
 Mostra: o engine executa passos independentes em paralelo até `max_parallel`,
 com speedup próximo do ideal para trabalho simulado homogêneo; o executor

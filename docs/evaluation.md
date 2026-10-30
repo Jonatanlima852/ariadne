@@ -33,7 +33,7 @@ respostas com a execução publicada.
 |---|---|---|
 | Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/routing/scenario.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `POLICY` | Três agentes com carga reportada configurada |
+| Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `AGENT_SELECTION_POLICY` | Três agentes com carga reportada configurada |
 | O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 

@@ -30,6 +30,13 @@ scenarios/<assunto>/
   analysis.py        # opcional: análise das evidências, python -m studies.scenarios.<assunto>.analysis
 ```
 
+Os READMEs seguem o mesmo esqueleto: uma frase, **Pergunta**, **Como
+funciona** (quando há o que explicar), **Executar**, **Variáveis** (tabela ou
+"Nenhuma"), **Repetir e analisar** (quando há `campaign.py`/`analysis.py`),
+**Resultados preservados** (quando há) e **Limites**. As variáveis de um
+cenário levam o nome da pasta como prefixo (`FANOUT_*`, `LOGISTICS_V3_*`,
+`AGENT_SELECTION_POLICY`); `LLM_MODEL` e `OPENAI_API_KEY` são do SDK.
+
 Crie apenas as pastas necessárias. Arquivos de domínio, regras e dados ficam
 junto ao cenário. Toda entrada é uma declaração `Scenario` executada por
 `./ariadne run`, que sobe os agentes em contêineres; não há topologias

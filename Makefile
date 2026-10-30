@@ -1,8 +1,8 @@
 # Makefile — Ariadne Runtime
-# Rode qualquer target com: make <target>
-# Exemplo: make proto
+#
+# Este arquivo cobre apenas construção e verificação do código.
+# Para executar cenários, campanhas, status e visualizadores, use ./ariadne.
 
-# Diretorios
 PROTO_DIR      := proto
 GO_OUT_DIR     := runtime/gen/go
 PYTHON_OUT_DIR := sdk/python/src
@@ -10,17 +10,16 @@ PROTO_INCLUDES ?= $(shell pkg-config --variable=includedir protobuf 2>/dev/null 
 
 PROTO_FILES    := $(shell find $(PROTO_DIR) -name "*.proto")
 
-# check-env — verifica se todas as ferramentas estao prontas
+# check-env — pré-requisito interno de `proto`: confere as ferramentas de geração
 
 .PHONY: check-env
 check-env:
-	@echo "Verificando ferramentas..."
+	@echo "Verificando ferramentas de geração..."
 	@which go > /dev/null 2>&1 || (echo "ERRO: go nao encontrado" && exit 1)
 	@which protoc > /dev/null 2>&1 || (echo "ERRO: protoc nao encontrado" && exit 1)
 	@PATH="$(PATH):$$(go env GOPATH)/bin" command -v protoc-gen-go > /dev/null 2>&1 || (echo "ERRO: protoc-gen-go nao encontrado. Rode: go install google.golang.org/protobuf/cmd/protoc-gen-go@latest" && exit 1)
 	@PATH="$(PATH):$$(go env GOPATH)/bin" command -v protoc-gen-go-grpc > /dev/null 2>&1 || (echo "ERRO: protoc-gen-go-grpc nao encontrado. Rode: go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest" && exit 1)
 	@which uv > /dev/null 2>&1 || (echo "ERRO: uv nao encontrado. Rode: brew install uv" && exit 1)
-	@which docker > /dev/null 2>&1 || (echo "ERRO: docker nao encontrado" && exit 1)
 	@echo "Tudo ok."
 
 # proto — gera stubs Go e Python a partir dos .proto
@@ -60,57 +59,36 @@ build:
 	@echo "Compilando servicos Go..."
 	cd runtime && go build ./...
 
-# verify/test — verificação integrada sem chamadas LLM
+# verify — verificação integrada sem chamadas LLM (mesma rotina do CI)
 
-.PHONY: verify test test-go
-verify test:
+.PHONY: verify
+verify:
 	uv run --locked --project sdk/python --extra llm python tools/verify.py
 
+# test-go — apenas os testes Go, isolados
+
+.PHONY: test-go
 test-go:
 	cd runtime && go test ./...
 
-# up / down / logs — Docker Compose
-
-.PHONY: up demo doctor
-up:
-	docker compose -f tools/deploy/docker-compose.yml up --build -d
-
-demo:
-	./ariadne demo
-
-doctor:
-	./ariadne doctor
-
-.PHONY: down
-down:
-	docker compose -f tools/deploy/docker-compose.yml down
-
-.PHONY: logs
-logs:
-	docker compose -f tools/deploy/docker-compose.yml logs -f
-
-# viewer — abre o Mission Viewer com as missoes gravadas em .ariadne e nos estudos
+# viewer — abre o Mission Viewer (temporário aqui; passará para ./ariadne)
 
 .PHONY: viewer
 viewer:
 	python3 tools/mission-viewer/serve.py $(VIEWER_ARGS)
 
-# help — lista todos os targets
+# help — lista os targets
 
 .PHONY: help
 help:
 	@echo ""
-	@echo "Targets disponiveis:"
-	@echo "  make check-env   Verifica se todas as ferramentas estao instaladas"
-	@echo "  make proto       Gera stubs Go e Python a partir dos .proto"
-	@echo "  make contract-check  Confere o contrato 2.0.0 congelado"
-	@echo "  make build       Compila os servicos Go"
-	@echo "  make verify      Verifica SDK, Go, estudos e ferramentas"
-	@echo "  make up          Sobe o sistema via Docker Compose"
-	@echo "  make demo        Executa ./ariadne demo com limpeza automatica"
-	@echo "  make doctor      Verifica Docker e configuracao via ./ariadne doctor"
-	@echo "  make down        Para e remove os conteineres"
-	@echo "  make logs        Mostra logs de todos os servicos"
-	@echo "  make viewer      Abre o Mission Viewer com as missoes de .ariadne/runs e dos estudos"
-	@echo "  ./ariadne help        Cenarios isolados, logs, status e encerramento"
+	@echo "Construcao e verificacao:"
+	@echo "  make proto           Gera stubs Go e Python a partir dos .proto"
+	@echo "  make contract-check  Confere o contrato congelado"
+	@echo "  make build           Compila os servicos Go"
+	@echo "  make verify          Verifica contrato, Go, SDK, estudos e ferramentas"
+	@echo "  make test-go         Executa somente os testes Go"
+	@echo "  make viewer          Abre o Mission Viewer com as missoes de .ariadne e dos estudos"
+	@echo ""
+	@echo "Para executar cenarios, campanhas, status e logs: ./ariadne help"
 	@echo ""

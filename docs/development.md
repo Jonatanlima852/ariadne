@@ -54,7 +54,7 @@ make verify
 
 A rotina cobre Go, SDK, integração real local, estudos, launcher, Inspector e
 instalação mínima sem dependências LLM. Usa clientes falsos para LLM e Docker;
-requer Go, uv e Node. `make test` é um alias; `make test-go` mantém a verificação
+requer Go, uv e Node. `make test-go` mantém a verificação
 isolada de Go. O [guia de consolidação](consolidation.md) descreve as opções.
 Para alterações concorrentes do runtime, execute também `go test -race ./...`
 dentro de `runtime/`.
@@ -121,8 +121,8 @@ alteração, mas não prova compatibilidade semântica.
 
 `make proto` automatiza a geração; os includes são obtidos por
 `pkg-config`, com fallback em `/usr/include`. Use `PROTO_INCLUDES=/caminho`
-quando necessário. As ferramentas de geração são necessárias apenas para regenerar stubs;
-`make demo` e `make doctor` delegam ao [executor ariadne](cli.md).
+quando necessário. As ferramentas de geração são necessárias apenas para regenerar stubs.
+O Makefile não executa cenários; para isso use o [executor ariadne](cli.md).
 
 ## Critério para uma mudança revisável
 

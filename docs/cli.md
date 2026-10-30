@@ -115,11 +115,12 @@ projeto é `gpt-5.6-luna`, sujeito ao acesso da conta.
 `doctor` valida configuração, mas não testa credencial nem acesso ao modelo.
 Cenários determinísticos não carregam `.env` pelo executor e não chamam LLM.
 
-## Make e execução manual
+## Make e `./ariadne`
 
-`make demo` e `make doctor` delegam para `./ariadne`. `make up`, `make logs` e
-`make down` continuam controlando o Compose básico manual, não execuções de
-`./ariadne`. Para estas, use `./ariadne logs` e `./ariadne stop`.
+Os dois têm papéis distintos. O Makefile cobre construção e verificação do
+código (`proto`, `contract-check`, `build`, `verify`, `test-go`). Tudo que
+executa ou observa o sistema passa por `./ariadne`: cenários, campanhas,
+`status`, `logs` e `stop`. Nenhum comando existe nos dois.
 
 Os scripts `studies/scenarios/<assunto>/benchmarks/run.sh` continuam sendo
 os executores das campanhas. `ariadne` cobre demonstrações e cenários; não oferece

@@ -427,7 +427,8 @@ function layoutTimeline(model) {
     const id = call.agent || call.node.agent || 'sem agente';
     let lane = lanes.find(item => item.id === id);
     if (!lane) lanes.push(lane = { id, planner: call.node.kind === 'planner', first: call.t0, kinds: {}, rows: [] });
-    if (!call.ghost && call.node.agentKind) lane.kinds[call.node.agentKind] = (lane.kinds[call.node.agentKind] || 0) + 1;
+    const laneKind = call.ghost ? (call.attemptInfo && call.attemptInfo.agentKind) : call.node.agentKind;
+    if (laneKind) lane.kinds[laneKind] = (lane.kinds[laneKind] || 0) + 1;
     call.lane = lane;
   }
   lanes.sort((a, b) => (b.planner - a.planner) || (a.first - b.first));

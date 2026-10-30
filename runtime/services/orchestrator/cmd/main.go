@@ -51,7 +51,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64 << 20)) // resultados de missão e históricos passam de 4 MB
 	pb.RegisterOrchestratorServiceServer(grpcServer, server.New(registryAddr, logger, executionTimeout))
 
 	slog.Info("orchestrator service started", "addr", addr, "registry", registryAddr, "execution_timeout", executionTimeout)

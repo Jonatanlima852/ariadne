@@ -313,7 +313,9 @@ class Agent:
         self._heartbeat_thread = None
 
     def _start_server(self):
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
+        # PlannerRequest leva o histórico da missão; o padrão de 4 MB pode não bastar.
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=4),
+                             options=[("grpc.max_receive_message_length", 64 * 1024 * 1024)])
         contract_pb2_grpc.add_AgentServiceServicer_to_server(_AgentServicer(self), server)
         self.port = server.add_insecure_port(f"{self.listen_host}:{self.port}")
         if not self.port:

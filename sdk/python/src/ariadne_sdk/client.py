@@ -249,7 +249,8 @@ class RuntimeClient:
         self.trace_id = str(uuid.uuid4())
         self._channel = None
         if orchestrator_stub is None:
-            self._channel = grpc.insecure_channel(orchestrator_addr)
+            # Um MissionResult carrega todas as rodadas e pode passar dos 4 MB padrão do gRPC.
+            self._channel = grpc.insecure_channel(orchestrator_addr, options=[("grpc.max_receive_message_length", 64 * 1024 * 1024)])
             orchestrator_stub = contract_pb2_grpc.OrchestratorServiceStub(
                 self._channel
             )

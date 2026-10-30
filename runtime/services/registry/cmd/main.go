@@ -41,7 +41,7 @@ func main() {
 	agentStore := store.New()
 	go runFailureDetector(agentStore, scanInterval, suspectedTimeout, deadTimeout)
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64 << 20)) // resultados de missão e históricos passam de 4 MB
 	pb.RegisterRegistryServiceServer(grpcServer, server.New(agentStore))
 
 	slog.Info("registry service started",

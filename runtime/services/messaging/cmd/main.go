@@ -35,7 +35,7 @@ func main() {
 		slog.Error("failed to listen", "err", err)
 		os.Exit(1)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64 << 20)) // resultados de missão e históricos passam de 4 MB
 	pb.RegisterMessagingServiceServer(grpcServer, messageServer.New(broker.New(), logger))
 	slog.Info("messaging service started", "addr", address)
 	if err := startup.Ready(listener.Addr().String()); err != nil {

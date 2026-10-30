@@ -17,7 +17,6 @@ Execute da raiz do repositório.
 | [Rota heterogênea](../studies/scenarios/routing/README.md) | Missão: planejador LLM, rota BDI deliberativa e explicação LLM | `ROUTING_DEMO=1 ./ariadne run studies/scenarios/routing/scenario.py` (sem chave) | Rota `A → B → D`, distância 25, `MissionResult` em JSON |
 | [Fan-out](../studies/scenarios/fanout/README.md) | N passos de mapa em paralelo, prazo estourado e reatribuição | `./ariadne run studies/scenarios/fanout/scenario.py` | `MISSION_STATUS_COMPLETED`, um passo reatribuído |
 | [Logística v3](../studies/scenarios/logistics/v3/README.md) | Missão com planejador LLM, entregadores BDI e executor | `LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py` | Pedidos entregues, incidentes tratados em novas rodadas |
-| [Logística v1](../studies/scenarios/logistics/README.md) | Workflow fixo: interpretação LLM e plano BDI | `ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py` | Plano aceito pelo avaliador do domínio |
 
 O resumo aparece no terminal; o resultado estruturado fica em `result.json`
 (e `mission-result.json` para missões) dentro do diretório da execução.

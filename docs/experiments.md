@@ -208,11 +208,11 @@ uma matriz de variáveis de configuração:
 from ariadne_sdk import Campaign
 
 campaign = Campaign(
-    "../scenario.py",
-    matrix={"LOGISTICS_CASE": ["simple-delivery", "impossible-deadline"],
-            "LOGISTICS_STRATEGY": ["hybrid"]},
+    "scenario.py",
+    matrix={"LOGISTICS_V3_CASE": ["easy", "vehicle-loss"],
+            "LOGISTICS_V3_CONFIGURATION": ["ariadne-v3", "single-llm-v3"]},
     repeat=2,
-    name="logistics-check",
+    name="logistics-v3-check",
 )
 ```
 

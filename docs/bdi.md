@@ -24,7 +24,7 @@ scenario = Scenario(agents=[agent], tasks=[
 Salve como um arquivo Python e execute com `./ariadne run caminho.py`. Este exemplo
 apenas compõe uma rota; restrições e disponibilidade de conexões são regras do
 domínio. Consulte a [fixture de seleção de planos](../sdk/python/tests/fixtures/route_choice.py),
-[agendamento](../studies/scenarios/meeting/scenario.py) e [logística](../studies/scenarios/logistics/agents/mission_planner.py).
+[agendamento](../studies/scenarios/meeting/scenario.py) e o [entregador da logística v3](../studies/scenarios/logistics/v3/agents/delivery/main.py).
 
 ## Entradas e estado
 
@@ -113,10 +113,10 @@ memória; geradores de ações devem terminar e a tarefa continua sujeita aos
 prazos do runtime. Um estado inicial que já satisfaz o objetivo exige zero
 expansões.
 
-A [logística](../studies/scenarios/logistics/domain/planning.py) usa esse algoritmo com suas
-precondições e efeitos. O avaliador offline conserva sua busca de referência;
-as duas implementações ainda compartilham as regras de domínio. Testes comparam
-os oito casos e variações de prazo, sem alegar independência completa do oráculo.
+A [logística](../studies/scenarios/logistics/v2/domain/planning.py) usa esse algoritmo com suas
+precondições e efeitos, nas buscas que os entregadores BDI da v3 reutilizam.
+O executor determinístico da missão aplica as mesmas regras de domínio ao
+validar as ações; não há oráculo independente dessas regras.
 
 ## Ciclo de deliberação com GoalPlan
 

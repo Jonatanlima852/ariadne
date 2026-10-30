@@ -3,7 +3,7 @@ from ariadne_sdk import BdiAgent, Input, Plan
 from ariadne_sdk import SearchProblem, uniform_cost_search
 from studies.scenarios.logistics.v2.domain.world import edge, execute
 from studies.scenarios.logistics.v2.domain.planning import energy_to_charger
-from studies.scenarios.logistics.domain.simulation import _edges
+from studies.scenarios.logistics.v2.domain.graph import _edges
 from studies.scenarios.logistics.v2.agents.common import serve
 
 

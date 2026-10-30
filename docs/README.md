@@ -20,8 +20,8 @@ do repositório, salvo indicação explícita.
 
 - [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,
   execução em contêineres pelo runtime Go e evidências brutas para avaliação separada.
-- [Estudo logístico](../studies/scenarios/logistics/README.md): descrição de LLM-only e híbrido,
-  coleta de campanhas e avaliação offline com gráficos.
+- [Estudo logístico](../studies/scenarios/logistics/README.md): v3 como missão do runtime,
+  campanha, análise e a v2 histórica.
 
 - [Primeira execução](quickstart.md): requisitos, primeiro comando, resultado e diagnóstico.
 - [Executor ariadne](cli.md): comandos, o que `run` faz nos contêineres e arquivos de resultado.

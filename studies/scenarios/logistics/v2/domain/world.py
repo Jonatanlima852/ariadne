@@ -2,7 +2,7 @@
 from copy import deepcopy
 import math
 
-from studies.scenarios.logistics.domain.simulation import _edges
+from studies.scenarios.logistics.v2.domain.graph import _edges
 
 
 RULES = """Sequential simulation; time is global in minutes. Every edge is BIDIRECTIONAL

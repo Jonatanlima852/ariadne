@@ -1,6 +1,6 @@
 """Shared graph queries and proposal identity; decisions live in each agent."""
 from ariadne_sdk import SearchProblem, uniform_cost_search
-from studies.scenarios.logistics.domain.simulation import _edges
+from studies.scenarios.logistics.v2.domain.graph import _edges
 from studies.scenarios.logistics.v2.domain.world import edge
 
 

@@ -34,7 +34,7 @@ respostas com a execução publicada.
 | Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/routing/scenario.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
 | Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `AGENT_SELECTION_POLICY` | Três agentes com carga reportada configurada |
-| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
+| A cooperação heterogênea atende melhor que um único LLM? | [Confirmação da v2](../studies/scenarios/logistics/v2/results/stress-lean/README.md), histórica; [v3](../studies/scenarios/logistics/v3/README.md) em coleta | Mesmos casos e modelo; a v2 mediu coordenação fora do runtime |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
 Os testes automatizados verificam comportamentos específicos. Eles não
@@ -120,78 +120,42 @@ como o "antes": com o contador lento, o tempo de parede mediano caiu de
 coleta é local e só a falha por prazo é exercitada; leia as limitações no
 README do estudo.
 
-## Resultados logísticos selecionados (histórico: v1 e v2)
+## Resultados logísticos da v2 (histórico)
 
-As tabelas desta seção registram as avaliações anteriores (v1 com workflow
-fixo; v2 com controlador Python) e não representam a avaliação atual.
+A v2 rodou sob o contrato 1.0.0, com o laço de episódio num controlador
+Python, workflows em ondas com barreira e BDI de um ciclo. Seus números não
+medem o runtime atual; são o ponto de partida que a v3 repete com os mesmos
+casos e modelo (`gpt-5.6-luna`).
 
-Execução `logistics-20261004T-final-v2`, registrada em 4 de outubro de 2026:
-oito casos, duas repetições e 16 respostas por estratégia, com modelo
-`gpt-5.6-luna`. As estratégias são:
+| Suíte | Single LLM | Ariadne | Leitura |
+|---|---|---|---|
+| Básica, 10 casos de 1 a 3 pedidos, uma observação | 18/20 entregues, 97 s, 32,7 mil tokens | 18/20 entregues, 267 s, 90,3 mil tokens (dez especialistas) | Empate em atendimento; a equipe só custou mais |
+| Estresse, 10 casos de 6 a 10 pedidos com incidentes, três repetições | 204/228 entregues, 190 no prazo, 87 s por episódio | 219/228 entregues, 210 no prazo, 4,9 s por episódio (variante enxuta: 1 LLM e 7 BDI), 94% menos tokens nos 29 pares com uso conhecido | A vantagem cresce com a dificuldade: de 11× no tempo nos casos simples a 33× no caso com três incidentes |
 
-- BDI-only: recebe a missão estruturada e usa planejamento simbólico.
-- LLM-only: recebe pedido natural e mundo e propõe uma sequência de ações.
-- Híbrido: LLM interpreta restrições; BDI planeja a missão estruturada.
-
-A avaliação atual compara apenas LLM-only e híbrido. BDI-only foi retirado da
-coleta; aparece abaixo exclusivamente para preservar o registro histórico,
-não como estratégia da avaliação atual do TG.
-
-| Estratégia | Validade | Otimalidade agregada¹ | Consistência² | Latência média | Tokens totais |
-|---|---:|---:|---:|---:|---:|
-| BDI-only | 100% | 100% | 100% | 25,7 ms | 0 |
-| LLM-only | 100% | 56,25% | 25% | 4.869,5 ms | 17.170 |
-| Híbrido | 100% | 100% | 100% | 1.956,9 ms | 5.282 |
-
-¹ A métrica publicada conta também rejeições corretas de missões impossíveis
-como respostas ótimas. Não é uma taxa restrita aos casos viáveis.
-
-² Compara respostas repetidas do mesmo caso; há somente duas repetições por
-caso, e o texto de rejeição participa da comparação.
-
-A interpretação estrita do híbrido foi 87,5%. Nos desvios registrados, A foi
-incluído como visita obrigatória redundante, pois já é a posição inicial.
-Todas as estratégias produziram respostas válidas nessa amostra. A diferença
-observada foi de otimalidade, repetibilidade, latência e tokens; esta execução
-não demonstra que a LLM tenha produzido planos inseguros.
-
-Artefatos para inspeção:
-
-- [JSON de respostas e avaliações](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-results.json)
-- [Sumário CSV](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-summary.csv)
-- [Gráfico registrado](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-quality.svg)
-- [Eventos JSONL](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/events.jsonl)
-- [Mundo](../studies/scenarios/logistics/datasets/world.json), [casos](../studies/scenarios/logistics/datasets/cases.json) e [avaliador](../studies/scenarios/logistics/domain/simulation.py)
-
-Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
-Na execução declarativa atual, o BDI usa a busca genérica do SDK e o avaliador
-mantém a busca de referência; as regras continuam compartilhadas.
-Além disso, no caminho de plano executável, `safe` exige que o estado final
-satisfaça o objetivo; não mede exclusivamente a aplicabilidade das transições.
-Essas convenções devem acompanhar qualquer uso das métricas publicadas.
+Detalhes, figuras e limites: [resultados preservados da v2](../studies/scenarios/logistics/v2/results/README.md)
+e [confirmação do híbrido enxuto](../studies/scenarios/logistics/v2/results/stress-lean/README.md).
+A v1 (um pedido, workflow fixo) foi removida do repositório; sua coleta de
+4 de outubro de 2026 está no histórico do Git.
 
 ## Executar uma nova campanha
 
 Na interface declarativa, `./ariadne run arquivo.py --repeat N` preserva as amostras
-brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
-em código separado. O [guia de experimentos](experiments.md) descreve os
-arquivos, os escopos de duração e a reutilização de estado entre repetições.
-Os artefatos publicados permanecem intactos. A coleta não executa BDI isolado nem a comparação do caso E.
+brutas e logs correlacionados; `./ariadne campaign` sobe uma topologia nova por
+observação. A avaliação e os gráficos são feitos depois, em código separado. O
+[guia de experimentos](experiments.md) descreve os arquivos e a proveniência.
+Os artefatos publicados permanecem intactos.
 
-O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scenarios/logistics/README.md):
+O estudo corrente é a [logística v3](../studies/scenarios/logistics/v3/README.md):
 
 ```sh
-ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
-ARIADNE_SDK_EXTRAS=llm ./ariadne campaign studies/scenarios/logistics/campaign.py
-python3 -m studies.scenarios.logistics.analysis studies/scenarios/logistics/campaigns/campaign-ID
+LOGISTICS_V3_CAMPAIGN_SUITE=stress LOGISTICS_V3_CAMPAIGN_REPEAT=3 \
+  ./ariadne campaign studies/scenarios/logistics/v3/campaign.py
+python -m studies.scenarios.logistics.v3.analysis studies/scenarios/logistics/v3/campaigns/campaign-ID --no-plots
 ```
 
-Os dois primeiros comandos usam o fluxo híbrido por padrão e fazem chamadas LLM.
-O guia do estudo explica como selecionar LLM-only e exportar as credenciais. Substitua `logistics-ID`
-pelo diretório informado na coleta. A avaliação usa os dados preservados nos
-manifestos e escreve em uma pasta nova; não inicia agentes. No novo caminho,
-todas as estratégias usam workflows, portanto os escopos de latência diferem
-da campanha histórica. Consistência fica indefinida quando há uma só observação.
+Exporte `OPENAI_API_KEY` no terminal; o executor a repassa aos agentes LLM.
+Com `LOGISTICS_V3_DEMO=1` a mesma campanha usa substitutos determinísticos e
+não mede um modelo.
 
 ### Campanhas por assunto
 

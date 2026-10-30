@@ -78,7 +78,7 @@ indica os pontos de entrada da implementação. A licença é [Apache 2.0](LICEN
 ## Organização e verificação
 
 O núcleo está em `proto/`, `runtime/` e `sdk/`. [`studies/`](studies/README.md) reúne todos os cenários, seus agentes e avaliações; `tools/` contém o suporte
-operacional. Veja [organização, autoria e reprodução](docs/consolidation.md).
+operacional. Campanhas e proveniência estão em [experimentos](docs/experiments.md).
 
 `make verify` executa as verificações de Go, Python, integração e ferramentas,
 sem chamadas LLM reais. A mesma rotina é executada pelo CI.

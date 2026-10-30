@@ -137,4 +137,4 @@ experimental de uma LLM real.
 
 A coleta usa `ariadne_sdk.campaign`, compartilhado com outros estudos. Execuções
 registram revisão, pacotes e hashes de mundo/casos; a avaliação registra seu
-código e hashes das evidências. Veja [proveniência](../../../docs/consolidation.md).
+código e hashes das evidências. Veja [proveniência](../../../docs/experiments.md#proveniência).

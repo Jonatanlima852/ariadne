@@ -50,12 +50,34 @@ uv sync --project sdk/python --extra llm
 make verify
 ```
 
-A rotina cobre Go, SDK, integração real em contêineres, estudos, Inspector e
-instalação mínima sem dependências LLM. Usa clientes falsos para LLM;
-requer Docker, Go, uv e Node. `--unit-only` omite as integrações em contêineres. `make test-go` mantém a verificação
-isolada de Go. O [guia de consolidação](consolidation.md) descreve as opções.
-Para alterações concorrentes do runtime, execute também `go test -race ./...`
-dentro de `runtime/`.
+A rotina cobre contrato, links da documentação, Go, SDK, integrações reais em
+contêineres, estudos, métricas, Inspector (parser, API e build React/Vite com
+`npm ci`) e a instalação mínima do SDK sem OpenAI/Pydantic. Usa clientes
+falsos para LLM; requer Docker, Go, uv, npm e Node `^20.19.0 || >=22.12.0`.
+`--unit-only` omite as integrações em contêineres; `--no-inspector` omite o
+visualizador. `make test-go` mantém a verificação isolada de Go; para
+alterações concorrentes do runtime, execute também `go test -race ./...`
+dentro de `runtime/`. A mesma rotina está em
+[.github/workflows/verify.yml](../.github/workflows/verify.yml).
+
+### Bootstrap e nomes
+
+`./ariadne` é um bootstrap curto para a CLI Python instalada como `ariadne`;
+parsing, validação, execução e geração do Compose estão no SDK
+(`ariadne_sdk/__main__.py`, `execution.py`, `compose.py`). `run` e `verify`
+precisam do checkout, porque as imagens são construídas a partir dele;
+configure `ARIADNE_ROOT` quando necessário. `ARIADNE_PYTHON` usa um Python
+com o SDK já instalado em vez do uv; `ARIADNE_SDK_EXTRAS=llm` inclui o extra.
+`check` detecta limite de etapas e profundidade, políticas desconhecidas e
+parâmetros de retry inválidos antes de iniciar contêineres; o Go continua
+sendo a validação definitiva.
+
+O pacote é `ariadne-sdk`, os imports usam `ariadne_sdk`, as variáveis
+operacionais usam `ARIADNE_*` e as evidências ficam em `.ariadne/`. O módulo
+Go é `ariadne/runtime`; as imagens são `ariadne-registry`,
+`ariadne-orchestrator`, `ariadne-messaging` e `ariadne-agent`. Evidências
+anteriores à renomeação conservam seus caminhos; `./ariadne status` e
+`./ariadne logs` aceitam o caminho de uma execução antiga.
 
 ## Escrever lógica de agente
 

@@ -70,3 +70,6 @@ Thumbs.db
 CLAUDE.md
 /internal-notes/
 /.ariadne/
+
+# Material de apresentação gerado localmente (figuras, scripts, rascunhos)
+/artefatos/

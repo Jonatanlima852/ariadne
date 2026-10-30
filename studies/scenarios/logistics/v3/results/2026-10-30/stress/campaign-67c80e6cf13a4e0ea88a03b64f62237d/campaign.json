@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "name": "logistics-v3-stress",
+  "metadata": {
+    "study": "logistics-v3",
+    "suite": "stress",
+    "configurations": [
+      "ariadne-v3"
+    ],
+    "execution_kind": "real-llm"
+  },
+  "experiment": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/scenario.py",
+  "created_at": "2026-10-30T06:27:43.954769+00:00",
+  "matrix": {
+    "LOGISTICS_V3_CASE": [
+      "s08-cascading-disruptions"
+    ],
+    "LOGISTICS_V3_CONFIGURATION": [
+      "ariadne-v3"
+    ]
+  },
+  "repetitions": 1,
+  "planned_observations": 1,
+  "rpc_timeout_seconds": 3600,
+  "status": "COMPLETED",
+  "runs": [
+    {
+      "directory": "runs/ariadne-f0c94adbdd5344938063a9a88584987d",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s08-cascading-disruptions",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "completed_at": "2026-10-30T06:31:17.143792+00:00"
+}

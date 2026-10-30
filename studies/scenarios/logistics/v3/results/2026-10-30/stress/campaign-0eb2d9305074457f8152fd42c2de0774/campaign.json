@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "name": "logistics-v3-stress",
+  "metadata": {
+    "study": "logistics-v3",
+    "suite": "stress",
+    "configurations": [
+      "single-llm-v3"
+    ],
+    "execution_kind": "real-llm"
+  },
+  "experiment": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/scenario.py",
+  "created_at": "2026-10-30T06:21:09.099328+00:00",
+  "matrix": {
+    "LOGISTICS_V3_CASE": [
+      "s01-distributed-mixed-orders",
+      "s03-capacity-and-source",
+      "s04-recharge-detours",
+      "s07-loaded-vehicle-loss"
+    ],
+    "LOGISTICS_V3_CONFIGURATION": [
+      "single-llm-v3"
+    ]
+  },
+  "repetitions": 1,
+  "planned_observations": 4,
+  "rpc_timeout_seconds": 3600,
+  "status": "FAILED",
+  "runs": [
+    {
+      "directory": "runs/ariadne-77c454818ba34bdbaead92df7e10b0c2",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s01-distributed-mixed-orders",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "FAILED"
+    },
+    {
+      "directory": "runs/ariadne-a0d625b4b6b84c0b8fbb0ddbdef5d09f",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s03-capacity-and-source",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-94d1b76ba52e47b3ae613abe82bd3e40",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s04-recharge-detours",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-2512c8fa958a4564a3f66188ec36eed2",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s07-loaded-vehicle-loss",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "completed_at": "2026-10-30T06:27:18.819784+00:00"
+}

@@ -1,0 +1,219 @@
+{
+  "schema_version": 2,
+  "name": "logistics-v3-basic",
+  "metadata": {
+    "study": "logistics-v3",
+    "suite": "basic",
+    "configurations": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ],
+    "execution_kind": "real-llm"
+  },
+  "experiment": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/scenario.py",
+  "created_at": "2026-10-30T05:17:44.025406+00:00",
+  "matrix": {
+    "LOGISTICS_V3_CASE": [
+      "easy",
+      "two-orders",
+      "stock-contention",
+      "one-vehicle",
+      "recharge",
+      "priority-deadlines",
+      "road-block",
+      "vehicle-loss",
+      "capacity-impossible",
+      "combined-incidents"
+    ],
+    "LOGISTICS_V3_CONFIGURATION": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ]
+  },
+  "repetitions": 1,
+  "planned_observations": 20,
+  "status": "FAILED",
+  "runs": [
+    {
+      "directory": "runs/ariadne-b1680ace48874966a6d4bf2c80c43189",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "easy",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-be486b4087574092b3ceada6a030508a",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "easy",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-db7182d0dd8c4cd0b65a960309348d6d",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "two-orders",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-614d38aa30634c19a5c92684b74d60c7",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "two-orders",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-2de918cf1bd540e2a213f163310c3872",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "stock-contention",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-007bbace1dd54a749776a7c5f80799e3",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "stock-contention",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-6f735baf49bd42aca74691559cf1c8f8",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "one-vehicle",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-ea372c56cd594a859465a8342ac42cb0",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "one-vehicle",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-246881453fe147f687a2fc43ee503953",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "recharge",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-ae3e986ca0614204b0c9e5c5ccdfe9b9",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "recharge",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-898ba1f89ead4034b1bd553a219491aa",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "priority-deadlines",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-78c5441c442d49e3a50782b3100fc812",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "priority-deadlines",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-6bd17f2ef9dc4459826833902cbc75c7",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "road-block",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-2ad917b1cdf740e1b869cc7ee31274cf",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "road-block",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-6caa3234f7b74542b17c4b9428e6dfeb",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "vehicle-loss",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-dcfebe20474c451faddc2fd7801a3739",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "vehicle-loss",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-68387bc4a64d4546aa3879fa02950acd",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "capacity-impossible",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "FAILED"
+    },
+    {
+      "directory": "runs/ariadne-29497ef348f7412182456ebe428c4323",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "capacity-impossible",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "FAILED"
+    },
+    {
+      "directory": "runs/ariadne-2c9ce9f6b008434b8e674177a087f2ca",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "combined-incidents",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "FAILED"
+    },
+    {
+      "directory": "runs/ariadne-9b18cf36f6034a058090d96e62ff66b9",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "combined-incidents",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "FAILED"
+    }
+  ],
+  "completed_at": "2026-10-30T05:22:59.683791+00:00"
+}

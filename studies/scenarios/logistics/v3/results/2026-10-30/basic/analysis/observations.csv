@@ -1,0 +1,21 @@
+observation,case,configuration,execution_kind,model,suite,repetition,total_orders,delivered,on_time,delivery_pct,on_time_pct,wall_seconds,total_tokens,distance,energy_consumed,rejected_actions,input_tokens,output_tokens,result,error,stop_reason
+1,combined-incidents,ariadne-v3,real-llm,gpt-5.6-luna,basic,,3,3,3,100.0,100.0,35.9872,11677,19,116,0,9053,2624,complete,,all orders delivered
+2,combined-incidents,single-llm-v3,real-llm,gpt-5.6-luna,basic,,3,3,3,100.0,100.0,31.061,7195,13,74,0,4685,2510,complete,,all orders delivered
+3,capacity-impossible,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,1,1,50.0,50.0,13.5901,4148,2,10,0,3233,915,partial,,no feasible work remains: every outstanding order was reported infeasible
+4,capacity-impossible,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,1,1,50.0,50.0,10.31,3438,2,10,0,2781,657,partial,,"Não há sequência executável para o pedido o1: ele exige 5 unidades de medicine, com peso total 10 (5 × 2), mas a capacidade de van1 é 6 e a de van2 é 8. Como o pedido não pode ser dividido, nenhuma ação adicional é possível."
+5,stock-contention,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,1,1,50.0,50.0,7.284,3173,2,10,0,2782,391,partial,,"Não é possível executar o2: ele requer 4 unidades de food, mas ambos os depósitos têm estoque de food igual a 0. Não há carga disponível nem veículo indisponível com o pedido para transferência."
+6,recharge,ariadne-v3,real-llm,gpt-5.6-luna,basic,,1,1,1,100.0,100.0,4.3436,1726,9,55,0,1451,275,complete,,all orders delivered
+7,road-block,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,21.7717,4614,15,91,0,2811,1803,complete,,all orders delivered
+8,stock-contention,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,1,1,50.0,50.0,8.8924,3762,2,10,0,3236,526,partial,,no feasible work remains: every outstanding order was reported infeasible
+9,two-orders,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,5.44,1701,5,33,0,1296,405,complete,,all orders delivered
+10,road-block,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,11.0977,4167,16,98,0,3292,875,complete,,all orders delivered
+11,vehicle-loss,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,13.4307,5950,12,71,0,4987,963,complete,,all orders delivered
+12,one-vehicle,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,8.7027,3679,9,55,0,3158,521,complete,,all orders delivered
+13,priority-deadlines,single-llm-v3,real-llm,gpt-5.6-luna,basic,,3,3,3,100.0,100.0,8.3313,2097,6,37,0,1405,692,complete,,all orders delivered
+14,priority-deadlines,ariadne-v3,real-llm,gpt-5.6-luna,basic,,3,3,3,100.0,100.0,11.0688,4219,10,67,0,3417,802,complete,,all orders delivered
+15,recharge,single-llm-v3,real-llm,gpt-5.6-luna,basic,,1,1,1,100.0,100.0,6.3406,1640,9,55,0,1151,489,complete,,all orders delivered
+16,easy,ariadne-v3,real-llm,gpt-5.6-luna,basic,,1,1,1,100.0,100.0,4.9738,1736,2,10,0,1491,245,complete,,all orders delivered
+17,easy,single-llm-v3,real-llm,gpt-5.6-luna,basic,,1,1,1,100.0,100.0,4.1554,1386,2,10,0,1188,198,complete,,all orders delivered
+18,two-orders,ariadne-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,4.7956,1884,5,33,0,1575,309,complete,,all orders delivered
+19,vehicle-loss,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,18.5716,4248,12,71,0,2757,1491,complete,,all orders delivered
+20,one-vehicle,single-llm-v3,real-llm,gpt-5.6-luna,basic,,2,2,2,100.0,100.0,6.7663,1786,9,55,0,1257,529,complete,,all orders delivered

@@ -1,0 +1,29 @@
+{
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/results/2026-10-30/stress/analysis/results.json",
+  "source_sha256": "bc5374c2db984c2c9001a6cc312a232a0378c55f3152a1d11ad8a10cf8e8f405",
+  "created_at": "2026-10-30T06:51:00.733062+00:00",
+  "title": "Logística v3: comparação por caso",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "observations": 20,
+  "comparisons": {
+    "ariadne-v3": {
+      "paired_cases": [
+        "s07-loaded-vehicle-loss",
+        "s01-distributed-mixed-orders",
+        "s04-recharge-detours",
+        "s03-capacity-and-source",
+        "s08-cascading-disruptions",
+        "s10-infeasible-among-feasible",
+        "s02-scarce-stock-coupling",
+        "s09-deadline-and-priority-pressure",
+        "s06-progressive-roadblocks",
+        "s05-directed-connections"
+      ],
+      "baseline_only": [],
+      "hybrid_only": []
+    }
+  },
+  "figures": [],
+  "aggregation": "arithmetic mean within case/configuration; per-metric valid n"
+}

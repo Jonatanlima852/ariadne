@@ -1,0 +1,21 @@
+case,configuration,n_observations,error_runs,result_counts,delivery_pct_mean,delivery_pct_n,on_time_pct_mean,on_time_pct_n,wall_seconds_mean,wall_seconds_n,total_tokens_mean,total_tokens_n,distance_mean,distance_n,energy_consumed_mean,energy_consumed_n,rejected_actions_mean,rejected_actions_n,input_tokens_mean,input_tokens_n,output_tokens_mean,output_tokens_n
+s07-loaded-vehicle-loss,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,58.9354,1,13675,1,50,1,211,1,1,1,9595,1,4080,1
+s01-distributed-mixed-orders,single-llm-v3,1,1,"{""partial"": 1}",0.0,1,0.0,1,90.4605,1,,0,0,1,0,1,0,1,,0,,0
+s04-recharge-detours,single-llm-v3,1,0,"{""partial"": 1}",83.33333333333333,1,83.33333333333333,1,120.6305,1,23689,1,68,1,283,1,2,1,15010,1,8679,1
+s03-capacity-and-source,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,87.5,1,69.6323,1,8776,1,112,1,468,1,0,1,2808,1,5968,1
+s08-cascading-disruptions,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,60.0,1,176.6645,1,46089,1,159,1,704,1,1,1,33344,1,12745,1
+s10-infeasible-among-feasible,single-llm-v3,1,0,"{""partial"": 1}",87.5,1,87.5,1,51.8292,1,10963,1,47,1,199,1,0,1,7337,1,3626,1
+s02-scarce-stock-coupling,single-llm-v3,1,0,"{""partial"": 1}",62.5,1,37.5,1,266.8514,1,51787,1,109,1,452,1,4,1,30290,1,21497,1
+s09-deadline-and-priority-pressure,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,62.5,1,177.3424,1,21664,1,64,1,241,1,1,1,10001,1,11663,1
+s02-scarce-stock-coupling,ariadne-v3,1,0,"{""partial"": 1}",75.0,1,62.5,1,73.9823,1,18111,1,65,1,336,1,2,1,12062,1,6049,1
+s09-deadline-and-priority-pressure,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,37.5,1,73.047,1,14248,1,78,1,356,1,1,1,8859,1,5389,1
+s06-progressive-roadblocks,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,80.7838,1,21486,1,111,1,481,1,0,1,15227,1,6259,1
+s08-cascading-disruptions,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,70.0,1,277.1581,1,55874,1,155,1,577,1,1,1,36154,1,19720,1
+s10-infeasible-among-feasible,ariadne-v3,1,0,"{""partial"": 1}",87.5,1,87.5,1,74.9284,1,20700,1,83,1,396,1,2,1,15211,1,5489,1
+s06-progressive-roadblocks,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,97.7464,1,16760,1,64,1,273,1,0,1,9361,1,7399,1
+s05-directed-connections,single-llm-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,41.6032,1,6255,1,81,1,356,1,0,1,2552,1,3703,1
+s04-recharge-detours,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,32.9625,1,7936,1,79,1,352,1,0,1,5511,1,2425,1
+s07-loaded-vehicle-loss,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,50.4875,1,14841,1,65,1,310,1,0,1,11251,1,3590,1
+s05-directed-connections,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,34.8653,1,10998,1,64,1,319,1,2,1,8403,1,2595,1
+s01-distributed-mixed-orders,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,50.0252,1,16224,1,74,1,343,1,2,1,12053,1,4171,1
+s03-capacity-and-source,ariadne-v3,1,0,"{""complete"": 1}",100.0,1,100.0,1,48.5137,1,12739,1,90,1,394,1,1,1,9003,1,3736,1

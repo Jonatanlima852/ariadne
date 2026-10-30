@@ -1,0 +1,29 @@
+{
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/results/2026-10-30/basic/analysis/results.json",
+  "source_sha256": "004a075d771c91abc911818b9c244fe8b7b661cb2703c6bee57014e3eb76d0ce",
+  "created_at": "2026-10-30T06:51:00.141183+00:00",
+  "title": "Logística v3: comparação por caso",
+  "execution_kind": "real-llm",
+  "model": "gpt-5.6-luna",
+  "observations": 20,
+  "comparisons": {
+    "ariadne-v3": {
+      "paired_cases": [
+        "combined-incidents",
+        "capacity-impossible",
+        "stock-contention",
+        "recharge",
+        "road-block",
+        "two-orders",
+        "vehicle-loss",
+        "one-vehicle",
+        "priority-deadlines",
+        "easy"
+      ],
+      "baseline_only": [],
+      "hybrid_only": []
+    }
+  },
+  "figures": [],
+  "aggregation": "arithmetic mean within case/configuration; per-metric valid n"
+}

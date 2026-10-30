@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "name": "logistics-v3-stress",
+  "metadata": {
+    "study": "logistics-v3",
+    "suite": "stress",
+    "configurations": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ],
+    "execution_kind": "real-llm"
+  },
+  "experiment": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/scenario.py",
+  "created_at": "2026-10-30T05:57:57.405441+00:00",
+  "matrix": {
+    "LOGISTICS_V3_CASE": [
+      "s02-scarce-stock-coupling",
+      "s06-progressive-roadblocks",
+      "s08-cascading-disruptions",
+      "s09-deadline-and-priority-pressure",
+      "s10-infeasible-among-feasible"
+    ],
+    "LOGISTICS_V3_CONFIGURATION": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ]
+  },
+  "repetitions": 1,
+  "planned_observations": 10,
+  "rpc_timeout_seconds": 3600,
+  "status": "FAILED",
+  "runs": [
+    {
+      "directory": "runs/ariadne-3627eea35f2b477c8809063e15c1b54a",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s02-scarce-stock-coupling",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-1606b39ed5e6488b8b95f3be4a863c87",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s02-scarce-stock-coupling",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-73e37bae79e545bdb0124463c3b71852",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s06-progressive-roadblocks",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-8b4c62413bc5412589afb8493400923d",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s06-progressive-roadblocks",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-f90c4b1c98c64935bb7696fddee39dd8",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s08-cascading-disruptions",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "FAILED"
+    },
+    {
+      "directory": "runs/ariadne-73f89fe150fd4f8d9057a486b52f1936",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s08-cascading-disruptions",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-522f17ad0f384077a29d0c518cf3ea87",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s09-deadline-and-priority-pressure",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-2ea5afa434b44ab0997f059e26f3a44c",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s09-deadline-and-priority-pressure",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-834d980e31e7429caf77dc7805905fa2",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s10-infeasible-among-feasible",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-087b4a009231494b9d4b86a7ed9f6b52",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "s10-infeasible-among-feasible",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "completed_at": "2026-10-30T06:21:08.583120+00:00"
+}

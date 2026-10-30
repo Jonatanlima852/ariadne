@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "name": "logistics-v3-basic",
+  "metadata": {
+    "study": "logistics-v3",
+    "suite": "basic",
+    "configurations": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ],
+    "execution_kind": "real-llm"
+  },
+  "experiment": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/logistics/v3/scenario.py",
+  "created_at": "2026-10-30T05:24:09.297711+00:00",
+  "matrix": {
+    "LOGISTICS_V3_CASE": [
+      "capacity-impossible",
+      "combined-incidents"
+    ],
+    "LOGISTICS_V3_CONFIGURATION": [
+      "ariadne-v3",
+      "single-llm-v3"
+    ]
+  },
+  "repetitions": 1,
+  "planned_observations": 4,
+  "status": "COMPLETED",
+  "runs": [
+    {
+      "directory": "runs/ariadne-6b3f18d413114790a9ff6eeaac1160bd",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "capacity-impossible",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-81dde43a0a4e48edbc88b5ff05fce685",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "capacity-impossible",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-4dacaea2a768479ba71329d405070042",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "combined-incidents",
+        "LOGISTICS_V3_CONFIGURATION": "ariadne-v3"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "directory": "runs/ariadne-4df8458d460140e18f98034867cb858f",
+      "repetition": 1,
+      "parameters": {
+        "LOGISTICS_V3_CASE": "combined-incidents",
+        "LOGISTICS_V3_CONFIGURATION": "single-llm-v3"
+      },
+      "status": "COMPLETED"
+    }
+  ],
+  "completed_at": "2026-10-30T05:26:19.172584+00:00"
+}

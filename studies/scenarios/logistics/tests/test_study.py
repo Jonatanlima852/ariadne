@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from studies.scenarios.logistics.datasets.loader import load_case, load_cases, load_world
 from studies.scenarios.logistics.domain.simulation import plan_mission
-from studies.scenarios.logistics.evaluation.evaluate import evaluate_run, summarize, main as evaluate
+from studies.scenarios.logistics.analysis import evaluate_run, summarize, main as evaluate
 
 
 class FakeClient:
@@ -95,11 +95,13 @@ class StudyTests(unittest.TestCase):
         self.assertTrue(all(item["runs"] == 1 for item in summary))
 
     def test_campaign_defaults_to_hybrid(self):
-        from studies.scenarios.logistics.benchmarks import campaign
-        with patch.object(campaign, "run_campaign", return_value=(None, {"status": "COMPLETED"})) as run, \
-                patch.object(Path, "is_file", return_value=True):
-            self.assertEqual(campaign.main(["--cases", "avoid-contamination", "--repeat", "1"]), 0)
-        self.assertEqual(run.call_args.args[0].matrix["LOGISTICS_STRATEGY"], ["hybrid"])
+        from ariadne_sdk.campaign import load_campaign
+        source = Path(__file__).resolve().parents[1] / "campaign.py"
+        with patch.dict(os.environ, {"LOGISTICS_CAMPAIGN_CASES": "avoid-contamination", "LOGISTICS_CAMPAIGN_REPEAT": "1"}):
+            campaign = load_campaign(source)
+        self.assertEqual(campaign.matrix, {"LOGISTICS_CASE": ["avoid-contamination"], "LOGISTICS_STRATEGY": ["hybrid"]})
+        self.assertEqual(campaign.repeat, 1)
+        self.assertEqual(campaign.experiment.name, "scenario.py")
 
     def test_sdk_planner_matches_reference_on_all_cases_and_variations(self):
         from ariadne_sdk import Task

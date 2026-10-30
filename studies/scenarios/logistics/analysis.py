@@ -96,8 +96,10 @@ def summarize(rows):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", nargs="+", type=Path, help="run directories or campaign directories")
-    parser.add_argument("--output", type=Path, default=Path(".ariadne/evaluations") / ("logistics-" + uuid.uuid4().hex))
+    parser.add_argument("--output", type=Path, help="pasta nova para os relatórios; padrão: analysis-<id> dentro da primeira entrada")
     args = parser.parse_args(argv)
+    if args.output is None:
+        args.output = args.inputs[0].resolve() / ("analysis-" + uuid.uuid4().hex[:8])
     runs = []
     campaigns = []
     for source in args.inputs:
@@ -124,7 +126,7 @@ def main(argv=None):
                 "sources": [str(path) for path in dict.fromkeys(runs)], "campaigns": campaigns,
                 "rows": rows, "summary": summaries,
                 "provenance": analysis_provenance(__file__, list(dict.fromkeys(runs)),
-                    [Path(__file__).resolve().parents[1] / "domain/simulation.py", Path(__file__).with_name("reporting.py")]),
+                    [Path(__file__).with_name("domain") / "simulation.py", Path(__file__).with_name("evaluation") / "reporting.py"]),
                 "limitations": ["shared domain rules between planner and evaluator", "correct rejections count as optimal",
                                 "consistency requires at least two observations of the same case and world",
                                 "new workflow latencies are not identical to historical single-task measurements"]}

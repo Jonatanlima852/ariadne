@@ -1,0 +1,4 @@
+strategy,runs,valid_rate,safe_rate,optimal_rate,goal_rate,correct_rejection_rate,runtime_success_rate,interpretation_accuracy,consistency_rate,average_latency_ms,p95_latency_ms,total_tokens
+bdi-only,16,1.0,1.0,1.0,0.625,0.375,1.0,,1.0,41.45960674213711,64.99049998819828,0
+llm-only,16,0.9375,0.9375,0.625,0.5625,0.375,0.9375,,0.375,5682.123799393594,8835.872250027023,15727
+hybrid,16,1.0,1.0,1.0,0.625,0.375,1.0,0.9375,1.0,2574.5796120536397,4071.7822500737384,5488

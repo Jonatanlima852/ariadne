@@ -34,7 +34,7 @@ respostas com a execução publicada.
 | Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/routing/scenario.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
 | Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `POLICY` | Três agentes com carga reportada configurada |
-| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
+| O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
 Os testes automatizados verificam comportamentos específicos. Eles não
@@ -104,8 +104,8 @@ capacidade, demora mais que o prazo do passo. As métricas saem do
 
 ```sh
 ./ariadne run studies/scenarios/fanout/scenario.py --repeat 5
-uv run --project sdk/python python -m studies.scenarios.fanout.campaign --workers 1 2 4 8 --repeat 3 --flaky 0
-uv run --project sdk/python python -m studies.scenarios.fanout.analysis <runs> --output <analysis>
+./ariadne campaign studies/scenarios/fanout/campaign.py
+uv run --project sdk/python python -m studies.scenarios.fanout.analysis studies/scenarios/fanout/campaigns/campaign-<id> --output <analysis>
 ```
 
 Resultados de 29 de outubro de 2026 em
@@ -157,10 +157,10 @@ não demonstra que a LLM tenha produzido planos inseguros.
 
 Artefatos para inspeção:
 
-- [JSON de respostas e avaliações](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-results.json)
-- [Sumário CSV](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv)
-- [Gráfico registrado](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-quality.svg)
-- [Eventos JSONL](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/events.jsonl)
+- [JSON de respostas e avaliações](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-results.json)
+- [Sumário CSV](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-summary.csv)
+- [Gráfico registrado](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/logistics-quality.svg)
+- [Eventos JSONL](../studies/scenarios/logistics/results/logistics-20261004T-final-v2/events.jsonl)
 - [Mundo](../studies/scenarios/logistics/datasets/world.json), [casos](../studies/scenarios/logistics/datasets/cases.json) e [avaliador](../studies/scenarios/logistics/domain/simulation.py)
 
 Na coleta publicada, o avaliador compartilhava regras e planejador com o BDI.
@@ -182,8 +182,8 @@ O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scen
 
 ```sh
 ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
-uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
-python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/campaigns/logistics-ID
+ARIADNE_SDK_EXTRAS=llm ./ariadne campaign studies/scenarios/logistics/campaign.py
+python3 -m studies.scenarios.logistics.analysis studies/scenarios/logistics/campaigns/campaign-ID
 ```
 
 Os dois primeiros comandos usam o fluxo híbrido por padrão e fazem chamadas LLM.
@@ -202,7 +202,7 @@ contêineres e termina com manifesto, eventos e logs:
 
 ```sh
 ./ariadne campaign studies/scenarios/basic_task/campaign.py
-uv run --project sdk/python python -m studies.scenarios.fanout.campaign --workers 1 2 4 8 --repeat 3
+./ariadne campaign studies/scenarios/fanout/campaign.py
 uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run --demo --suite basic
 ```
 

@@ -26,8 +26,8 @@ agente usa Python 3.12. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 | `studies/scenarios/` | Cenários, regras, dados e avaliações próprios |
 | `studies/scenarios/logistics/` | [Estudo declarativo](../studies/scenarios/logistics/README.md), agentes, domínio, dataset e avaliação offline |
 | `studies/scenarios/logistics/v2/` | [Episódios com múltiplos pedidos](../studies/scenarios/logistics/v2/README.md), agentes especialistas e evidências preservadas |
-| `studies/scenarios/logistics/v2/benchmarks/` | [Campanhas, arquivamento e análise](../studies/scenarios/logistics/v2/benchmarks/README.md) da v2 |
-| `studies/scenarios/*/benchmarks/` | Campanhas, resultados selecionados e gráficos |
+| `studies/scenarios/*/campaign.py`, `analysis.py` | Matriz de execuções para `./ariadne campaign` e análise das evidências, quando o cenário tem |
+| `studies/scenarios/*/results/` | Coletas preservadas, com README por data |
 | `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
 | `tools/mission-viewer/` | [Mission Viewer](../tools/mission-viewer/README.md) das missões do contrato 2.0.0 |
 | `docs/` | Documentação pública atual |

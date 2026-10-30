@@ -37,9 +37,6 @@ studies/scenarios/**/campaigns/
 # Resultados locais pertencem a cada cenário.
 studies/scenarios/*/runtime_metrics/results/*
 !studies/scenarios/*/runtime_metrics/results/README.md
-studies/scenarios/*/benchmarks/results/*
-!studies/scenarios/*/benchmarks/results/README.md
-!studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/
 
 # Logística v2: apenas coleções selecionadas entram no versionamento.
 # Os caminhos existentes são preservados por proveniência.

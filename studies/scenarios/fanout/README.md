@@ -40,25 +40,26 @@ Da raiz (cada execução sobe seus contêineres):
 # cinco repetições; cada amostra fica em results.jsonl, a última em mission-result.json
 ./ariadne run studies/scenarios/fanout/scenario.py --repeat 5
 
-# varredura de K sem o contador lento (speedup), 3 repetições por K, e a análise
-uv run --project sdk/python python -m studies.scenarios.fanout.campaign \
-  --workers 1 2 4 8 --repeat 3 --flaky 0 --output .ariadne/fanout/sweep
+# varredura de K sem o contador lento (speedup), 3 execuções independentes por K
+./ariadne campaign studies/scenarios/fanout/campaign.py
 
 # análise de uma ou mais execuções (ou de uma campanha inteira)
 uv run --project sdk/python python -m studies.scenarios.fanout.analysis \
-  .ariadne/fanout/sweep/runs --output .ariadne/fanout/sweep/analysis
+  studies/scenarios/fanout/campaigns/campaign-<id> --output studies/scenarios/fanout/campaigns/campaign-<id>/analysis
 ```
 
 Variáveis: `FANOUT_WORKERS` (K, padrão 4), `FANOUT_SHARDS` (N, padrão 8),
 `FANOUT_FLAKY` (1 liga o contador lento), `FANOUT_STEP_DEADLINE_MS` (1500),
-`FANOUT_WORK_MS` (300), `FANOUT_FLAKY_FACTOR` (3). O prazo de passo chega ao
+`FANOUT_WORK_MS` (300), `FANOUT_FLAKY_FACTOR` (3). A campanha varre K com
+`FANOUT_CAMPAIGN_WORKERS` (padrão `1 2 4 8`), `FANOUT_CAMPAIGN_FLAKY` (0) e
+`FANOUT_CAMPAIGN_REPEAT` (3); cada observação é uma topologia nova, diferente
+de `--repeat`, que repete amostras na mesma topologia. O prazo de passo chega ao
 orquestrador como `EXECUTION_TIMEOUT`, definido por `mission.configure_runtime`
 quando a declaração é carregada, porque o plano de uma missão não transporta
 `deadline_ms` por passo.
 
 A análise usa só a biblioteca padrão; com matplotlib disponível (por exemplo
-`uv run --with matplotlib ...`) as figuras saem também em PNG. Os testes
-estão em `tests/` (`test_mission.py` exige `ARIADNE_TEST_DOCKER=1`).
+`uv run --with matplotlib ...`) as figuras saem também em PNG.
 
 ## Como ler as figuras
 

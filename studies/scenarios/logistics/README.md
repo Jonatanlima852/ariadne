@@ -10,7 +10,7 @@ Os comandos abaixo preservam o estudo original (v1).
 Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação
 offline. [scenario.py](scenario.py) declara os participantes e tarefas;
 o executor sobe agentes e serviços em contêineres e o runtime Go executa o workflow.
-[evaluate.py](evaluation/evaluate.py) analisa evidências depois, sem iniciar serviços.
+[analysis.py](analysis.py) analisa evidências depois, sem iniciar serviços.
 
 ## Mapa de leitura
 
@@ -20,8 +20,10 @@ o executor sobe agentes e serviços em contêineres e o runtime Go executa o wor
 | `domain/` | Simulação de referência e adaptação ao planejador do SDK |
 | `datasets/` | Mundo, casos fixos e carregamento de dados |
 | `agents/` | Interpretação LLM e planejamento BDI |
-| `benchmarks/` | Campanha e coleta histórica preservada |
-| `evaluation/` | Avaliação offline, métricas e relatórios |
+| `campaign.py` | Matriz de casos e estratégias para `./ariadne campaign` |
+| `analysis.py` | Avaliação offline das evidências |
+| `evaluation/` | Relatórios e proveniência usados pela análise |
+| `results/` | Coleta histórica preservada |
 | `tests/` | Testes de domínio e reprodução do estudo |
 | [v2/](v2/README.md) | Estudo com múltiplos pedidos, incidentes e especialistas |
 
@@ -65,20 +67,21 @@ Colete os oito casos híbridos com duas repetições (uma topologia em
 contêineres por observação):
 
 ```sh
-uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
+ARIADNE_SDK_EXTRAS=llm ./ariadne campaign studies/scenarios/logistics/campaign.py
 ```
 
 Para comparar as duas estratégias, com chamadas LLM reais:
 
 ```sh
-uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign \
-  --strategies llm-only hybrid --repeat 2
+LOGISTICS_CAMPAIGN_STRATEGIES="llm-only hybrid" ARIADNE_SDK_EXTRAS=llm \
+  ./ariadne campaign studies/scenarios/logistics/campaign.py
 ```
 
-A campanha intercala estratégias por caso e repetição. Salva `campaign.json`
-e execuções em `.ariadne/campaigns/logistics-.../runs/`, com processos novos em cada
-observação. `--cases` seleciona IDs e `--output` escolhe a pasta de campanhas. Falhas e interrupções ficam registradas. Nenhuma
-figura é gerada durante a coleta.
+A campanha alterna estratégias dentro de cada caso. Salva `campaign.json` e
+as execuções em `campaigns/campaign-<id>/runs/`, ao lado deste README, com uma
+topologia nova em cada observação. `LOGISTICS_CAMPAIGN_CASES` seleciona IDs e
+`LOGISTICS_CAMPAIGN_REPEAT` as repetições. Falhas e interrupções ficam
+registradas. Nenhuma figura é gerada durante a coleta.
 
 Essa política difere de `ariadne run --repeat N`, que reutiliza processos. Campanhas
 têm seu próprio ponteiro de última execução; consulte uma observação pelo
@@ -89,14 +92,15 @@ caminho informado no terminal, por exemplo `./ariadne status CAMINHO/DA/EXECUCAO
 O avaliador usa somente a biblioteca padrão do Python:
 
 ```sh
-python3 -m studies.scenarios.logistics.evaluation.evaluate studies/scenarios/logistics/runs/ariadne-ID
-python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/campaigns/logistics-ID
+python3 -m studies.scenarios.logistics.analysis studies/scenarios/logistics/runs/ariadne-ID
+python3 -m studies.scenarios.logistics.analysis studies/scenarios/logistics/campaigns/campaign-ID
 ```
 
 Substitua os IDs pelos caminhos reais. É possível fornecer várias entradas.
-Uma pasta nova em `.ariadne/evaluations` recebe `logistics-results.json`,
-`logistics-summary.csv` e `logistics-quality.svg`. `--output caminho-novo`
-seleciona outro destino; um destino existente é rejeitado. Entradas não mudam.
+Uma pasta nova `analysis-<id>` dentro da primeira entrada recebe
+`logistics-results.json`, `logistics-summary.csv` e `logistics-quality.svg`.
+`--output caminho-novo` seleciona outro destino; um destino existente é
+rejeitado. Entradas não mudam.
 
 A avaliação usa mundo e missão do manifesto. Erros de runtime e amostras
 ausentes não contam como rejeições corretas de missões impossíveis.
@@ -117,8 +121,8 @@ antes de retornar metadados.
 
 Todas as estratégias novas usam workflows. Suas latências não têm exatamente
 o mesmo escopo das tarefas simples do benchmark histórico. Os resultados em
-`studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2` preservam os conteúdos
-da coleta histórica, antes localizada em `benchmarks/results/`. Os arquivos preservados incluem BDI-only da coleta antiga; os runners atuais
+`studies/scenarios/logistics/results/logistics-20261004T-final-v2` preservam os conteúdos
+da coleta histórica. Os arquivos preservados incluem BDI-only da coleta antiga; os runners atuais
 executam somente LLM-only e híbrido. A leitura das evidências antigas continua
 disponível no avaliador, sem recolher BDI isolado.
 

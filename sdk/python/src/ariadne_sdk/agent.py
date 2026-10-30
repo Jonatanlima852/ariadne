@@ -41,6 +41,17 @@ class _AgentServicer(contract_pb2_grpc.AgentServiceServicer):
             self._agent._task_finished()
 
 
+AGENT_KINDS = ("unknown", "deterministic", "bdi", "llm", "hybrid")
+
+
+def agent_kind_name(value) -> str:
+    """Normaliza o nome da família de um agente ("bdi", "llm", ...)."""
+    name = str(value or "unknown").lower().removeprefix("agent_kind_")
+    if name not in AGENT_KINDS:
+        raise ValueError(f"agent kind must be one of {', '.join(AGENT_KINDS)}: {value!r}")
+    return name
+
+
 class Agent:
     """Classe base para agentes do Ariadne Runtime.
 
@@ -53,7 +64,7 @@ class Agent:
                  host="127.0.0.1", port=0, registry_addr="localhost:50051",
                  runtime="python-sdk", contract_version="2.0.0",
                  heartbeat_interval_seconds=None, reported_load=None, handler=None,
-                 listen_host="[::]"):
+                 listen_host="[::]", kind=None):
         self.name = name or getattr(type(self), "default_name", type(self).__name__)
         self.agent_id = agent_id or getattr(type(self), "default_agent_id", self.name)
         self.capabilities = list(capabilities if capabilities is not None else getattr(type(self), "capabilities", ()))
@@ -67,6 +78,11 @@ class Agent:
         self.registry_addr = registry_addr
         self.runtime = runtime
         self.contract_version = contract_version
+        # Família de raciocínio declarada no descritor (contrato 2.0.0):
+        # "deterministic", "bdi", "llm", "hybrid" ou "unknown". BdiAgent e
+        # LlmAgent ajustam o padrão; o orquestrador copia o valor para
+        # TaskResult.agent_kind e para cada TaskAttempt.
+        self.kind = agent_kind_name(kind if kind is not None else getattr(type(self), "default_kind", "deterministic"))
         if heartbeat_interval_seconds is None:
             heartbeat_interval_seconds = float(
                 os.getenv("HEARTBEAT_INTERVAL_SECONDS", "5")
@@ -203,6 +219,7 @@ class Agent:
                 address=f"{self.host}:{self.port}",
             ),
             status=contract_pb2.AGENT_STATUS_ALIVE,
+            kind=contract_pb2.AgentKind.Value(f"AGENT_KIND_{self.kind.upper()}"),
         )
 
     def register(self):

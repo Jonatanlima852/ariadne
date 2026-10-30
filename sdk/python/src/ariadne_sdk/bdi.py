@@ -30,6 +30,8 @@ class BdiAgent(Agent):
     Não se misturam Plan e GoalPlan na mesma biblioteca.
     """
 
+    default_kind = "bdi"
+
     def __init__(self, *args, beliefs=None, desire=None, plans=None, goal=None, max_cycles=100, **kwargs):
         if plans is None:
             raise ValueError("BdiAgent requires plans: a list of Plan or of GoalPlan")

@@ -87,6 +87,23 @@ def _bdi_to_proto(value: Mapping[str, Any]) -> contract_pb2.BdiExtension:
     return message
 
 
+def _kind_name(value: int) -> str:
+    return contract_pb2.AgentKind.Name(value).removeprefix("AGENT_KIND_").lower()
+
+
+def _attempt_to_dict(message: contract_pb2.TaskAttempt) -> dict[str, Any]:
+    error = message.error if message.HasField("error") else None
+    return {
+        "attempt": message.attempt,
+        "agent_id": message.agent_id,
+        "agent_kind": _kind_name(message.agent_kind),
+        "started_at": message.started_at.ToDatetime(tzinfo=timezone.utc).isoformat() if message.HasField("started_at") else None,
+        "completed_at": message.completed_at.ToDatetime(tzinfo=timezone.utc).isoformat() if message.HasField("completed_at") else None,
+        "outcome": contract_pb2.AttemptOutcome.Name(message.outcome).removeprefix("ATTEMPT_OUTCOME_").lower(),
+        "error": {"code": contract_pb2.ErrorCode.Name(error.code), "message": error.message, "retryable": error.retryable} if error else None,
+    }
+
+
 def _bdi_from_proto(message: contract_pb2.BdiExtension) -> dict[str, Any]:
     value = _non_empty_fields(
         goal=message.goal,
@@ -236,6 +253,11 @@ class TaskResult:
     # quando os stubs do contrato 2.0.0 trazem TaskResult.bdi; o SDK
     # também espelha o rastro em metadata["bdi_trace"].
     bdi: Mapping[str, Any] = field(default_factory=dict)
+    # Preenchidos pelo orquestrador (contrato 2.0.0): uma entrada por
+    # tentativa (attempt, agent_id, agent_kind, started_at, completed_at,
+    # outcome, error) e a família do agente que produziu o resultado.
+    attempts: list[dict[str, Any]] = field(default_factory=list)
+    agent_kind: str = "unknown"
 
     @classmethod
     def from_proto(cls, message: contract_pb2.TaskResult) -> "TaskResult":
@@ -268,6 +290,8 @@ class TaskResult:
                 if _result_bdi_supported() and message.HasField("bdi")
                 else {}
             ),
+            attempts=[_attempt_to_dict(item) for item in message.attempts],
+            agent_kind=_kind_name(message.agent_kind),
         )
 
     def to_proto(self) -> contract_pb2.TaskResult:

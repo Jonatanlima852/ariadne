@@ -125,3 +125,21 @@ class AuthoringApiTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AgentKindDescriptorTests(unittest.TestCase):
+    def test_descriptor_declares_kind_per_agent_family(self):
+        from contract.v1 import contract_pb2
+        from ariadne_sdk import Agent, BdiAgent, GoalPlan
+        from ariadne_sdk.agent import agent_kind_name
+
+        plain = Agent(agent_id="det", capabilities=["echo"], handler=lambda goal, payload: {})
+        bdi = BdiAgent(agent_id="bdi", capabilities=["x"], plans=[GoalPlan("p", lambda b, g: {"ok": True}, goal="g")])
+        hybrid = Agent(agent_id="hyb", capabilities=["echo"], handler=lambda goal, payload: {}, kind="hybrid")
+
+        self.assertEqual(plain.build_descriptor().kind, contract_pb2.AGENT_KIND_DETERMINISTIC)
+        self.assertEqual(bdi.build_descriptor().kind, contract_pb2.AGENT_KIND_BDI)
+        self.assertEqual(hybrid.build_descriptor().kind, contract_pb2.AGENT_KIND_HYBRID)
+        self.assertEqual(agent_kind_name("AGENT_KIND_LLM"), "llm")
+        with self.assertRaises(ValueError):
+            agent_kind_name("oracle")

@@ -47,6 +47,9 @@ class ScenarioResult:
 
     @property
     def agent_kind(self):
+        declared = getattr(self.value, "agent_kind", "unknown")
+        if declared and declared != "unknown":
+            return "generic" if declared == "deterministic" else declared
         if self.metadata.get("agent_kind"):
             return str(self.metadata["agent_kind"]).lower()
         if self.metadata.get("provider"):

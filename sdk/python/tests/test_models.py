@@ -152,3 +152,48 @@ class AgentModelAdapterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TaskResultAttemptsTests(unittest.TestCase):
+    def test_from_proto_exposes_attempts_and_declared_kind(self):
+        from contract.v1 import contract_pb2
+        from google.protobuf import timestamp_pb2
+
+        started = timestamp_pb2.Timestamp(seconds=1_700_000_000)
+        completed = timestamp_pb2.Timestamp(seconds=1_700_000_002)
+        message = contract_pb2.TaskResult(
+            task_id="t1", agent_id="healthy", status=contract_pb2.TASK_STATUS_COMPLETED,
+            agent_kind=contract_pb2.AGENT_KIND_BDI,
+            attempts=[
+                contract_pb2.TaskAttempt(
+                    attempt=1, agent_id="slow", agent_kind=contract_pb2.AGENT_KIND_DETERMINISTIC,
+                    started_at=started, completed_at=completed,
+                    outcome=contract_pb2.ATTEMPT_OUTCOME_TIMEOUT,
+                    error=contract_pb2.ErrorInfo(code=contract_pb2.ERROR_CODE_TIMEOUT, message="late", retryable=True),
+                ),
+                contract_pb2.TaskAttempt(
+                    attempt=2, agent_id="healthy", agent_kind=contract_pb2.AGENT_KIND_BDI,
+                    outcome=contract_pb2.ATTEMPT_OUTCOME_COMPLETED,
+                ),
+            ],
+        )
+
+        result = TaskResult.from_proto(message)
+
+        self.assertEqual(result.agent_kind, "bdi")
+        self.assertEqual([a["attempt"] for a in result.attempts], [1, 2])
+        first = result.attempts[0]
+        self.assertEqual(first["agent_id"], "slow")
+        self.assertEqual(first["agent_kind"], "deterministic")
+        self.assertEqual(first["outcome"], "timeout")
+        self.assertEqual(first["error"]["code"], "ERROR_CODE_TIMEOUT")
+        self.assertTrue(first["started_at"].startswith("2023-11-14"))
+        self.assertIsNone(result.attempts[1]["error"])
+        self.assertEqual(result.attempts[1]["outcome"], "completed")
+
+    def test_agent_kind_defaults_to_unknown(self):
+        from contract.v1 import contract_pb2
+
+        result = TaskResult.from_proto(contract_pb2.TaskResult(task_id="t", status=contract_pb2.TASK_STATUS_COMPLETED))
+        self.assertEqual(result.agent_kind, "unknown")
+        self.assertEqual(result.attempts, [])

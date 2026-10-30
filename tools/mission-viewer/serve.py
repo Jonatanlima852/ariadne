@@ -14,7 +14,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_ROOTS = ['.ariadne/runs', '.ariadne/logistics-v3', '.ariadne/campaigns', 'studies', 'tools/mission-viewer/fixtures']
+DEFAULT_ROOTS = ['.ariadne/runs', '.ariadne/logistics-v3', '.ariadne/fanout', '.ariadne/campaigns', 'studies', 'tools/mission-viewer/fixtures']
 MAX_DEPTH = 8
 SKIP_DIRS = {'.git', '__pycache__', 'node_modules', '.venv', 'cache', 'bin', 'agents', 'docker', 'tests', 'domain'}
 

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="246" viewBox="0 0 960 246" font-family="Helvetica, Arial, sans-serif" font-size="12">
+<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fbe3e2"/><line x1="0" y1="0" x2="0" y2="6" stroke="#e34948" stroke-width="2"/></pattern></defs>
+<rect width="100%" height="100%" fill="#fcfcfb"/>
+<text x="120" y="24" fill="#0b0b0b" font-size="14">Passos por agente: K=1, N=8, contador lento não; amostra 1; parede 2568.5 ms; reatribuições 0</text>
+<line x1="120.0" y1="58" x2="120.0" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="120.0" y="170" text-anchor="middle" fill="#52514e" font-size="11">0</text>
+<line x1="278.8" y1="58" x2="278.8" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="278.8" y="170" text-anchor="middle" fill="#52514e" font-size="11">500</text>
+<line x1="437.7" y1="58" x2="437.7" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="437.7" y="170" text-anchor="middle" fill="#52514e" font-size="11">1000</text>
+<line x1="596.5" y1="58" x2="596.5" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="596.5" y="170" text-anchor="middle" fill="#52514e" font-size="11">1500</text>
+<line x1="755.4" y1="58" x2="755.4" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="755.4" y="170" text-anchor="middle" fill="#52514e" font-size="11">2000</text>
+<line x1="914.2" y1="58" x2="914.2" y2="154" stroke="#e4e3df" stroke-width="1"/>
+<text x="914.2" y="170" text-anchor="middle" fill="#52514e" font-size="11">2500</text>
+<text x="528.0" y="188" text-anchor="middle" fill="#52514e" font-size="11">tempo desde MISSION_CREATED (ms)</text>
+<line x1="120.1" y1="58" x2="120.1" y2="154" stroke="#52514e" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="124.1" y="54" text-anchor="start" fill="#52514e" font-size="11">rodada 1</text>
+<line x1="927.2" y1="58" x2="927.2" y2="154" stroke="#52514e" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="923.2" y="54" text-anchor="end" fill="#52514e" font-size="11">rodada 2</text>
+<text x="112" y="83.0" text-anchor="end" fill="#0b0b0b">planner</text>
+<text x="112" y="113.0" text-anchor="end" fill="#0b0b0b">counter-1</text>
+<rect x="120" y="94" width="816" height="30" fill="#f1f0ec" opacity="0.6"/>
+<text x="112" y="143.0" text-anchor="end" fill="#0b0b0b">reducer</text>
+<rect x="121.3" y="70" width="2.1" height="18" rx="3" fill="#1baf7a"/>
+<rect x="124.3" y="100" width="100.6" height="18" rx="3" fill="#2a78d6"/>
+<text x="129.3" y="113" fill="#fcfcfb" font-size="11">map-1</text>
+<rect x="225.8" y="100" width="100.6" height="18" rx="3" fill="#2a78d6"/>
+<text x="230.8" y="113" fill="#fcfcfb" font-size="11">map-2</text>
+<rect x="327.0" y="100" width="100.5" height="18" rx="3" fill="#2a78d6"/>
+<text x="332.0" y="113" fill="#fcfcfb" font-size="11">map-3</text>
+<rect x="428.2" y="100" width="98.4" height="18" rx="3" fill="#2a78d6"/>
+<text x="433.2" y="113" fill="#fcfcfb" font-size="11">map-4</text>
+<rect x="526.9" y="100" width="96.7" height="18" rx="3" fill="#2a78d6"/>
+<text x="531.9" y="113" fill="#fcfcfb" font-size="11">map-5</text>
+<rect x="624.1" y="100" width="99.5" height="18" rx="3" fill="#2a78d6"/>
+<text x="629.1" y="113" fill="#fcfcfb" font-size="11">map-6</text>
+<rect x="723.9" y="100" width="99.2" height="18" rx="3" fill="#2a78d6"/>
+<text x="728.9" y="113" fill="#fcfcfb" font-size="11">map-7</text>
+<rect x="823.8" y="100" width="98.7" height="18" rx="3" fill="#2a78d6"/>
+<text x="828.8" y="113" fill="#fcfcfb" font-size="11">map-8</text>
+<rect x="923.7" y="130" width="2.7" height="18" rx="3" fill="#eb6834"/>
+<rect x="929.7" y="70" width="5.6" height="18" rx="3" fill="#1baf7a"/>
+<rect x="120" y="200" width="18" height="12" rx="2" fill="#2a78d6"/>
+<text x="144" y="210" fill="#0b0b0b" font-size="11">map (tentativa 1)</text>
+<rect x="283" y="200" width="18" height="12" rx="2" fill="#eb6834"/>
+<text x="307" y="210" fill="#0b0b0b" font-size="11">reduce</text>
+<rect x="369" y="200" width="18" height="12" rx="2" fill="#1baf7a"/>
+<text x="393" y="210" fill="#0b0b0b" font-size="11">planejador</text>
+<rect x="483" y="200" width="18" height="12" rx="2" fill="#2a78d6" stroke="#6250d6" stroke-width="2"/>
+<text x="507" y="210" fill="#0b0b0b" font-size="11">tentativa reatribuída</text>
+<rect x="674" y="200" width="18" height="12" rx="2" fill="url(#hatch)" stroke="#e34948" stroke-width="2"/>
+<text x="698" y="210" fill="#0b0b0b" font-size="11">prazo estourado</text>
+</svg>

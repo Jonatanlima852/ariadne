@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "execution_id": "ariadne-6f32236f574a4e4898df05ee4ebfa256",
+  "backend": "local-processes",
+  "source": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/scenario.py",
+  "source_sha256": "68ce81ba43f053ce38e7acad4e15efbfcd063abe6a9360340a05816da8909bf4",
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 17.0.0 (clang-1700.6.4.2)]",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "contract_version": "2.0.0",
+  "repeat": 1,
+  "ready_timeout_seconds": 30,
+  "rpc_timeout_seconds": 120,
+  "metadata": {
+    "workers": 2,
+    "shards": 8,
+    "flaky": true,
+    "step_deadline_ms": 1500,
+    "flaky_factor": 3,
+    "work_ms": 300,
+    "words_per_shard": 200,
+    "round_deadline_ms": 60000,
+    "planner_deadline_ms": 10000,
+    "flaky_delay_ms": 4500,
+    "study": "fanout",
+    "flaky_agent_id": "counter-flaky"
+  },
+  "provenance": {
+    "schema_version": 1,
+    "git": {
+      "root": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis",
+      "revision": "365ffa51b9d06e269b60d72ac79d42bfeb5f81b2",
+      "dirty": true,
+      "changes": [
+        "M tools/mission-viewer/index.html"
+      ]
+    },
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 17.0.0 (clang-1700.6.4.2)]",
+    "packages": [
+      {
+        "name": "annotated-types",
+        "version": "0.8.0"
+      },
+      {
+        "name": "anyio",
+        "version": "4.14.2"
+      },
+      {
+        "name": "ariadne-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "ariadne-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "certifi",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "distro",
+        "version": "1.9.0"
+      },
+      {
+        "name": "grpcio",
+        "version": "1.80.0"
+      },
+      {
+        "name": "grpcio-tools",
+        "version": "1.80.0"
+      },
+      {
+        "name": "h11",
+        "version": "0.16.0"
+      },
+      {
+        "name": "httpcore",
+        "version": "1.0.9"
+      },
+      {
+        "name": "httpx",
+        "version": "0.28.1"
+      },
+      {
+        "name": "idna",
+        "version": "3.18"
+      },
+      {
+        "name": "jiter",
+        "version": "0.16.0"
+      },
+      {
+        "name": "openai",
+        "version": "2.50.0"
+      },
+      {
+        "name": "protobuf",
+        "version": "6.33.6"
+      },
+      {
+        "name": "pydantic",
+        "version": "2.13.4"
+      },
+      {
+        "name": "pydantic_core",
+        "version": "2.46.4"
+      },
+      {
+        "name": "setuptools",
+        "version": "82.0.1"
+      },
+      {
+        "name": "sniffio",
+        "version": "1.3.1"
+      },
+      {
+        "name": "tg-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "tqdm",
+        "version": "4.70.0"
+      },
+      {
+        "name": "typing-inspection",
+        "version": "0.4.2"
+      },
+      {
+        "name": "typing_extensions",
+        "version": "4.15.0"
+      }
+    ],
+    "files": [
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/runtime/go.mod",
+        "sha256": "16bcf1114278ad5ee9fddbb701f6a9dafdb585a5101c78657685eea229182aec"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/runtime/go.sum",
+        "sha256": "17577dee125cdc0e5d31fd6bff9f0431281ec2452314d8343f5270376c359e7d"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/pyproject.toml",
+        "sha256": "015076667a9dbe971b3c41289fbf1e1ae5358e21c76eac85dc1de58927ea4712"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/__init__.py",
+        "sha256": "38c1130d3e692a9df1db595817dbb8bc6894a9eb7565828304a8aab8ddb00af1"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/__main__.py",
+        "sha256": "b19c120eff4c96b64e0b226360bba531ae6f1c06f4e6f089a7cdbf9dfa3a34bd"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/agent.py",
+        "sha256": "ce4e939a832e556cd3eac032b10a36f849e3a9985f83501b92a6bd03ee2ddd71"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/bdi.py",
+        "sha256": "ad6313912d8f2ac8c608731700d2541eb638a9af4d9321a8679353ad37e546e2"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/campaign.py",
+        "sha256": "105cdd9366a8046f31b0a69e96f80a67d74a4774fe7e93564244b03d6334be48"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/client.py",
+        "sha256": "c10f9a7c6736735806172bb92fb56c1b36c6b0827ec784cf13423b46239f90dc"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/deliberation.py",
+        "sha256": "56e26661a96b43c1903f450455bc0ff30e0ce6cd8034900cf3212ed251dd350f"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/docker.py",
+        "sha256": "63ed835be0fb6a9beebd26f6702bd49bbf09e31726dfe6050a3b3aae3f03ec01"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/evidence.py",
+        "sha256": "8114d068cb3b5be9ba5fc5c17340f8c3c3a0b8e947983e3a0fbeaa36aecd06c3"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/execution.py",
+        "sha256": "e43c09f3b1d4c025c934a948b5b89dead6601fa9a07c5a7037dd968e5fba1ef2"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/experiment.py",
+        "sha256": "c748ae0ae658767811d73077b009ea67a56aa7217cdf3223c38914fea3474e55"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/message.py",
+        "sha256": "a1b6b3add08cb169d2b15c40d9d07572180a825dae39398975e71371ca369635"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/mission.py",
+        "sha256": "4b096e9bb18feebdcf003ee832bd6a899fa8629bb150f6deefaf5d47c3091ba5"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/models.py",
+        "sha256": "9663e7c9f5ebe9fc3fa2c6b41a2fae3324863d2b5d79eed43a483b04ffe43209"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/planning.py",
+        "sha256": "5d31167a0c4d6938b88c2a05d3cc7c81920e242b442e1603106a9c242760ddb6"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/plans.py",
+        "sha256": "f7315f654dabf84b51dd0854a7c6920855db998e446c262bbcacc583b4a5bf14"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/provenance.py",
+        "sha256": "8cefc5e846bb8aec2fc731d4a393709c4665a45898dafc853d18f29a6c499df9"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/ariadne_sdk/scenario.py",
+        "sha256": "ef8029169003ba0cb9b8095e68c3205a64995dd8531d46b7a0297e7f50211ac2"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/contract/v1/contract_pb2.py",
+        "sha256": "7577951ebb00cbf2f92ecd8f1edebed2623b8af2a84328b2cd26e2e2cfd3fff3"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/src/contract/v1/contract_pb2_grpc.py",
+        "sha256": "2a33493fae375c092ed66cbfd2c96b1512f8812df392f0099bfab4d806db806f"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/sdk/python/uv.lock",
+        "sha256": "082604ed628c5004755cf414ba9b43048f10c63e302a9bce1e804a93a7e68735"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/__init__.py",
+        "sha256": "273df99af5021f2dbf05280ac7bd3672d4fe01b8641c84cde98cfec22f92645e"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/__init__.py",
+        "sha256": "ce576b9aa0d1cbf88e70aecb3a4d1b5e869bc59472640c8928e1f6337d0dfa62"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/agents.py",
+        "sha256": "a5b16dee9ff930a2da2b84c2e6c9c5bedf19a6e9b314d3d2d1c732b53b01432c"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/domain.py",
+        "sha256": "acc98121eea4d1584735e13496e21b3cbbcdba9d06e5808212c67dc32ae221fa"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/mission.py",
+        "sha256": "e0ce72fc5461f2d85b6cd2f176bbe98c871985ff2793bd2b416ea6dc1054b583"
+      },
+      {
+        "path": "/Users/insider/Desktop/TG/discovery-undergraduate-thesis/studies/scenarios/fanout/scenario.py",
+        "sha256": "68ce81ba43f053ce38e7acad4e15efbfcd063abe6a9360340a05816da8909bf4"
+      }
+    ],
+    "scope": "source, loaded repository Python modules, declared artifacts and runtime/SDK dependency manifests"
+  },
+  "agents": [
+    {
+      "agent_id": "planner",
+      "capabilities": [
+        "mission-planning"
+      ]
+    },
+    {
+      "agent_id": "counter-1",
+      "capabilities": [
+        "fanout-count"
+      ]
+    },
+    {
+      "agent_id": "counter-2",
+      "capabilities": [
+        "fanout-count"
+      ]
+    },
+    {
+      "agent_id": "counter-flaky",
+      "capabilities": [
+        "fanout-count"
+      ]
+    },
+    {
+      "agent_id": "reducer",
+      "capabilities": [
+        "fanout-reduce"
+      ]
+    }
+  ],
+  "steps": [],
+  "mission": {
+    "goal": "Contar as palavras de um texto dividido em fragmentos e consolidar o total",
+    "context": {
+      "shards": [
+        {
+          "shard": 1,
+          "text": "As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da"
+        },
+        {
+          "shard": 2,
+          "text": "ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes"
+        },
+        {
+          "shard": 3,
+          "text": "navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos"
+        },
+        {
+          "shard": 4,
+          "text": "e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a"
+        },
+        {
+          "shard": 5,
+          "text": "força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo"
+        },
+        {
+          "shard": 6,
+          "text": "Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias"
+        },
+        {
+          "shard": 7,
+          "text": "gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé,"
+        },
+        {
+          "shard": 8,
+          "text": "o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África e de Ásia andaram devastando; E aqueles, que por obras valerosas Se vão da lei da morte libertando; Cantando espalharei por toda parte, Se a tanto me ajudar o engenho e arte. As armas e os barões assinalados, Que da ocidental praia Lusitana, Por mares nunca de antes navegados, Passaram ainda além da Taprobana, Em perigos e guerras esforçados, Mais do que prometia a força humana, E entre gente remota edificaram Novo Reino, que tanto sublimaram; E também as memórias gloriosas Daqueles Reis, que foram dilatando A Fé, o Império, e as terras viciosas De África"
+        }
+      ],
+      "shard_count": 8,
+      "work_ms": 300,
+      "top_n": 5,
+      "step_deadline_ms": 1500
+    },
+    "limits": {
+      "max_rounds": 3,
+      "max_parallel": 2,
+      "round_deadline_ms": 60000,
+      "planner_deadline_ms": 10000,
+      "mission_deadline_ms": 0
+    },
+    "planner_capability": "mission-planning",
+    "retry_policy": {
+      "max_attempts": 2,
+      "exclude_failed_agent": true
+    },
+    "selection_policy": "round_robin",
+    "metadata": {
+      "workers": 2,
+      "shards": 8,
+      "flaky": true,
+      "step_deadline_ms": 1500,
+      "flaky_factor": 3,
+      "work_ms": 300,
+      "words_per_shard": 200,
+      "round_deadline_ms": 60000,
+      "planner_deadline_ms": 10000,
+      "flaky_delay_ms": 4500,
+      "study": "fanout",
+      "flaky_agent_id": "counter-flaky"
+    }
+  },
+  "binaries_sha256": {
+    "registry": "e5e28c7ea7b77b85e535ba122701f2734a706c044718461f5a625b7d7b91cb2e",
+    "orchestrator": "9a938dfa6ab26b4d3af059b47167f3ef7530159d017e48527afb57a722542c52",
+    "messaging": "9e84c23f7c2d0f2f2f34b511861d8a72bbe986bf38275e5d3998a9e2f28449cc"
+  },
+  "addresses": {
+    "registry": "127.0.0.1:64525",
+    "orchestrator": "127.0.0.1:64528",
+    "messaging": "127.0.0.1:64530"
+  },
+  "processes": [
+    {
+      "name": "registry",
+      "pid": 10523
+    },
+    {
+      "name": "orchestrator",
+      "pid": 10524
+    },
+    {
+      "name": "messaging",
+      "pid": 10526
+    },
+    {
+      "name": "agent-1",
+      "pid": 10527
+    },
+    {
+      "name": "agent-2",
+      "pid": 10532
+    },
+    {
+      "name": "agent-3",
+      "pid": 10533
+    },
+    {
+      "name": "agent-4",
+      "pid": 10535
+    },
+    {
+      "name": "agent-5",
+      "pid": 10536
+    }
+  ]
+}

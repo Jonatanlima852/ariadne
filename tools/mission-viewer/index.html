@@ -34,7 +34,7 @@
   .s-cancelled { --c: var(--warn); } .s-timeout { --c: var(--violet); } .s-skipped { --c: var(--gray); }
   .s-running, .s-plan, .s-planning, .s-created { --c: var(--info); } .s-pending, .s-unknown { --c: var(--line-strong); }
   /* famílias de cor por tipo de agente: LLM, BDI, DET (determinístico) */
-  .k-LLM { --k: light-dark(#b83dba, #e38be5); } .k-BDI { --k: light-dark(#128f85, #3fc9bd); } .k-DET { --k: light-dark(#8a7a5a, #b9a888); } .k-none { --k: var(--gray); }
+  .k-LLM { --k: light-dark(#b83dba, #e38be5); } .k-BDI { --k: light-dark(#128f85, #3fc9bd); } .k-DET { --k: light-dark(#8a7a5a, #b9a888); } .k-HYB { --k: light-dark(#c2621a, #f0a060); } .k-none { --k: var(--gray); }
 
   * { box-sizing: border-box; }
   html, body { height: 100%; }
@@ -245,13 +245,32 @@ const scenarioFromSource = source => {
   return match ? match[1] : folder.split('/').pop();
 };
 // Tipo do agente, inferido do TaskResult: LLM (provedor ou bloco llm), BDI (rastro ou plano), senão DET (determinístico).
-const KIND_NAMES = { LLM: 'LLM', BDI: 'BDI', DET: 'DET (determinístico)' };
+const KIND_NAMES = { LLM: 'LLM', BDI: 'BDI', DET: 'DET (determinístico)', HYB: 'HYB (híbrido)' };
+// Família do agente: o campo do contrato (TaskResult.agent_kind, copiado do
+// descritor pelo orquestrador) tem precedência; a inferência por metadados
+// fica só para resultados gravados antes da 2.0.0 trazer o campo.
+function kindFromContract(value) {
+  const name = String(value || '').toUpperCase().replace('AGENT_KIND_', '');
+  return { BDI: 'BDI', LLM: 'LLM', DETERMINISTIC: 'DET', HYBRID: 'HYB' }[name] || null;
+}
 function agentKind(output) {
   if (!output) return null;
+  const declaredKind = kindFromContract(output.agent_kind);
+  if (declaredKind) return declaredKind;
   const meta = output.metadata || {}, declared = String(meta.agent_kind || '').toLowerCase();
   if (declared === 'llm' || meta.provider || output.llm) return 'LLM';
   if (declared === 'bdi' || (output.bdi && output.bdi.trace) || meta.bdi_trace || meta.selected_plan) return 'BDI';
   return 'DET';
+}
+// Tentativas registradas pelo orquestrador (TaskResult.attempts): uma por
+// despacho, com agente, intervalo e desfecho.
+function attemptsOf(output) {
+  return ((output && output.attempts) || []).map(item => ({
+    attempt: Number(item.attempt || 0), agent: item.agent_id || '', agentKind: kindFromContract(item.agent_kind),
+    start: parseTime(item.started_at), end: parseTime(item.completed_at),
+    outcome: String(item.outcome || '').toLowerCase().replace('attempt_outcome_', '') || 'unknown',
+    error: item.error && item.error.message,
+  }));
 }
 
 // Resumo de uma missão para a lista (mesmos campos que serve.py produz).
@@ -282,7 +301,7 @@ function stepsFromWorkflow(result, plan) {
       capability: ((task && task.required_capabilities) || (planned.task_template && planned.task_template.required_capabilities) || []).join(', '),
       duration: durationMs(output && output.started_at, output && output.completed_at),
       start: parseTime(output && output.started_at), end: parseTime(output && output.completed_at), created: parseTime(task && task.created_at),
-      depends: planned.depends_on || [], input: task, output,
+      depends: planned.depends_on || [], input: task, output, attempts: attemptsOf(output),
     });
   }
   for (const step of planSteps) if (!seen.has(step.step_id)) nodes.push({
@@ -388,8 +407,14 @@ function layoutTimeline(model) {
   for (const round of model.rounds) for (const node of [round.planner, ...round.steps]) {
     if (!node || !has(node.start) || !has(node.end)) continue;
     calls.push({ node, round, t0: node.start, t1: Math.max(node.end, node.start) });
-    // tentativa anterior: o contrato só guarda o resultado final; o intervalo é inferido de created_at até o início da repetição
-    if (node.attempt > 1 && has(node.created) && node.created < node.start) calls.push({ node, round, t0: node.created, t1: node.start, ghost: true });
+    const earlier = (node.attempts || []).filter(item => item.attempt < (node.attempt || Infinity) && has(item.start) && has(item.end));
+    if (earlier.length) {
+      // tentativas anteriores registradas pelo orquestrador: cada uma na pista do agente que a recebeu
+      for (const item of earlier) calls.push({ node, round, t0: item.start, t1: Math.max(item.end, item.start), ghost: true, attemptInfo: item, agent: item.agent });
+    } else if (node.attempt > 1 && has(node.created) && node.created < node.start) {
+      // resultado anterior à lista de tentativas: intervalo inferido, agente desconhecido
+      calls.push({ node, round, t0: node.created, t1: node.start, ghost: true });
+    }
   }
   if (!calls.length) return null;
   const t0 = Math.min(has(model.start) ? model.start : Infinity, ...calls.map(call => call.t0));
@@ -399,7 +424,7 @@ function layoutTimeline(model) {
   const lanes = [];
   calls.sort((a, b) => a.t0 - b.t0 || a.t1 - b.t1);
   for (const call of calls) {
-    const id = call.node.agent || 'sem agente';
+    const id = call.agent || call.node.agent || 'sem agente';
     let lane = lanes.find(item => item.id === id);
     if (!lane) lanes.push(lane = { id, planner: call.node.kind === 'planner', first: call.t0, kinds: {}, rows: [] });
     if (!call.ghost && call.node.agentKind) lane.kinds[call.node.agentKind] = (lane.kinds[call.node.agentKind] || 0) + 1;
@@ -481,7 +506,9 @@ function hover(group, text) {
 const describe = (node, box) => [
   node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label,
   [node.agent && `agente ${node.agent}`, KIND_NAMES[node.agentKind] || 'tipo desconhecido'].filter(Boolean).join(' · '),
-  node.attempt > 1 && (box && box.ghost ? 'tentativa 1 (timeout/falha) · intervalo inferido de created_at até a repetição · agente anterior não registrado' : `${node.attempt}ª tentativa · reatribuído (agente anterior não registrado)`),
+  box && box.ghost && box.attemptInfo && `tentativa ${box.attemptInfo.attempt} · ${box.attemptInfo.outcome}${box.attemptInfo.agent ? ' · agente ' + box.attemptInfo.agent : ''}${box.attemptInfo.error ? ' · ' + box.attemptInfo.error : ''}`,
+  box && box.ghost && !box.attemptInfo && 'tentativa anterior · intervalo inferido de created_at até a repetição · agente não registrado',
+  !(box && box.ghost) && node.attempt > 1 && `${node.attempt}ª tentativa · reatribuído${(node.attempts || []).length ? ' de ' + node.attempts.filter(a => a.attempt < node.attempt).map(a => a.agent).join(', ') : ''}`,
   box && has(current.plan.t0) ? `início +${fmtTick(box.t0 - current.plan.t0)} · duração ${fmtDuration(box.t1 - box.t0)}` : has(node.duration) && `duração ${fmtDuration(node.duration)}`,
 ].filter(Boolean).join('\n');
 
@@ -527,7 +554,7 @@ function renderBlock(box) {
   const group = el('g', { class: `block s-${node.status} k-${node.agentKind || 'none'}${box.ghost ? ' ghost' : ''}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
   group.appendChild(el('rect', { class: 'body', width: box.w, height: box.h }));
   if (!box.ghost) group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 4, height: box.h, rx: 2 }));
-  const label = box.ghost ? 'tentativa 1 (timeout/falha)' : (node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label) + (node.attempt > 1 ? ` · ${node.attempt}ª tentativa` : '');
+  const label = box.ghost ? (box.attemptInfo ? `${node.label} · tentativa ${box.attemptInfo.attempt} (${box.attemptInfo.outcome})` : 'tentativa anterior (inferida)') : (node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label) + (node.attempt > 1 ? ` · ${node.attempt}ª tentativa` : '');
   const tagWidth = box.ghost ? 0 : (node.agentKind || '?').length * 7 + 10;
   if (box.w >= 44) group.appendChild(el('text', { class: 'blk', x: 9, y: 19 }, clip(label, (box.w - 14 - (box.w >= 96 ? tagWidth + 6 : 0)) / 6.3)));
   if (!box.ghost && box.w >= 96) tag(group, box.w - tagWidth - 6, 8, node.agentKind);

@@ -109,10 +109,14 @@ uv run --project sdk/python python -m studies.scenarios.fanout.analysis <runs> -
 ```
 
 Resultados de 29 de outubro de 2026 em
-[results/2026-10-29](../studies/scenarios/fanout/results/2026-10-29/README.md):
-speedup 1,97, 3,82 e 7,04 para K = 2, 4 e 8 (N = 8, 300 ms por fragmento);
-recuperação mediana de 1,7 ms e p95 de 4,8 ms em oito prazos estourados;
-rastro completo nas vinte missões. O trabalho é simulado (`sleep`), a
+[results/2026-10-29-ready-queue](../studies/scenarios/fanout/results/2026-10-29-ready-queue/README.md):
+speedup 1,99, 3,84 e 7,31 para K = 2, 4 e 8 (N = 8, 300 ms por fragmento);
+recuperação mediana de 2,0 ms e p95 de 2,6 ms em oito prazos estourados;
+rastro completo em todas as missões. A coleta anterior, com o engine de ondas
+com barreira, fica em
+[results/2026-10-29](../studies/scenarios/fanout/results/2026-10-29/README.md)
+como o "antes": com o contador lento, o tempo de parede mediano caiu de
+3.661 ms para 2.166 ms ao trocar as ondas pela fila de prontos. O trabalho é simulado (`sleep`), a
 coleta é local e só a falha por prazo é exercitada; leia as limitações no
 README do estudo.
 

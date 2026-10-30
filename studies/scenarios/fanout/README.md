@@ -14,7 +14,8 @@ fragmentos, no estilo MapReduce) é propositalmente trivial.
    passos `map-i` (capacidade `fanout-count`, sem dependências entre si) e um
    passo `reduce` (`fanout-reduce`) que depende de todos e recebe cada saída
    por `input_bindings`.
-3. O engine executa os `map-i` em ondas de até K passos. Cada contador dorme
+3. O engine despacha os `map-i` de uma fila de prontos, até K ao mesmo tempo;
+   assim que um termina, o próximo entra. Cada contador dorme
    `work_ms` (trabalho simulado, 300 ms) e devolve as contagens do fragmento.
 4. Com `FANOUT_FLAKY=1`, o agente `counter-flaky` oferece a mesma capacidade
    mas demora `3 × prazo`. A seleção `round_robin` garante que ele receba ao
@@ -83,11 +84,18 @@ sobre esperados (conjunto definido em `analysis.expected_events`).
 
 ## Resultados preservados
 
-[results/2026-10-29](results/2026-10-29/README.md): K=4, N=8 com o contador
-lento em cinco repetições; varredura K em {1, 2, 4, 8} sem o contador lento
-(speedup 1,97, 3,82 e 7,04 para K = 2, 4 e 8); varredura K em {1, 2, 4} com o
-contador lento. Recuperação mediana de 1,7 ms (p95 4,8 ms) em oito prazos
-estourados; rastro completo em todas as vinte missões.
+[results/2026-10-29-ready-queue](results/2026-10-29-ready-queue/README.md) é a
+coleta de referência, feita com o engine de fila de prontos: K=4, N=8 com o
+contador lento em cinco repetições (tempo de parede mediano 2.166 ms);
+varredura K em {1, 2, 4, 8} sem o contador lento (speedup 1,99, 3,84 e 7,31
+para K = 2, 4 e 8); varredura K em {1, 2, 4} com o contador lento. Recuperação
+mediana de 2,0 ms (p95 2,6 ms) em oito prazos estourados; rastro completo em
+todas as missões.
+
+[results/2026-10-29](results/2026-10-29/README.md) é a coleta anterior, com o
+engine de ondas com barreira, preservada como o "antes" da comparação: mesmos
+comandos e parâmetros, tempo de parede mediano de 3.661 ms no caso com o
+contador lento. O README da coleta de referência traz a tabela lado a lado.
 
 ## O que o estudo mostra e o que não mostra
 
@@ -99,9 +107,9 @@ um evento, e o conjunto esperado está completo.
 
 Não mostra: desempenho real de contagem de palavras (o trabalho é um
 `sleep`), comportamento em vários hosts, falhas por perda de heartbeat ou
-erro de aplicação (só prazo estourado), nem qualidade de deliberação. Um
-limite visível nos Gantts: o engine despacha os passos em ondas de
-`max_parallel` e espera a onda inteira terminar; enquanto a tentativa do
-contador lento aguarda o prazo, os contadores livres ficam ociosos.
+erro de aplicação (só prazo estourado), nem qualidade de deliberação. O
+tempo de parede com o contador lento é dominado pelo próprio prazo do passo
+(1.500 ms) mais a repetição: o engine não cancela a tentativa lenta antes do
+prazo, e os Gantts mostram esse intervalo.
 
 [Todos os estudos](../../README.md)

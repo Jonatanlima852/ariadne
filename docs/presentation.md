@@ -20,7 +20,7 @@ a última execução iniciada, não necessariamente a que está sendo apresentad
 ./ariadne run studies/scenarios/fanout/scenario.py
 ```
 
-Abra `./ariadne viewer` e escolha uma das missões listadas de `.ariadne/runs`.
+Abra `./ariadne viewer` e escolha uma das missões listadas dos `runs/` dos cenários.
 
 Para apresentar sem executar nada, o Viewer também lista as missões preservadas
 em `studies/**/results/` e as fixtures de `tools/mission-viewer/fixtures/`.
@@ -103,7 +103,7 @@ dependências reais, e novas chamadas podem gerar custo.
 
 O visualizador não executa cenários nem altera resultados. `./ariadne viewer` abre o
 [Mission Viewer](../tools/mission-viewer/README.md) com a lista das execuções
-de `.ariadne/runs` e dos estudos; clique numa para ver o grafo das rodadas.
+dos `runs/` dos cenários e das coletas preservadas; clique numa para ver o grafo das rodadas.
 
 ## Logística
 

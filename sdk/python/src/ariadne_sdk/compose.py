@@ -35,8 +35,11 @@ def forwarded_names(scenario):
     return sorted(dict.fromkeys(names))
 
 
-def compose_document(*, root, directory, source, scenario):
-    """Descrição Compose da execução: três serviços Go e um contêiner por agente."""
+def compose_document(*, root, directory, logs, source, scenario):
+    """Descrição Compose da execução: três serviços Go e um contêiner por agente.
+
+    ``directory`` é a raiz das evidências (montada nos contêineres); ``logs`` é a
+    subpasta onde ficam arquivos de prontidão, logs e eventos secundários."""
     user = f"{os.getuid()}:{os.getgid()}" if hasattr(os, "getuid") else None
     mounts = [f"{root}:{root}:ro", f"{directory}:{directory}"]
     if not source.parent.is_relative_to(root):
@@ -45,11 +48,11 @@ def compose_document(*, root, directory, source, scenario):
     services = {}
     for name in SERVICES:
         environment = [f"{name.upper()}_ADDR=:{PORTS[name]}", "ARIADNE_JSON_LOGS=1",
-                       f"ARIADNE_READY_FILE={directory}/{name}.ready"]
+                       f"ARIADNE_READY_FILE={logs}/{name}.ready"]
         if name != "registry":
             environment.append(f"REGISTRY_ADDR={addresses['registry']}")
-            evidence = "events.jsonl" if name == "orchestrator" else "message-events.jsonl"
-            environment.append(f"EVENTS_PATH={directory}/{evidence}")
+            evidence = directory / "events.jsonl" if name == "orchestrator" else logs / "message-events.jsonl"
+            environment.append(f"EVENTS_PATH={evidence}")
         services[name] = {
             "image": f"ariadne-{name}:local",
             "build": {"context": str(root), "dockerfile": f"runtime/services/{name}/Dockerfile"},
@@ -63,7 +66,7 @@ def compose_document(*, root, directory, source, scenario):
         services[name] = {
             "image": "ariadne-agent:local",
             "build": {"context": str(root / "sdk/python"), "dockerfile": "Dockerfile"},
-            "command": [str(source), str(index), addresses["registry"], str(directory)],
+            "command": [str(source), str(index), addresses["registry"], str(logs)],
             "working_dir": str(root),
             "environment": [
                 f"PYTHONPATH={root}/sdk/python/src:{root}", "HOME=/tmp",

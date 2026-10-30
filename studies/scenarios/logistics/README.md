@@ -89,7 +89,7 @@ caminho informado no terminal, por exemplo `./ariadne status CAMINHO/DA/EXECUCAO
 O avaliador usa somente a biblioteca padrão do Python:
 
 ```sh
-python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/runs/ariadne-ID
+python3 -m studies.scenarios.logistics.evaluation.evaluate studies/scenarios/logistics/runs/ariadne-ID
 python3 -m studies.scenarios.logistics.evaluation.evaluate .ariadne/campaigns/logistics-ID
 ```
 

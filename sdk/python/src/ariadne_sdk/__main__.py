@@ -17,12 +17,12 @@ def positive(value):
 
 
 def main(argv=None):
-    runs_dir = Path(os.getenv("ARIADNE_RUNS_DIR", ".ariadne/runs"))
+    runs_dir = Path(os.environ["ARIADNE_RUNS_DIR"]) if os.getenv("ARIADNE_RUNS_DIR") else None
     parser = argparse.ArgumentParser(description="Execute um experimento Python pelo Ariadne Runtime, em contêineres Docker.")
     commands = parser.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run", help="executa serviços e agentes em contêineres e aplica o cenário")
     run.add_argument("file", type=Path)
-    run.add_argument("--output", type=Path, default=runs_dir)
+    run.add_argument("--output", type=Path, default=runs_dir, help="pasta de evidências; padrão: runs/ ao lado do scenario.py nos estudos, senão .ariadne/runs")
     run.add_argument("--repeat", type=positive, default=1, help="repete o cenário, preservando cada amostra bruta")
     run.add_argument("--ready-timeout", type=positive, default=60)
     run.add_argument("--timeout", type=positive, default=60, help="limite do RPC por amostra; não altera limites do workflow")
@@ -86,17 +86,19 @@ def main(argv=None):
             _, summary = run_campaign(load_campaign(args.file), output_root=args.output)
             return {"COMPLETED": 0, "CANCELLED": 130}.get(summary["status"], 1)
         if args.command in ("status", "logs", "stop"):
-            from ariadne_sdk.runs import print_logs, print_status, resolve_run
+            from ariadne_sdk.runs import print_logs, print_status, read_summary, resolve_run
             directory = resolve_run(args.identifier, args.output)
             if args.command == "stop":
                 from ariadne_sdk.compose import Compose
-                environment = (directory / "environment").read_text().strip() if (directory / "environment").is_file() else "unknown"
-                if environment == "stopped":
+                from ariadne_sdk.evidence import write_json
+                summary = read_summary(directory)
+                if summary.get("environment") == "stopped":
                     print("Ambiente já encerrado; resultados preservados.")
                     return 0
-                if Compose(directory, directory.name.lower()).down() != 0:
-                    raise ValueError(f"não foi possível remover os contêineres; veja {directory / 'compose.log'}")
-                (directory / "environment").write_text("stopped\n")
+                if Compose(directory / "logs", directory.name.lower()).down() != 0:
+                    raise ValueError(f"não foi possível remover os contêineres; veja {directory / 'logs' / 'compose.log'}")
+                summary["environment"] = "stopped"
+                write_json(directory / "summary.json", summary)
                 print(f"Contêineres removidos; resultados preservados em {directory}")
             elif args.command == "status":
                 print_status(directory)

@@ -1,13 +1,24 @@
 """Consulta offline das evidências de uma execução."""
 from collections import deque
+import json
 from pathlib import Path
 import re
 
+from ariadne_sdk.compose import repository_root
 
-def resolve_run(identifier, root):
-    root = Path(root).resolve()
+
+def search_roots(root=None):
+    """Onde procurar um ID: a raiz pedida, ``.ariadne/runs`` e o ``runs/`` de cada cenário."""
+    repository = repository_root()
+    roots = [Path(root).resolve()] if root else []
+    roots.append(repository / ".ariadne" / "runs")
+    roots.extend(sorted(repository.glob("studies/scenarios/**/runs")))
+    return roots
+
+
+def resolve_run(identifier, root=None):
     if identifier == "latest":
-        latest = root.parent / "latest"
+        latest = repository_root() / ".ariadne" / "latest"
         if not latest.is_file():
             raise ValueError("nenhuma execução registrada")
         identifier = latest.read_text().strip()
@@ -17,28 +28,32 @@ def resolve_run(identifier, root):
     else:
         if not re.fullmatch(r"ariadne-[A-Za-z0-9-]+", identifier):
             raise ValueError("identificador de execução inválido")
-        directory = root / identifier
-    if not (directory / "scenario").is_file() or not (directory / "status").is_file():
+        directory = next((base / identifier for base in search_roots(root) if (base / identifier).is_dir()), None)
+        if directory is None:
+            raise ValueError(f"execução não encontrada: {identifier}")
+    if not (directory / "summary.json").is_file():
         raise ValueError(f"execução não encontrada: {identifier}")
     return directory
 
 
-def backend(directory):
-    path = directory / "backend"
-    return path.read_text().strip() if path.is_file() else "unknown"
+def read_summary(directory):
+    return json.loads((directory / "summary.json").read_text(encoding="utf-8"))
 
 
 def print_status(directory):
-    print(f"Execução: {directory.name}\nBackend: {backend(directory)}")
-    for label, filename in (("Cenário", "scenario"), ("Estado", "status"), ("Ambiente", "environment")):
-        path = directory / filename
-        print(f"{label}: {path.read_text().strip() if path.is_file() else 'unknown'}")
+    summary = read_summary(directory)
+    print(f"Execução: {directory.name}\nBackend: {summary.get('backend', 'unknown')}")
+    for label, key in (("Cenário", "scenario"), ("Estado", "status"), ("Ambiente", "environment")):
+        print(f"{label}: {summary.get(key, 'unknown')}")
+    if summary.get("error"):
+        print(f"Erro: {summary['error']}")
     print(f"Resultados: {directory}")
 
 
 def print_logs(directory, tail=100):
-    for path in sorted(directory.iterdir()):
-        if path.is_file() and not path.is_symlink() and path.suffix in (".log", ".jsonl"):
-            print(f"\n{path.name}")
-            with path.open(encoding="utf-8", errors="replace") as stream:
-                print("".join(deque(stream, maxlen=tail)), end="")
+    files = [path for folder in (directory, directory / "logs") if folder.is_dir()
+             for path in sorted(folder.iterdir()) if path.is_file() and path.suffix in (".log", ".jsonl")]
+    for path in files:
+        print(f"\n{path.relative_to(directory)}")
+        with path.open(encoding="utf-8", errors="replace") as stream:
+            print("".join(deque(stream, maxlen=tail)), end="")

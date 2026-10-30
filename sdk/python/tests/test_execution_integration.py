@@ -31,7 +31,8 @@ class ExecutionIntegrationTests(unittest.TestCase):
                                    capture_output=True, text=True, timeout=300)
         self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
         run = next((self.directory / "runs").iterdir())
-        self.assertEqual((run / "environment").read_text().strip(), "stopped")
+        self.assertEqual(json.loads((run / "summary.json").read_text())["environment"], "stopped")
+        self.assertFalse(list((run / "logs").glob("*.ready")))
         manifest = json.loads((run / "manifest.json").read_text())
         for address in manifest.get("addresses", {}).values():
             host, port = address.rsplit(":", 1)
@@ -55,7 +56,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         self.assertEqual(len(results), 2)
         self.assertNotEqual(results[0]["trace_id"], results[1]["trace_id"])
         self.assertTrue(all(result["output"] == {"text": "OLÁ, AGENTES!"} for result in results))
-        records = [json.loads(line) for line in (run / "agent-2.jsonl").read_text().splitlines()]
+        records = [json.loads(line) for line in (run / "logs/agent-2.jsonl").read_text().splitlines()]
         inputs = [r["task"] for r in records if r["type"] == "AGENT_TASK_STARTED"]
         self.assertEqual(inputs[0]["payload"], {"text": "Olá, agentes!"})
         self.assertTrue(all(r["duration_ms"] >= 0 for r in records if r["type"] == "AGENT_TASK_FINISHED"))
@@ -68,8 +69,8 @@ class ExecutionIntegrationTests(unittest.TestCase):
         events = [json.loads(line) for line in (run / "events.jsonl").read_text().splitlines()]
         self.assertIn("TASK_TIMEOUT", [event["type"] for event in events])
         self.assertIn("TASK_REASSIGNED", [event["type"] for event in events])
-        self.assertTrue((run / "agent-1.jsonl").is_file())
-        self.assertTrue((run / "agent-2.jsonl").is_file())
+        self.assertTrue((run / "logs/agent-1.jsonl").is_file())
+        self.assertTrue((run / "logs/agent-2.jsonl").is_file())
 
     def test_declarative_bdi_uses_same_executor(self):
         run = self.execute(ROOT / "sdk/python/tests/fixtures/route_choice.py")
@@ -117,7 +118,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         run = self.execute(source, expected=1)
         result = json.loads((run / "result.json").read_text())
         self.assertEqual(result["status"], "WORKFLOW_STATUS_FAILED")
-        self.assertIn("invalid mission", (run / "agent-1.jsonl").read_text())
+        self.assertIn("invalid mission", (run / "logs/agent-1.jsonl").read_text())
 
     def test_partial_startup_failure_cleans_runtime(self):
         source = self.directory / "startup_failure.py"
@@ -129,7 +130,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
             "scenario = Scenario(agents=[Broken()], tasks=[Step('test', 'reject')])\n"
         )
         run = self.execute(source, expected=1)
-        self.assertIn("startup rejected", (run / "agent-1.log").read_text())
+        self.assertIn("startup rejected", (run / "logs/agent-1.log").read_text())
         self.assertEqual(json.loads((run / "summary.json").read_text())["status"], "FAILED")
 
     def test_sigint_cancels_and_cleans_all_processes(self):
@@ -145,7 +146,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         try:
             deadline = time.monotonic() + 120
             while time.monotonic() < deadline:
-                records = list((self.directory / "runs").glob("*/agent-1.jsonl"))
+                records = list((self.directory / "runs").glob("*/logs/agent-1.jsonl"))
                 if records and "AGENT_TASK_STARTED" in records[0].read_text():
                     break
                 if child.poll() is not None:
@@ -155,8 +156,8 @@ class ExecutionIntegrationTests(unittest.TestCase):
                 self.fail("agent did not receive task before timeout")
             child.send_signal(signal.SIGINT)
             self.assertEqual(child.wait(timeout=60), 130)
-            run = records[0].parent
-            self.assertEqual((run / "status").read_text().strip(), "CANCELLED")
+            run = records[0].parent.parent
+            self.assertEqual(json.loads((run / "summary.json").read_text())["status"], "CANCELLED")
             manifest = json.loads((run / "manifest.json").read_text())
             self.assertEqual(self.containers(manifest), [])
         finally:

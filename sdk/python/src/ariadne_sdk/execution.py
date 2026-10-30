@@ -155,7 +155,16 @@ def run_mission_sample(client, mission, *, rpc_timeout=None):
     )
 
 
-def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, repeat=1, execution_id=None):
+def default_output(source, root):
+    """Cenários do repositório gravam em ``runs/`` ao lado do ``scenario.py``; os demais em ``.ariadne/runs``."""
+    source = Path(source).resolve()
+    studies = root / "studies" / "scenarios"
+    if source.is_relative_to(studies):
+        return source.parent / "runs"
+    return root / ".ariadne" / "runs"
+
+
+def run_experiment(source, *, output_root=None, ready_timeout=60, task_timeout=60, repeat=1, execution_id=None):
     source = Path(source).resolve(strict=True)
     scenario = load_scenario(source)
     provenance = capture(source, scenario.artifacts)
@@ -163,13 +172,19 @@ def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, re
     if not execution_id.startswith("ariadne-") or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in execution_id):
         raise ValueError("invalid execution_id")
     root = repository_root()
-    directory = Path(output_root).resolve() / execution_id
-    directory.mkdir(parents=True)
+    directory = Path(output_root).resolve() / execution_id if output_root else default_output(source, root) / execution_id
+    logs = directory / "logs"
+    logs.mkdir(parents=True)
     print(f"Experimento: {scenario.name}\nEvidências: {directory}", flush=True)
-    events = EventLog(directory / "execution.jsonl", execution_id=directory.name)
-    compose = Compose(directory, execution_id.lower(), events)
+    events = EventLog(logs / "execution.jsonl", execution_id=directory.name)
+    compose = Compose(logs, execution_id.lower(), events)
     started = time.monotonic()
-    summary = {"scenario": scenario.name, "started_at": utc_now(), "status": "RUNNING"}
+    summary = {"scenario": scenario.name, "execution_id": directory.name, "backend": "docker-compose",
+               "started_at": utc_now(), "status": "RUNNING", "environment": "starting"}
+
+    def save_summary(**fields):
+        summary.update(fields)
+        write_json(directory / "summary.json", summary)
     definition = scenario.definition()
     manifest = {
         "schema_version": 2, "execution_id": directory.name, "backend": "docker-compose",
@@ -186,20 +201,17 @@ def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, re
     }
     write_json(directory / "manifest.json", manifest)
     # Keep the authored description with its evidence; never copy environment files.
-    shutil.copyfile(source, directory / "experiment.py")
-    (directory / "scenario").write_text(scenario.name + "\n")
-    (directory / "status").write_text("RUNNING\n")
-    (directory / "environment").write_text("starting\n")
-    write_json(directory / "summary.json", summary)
-    (directory / "backend").write_text("docker-compose\n")
-    latest = directory.parent.parent / f"latest.{directory.name}"
-    latest.write_text(directory.name + "\n")
-    latest.replace(directory.parent.parent / "latest")
+    shutil.copyfile(source, logs / "experiment.py")
+    save_summary()
+    pointer = root / ".ariadne"
+    pointer.mkdir(parents=True, exist_ok=True)
+    (pointer / f"latest.{directory.name}").write_text(str(directory) + "\n")
+    (pointer / f"latest.{directory.name}").replace(pointer / "latest")
     events.emit("EXPERIMENT_STARTED")
     services = [*SERVICES, *(f"agent-{index + 1}" for index in range(len(scenario.agents)))]
     try:
         manifest["compose_version"] = Compose.available()
-        compose.write(compose_document(root=root, directory=directory, source=source, scenario=scenario))
+        compose.write(compose_document(root=root, directory=directory, logs=logs, source=source, scenario=scenario))
         print("Preparando imagens (a primeira vez pode demorar)…", flush=True)
         compose.build()
         print("Iniciando serviços e agentes em contêineres…", flush=True)
@@ -207,12 +219,12 @@ def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, re
         addresses = {}
         for service in SERVICES:
             published = compose.port(service, {"registry": 50051, "orchestrator": 50052, "messaging": 50053}[service])
-            addresses[service] = wait_ready(compose, directory / f"{service}.ready", ready_timeout, address=published)
+            addresses[service] = wait_ready(compose, logs / f"{service}.ready", ready_timeout, address=published)
         manifest["addresses"] = addresses
         write_json(directory / "manifest.json", manifest)
         compose.up(*(f"agent-{index + 1}" for index in range(len(scenario.agents))))
         for index, agent in enumerate(scenario.agents):
-            ready_file = directory / f"agent-{index + 1}.ready"
+            ready_file = logs / f"agent-{index + 1}.ready"
             deadline = time.monotonic() + ready_timeout
             checked = time.monotonic()
             while not ready_file.exists():
@@ -233,7 +245,7 @@ def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, re
                 raise RuntimeError(f"registration differs from declaration: {agent.agent_id}")
         manifest["images"] = compose.images()
         write_json(directory / "manifest.json", manifest)
-        (directory / "environment").write_text("running\n")
+        save_summary(environment="running")
         events.emit("EXPERIMENT_READY", addresses=addresses)
         print("Runtime e agentes prontos. Executando cenário…", flush=True)
         failed = False
@@ -284,19 +296,19 @@ def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, re
             if compose.file.is_file():
                 compose.save_logs(services)
                 if compose.down() == 0:
-                    (directory / "environment").write_text("stopped\n")
+                    summary["environment"] = "stopped"
                 else:
-                    (directory / "environment").write_text("cleanup-failed\n")
-                    summary.setdefault("error", f"could not remove containers; run: ./ariadne stop {directory.name}")
+                    summary["environment"] = "cleanup-failed"
+                    summary.setdefault("error", f"could not remove containers; run: ./ariadne stop {directory}")
             else:
-                (directory / "environment").write_text("stopped\n")
+                summary["environment"] = "stopped"
+            for ready in logs.glob("*.ready"):
+                ready.unlink(missing_ok=True)
         finally:
             for sig, handler in handlers.items():
                 signal.signal(sig, handler)
         write_json(directory / "manifest.json", manifest)
-        summary.update(completed_at=utc_now(), elapsed_ms=(time.monotonic() - started) * 1000)
-        write_json(directory / "summary.json", summary)
-        (directory / "status").write_text(summary["status"] + "\n")
+        save_summary(completed_at=utc_now(), elapsed_ms=(time.monotonic() - started) * 1000)
         events.emit("EXPERIMENT_FINISHED", **summary)
     print(f"Estado: {summary['status']}\nEvidências: {directory}", flush=True)
     if summary.get("error"):

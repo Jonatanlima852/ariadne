@@ -44,7 +44,7 @@ endpoints estão prontos. Ao final, inclusive em falha ou Ctrl+C, o executor
 remove os contêineres e preserva as evidências.
 
 O resultado esperado termina com `WORKFLOW_STATUS_COMPLETED` e `Estado:
-COMPLETED`. O terminal informa o diretório exclusivo em `.ariadne/runs/ariadne-...`.
+COMPLETED`. O terminal informa o diretório exclusivo em `studies/scenarios/basic_task/runs/ariadne-...`.
 Sucesso significa conclusão operacional; critérios de domínio são avaliados
 separadamente.
 
@@ -169,20 +169,11 @@ workflow. A construção das imagens tem limite de 30 minutos.
 
 ## Evidências e avaliação separada
 
-| Arquivo | Conteúdo |
-|---|---|
-| `manifest.json` | Descrição compilada, agentes e serviços, imagens, variáveis repassadas por nome, proveniência e endereços publicados |
-| `compose.yaml`, `compose.log` | Topologia gerada e saída dos comandos Compose |
-| `experiment.py` | Cópia da descrição executada |
-| `execution.jsonl` | Ciclo do executor, comandos Compose e amostras, com interrupções |
-| `events.jsonl` | Eventos de tarefas e workflows emitidos pelo Orchestrator |
-| `message-events.jsonl` | Eventos do broker, se houver mensagens |
-| `agent-N.jsonl` | Entrada e resultado completo de cada tentativa, trace, duração do handler e eventos do agente |
-| `agent-N.log` | Log do contêiner do agente |
-| `registry.log`, `orchestrator.log`, `messaging.log` | Logs JSON dos contêineres dos serviços Go |
-| `results.jsonl` | Uma resposta por amostra, incluindo falhas de RPC |
-| `result.json` | Resposta da última amostra concluída, para inspeção rápida |
-| `summary.json`, `status`, `environment`, `backend` | Estado e duração operacional, incluindo preparo e encerramento |
+Cada execução deixa uma pasta `ariadne-<id>/` em `runs/` ao lado do
+`scenario.py`, com `manifest.json`, `summary.json`, `result.json`,
+`results.jsonl`, `events.jsonl`, `mission-result.json` (missões) e a subpasta
+`logs/`. A [referência do executor](cli.md#pasta-de-uma-execução) descreve cada
+arquivo.
 
 Correlacione agente e runtime por `task_id` e `trace_id`; distinga tentativas
 por `attempt`. O diretório identifica a execução e `sample` identifica a
@@ -266,11 +257,11 @@ A CLI instalada como `ariadne` funciona da mesma forma quando `ARIADNE_ROOT`
 aponta para um checkout. O arquivo do experimento pode estar fora do
 repositório; sua pasta também é montada, somente leitura.
 
-`--output /caminho/evidencias` muda a pasta que recebe diretórios de execução.
-O shell usa `.ariadne/runs` deste checkout mesmo quando invocado de outro
-diretório; `ARIADNE_RUNS_DIR` muda essa raiz. `./ariadne status` e
-`./ariadne logs` aceitam o ID ou o caminho da execução e, sem argumento, usam
-a última execução iniciada. Os logs mostram as últimas 100 linhas de cada
+`--output /caminho/evidencias` muda a pasta que recebe diretórios de execução;
+sem ela, cenários do repositório gravam em `runs/` ao lado do `scenario.py` e
+arquivos externos em `.ariadne/runs`. `./ariadne status` e `./ariadne logs`
+aceitam o ID ou o caminho da execução e, sem argumento, usam a última
+execução iniciada. Os logs mostram as últimas 100 linhas de cada
 arquivo `.log`/`.jsonl` e funcionam após o encerramento. Ctrl+C interrompe a
 execução e remove os contêineres; `./ariadne stop ID` cobre o caso de uma
 interrupção abrupta do processo.

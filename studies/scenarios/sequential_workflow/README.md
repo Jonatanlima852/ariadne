@@ -11,7 +11,7 @@ Da raiz do repositório:
 ```
 
 A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
-eventos em `.ariadne/runs/`.
+eventos em `runs/`, ao lado deste README.
 
 Este cenário determinístico demonstra um comportamento funcional; não mede,
 isoladamente, a qualidade de raciocínio de uma LLM.

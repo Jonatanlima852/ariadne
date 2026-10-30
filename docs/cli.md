@@ -24,8 +24,8 @@ escritas à mão.
 Opções de `run`: `--repeat N` repete o cenário na mesma topologia, preservando
 cada amostra; `--timeout S` limita o RPC de cada amostra (60 s); `--ready-timeout S`
 limita cada espera de prontidão (60 s); `--output DIR` muda a pasta de evidências
-(`ARIADNE_RUNS_DIR`, padrão `.ariadne/runs`). O ID padrão de `status`, `logs` e
-`stop` é o da última execução iniciada neste checkout.
+(veja [Pasta de uma execução](#pasta-de-uma-execução)). O ID padrão de `status`,
+`logs` e `stop` é o da última execução iniciada neste checkout.
 
 ## O que `run` faz
 
@@ -61,22 +61,34 @@ export OPENAI_API_KEY=...
 ./ariadne run studies/scenarios/routing/scenario.py
 ```
 
-## Arquivos de uma execução
+## Pasta de uma execução
 
-| Arquivo | Conteúdo |
-|---|---|
-| `manifest.json` | Descrição compilada, agentes e serviços, imagens, endereços publicados, proveniência |
-| `compose.yaml`, `compose.log` | Topologia gerada e saída dos comandos Compose |
-| `experiment.py` | Cópia da descrição executada |
-| `execution.jsonl` | Ciclo do executor, comandos Compose e amostras |
-| `events.jsonl`, `message-events.jsonl` | Eventos do Orchestrator e do broker |
-| `agent-N.jsonl` | Entrada e resultado de cada tentativa recebida pelo agente N |
-| `registry.log`, `orchestrator.log`, `messaging.log`, `agent-N.log` | Log de cada contêiner |
-| `results.jsonl`, `result.json` | Uma resposta por amostra e a última amostra |
-| `mission-result.json` | `MissionResult` do contrato, quando o cenário é uma missão |
-| `summary.json`, `status`, `environment`, `backend` | Estado e duração operacional |
+Por padrão, um cenário do repositório grava em `runs/` ao lado do seu
+`scenario.py` (por exemplo `studies/scenarios/fanout/runs/ariadne-<id>/`);
+um arquivo fora de `studies/scenarios/` grava em `.ariadne/runs/`. `--output`
+muda a pasta e `ARIADNE_RUNS_DIR` define outro padrão. As pastas `runs/` são
+ignoradas pelo Git; coletas que valem a pena preservar são copiadas para
+`results/<data>/` do cenário, com um README.
 
-`.ariadne/` é ignorado pelo Git e excluído do contexto de build.
+```
+ariadne-<id>/
+  manifest.json        declaração compilada, agentes e serviços, imagens, endereços publicados, proveniência
+  summary.json         cenário, estado (RUNNING/COMPLETED/FAILED/CANCELLED), ambiente, duração, erro
+  result.json          resposta da última amostra
+  results.jsonl        uma linha por amostra, inclusive falhas de RPC
+  mission-result.json  MissionResult do contrato, só em missões; o Viewer lê este e o manifest.json
+  events.jsonl         eventos do Orchestrator (tarefas, workflows, timeouts, reatribuições)
+  logs/
+    compose.yaml, compose.log       topologia gerada e saída dos comandos Compose
+    execution.jsonl                 ciclo do executor, comandos Compose e amostras
+    experiment.py                   cópia da descrição executada
+    registry.log, orchestrator.log, messaging.log, message-events.jsonl
+    agent-N.log, agent-N.jsonl      log do contêiner e entrada/resultado de cada tentativa do agente N
+```
+
+`./ariadne status` e `./ariadne logs` sem argumento abrem a última execução,
+registrada em `.ariadne/latest`; com um ID, procuram em `.ariadne/runs` e nos
+`runs/` de todos os cenários; um caminho também é aceito.
 
 ## Make e `./ariadne`
 

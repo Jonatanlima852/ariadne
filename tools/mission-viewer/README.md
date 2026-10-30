@@ -15,7 +15,7 @@ preservados dos estudos; não é preciso escolher pasta.
 
 1. `./ariadne viewer` (ou `python3 tools/mission-viewer/serve.py`, da raiz do
    repositório). Um servidor de biblioteca padrão indexa
-   `.ariadne/runs/*/mission-result.json`,
+   `studies/scenarios/**/runs/*/mission-result.json`, `.ariadne/runs/*/mission-result.json`,
    `.ariadne/logistics-v3/*/missions/*.json`, `.ariadne/campaigns/**`,
    `studies/**/results/**/missions/*.json` e `fixtures/`, e abre o
    navegador em `http://127.0.0.1:4180/`. O botão "Atualizar" relê o

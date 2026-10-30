@@ -32,7 +32,7 @@ segundos. O terminal deve mostrar:
 Amostra 1/1: WORKFLOW_STATUS_COMPLETED
 Resultado: {"text": "Olá, Ariadne!"}
 Estado: COMPLETED
-Evidências: .../.ariadne/runs/ariadne-.../
+Evidências: .../studies/scenarios/basic_task/runs/ariadne-.../
 ```
 
 A tarefa pede a capacidade `echo`; o runtime descobre o agente e recebe sua
@@ -45,12 +45,13 @@ resposta. `COMPLETED` indica conclusão operacional, não uma avaliação cient�
 ./ariadne logs
 ```
 
-Sem argumento, consultam a última execução. `result.json` contém a resposta;
-`events.jsonl` registra os eventos do Orchestrator; `manifest.json` descreve o
-experimento, as imagens e os endereços publicados; `compose.yaml` é a
-topologia gerada. Os logs de cada contêiner ficam em `registry.log`,
-`orchestrator.log`, `messaging.log` e `agent-N.log`. Para interromper uma
-execução, use Ctrl+C: os contêineres são removidos e as evidências ficam.
+Sem argumento, consultam a última execução. A pasta fica em `runs/` ao lado do
+`scenario.py`: `result.json` contém a resposta, `events.jsonl` os eventos do
+Orchestrator, `manifest.json` o experimento, as imagens e os endereços, e
+`logs/` guarda a topologia gerada e o log de cada contêiner. A
+[referência do executor](cli.md#pasta-de-uma-execução) descreve cada arquivo.
+Para interromper uma execução, use Ctrl+C: os contêineres são removidos e as
+evidências ficam.
 
 ## 4. Explorar cooperação, recuperação e missões
 
@@ -71,7 +72,7 @@ e o [catálogo de cenários](scenarios.md).
 ## 5. Abrir a visualização
 
 `./ariadne viewer` abre o [Mission Viewer](../tools/mission-viewer/README.md) com as
-missões de `.ariadne/runs`: grafo de dependências por rodada, linha do tempo por
+missões gravadas nos `runs/` dos cenários: grafo de dependências por rodada, linha do tempo por
 agente e, ao clicar num bloco, a entrada e a saída daquela chamada. Cenários de
 workflow (eco, workflow sequencial, falha) são lidos nos arquivos `result.json`
 e `events.jsonl` da execução.
@@ -82,7 +83,7 @@ e `events.jsonl` da execução.
 |---|---|
 | uv ausente | Instale uv ou configure `ARIADNE_PYTHON` com um Python que tenha o SDK |
 | Docker indisponível | Inicie o Docker e repita `./ariadne doctor` |
-| Falha ao construir imagens | Leia `compose.log` na pasta informada; confira rede e espaço em disco |
+| Falha ao construir imagens | Leia `logs/compose.log` na pasta informada; confira rede e espaço em disco |
 | Contêiner não ficou pronto | `./ariadne logs` mostra o log de cada serviço e agente |
 | Contêineres sobraram após uma interrupção abrupta | `./ariadne stop ID` remove o projeto Compose da execução |
 

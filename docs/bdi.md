@@ -163,7 +163,7 @@ mesmo rastro em `TaskResult.bdi` (contrato 2.0.0): um registro por ciclo com
 crenças adicionadas e removidas, objetivo, plano, ação e desfecho
 (`continue`, `achieved`, `failed`, `no_applicable_plan`). Exemplos: o
 [planejador de rotas](../studies/scenarios/routing/agents/route_planner/main.py)
-e o [agendador em contêiner](../studies/scenarios/meeting/agents/meeting_scheduler/main.py).
+e o [agendador de reuniões](../studies/scenarios/meeting/agents/meeting_scheduler/main.py).
 
 ## Escopo
 

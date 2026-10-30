@@ -18,6 +18,16 @@ contrato. Cada agente implementa seu próprio raciocínio de domínio.
 O detector de falhas faz parte do processo Registry; não é um serviço separado.
 Registry e workflows armazenam estado em memória. Os eventos são arquivos JSONL.
 
+## Execução
+
+Um experimento é um `scenario.py` que declara agentes e uma tarefa, um
+workflow ou uma missão. `./ariadne run` gera um projeto Compose por execução:
+três contêineres para os serviços Go e um contêiner por agente, com uma imagem
+genérica que carrega o mesmo arquivo e serve o agente de índice N. O cliente
+da amostra, no host, envia a tarefa ou missão ao Orchestrator e salva o
+resultado junto aos eventos e logs. Detalhes no
+[executor](cli.md) e em [experimentos](experiments.md).
+
 ## Tarefa simples
 
 ```mermaid

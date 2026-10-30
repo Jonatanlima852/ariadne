@@ -84,28 +84,28 @@ e preenchem campos permitidos do payload. Não avaliam código ou expressões.
 
 ## Configuração operacional
 
-Valores abaixo são defaults do processo/SDK; cada Compose pode sobrescrevê-los.
+O executor gera o Compose de cada execução e define estas variáveis nos
+contêineres; os valores abaixo são o que `./ariadne run` configura. Os
+defaults dos binários valem apenas quando eles são iniciados por outro meio.
 
-| Variável | Contexto | Default |
+| Variável | Contexto | Valor na execução |
 |---|---|---|
-| `REGISTRY_ADDR` | Endereço de escuta do Registry | `:50051` |
-| `REGISTRY_ADDR` | Destino usado pelo Orchestrator/SDK | `localhost:50051` |
-| `ORCHESTRATOR_ADDR` | Escuta do Orchestrator | `:50052` |
-| `EXECUTION_TIMEOUT` | Timeout por tentativa no Orchestrator | `30s` |
-| `FAILURE_SCAN_INTERVAL` | Varredura do Registry | `1s` |
-| `SUSPECTED_TIMEOUT` | Ausência de heartbeat até suspeita | `10s` |
-| `DEAD_TIMEOUT` | Ausência de heartbeat até morte | `20s` |
-| `HEARTBEAT_INTERVAL_SECONDS` | Intervalo do SDK | `5` |
-| `AGENT_HOST` | Host anunciado por `Agent.from_env()` | `localhost` |
-| `AGENT_PORT` | Porta de `Agent.from_env()` | Default da subclasse ou `60051` |
-| `AGENT_ID`, `AGENT_NAME` | Identidade por `Agent.from_env()` | Defaults da subclasse ou nome da classe |
-| `LLM_MODEL` | Modelo do agente LLM | `gpt-5.6-luna`, configuração atual do projeto |
-| `OPENAI_API_KEY` | Credencial das execuções LLM reais | Sem default |
+| `REGISTRY_ADDR` | Escuta do Registry / destino usado por Orchestrator, Messaging e agentes | `:50051` / `registry:50051` |
+| `ORCHESTRATOR_ADDR`, `MESSAGING_ADDR` | Escuta dos serviços / destino usado pelos agentes | `:50052`, `:50053` / `orchestrator:50052`, `messaging:50053` |
+| `EVENTS_PATH` | Eventos do Orchestrator e do broker | `events.jsonl` e `message-events.jsonl` na pasta da execução |
+| `ARIADNE_READY_FILE`, `ARIADNE_JSON_LOGS` | Prontidão e formato de log dos serviços Go | `<serviço>.ready` na pasta da execução; `1` |
+| `ARIADNE_AGENT_HOST`, `ARIADNE_AGENT_PORT` | Endpoint anunciado pelo agente N | `agent-N`, `60051` |
+| `EXECUTION_TIMEOUT` | Timeout por tentativa no Orchestrator (default do binário) | `30s` |
+| `FAILURE_SCAN_INTERVAL`, `SUSPECTED_TIMEOUT`, `DEAD_TIMEOUT` | Detecção de falhas no Registry (defaults do binário) | `1s`, `10s`, `20s` |
+| `HEARTBEAT_INTERVAL_SECONDS` | Intervalo de heartbeat do SDK; repassada do host se existir | `5` |
+| `LLM_MODEL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL` | Repassadas do host aos agentes quando existirem | `gpt-5.6-luna` é o modelo padrão do SDK |
+| Variáveis lidas pelo `scenario.py` | Repassadas por nome aos agentes (por exemplo `FANOUT_WORKERS`, `ROUTING_DEMO`) | O valor do terminal |
 
-`EVENTS_PATH` define o arquivo JSONL. No Compose básico, o Orchestrator usa
-`/data/events.jsonl` e Messaging usa `/data/message-events.jsonl`. O endereço
-de um cliente no host é diferente do DNS entre contêineres; confira o
-[catálogo de portas](scenarios.md#endereços-e-isolamento).
+`AGENT_HOST`, `AGENT_PORT`, `AGENT_ID` e `AGENT_NAME` continuam sendo lidas
+por `Agent.from_env()` para agentes iniciados fora do executor; dentro de
+`./ariadne run` o worker define host e porta diretamente. Os serviços publicam
+portas efêmeras em `127.0.0.1` para o cliente da amostra; entre contêineres
+valem os nomes de serviço acima. Veja a [referência do executor](cli.md).
 
 O modelo configurado deve estar acessível à conta usada. Os testes unitários
 injetam clientes falsos e não verificam disponibilidade do provedor.

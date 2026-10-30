@@ -6,7 +6,7 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 ## Runtime
 
 - Registry, broker de mensagens e estado de workflows ficam em memória e são
-  perdidos ao reiniciar os processos.
+  perdidos quando os contêineres da execução são removidos.
 - Messaging oferece entrega at-most-once, com um stream ativo por destinatário,
   sem confirmação de processamento ou reentrega durável.
 - A detecção de falhas usa timeouts fixos. Uma pausa longa pode levar a suspeita.
@@ -27,13 +27,14 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 
 ## Uso e avaliação atuais
 
-- No caminho manual, o Compose básico exige conferir prontidão pelos logs.
-  `./ariadne` verifica endpoints e registro dos agentes antes de executar o cenário.
-- O cliente genérico não apresenta workflows; use os scripts ou `RuntimeClient`.
-- A suíte A–D inclui chamadas LLM e exige credencial mesmo contendo casos
-  determinísticos. Os cenários individuais sem LLM continuam disponíveis.
+- Toda execução exige Docker com Compose v2; não há modo sem contêineres.
+  A primeira execução constrói as imagens e pode levar cerca de um minuto.
+- Os contêineres de uma execução ficam na mesma máquina. Isolam sistema de
+  arquivos, dependências e rede, mas não medem latência entre hosts.
 - Cada execução usa projeto Compose, portas e diretório exclusivos; repetições
   com `--repeat` reutilizam os mesmos contêineres e o estado interno dos agentes.
+- O cliente da amostra roda no host contra a porta publicada do Orchestrator;
+  os agentes só se comunicam pela rede interna do projeto.
 - A imagem genérica de agente instala as dependências do SDK com versões
   fixas, mas não a partir do `uv.lock`.
 - Os resultados logísticos publicados cobrem oito casos, duas repetições e um
@@ -44,9 +45,8 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 
 ## Direções de evolução
 
-Ampliar o isolamento às campanhas de benchmark, melhorar proveniência e
-relatórios, automatizar verificações e ampliar a avaliação são próximos
-incrementos possíveis. Persistência, segurança de transporte e outros modelos
+Executar os contêineres em mais de um host, melhorar proveniência e
+relatórios e ampliar a avaliação são próximos incrementos possíveis. Persistência, segurança de transporte e outros modelos
 de agentes exigem decisões próprias de escopo.
 
 [Avaliação](evaluation.md) · [Índice](README.md)

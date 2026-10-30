@@ -99,6 +99,49 @@ func TestExecutorReassignsAfterTimeout(t *testing.T) {
 	if discoverer.calls != 2 {
 		t.Fatalf("discovery calls = %d, want 2", discoverer.calls)
 	}
+	if len(result.Attempts) != 2 {
+		t.Fatalf("attempts = %d, want 2", len(result.Attempts))
+	}
+	first, second := result.Attempts[0], result.Attempts[1]
+	if first.Attempt != 1 || first.AgentId != "slow" || first.Outcome != pb.AttemptOutcome_ATTEMPT_OUTCOME_TIMEOUT || first.Error == nil {
+		t.Fatalf("first attempt = %v", first)
+	}
+	if second.Attempt != 2 || second.AgentId != "healthy" || second.Outcome != pb.AttemptOutcome_ATTEMPT_OUTCOME_COMPLETED || second.Error != nil {
+		t.Fatalf("second attempt = %v", second)
+	}
+	if first.StartedAt == nil || first.CompletedAt == nil || second.StartedAt.AsTime().Before(first.CompletedAt.AsTime()) {
+		t.Fatalf("attempt intervals are not ordered: %v %v", first, second)
+	}
+}
+
+func TestExecutorReturnsSynthesizedResultWithAttemptsWhenAllTimeOut(t *testing.T) {
+	bdi := descriptor("bdi-1")
+	bdi.Kind = pb.AgentKind_AGENT_KIND_BDI
+	discoverer := &fakeDiscoverer{agents: []*pb.AgentDescriptor{descriptor("slow"), bdi}}
+	runner := &fakeRunner{run: func(ctx context.Context, agent *pb.AgentDescriptor, task *pb.Task) (*pb.TaskResult, error) {
+		<-ctx.Done()
+		return nil, ctx.Err()
+	}}
+
+	result, failure := New(discoverer, runner, &memoryLogger{}, time.Second).Execute(context.Background(), retryTask())
+
+	if failure == nil || failure.Code != pb.ErrorCode_ERROR_CODE_TIMEOUT {
+		t.Fatalf("failure = %v, want timeout", failure)
+	}
+	if result == nil || result.Status != pb.TaskStatus_TASK_STATUS_TIMEOUT || len(result.Attempts) != 2 {
+		t.Fatalf("result = %v", result)
+	}
+	if result.AgentId != "bdi-1" || result.AgentKind != pb.AgentKind_AGENT_KIND_BDI {
+		t.Fatalf("final agent = %q kind %v", result.AgentId, result.AgentKind)
+	}
+	for _, attempt := range result.Attempts {
+		if attempt.Outcome != pb.AttemptOutcome_ATTEMPT_OUTCOME_TIMEOUT {
+			t.Fatalf("attempt %d outcome = %v", attempt.Attempt, attempt.Outcome)
+		}
+	}
+	if result.Attempts[1].AgentKind != pb.AgentKind_AGENT_KIND_BDI {
+		t.Fatalf("second attempt kind = %v", result.Attempts[1].AgentKind)
+	}
 }
 
 func TestExecutorRetriesRetryableTaskResult(t *testing.T) {

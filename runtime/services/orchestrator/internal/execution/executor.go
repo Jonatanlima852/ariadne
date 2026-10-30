@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "ariadne/runtime/gen/go/contract/v1"
 	"ariadne/runtime/services/internal/events"
@@ -47,12 +48,17 @@ func New(discoverer Discoverer, runner Runner, logger EventLogger, defaultTimeou
 }
 
 // Execute executa uma task com timeout, retry e redescoberta entre tentativas.
-// O segundo retorno representa falhas operacionais sem TaskResult do agente.
+// O segundo retorno representa falhas operacionais. Quando ao menos uma
+// tentativa chegou a ser despachada, o primeiro retorno traz um TaskResult
+// sintetizado (FAILED ou TIMEOUT) com a lista de tentativas, mesmo em falha
+// operacional; chamadores devem conferir o erro antes do resultado.
 func (e *Executor) Execute(ctx context.Context, task *pb.Task) (*pb.TaskResult, *pb.ErrorInfo) {
 	maxAttempts, backoff, excludeFailed := retryConfiguration(task)
 	excluded := map[string]bool{}
 	var lastErr error
 	lastWasTimeout := false
+	var attempts []*pb.TaskAttempt
+	var lastAgent *pb.AgentDescriptor
 
 	for attempt := int32(1); attempt <= maxAttempts; attempt++ {
 		agents, err := e.discoverer.Discover(ctx, task.RequiredCapabilities)
@@ -81,26 +87,35 @@ func (e *Executor) Execute(ctx context.Context, task *pb.Task) (*pb.TaskResult, 
 		e.log(task, eventType, agent.AgentId, fmt.Sprintf("attempt=%d", attempt))
 
 		attemptCtx, cancel := context.WithTimeout(ctx, executionTimeout(task, e.defaultTimeout))
+		record := &pb.TaskAttempt{Attempt: attempt, AgentId: agent.AgentId, AgentKind: agent.Kind, StartedAt: timestamppb.Now()}
 		result, err := e.runner.Execute(attemptCtx, agent, attemptTask)
 		cancel()
+		record.CompletedAt = timestamppb.Now()
+		attempts = append(attempts, record)
+		lastAgent = agent
 
 		lastWasTimeout = isTimeout(err)
 		if lastWasTimeout {
 			lastErr = err
+			record.Outcome, record.Error = pb.AttemptOutcome_ATTEMPT_OUTCOME_TIMEOUT, operationalError(pb.ErrorCode_ERROR_CODE_TIMEOUT, err.Error(), true)
 			e.log(task, "TASK_TIMEOUT", agent.AgentId, fmt.Sprintf("attempt=%d", attempt))
 		} else if err != nil {
 			lastErr = err
+			record.Outcome, record.Error = pb.AttemptOutcome_ATTEMPT_OUTCOME_FAILED, operationalError(pb.ErrorCode_ERROR_CODE_EXECUTION_FAILED, err.Error(), true)
 			e.log(task, "TASK_FAILED", agent.AgentId, fmt.Sprintf("attempt=%d error=%s", attempt, err))
 		} else if result == nil {
 			lastErr = errors.New("agent returned no result")
+			record.Outcome, record.Error = pb.AttemptOutcome_ATTEMPT_OUTCOME_FAILED, operationalError(pb.ErrorCode_ERROR_CODE_EXECUTION_FAILED, lastErr.Error(), true)
 			e.log(task, "TASK_FAILED", agent.AgentId, fmt.Sprintf("attempt=%d error=no result", attempt))
 		} else if result.Status == pb.TaskStatus_TASK_STATUS_COMPLETED {
+			record.Outcome = pb.AttemptOutcome_ATTEMPT_OUTCOME_COMPLETED
 			e.log(task, "TASK_COMPLETED", agent.AgentId, fmt.Sprintf("attempt=%d", attempt))
-			return result, nil
+			return stamp(result, agent, attempts), nil
 		} else {
+			record.Outcome, record.Error = pb.AttemptOutcome_ATTEMPT_OUTCOME_FAILED, result.Error
 			e.log(task, "TASK_FAILED", agent.AgentId, fmt.Sprintf("attempt=%d", attempt))
 			if result.Error == nil || !result.Error.Retryable || attempt == maxAttempts {
-				return result, nil
+				return stamp(result, agent, attempts), nil
 			}
 			lastErr = errors.New(result.Error.Message)
 		}
@@ -117,13 +132,36 @@ func (e *Executor) Execute(ctx context.Context, task *pb.Task) (*pb.TaskResult, 
 	}
 
 	if lastWasTimeout {
-		return nil, operationalError(pb.ErrorCode_ERROR_CODE_TIMEOUT, "agent execution timed out", true)
+		failure := operationalError(pb.ErrorCode_ERROR_CODE_TIMEOUT, "agent execution timed out", true)
+		return synthesized(task, pb.TaskStatus_TASK_STATUS_TIMEOUT, failure, lastAgent, attempts), failure
 	}
 	message := "agent execution failed"
 	if lastErr != nil {
 		message = lastErr.Error()
 	}
-	return nil, operationalError(pb.ErrorCode_ERROR_CODE_EXECUTION_FAILED, message, true)
+	failure := operationalError(pb.ErrorCode_ERROR_CODE_EXECUTION_FAILED, message, true)
+	return synthesized(task, pb.TaskStatus_TASK_STATUS_FAILED, failure, lastAgent, attempts), failure
+}
+
+// stamp anexa ao resultado do agente a lista de tentativas e a família do
+// agente que o produziu.
+func stamp(result *pb.TaskResult, agent *pb.AgentDescriptor, attempts []*pb.TaskAttempt) *pb.TaskResult {
+	result.Attempts = attempts
+	result.AgentKind = agent.Kind
+	if result.AgentId == "" {
+		result.AgentId = agent.AgentId
+	}
+	return result
+}
+
+// synthesized produz um TaskResult terminal quando nenhum agente devolveu
+// resultado, preservando as tentativas feitas.
+func synthesized(task *pb.Task, status pb.TaskStatus, failure *pb.ErrorInfo, agent *pb.AgentDescriptor, attempts []*pb.TaskAttempt) *pb.TaskResult {
+	result := &pb.TaskResult{TaskId: task.TaskId, Status: status, CompletedAt: timestamppb.Now(), Trace: task.Trace, Error: failure, Attempts: attempts}
+	if agent != nil {
+		result.AgentId, result.AgentKind = agent.AgentId, agent.Kind
+	}
+	return result
 }
 
 func retryConfiguration(task *pb.Task) (int32, time.Duration, bool) {

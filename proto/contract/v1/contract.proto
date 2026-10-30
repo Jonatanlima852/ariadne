@@ -79,6 +79,16 @@ message AgentEndpoint {
   string address  = 2; // "host:port"
 }
 
+// Família de raciocínio declarada pelo agente. Informativa: o runtime não
+// a usa para selecionar agentes; serve para evidência e apresentação.
+enum AgentKind {
+  AGENT_KIND_UNKNOWN       = 0;
+  AGENT_KIND_DETERMINISTIC = 1;
+  AGENT_KIND_BDI           = 2;
+  AGENT_KIND_LLM           = 3;
+  AGENT_KIND_HYBRID        = 4;
+}
+
 message AgentDescriptor {
   string   agent_id         = 1;
   string   name             = 2;
@@ -92,6 +102,7 @@ message AgentDescriptor {
   google.protobuf.Struct    metadata   = 10;
   int32                     current_task_count = 11;
   double                    load               = 12;
+  AgentKind                 kind               = 13;
 }
 
 // ─────────────────────────────────────────────
@@ -207,6 +218,25 @@ message Task {
 // Resultado retornado pelo agente após executar a task.
 // ─────────────────────────────────────────────
 
+// Uma tentativa de execução registrada pelo orquestrador: quem recebeu a
+// tarefa, quando foi despachada e devolvida, e como terminou.
+enum AttemptOutcome {
+  ATTEMPT_OUTCOME_UNKNOWN   = 0;
+  ATTEMPT_OUTCOME_COMPLETED = 1;
+  ATTEMPT_OUTCOME_FAILED    = 2;
+  ATTEMPT_OUTCOME_TIMEOUT   = 3;
+}
+
+message TaskAttempt {
+  int32     attempt      = 1;
+  string    agent_id     = 2;
+  AgentKind agent_kind   = 3;
+  google.protobuf.Timestamp started_at   = 4; // despacho pelo orquestrador
+  google.protobuf.Timestamp completed_at = 5; // resposta recebida pelo orquestrador
+  AttemptOutcome outcome = 6;
+  ErrorInfo error        = 7;
+}
+
 message TaskResult {
   string     task_id     = 1;
   string     agent_id    = 2;
@@ -221,6 +251,10 @@ message TaskResult {
   google.protobuf.Struct metadata   = 9;
   BdiExtension           bdi        = 10;
   LlmExtension           llm        = 11;
+  // Preenchidos pelo orquestrador: todas as tentativas desta tarefa, em
+  // ordem, e a família do agente que produziu o resultado final.
+  repeated TaskAttempt   attempts   = 12;
+  AgentKind              agent_kind = 13;
 }
 
 // ─────────────────────────────────────────────

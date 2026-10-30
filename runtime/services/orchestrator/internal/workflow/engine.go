@@ -146,6 +146,7 @@ func (e *Engine) execute(parent context.Context, root *pb.Task, definition *pb.W
 						executions <- stepExecution{step: step, result: &pb.WorkflowStepResult{StepId: step.StepId, Status: pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_FAILED, Result: failedTaskResult(&pb.Task{Trace: root.Trace}, failure)}}
 						return
 					}
+					e.log(result, task.TaskId, "TASK_CREATED", step.StepId, "", 0)
 					e.log(result, task.TaskId, "STEP_STARTED", step.StepId, "", 0)
 					startedAt := timestamppb.Now()
 					taskResult, failure := e.executor.Execute(ctx, task)
@@ -247,7 +248,19 @@ func classifyStepResult(stepID string, task *pb.Task, taskResult *pb.TaskResult,
 		failure = workflowError(pb.ErrorCode_ERROR_CODE_TIMEOUT, contextError.Error(), false)
 	}
 	if failure != nil {
-		taskResult = failedTaskResult(task, failure)
+		// Preserva o resultado sintetizado pelo executor (com as tentativas)
+		// quando ele existe; só fabrica um quando nada foi despachado.
+		if taskResult == nil {
+			taskResult = failedTaskResult(task, failure)
+		} else {
+			taskResult.Status = pb.TaskStatus_TASK_STATUS_FAILED
+			if taskResult.Error == nil {
+				taskResult.Error = failure
+			}
+			if contextError != nil {
+				taskResult.Error = failure
+			}
+		}
 	}
 	if contextError == nil && taskResult != nil && taskResult.Status == pb.TaskStatus_TASK_STATUS_COMPLETED {
 		status = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_COMPLETED

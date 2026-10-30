@@ -33,6 +33,8 @@
   .s-completed, .s-done { --c: var(--ok); } .s-failed, .s-abort, .s-aborted { --c: var(--err); }
   .s-cancelled { --c: var(--warn); } .s-timeout { --c: var(--violet); } .s-skipped { --c: var(--gray); }
   .s-running, .s-plan, .s-planning, .s-created { --c: var(--info); } .s-pending, .s-unknown { --c: var(--line-strong); }
+  /* famílias de cor por tipo de agente: LLM, BDI, DET (determinístico) */
+  .k-LLM { --k: light-dark(#b83dba, #e38be5); } .k-BDI { --k: light-dark(#128f85, #3fc9bd); } .k-DET { --k: light-dark(#8a7a5a, #b9a888); } .k-none { --k: var(--gray); }
 
   * { box-sizing: border-box; }
   html, body { height: 100%; }
@@ -48,6 +50,10 @@
   .pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
   .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--gray)); }
   .chip { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 11px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: .04em; color: var(--k); background: color-mix(in srgb, var(--k) 14%, transparent); }
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; margin-left: auto; }
+  .seg button { border: 0; border-radius: 0; padding: 4px 10px; font-size: 12px; color: var(--muted); }
+  .seg button.on { background: var(--accent); color: #fff; }
 
   /* topo */
   #top { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
@@ -60,7 +66,7 @@
   #fallback input[type=file] { display: none; }
   #summary .hint { width: 100%; font-size: 12px; color: var(--muted); }
 
-  /* três colunas: lista, grafo, gaveta */
+  /* três colunas: lista, desenho, gaveta */
   #main { flex: 1; min-height: 0; display: flex; }
   #runs { width: 336px; flex: none; border-right: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; }
   #runs .tools { padding: 8px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; }
@@ -77,21 +83,29 @@
   .row .path { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   #view { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-  #summary { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 16px; display: none; gap: 4px 16px; align-items: center; flex-wrap: wrap; }
+  #summary { background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 16px; display: none; gap: 4px 16px; align-items: center; flex-wrap: wrap; }
   #summary.on { display: flex; }
   #summary .goal { width: 100%; color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
   #summary .goal.open { -webkit-line-clamp: unset; }
   #summary .stat { font-size: 13px; }
   #summary .stat b { font-weight: 600; }
-  #canvas { flex: 1; overflow: auto; padding: 16px; }
-  #welcome { max-width: 560px; color: var(--muted); margin: 48px auto; }
-  #welcome h2 { color: var(--ink); font-size: 18px; margin: 0 0 8px; }
-  #welcome ol { padding-left: 20px; }
-  #legend { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+  #bar { display: none; padding: 6px 16px; border-bottom: 1px solid var(--line); background: var(--surface); flex-direction: column; gap: 2px; }
+  #bar.on { display: flex; }
+  #legend { display: flex; flex-wrap: wrap; gap: 2px 14px; color: var(--muted); font-size: 12px; }
   #legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--gray)); margin-right: 6px; vertical-align: -1px; }
-  #legend .seq::before { width: 18px; height: 0; border-top: 2px dashed var(--edge); background: none; border-radius: 0; vertical-align: 2px; }
+  #legend .kind::before { background: color-mix(in srgb, var(--k) 22%, transparent); border: 1.5px solid var(--k); border-radius: 50%; }
+  #legend .seq::before, #legend .dep::before, #legend .call::before { width: 18px; height: 0; border-top: 2px solid var(--edge); background: none; border-radius: 0; vertical-align: 2px; }
+  #legend .seq::before { border-top-style: dashed; }
+  #legend .call::before { width: 2px; height: 10px; border-top: 0; border-left: 2px solid var(--edge); vertical-align: -1px; }
+  #legend .ghost::before { background: repeating-linear-gradient(135deg, var(--line-strong) 0 1px, transparent 1px 4px); border: 1px dashed var(--line-strong); }
+  #note { font-size: 12px; color: var(--muted); }
+  #canvas { flex: 1; overflow: auto; padding: 16px; }
+  #stage p { margin: 16px; }
+  #welcome { max-width: 560px; color: var(--muted); margin: 48px auto; padding: 0 16px; }
+  #welcome h2 { color: var(--ink); font-size: 18px; margin: 0 0 8px; }
+  #tip { position: fixed; z-index: 8; pointer-events: none; background: var(--ink); color: var(--bg); padding: 6px 9px; border-radius: 6px; font-size: 12px; line-height: 1.4; max-width: 380px; display: none; white-space: pre-line; }
 
-  /* grafo */
+  /* desenho em SVG */
   svg { display: block; }
   svg text { font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; fill: var(--ink); pointer-events: none; }
   svg text.title { font-size: 13px; font-weight: 600; }
@@ -102,25 +116,39 @@
   svg text.chip { font-size: 11px; font-weight: 600; fill: var(--accent); }
   svg text.chip.action { fill: #fff; }
   svg text.badge { font-size: 10px; font-weight: 600; fill: #fff; }
+  svg text.tag { font-size: 10px; font-weight: 700; fill: var(--k); letter-spacing: .04em; }
+  svg text.blk { font-size: 11px; }
+  .tag-bg { fill: color-mix(in srgb, var(--k) 16%, transparent); rx: 3; }
   .band-bg { fill: var(--band); stroke: var(--line); rx: 10; }
   .chip-bg { fill: var(--accent-soft); rx: 4; }
   .chip-bg.action { fill: var(--c); }
   .node { cursor: pointer; }
-  .node .card { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; rx: 8; transition: stroke .15s; }
+  .node .card { fill: color-mix(in srgb, var(--k, var(--surface)) 5%, var(--surface)); stroke: var(--line-strong); stroke-width: 1; rx: 8; transition: stroke .15s; }
   .node:hover .card { stroke: var(--accent); }
   .node.selected .card { stroke: var(--accent); stroke-width: 2; }
-  .node .bar { fill: var(--c); }
+  .node .bar, .block .bar { fill: var(--c); }
   .node .badge-bg { fill: var(--warn); rx: 4; }
   .edge { fill: none; stroke: var(--edge); stroke-width: 1.5; transition: stroke .15s; }
   .edge.sequence { stroke-dasharray: 6 5; }
   .edge.active { stroke: var(--accent); stroke-width: 2; }
+  /* linha do tempo */
+  .lane-line, .tick { stroke: var(--line); }
+  .orch-line { stroke: var(--accent); stroke-width: 2; }
+  .round-bg { fill: var(--band); stroke: var(--line); } .round-bg.odd { fill: transparent; }
+  .block { cursor: pointer; }
+  .block .body { fill: color-mix(in srgb, var(--k, var(--gray)) 20%, var(--surface)); stroke: var(--k, var(--gray)); stroke-width: 1; rx: 5; }
+  .block:hover .body, .block.selected .body { stroke: var(--accent); stroke-width: 2; }
+  .block.ghost .body { fill: url(#hatch); stroke: var(--line-strong); stroke-dasharray: 3 3; }
+  .call { fill: none; stroke: var(--edge); stroke-width: 1; opacity: .75; }
+  .call.active { stroke: var(--accent); stroke-width: 1.5; opacity: 1; }
+  .many .call { opacity: .3; }
 
   /* gaveta de detalhe */
   #drawer { width: min(46vw, 760px); min-width: 380px; flex: none; border-left: 1px solid var(--line); background: var(--surface); display: none; flex-direction: column; }
   #drawer.open { display: flex; }
   #drawer header { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
   #drawer header h2 { font-size: 15px; margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  #drawer header .line { width: 100%; font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  #drawer header .line { width: 100%; font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
   #tabs { display: flex; gap: 4px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); align-items: flex-end; }
   #tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 6px 10px; }
   #tabs button.on { color: var(--ink); border-bottom-color: var(--accent); }
@@ -167,14 +195,14 @@
   </aside>
   <section id="view">
     <div id="summary"></div>
+    <div id="bar"><div id="legend"></div><div id="note"></div></div>
     <div id="canvas">
       <div id="welcome">
-        <h2>Execuções de missão como um grafo</h2>
-        <p>Cada rodada mostra a chamada ao planejador seguida dos passos do plano, ligados por setas de dependência. Clique num quadro para ver a entrada e a saída daquela chamada exatamente como estão no JSON do contrato.</p>
+        <h2>Execuções de missão como um grafo ou uma linha do tempo</h2>
+        <p>Em "Dependências", cada rodada mostra a chamada ao planejador seguida dos passos do plano, ligados por setas de dependência de dados. Em "Linha do tempo", cada agente é uma pista e cada chamada um bloco, com o orquestrador despachando e recebendo cada uma. Clique num quadro para ver a entrada e a saída daquela chamada exatamente como estão no JSON do contrato.</p>
         <p>Com <code>make viewer</code> (ou <code>python3 tools/mission-viewer/serve.py</code>) a lista à esquerda traz as missões gravadas em <code>.ariadne</code> e nos resultados preservados dos estudos; escolha uma para desenhar. Sem o servidor, use "Abrir JSON", "Escolher pasta" ou arraste um arquivo.</p>
       </div>
-      <div id="legend"></div>
-      <div id="graph"></div>
+      <div id="stage"></div>
     </div>
   </section>
   <aside id="drawer">
@@ -183,6 +211,7 @@
     <div id="body"></div>
   </aside>
 </div>
+<div id="tip"></div>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
@@ -197,7 +226,9 @@ const statusWord = value => { const name = String(value || '').toLowerCase(); re
 const actionWord = value => { const name = String(value || '').toLowerCase(); return ['plan', 'done', 'abort'].find(word => name.endsWith(word)) || 'unknown'; };
 const parseTime = text => { const ms = Date.parse(text || ''); return Number.isNaN(ms) ? null : ms; };
 const durationMs = (a, b) => { const start = parseTime(a), end = parseTime(b); return start !== null && end !== null ? end - start : null; };
-const fmtDuration = ms => ms === null || ms === undefined ? '' : ms < 1000 ? `${ms} ms` : ms < 60000 ? `${(ms / 1000).toFixed(1).replace('.', ',')} s` : `${Math.floor(ms / 60000)} min ${Math.round((ms % 60000) / 1000)} s`;
+const has = value => value !== null && value !== undefined;
+const fmtDuration = ms => !has(ms) ? '' : ms < 1000 ? `${ms} ms` : ms < 60000 ? `${(ms / 1000).toFixed(1).replace('.', ',')} s` : `${Math.floor(ms / 60000)} min ${Math.round((ms % 60000) / 1000)} s`;
+const fmtTick = ms => ms === 0 ? '0' : ms < 1000 ? `${Math.round(ms)} ms` : `${String(+(ms / 1000).toFixed(2)).replace('.', ',')} s`;
 const fmtDate = iso => { const ms = parseTime(iso); return ms === null ? '' : new Date(ms).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' }); };
 const clip = (text, max) => { text = String(text || ''); return text.length > max ? text.slice(0, max - 1) + '…' : text; };
 const scenarioFromSource = source => {
@@ -206,6 +237,15 @@ const scenarioFromSource = source => {
   const match = folder.match(/\/studies\/scenarios\/(.+)$/);
   return match ? match[1] : folder.split('/').pop();
 };
+// Tipo do agente, inferido do TaskResult: LLM (provedor ou bloco llm), BDI (rastro ou plano), senão DET (determinístico).
+const KIND_NAMES = { LLM: 'LLM', BDI: 'BDI', DET: 'DET (determinístico)' };
+function agentKind(output) {
+  if (!output) return null;
+  const meta = output.metadata || {}, declared = String(meta.agent_kind || '').toLowerCase();
+  if (declared === 'llm' || meta.provider || output.llm) return 'LLM';
+  if (declared === 'bdi' || (output.bdi && output.bdi.trace) || meta.bdi_trace || meta.selected_plan) return 'BDI';
+  return 'DET';
+}
 
 // Resumo de uma missão para a lista (mesmos campos que serve.py produz).
 function summarize(doc, path, manifestSource) {
@@ -231,14 +271,15 @@ function stepsFromWorkflow(result, plan) {
     const task = item.task || null, output = item.result || null, planned = byId[item.step_id] || {};
     nodes.push({
       id: item.step_id, kind: 'step', status: statusWord(item.status), label: item.step_id,
-      agent: output && output.agent_id, attempt: task && task.attempt,
+      agent: output && output.agent_id, attempt: task && task.attempt, agentKind: agentKind(output),
       capability: ((task && task.required_capabilities) || (planned.task_template && planned.task_template.required_capabilities) || []).join(', '),
       duration: durationMs(output && output.started_at, output && output.completed_at),
+      start: parseTime(output && output.started_at), end: parseTime(output && output.completed_at), created: parseTime(task && task.created_at),
       depends: planned.depends_on || [], input: task, output,
     });
   }
   for (const step of planSteps) if (!seen.has(step.step_id)) nodes.push({
-    id: step.step_id, kind: 'step', status: 'pending', label: step.step_id, depends: step.depends_on || [],
+    id: step.step_id, kind: 'step', status: 'pending', label: step.step_id, depends: step.depends_on || [], agentKind: null,
     capability: ((step.task_template && step.task_template.required_capabilities) || []).join(', '), input: step.task_template || null, output: null,
   });
   return nodes;
@@ -249,20 +290,21 @@ function normalize(doc) {
     const calls = doc.planner_calls || [];
     return {
       kind: 'mission', id: doc.mission_id, status: doc.status, goal: doc.request && doc.request.goal,
-      duration: durationMs(doc.created_at, doc.completed_at),
+      duration: durationMs(doc.created_at, doc.completed_at), start: parseTime(doc.created_at), end: parseTime(doc.completed_at),
       rounds: doc.rounds.map((round, index) => {
         const call = calls.find(item => item.round === round.round) || calls[index] || {};
-        const result = round.planner_result || {};
+        const result = round.planner_result || {}, task = round.planner_task || {};
         const response = call.response || result.output || null;
         const action = actionWord(round.action);
         return {
-          round: round.round, action, summary: round.planner_summary,
+          round: round.round, action, summary: round.planner_summary, start: parseTime(round.started_at), end: parseTime(round.completed_at),
           planner: {
             id: `round-${round.round}-planner`, kind: 'planner', action, label: 'Planejador',
-            status: statusWord(result.status) === 'failed' ? 'failed' : action,
-            agent: round.planner_agent_id, capability: ((round.planner_task && round.planner_task.required_capabilities) || []).join(', '),
+            status: statusWord(result.status) === 'failed' ? 'failed' : action, agentKind: agentKind(round.planner_result || null),
+            agent: round.planner_agent_id, capability: (task.required_capabilities || []).join(', '),
             duration: durationMs(result.started_at || round.started_at, result.completed_at || round.completed_at),
-            input: (round.planner_task && round.planner_task.payload) || call.request || null, output: response,
+            start: parseTime(result.started_at) ?? parseTime(task.created_at) ?? parseTime(round.started_at), end: parseTime(result.completed_at) ?? parseTime(round.completed_at),
+            input: task.payload || call.request || null, output: response,
           },
           steps: stepsFromWorkflow(round.result, round.plan || (response && response.plan ? { steps: response.plan.steps } : null)),
         };
@@ -272,14 +314,14 @@ function normalize(doc) {
   if (Array.isArray(doc.step_results)) return { kind: 'workflow', id: doc.workflow_id || doc.run_id, status: doc.status, goal: doc.root_task_id,
     rounds: [{ round: 1, planner: null, steps: stepsFromWorkflow(doc, doc.definition || doc.plan) }] };
   if (doc.steps && typeof doc.steps === 'object') {
-    const steps = Object.entries(doc.steps).map(([id, step]) => ({ id, kind: 'step', status: statusWord(step.status), label: id, depends: [],
-      agent: step.result && step.result.agent_id, capability: '', input: null, output: step.result }));
+    const steps = Object.entries(doc.steps).map(([id, step]) => ({ id, kind: 'step', status: statusWord(step.status), label: id, depends: [], agentKind: agentKind(step.result || null),
+      agent: step.result && step.result.agent_id, capability: '', input: null, output: step.result, start: parseTime(step.result && step.result.started_at), end: parseTime(step.result && step.result.completed_at) }));
     return { kind: 'workflow', id: doc.workflow_id, status: doc.status, goal: doc.root_task_id, rounds: [{ round: 1, planner: null, steps }] };
   }
   throw new Error('JSON não é um MissionResult (rounds) nem um WorkflowResult (step_results)');
 }
 
-// --- Leiaute: colunas por profundidade, linhas por paralelismo, faixas por rodada --
+// --- Leiaute de dependências: colunas por profundidade, linhas por paralelismo, faixas por rodada --
 const G = { w: 232, h: 76, gapX: 64, gapY: 16, pad: 16, head: 40, gap: 24, margin: 16 };
 
 function depthOf(nodes) {
@@ -305,7 +347,7 @@ function layout(model) {
       const row = rows[column] = rows[column] || 0;
       rows[column]++;
       maxColumns = Math.max(maxColumns, column + 1);
-      const box = { node, column, row, x: G.margin + G.pad + column * (G.w + G.gapX), y: top + row * (G.h + G.gapY) };
+      const box = { node, column, row, x: G.margin + G.pad + column * (G.w + G.gapX), y: top + row * (G.h + G.gapY), w: G.w, h: G.h };
       boxes.push(box);
       return box;
     };
@@ -315,10 +357,10 @@ function layout(model) {
     for (const node of round.steps) stepBoxes[node.id] = place(node, depths[node.id] - 1 + offset);
     for (const node of round.steps) {
       const deps = node.depends.filter(dep => stepBoxes[dep]);
-      for (const dep of deps) edges.push({ from: stepBoxes[dep], to: stepBoxes[node.id], kind: 'depends' });
-      if (!deps.length && plannerBox) edges.push({ from: plannerBox, to: stepBoxes[node.id], kind: 'plan' });
+      for (const dep of deps) edges.push({ from: stepBoxes[dep], to: stepBoxes[node.id], kind: 'depends', marker: 'arrow' });
+      if (!deps.length && plannerBox) edges.push({ from: plannerBox, to: stepBoxes[node.id], kind: 'plan', marker: 'arrow' });
     }
-    if (previousPlanner && plannerBox) edges.push({ from: previousPlanner, to: plannerBox, kind: 'sequence' });
+    if (previousPlanner && plannerBox) edges.push({ from: previousPlanner, to: plannerBox, kind: 'sequence', marker: 'arrow' });
     previousPlanner = plannerBox;
     const rowCount = Math.max(1, ...Object.values(rows));
     const height = G.head + G.pad * 2 + rowCount * (G.h + G.gapY) - G.gapY;
@@ -327,13 +369,65 @@ function layout(model) {
   }
   const width = G.margin * 2 + G.pad * 2 + maxColumns * (G.w + G.gapX) - G.gapX;
   for (const band of bands) band.w = width - G.margin * 2;
-  return { boxes, edges, bands, width, height: y - G.gap + G.margin };
+  return { kind: 'deps', boxes, edges, bands, width, height: y - G.gap + G.margin };
+}
+
+// --- Leiaute da linha do tempo: uma pista por agente, um bloco por chamada -------
+const T = { label: 176, head: 28, axis: 22, orch: 44, lane: 46, block: 30, margin: 16, minW: 6 };
+const niceStep = span => { const raw = span / 8, pow = 10 ** Math.floor(Math.log10(raw)); return [1, 2, 5, 10].map(m => m * pow).find(step => step >= raw); };
+
+function layoutTimeline(model) {
+  const calls = [];
+  for (const round of model.rounds) for (const node of [round.planner, ...round.steps]) {
+    if (!node || !has(node.start) || !has(node.end)) continue;
+    calls.push({ node, round, t0: node.start, t1: Math.max(node.end, node.start) });
+    // tentativa anterior: o contrato só guarda o resultado final; o intervalo é inferido de created_at até o início da repetição
+    if (node.attempt > 1 && has(node.created) && node.created < node.start) calls.push({ node, round, t0: node.created, t1: node.start, ghost: true });
+  }
+  if (!calls.length) return null;
+  const t0 = Math.min(has(model.start) ? model.start : Infinity, ...calls.map(call => call.t0));
+  const t1 = Math.max(has(model.end) ? model.end : -Infinity, ...calls.map(call => call.t1), t0 + 1);
+  const plot = Math.max(700, $('canvas').clientWidth - T.label - T.margin * 2 - 32);  // ocupa a largura disponível
+  const X = t => T.margin + T.label + (t - t0) * plot / (t1 - t0);
+  const lanes = [];
+  calls.sort((a, b) => a.t0 - b.t0 || a.t1 - b.t1);
+  for (const call of calls) {
+    const id = call.node.agent || 'sem agente';
+    let lane = lanes.find(item => item.id === id);
+    if (!lane) lanes.push(lane = { id, planner: call.node.kind === 'planner', first: call.t0, kinds: {}, rows: [] });
+    if (!call.ghost && call.node.agentKind) lane.kinds[call.node.agentKind] = (lane.kinds[call.node.agentKind] || 0) + 1;
+    call.lane = lane;
+  }
+  lanes.sort((a, b) => (b.planner - a.planner) || (a.first - b.first));
+  const boxes = calls.map(call => {
+    const x = X(call.t0), w = Math.max(T.minW, X(call.t1) - x), rows = call.lane.rows;
+    let row = rows.findIndex(end => end <= x + 1);
+    if (row < 0) { row = rows.length; rows.push(0); }
+    rows[row] = x + w;
+    return Object.assign(call, { x, w, row, h: T.block });
+  });
+  const top = T.margin + T.head + T.axis, orchY = top;
+  let y = top + T.orch;
+  for (const lane of lanes) {
+    lane.y = y; lane.h = Math.max(1, lane.rows.length) * T.lane; y += lane.h;
+    lane.kind = (Object.entries(lane.kinds).sort((a, b) => (b[1] + (b[0] !== 'DET')) - (a[1] + (a[0] !== 'DET')))[0] || [null])[0];  // empate: DET é o padrão sem evidência
+  }
+  for (const box of boxes) box.y = box.lane.y + 8 + box.row * T.lane;
+  const bands = model.rounds.map(round => {
+    const own = boxes.filter(box => box.round === round);
+    const start = has(round.start) ? round.start : Math.min(...own.map(box => box.t0)), end = has(round.end) ? round.end : Math.max(...own.map(box => box.t1));
+    return { round, x: X(start), w: Math.max(2, X(end) - X(start)), silent: round.steps.filter(node => !has(node.start)).length };
+  }).filter(band => Number.isFinite(band.x) && Number.isFinite(band.w));
+  const step = niceStep(t1 - t0), ticks = [];
+  for (let t = 0; t <= t1 - t0; t += step) ticks.push({ x: X(t0 + t), label: fmtTick(t) });
+  return { kind: 'timeline', boxes, lanes, bands, ticks, orchY, top, bottom: y, t0, width: T.margin * 2 + T.label + plot, height: y + T.margin };
 }
 
 // --- Renderização SVG ------------------------------------------------------------
 const SVG = 'http://www.w3.org/2000/svg';
-let current = null;   // { model, plan, groups, paths, doc }
+let current = null;   // { model, doc, name, plan, groups, paths }
 let selectedBox = null;
+let view = 'deps';
 
 function el(name, attributes, text) {
   const node = document.createElementNS(SVG, name);
@@ -361,6 +455,29 @@ function chip(parent, x, y, text, extraClass, color) {
   return width;
 }
 
+function tag(parent, x, y, kind) {
+  const text = kind || '?', width = text.length * 7 + 10;
+  const group = el('g', { class: `k-${kind || 'none'}` });
+  group.appendChild(el('rect', { class: 'tag-bg', x, y, width, height: 14 }));
+  group.appendChild(el('text', { class: 'tag', x: x + 5, y: y + 10.5 }, text));
+  parent.appendChild(group);
+  return width;
+}
+
+const tip = $('tip');
+const placeTip = event => { tip.style.left = `${Math.min(event.clientX + 14, innerWidth - tip.offsetWidth - 8)}px`; tip.style.top = `${Math.min(event.clientY + 14, innerHeight - tip.offsetHeight - 8)}px`; };
+function hover(group, text) {
+  group.addEventListener('pointerenter', event => { tip.textContent = text(); tip.style.display = 'block'; placeTip(event); });
+  group.addEventListener('pointermove', placeTip);
+  group.addEventListener('pointerleave', () => { tip.style.display = 'none'; });
+}
+const describe = (node, box) => [
+  node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label,
+  [node.agent && `agente ${node.agent}`, KIND_NAMES[node.agentKind] || 'tipo desconhecido'].filter(Boolean).join(' · '),
+  node.attempt > 1 && (box && box.ghost ? 'tentativa 1 (timeout/falha) · intervalo inferido de created_at até a repetição · agente anterior não registrado' : `${node.attempt}ª tentativa · reatribuído (agente anterior não registrado)`),
+  box && has(current.plan.t0) ? `início +${fmtTick(box.t0 - current.plan.t0)} · duração ${fmtDuration(box.t1 - box.t0)}` : has(node.duration) && `duração ${fmtDuration(node.duration)}`,
+].filter(Boolean).join('\n');
+
 function bandTitle(round) {
   const steps = round.steps.length, plural = steps === 1 ? 'passo' : 'passos';
   if (!round.planner) return `Rodada ${round.round}: ${steps} ${plural}`;
@@ -381,44 +498,87 @@ function renderBand(svg, band) {
 
 function renderNode(box) {
   const node = box.node;
-  const group = el('g', { class: `node s-${node.status}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
+  const group = el('g', { class: `node s-${node.status} k-${node.agentKind || 'none'}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
   group.appendChild(el('rect', { class: 'card', width: G.w, height: G.h }));
   group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 5, height: G.h, 'clip-path': 'url(#card-clip)' }));
-  group.appendChild(el('text', { class: 'title', x: 16, y: 24 }, clip(node.label, 24)));
-  group.appendChild(el('text', { class: 'cap', x: 16, y: 43 }, clip(node.kind === 'planner' ? node.action.toUpperCase() + (node.capability ? ' · ' + node.capability : '') : node.capability || node.status, 30)));
-  group.appendChild(el('text', { class: 'small', x: 16, y: 61 }, clip(node.agent || (node.kind === 'planner' ? '' : 'sem agente'), node.duration !== null && node.duration !== undefined ? 22 : 30)));
-  if (node.duration !== null && node.duration !== undefined) group.appendChild(el('text', { class: 'small', x: G.w - 12, y: 61, 'text-anchor': 'end' }, fmtDuration(node.duration)));
+  group.appendChild(el('text', { class: 'title', x: 16, y: 24 }, clip(node.label, 22)));
+  tag(group, G.w - 8 - ((node.agentKind || '?').length * 7 + 10), 10, node.agentKind);
+  group.appendChild(el('text', { class: 'cap', x: 16, y: 43 }, clip(node.kind === 'planner' ? node.action.toUpperCase() + (node.capability ? ' · ' + node.capability : '') : node.capability || node.status, node.attempt > 1 ? 14 : 30)));
+  group.appendChild(el('text', { class: 'small', x: 16, y: 61 }, clip(node.agent || (node.kind === 'planner' ? '' : 'sem agente'), has(node.duration) ? 22 : 30)));
+  if (has(node.duration)) group.appendChild(el('text', { class: 'small', x: G.w - 12, y: 61, 'text-anchor': 'end' }, fmtDuration(node.duration)));
   if (node.attempt > 1) {
     const text = `${node.attempt}ª tentativa · reatribuído`, width = text.length * 5.6 + 12;
-    group.appendChild(el('rect', { class: 'badge-bg', x: G.w - width - 8, y: 8, width, height: 16 }));
-    group.appendChild(el('text', { class: 'badge', x: G.w - width - 2, y: 19.5 }, text));
+    group.appendChild(el('rect', { class: 'badge-bg', x: G.w - width - 8, y: 30, width, height: 16 }));
+    group.appendChild(el('text', { class: 'badge', x: G.w - width - 2, y: 41.5 }, text));
   }
-  group.addEventListener('click', () => select(box));
-  group.addEventListener('keydown', event => { if (event.key === 'Enter') select(box); });
+  hover(group, () => describe(node));
   return group;
 }
 
-function render(doc, name) {
-  const model = normalize(doc), plan = layout(model);
-  const svg = el('svg', { width: plan.width, height: plan.height, viewBox: `0 0 ${plan.width} ${plan.height}` });
-  const defs = el('defs', {});
-  for (const [id, fill] of [['arrow', 'var(--edge)'], ['arrow-active', 'var(--accent)']]) {
-    const marker = el('marker', { id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
-    marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill }));
-    defs.appendChild(marker);
+function renderBlock(box) {
+  const node = box.node;
+  const group = el('g', { class: `block s-${node.status} k-${node.agentKind || 'none'}${box.ghost ? ' ghost' : ''}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
+  group.appendChild(el('rect', { class: 'body', width: box.w, height: box.h }));
+  if (!box.ghost) group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 4, height: box.h, rx: 2 }));
+  const label = box.ghost ? 'tentativa 1 (timeout/falha)' : (node.kind === 'planner' ? `Planejador · ${node.action.toUpperCase()}` : node.label) + (node.attempt > 1 ? ` · ${node.attempt}ª tentativa` : '');
+  const tagWidth = box.ghost ? 0 : (node.agentKind || '?').length * 7 + 10;
+  if (box.w >= 44) group.appendChild(el('text', { class: 'blk', x: 9, y: 19 }, clip(label, (box.w - 14 - (box.w >= 96 ? tagWidth + 6 : 0)) / 6.3)));
+  if (!box.ghost && box.w >= 96) tag(group, box.w - tagWidth - 6, 8, node.agentKind);
+  hover(group, () => describe(node, box));
+  return group;
+}
+
+function renderTimeline(svg, plan) {
+  const lineY = plan.orchY + T.orch / 2, right = plan.width - T.margin;
+  plan.bands.forEach((band, index) => {
+    svg.appendChild(el('rect', { class: 'round-bg' + (index % 2 ? ' odd' : ''), x: band.x, y: T.margin, width: band.w, height: plan.bottom - T.margin }));
+    const round = band.round, title = `Rodada ${round.round}` + (round.planner ? ` · ${round.action.toUpperCase()}` : '') + ` · ${round.steps.length} passo${round.steps.length === 1 ? '' : 's'}` + (band.silent ? ` (${band.silent} sem execução)` : '');
+    svg.appendChild(el('text', { class: 'band-title', x: band.x + 6, y: T.margin + 19 }, clip(title, Math.max(3, (band.w - 10) / 6.9))));
+  });
+  for (const tick of plan.ticks) {
+    svg.appendChild(el('line', { class: 'tick', x1: tick.x, x2: tick.x, y1: plan.top - 4, y2: plan.bottom }));
+    svg.appendChild(el('text', { class: 'small', x: tick.x + 3, y: plan.top - 8 }, tick.label));
   }
-  const clipPath = el('clipPath', { id: 'card-clip' });
-  clipPath.appendChild(el('rect', { width: G.w, height: G.h, rx: 8 }));
-  defs.appendChild(clipPath);
-  svg.appendChild(defs);
-  for (const band of plan.bands) renderBand(svg, band);
-  const paths = plan.edges.map(edge => { const path = el('path', { class: `edge ${edge.kind}`, d: edgePath(edge), 'marker-end': 'url(#arrow)' }); svg.appendChild(path); return { edge, path }; });
-  const groups = new Map();
-  for (const box of plan.boxes) { const group = renderNode(box); groups.set(box, group); svg.appendChild(group); }
-  $('graph').replaceChildren(svg);
-  $('welcome').style.display = 'none';
-  $('legend').replaceChildren(...['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'pending'].map(status => { const item = document.createElement('span'); item.className = `s-${status}`; item.textContent = status; return item; }),
-    Object.assign(document.createElement('span'), { className: 'seq', textContent: 'sequência das rodadas' }));
+  const rule = y => svg.appendChild(el('line', { class: 'lane-line', x1: T.margin, x2: right, y1: y, y2: y }));
+  rule(plan.top);
+  svg.appendChild(el('text', { class: 'title', x: T.margin + 8, y: lineY - 2 }, 'Orchestrator'));
+  svg.appendChild(el('text', { class: 'small', x: T.margin + 8, y: lineY + 13 }, 'despacha e recebe cada chamada'));
+  svg.appendChild(el('line', { class: 'orch-line', x1: T.margin + T.label, x2: right, y1: lineY, y2: lineY }));
+  for (const lane of plan.lanes) {
+    rule(lane.y);
+    svg.appendChild(el('text', { class: 'title', x: T.margin + 8, y: lane.y + 20 }, clip(lane.id, 20)));
+    tag(svg, T.margin + 8, lane.y + 26, lane.kind);
+  }
+  rule(plan.bottom);
+  const many = plan.boxes.length > 40, paths = [];
+  if (many) svg.classList.add('many');
+  for (const box of plan.boxes) {
+    if (box.ghost) continue;
+    for (const d of [`M ${box.x + 1} ${lineY} V ${box.y}`, `M ${box.x + box.w - 1} ${box.y} V ${lineY}`]) {
+      const path = el('path', { class: 'call', d });
+      if (!many) path.setAttribute('marker-end', 'url(#tick)');
+      svg.appendChild(path);
+      paths.push({ edge: { from: box, to: box, marker: many ? null : 'tick' }, path });
+    }
+  }
+  return paths;
+}
+
+function renderLegend() {
+  const item = (cls, text) => { const span = document.createElement('span'); span.className = cls; span.textContent = text; return span; };
+  const items = ['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'pending'].map(status => item(`s-${status}`, status));
+  for (const kind of ['LLM', 'BDI', 'DET']) items.push(item(`kind k-${kind}`, KIND_NAMES[kind]));
+  if (view === 'deps') items.push(item('dep', 'binding: saída de um passo usada na entrada de outro'), item('seq', 'sequência das rodadas'));
+  else items.push(item('call', 'despacho (desce) e retorno (sobe) pelo orquestrador'), item('ghost', 'tentativa anterior, intervalo inferido'));
+  $('legend').replaceChildren(...items);
+  $('note').textContent = view === 'deps'
+    ? 'Todas as chamadas partem do orquestrador; as setas mostram dependências de dados, não chamadas entre agentes.'
+    : 'Cada bloco é uma chamada que o orquestrador despacha e cuja resposta volta a ele; blocos lado a lado em pistas diferentes executaram em paralelo.';
+  $('bar').classList.add('on');
+}
+
+function render(doc, name) {
+  const model = normalize(doc);
   const summary = $('summary');
   summary.replaceChildren();
   const stat = (label, value, cls) => { if (!value) return; const span = document.createElement('span'); span.className = 'stat ' + (cls || ''); if (label) { const b = document.createElement('b'); b.textContent = label + ' '; span.appendChild(b); } span.append(value); summary.appendChild(span); };
@@ -426,13 +586,73 @@ function render(doc, name) {
   const pill = document.createElement('span'); pill.className = `pill s-${statusWord(model.status)}`; pill.textContent = statusWord(model.status); summary.appendChild(pill);
   stat('Rodadas', String(model.rounds.length));
   stat('Duração', fmtDuration(model.duration));
+  const seg = document.createElement('span'); seg.className = 'seg';
+  for (const [id, label] of [['deps', 'Dependências'], ['timeline', 'Linha do tempo']]) {
+    const button = document.createElement('button'); button.textContent = label; button.dataset.view = id; button.classList.toggle('on', id === view);
+    button.addEventListener('click', () => setView(id)); seg.appendChild(button);
+  }
+  summary.appendChild(seg);
   if (model.goal) { const goal = document.createElement('div'); goal.className = 'goal'; goal.textContent = model.goal; goal.title = 'Clique para expandir'; goal.addEventListener('click', () => goal.classList.toggle('open')); summary.appendChild(goal); }
   if (model.kind === 'mission') summary.appendChild(Object.assign(document.createElement('div'), { className: 'hint', textContent: 'Cada rodada = uma chamada ao planejador seguida dos passos que ele propôs; a missão termina quando o planejador responde DONE.' }));
   summary.classList.add('on');
+  $('welcome').style.display = 'none';
+  $('canvas').classList.add('on');
   document.title = `Mission Viewer — ${name}`;
-  current = { model, plan, groups, paths, doc };
+  current = { model, doc, name };
+  draw();
+}
+
+function draw(keepId) {
+  const model = current.model, plan = view === 'timeline' ? layoutTimeline(model) : layout(model);
+  const stage = $('stage');
   selectedBox = null;
-  closeDrawer();
+  renderLegend();
+  if (!plan) {
+    current.plan = { kind: 'timeline', boxes: [], width: 480, height: 80 }; current.groups = new Map(); current.paths = [];
+    stage.replaceChildren(Object.assign(document.createElement('p'), { className: 'muted', textContent: 'Nenhuma chamada traz started_at e completed_at; a linha do tempo precisa dessas marcas no TaskResult.' }));
+    closeDrawer(); return;
+  }
+  const svg = el('svg', { width: plan.width, height: plan.height, viewBox: `0 0 ${plan.width} ${plan.height}` });
+  const defs = el('defs', {});
+  for (const [id, fill, size] of [['arrow', 'var(--edge)', 7], ['arrow-active', 'var(--accent)', 7], ['tick', 'var(--edge)', 4.5], ['tick-active', 'var(--accent)', 4.5]]) {
+    const marker = el('marker', { id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: size, markerHeight: size, orient: 'auto-start-reverse' });
+    marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill }));
+    defs.appendChild(marker);
+  }
+  const clipPath = el('clipPath', { id: 'card-clip' });
+  clipPath.appendChild(el('rect', { width: G.w, height: G.h, rx: 8 }));
+  const hatch = el('pattern', { id: 'hatch', patternUnits: 'userSpaceOnUse', width: 6, height: 6 });
+  hatch.appendChild(el('path', { d: 'M 0 6 L 6 0', stroke: 'var(--line-strong)', 'stroke-width': 1 }));
+  defs.append(clipPath, hatch);
+  svg.appendChild(defs);
+  let paths;
+  if (plan.kind === 'timeline') paths = renderTimeline(svg, plan);
+  else {
+    for (const band of plan.bands) renderBand(svg, band);
+    paths = plan.edges.map(edge => { const path = el('path', { class: `edge ${edge.kind}`, d: edgePath(edge), 'marker-end': 'url(#arrow)' }); svg.appendChild(path); return { edge, path }; });
+  }
+  const groups = new Map();
+  for (const box of plan.boxes) {
+    const group = plan.kind === 'timeline' ? renderBlock(box) : renderNode(box);
+    group.addEventListener('click', () => select(box));
+    group.addEventListener('keydown', event => { if (event.key === 'Enter') select(box); });
+    groups.set(box, group); svg.appendChild(group);
+  }
+  stage.replaceChildren(svg);
+  Object.assign(current, { plan, groups, paths });
+  const keep = keepId && findBox(keepId);
+  if (keep) select(keep); else closeDrawer();
+}
+
+const findBox = id => current && current.plan.boxes.find(box => !box.ghost && box.node.id === id);
+
+function setView(id) {
+  if (id !== 'deps' && id !== 'timeline') return;
+  view = id;
+  store.set('view', id);
+  try { const url = new URL(location.href); url.searchParams.set('view', id); history.replaceState(null, '', url); } catch {}
+  for (const button of document.querySelectorAll('.seg button')) button.classList.toggle('on', button.dataset.view === id);
+  if (current) draw(selectedBox && selectedBox.node.id);
 }
 
 // --- Gaveta de detalhe: Entrada, Saída, Rastro -----------------------------------
@@ -499,12 +719,13 @@ function select(box) {
   for (const { edge, path } of current.paths) {
     const active = edge.from === box || edge.to === box;
     path.classList.toggle('active', active);
-    path.setAttribute('marker-end', active ? 'url(#arrow-active)' : 'url(#arrow)');
+    if (edge.marker) path.setAttribute('marker-end', `url(#${edge.marker}${active ? '-active' : ''})`);
   }
   const node = box.node, planner = node.kind === 'planner';
   $('d-title').textContent = planner ? `Planejador · rodada ${node.id.split('-')[1]}` : node.label;
   const status = $('d-status'); status.className = `pill s-${node.status}`; status.textContent = planner ? node.action : node.status;
-  $('d-line').replaceChildren(...[node.agent && `agente ${node.agent}`, node.capability && `capacidade ${node.capability}`, node.attempt && `tentativa ${node.attempt}`, node.duration !== null && node.duration !== undefined && `duração ${fmtDuration(node.duration)}`]
+  const kindTag = Object.assign(document.createElement('span'), { className: `tag k-${node.agentKind || 'none'}`, textContent: node.agentKind || '?', title: 'Tipo do agente, inferido do TaskResult' });
+  $('d-line').replaceChildren(kindTag, ...[node.agent && `agente ${node.agent}`, node.capability && `capacidade ${node.capability}`, node.attempt && `tentativa ${node.attempt}`, has(node.duration) && `duração ${fmtDuration(node.duration)}`]
     .filter(Boolean).map(text => Object.assign(document.createElement('span'), { textContent: text })));
   const out = node.output || {};
   const cycles = (out.bdi && out.bdi.trace && out.bdi.trace.cycles) || (out.metadata && out.metadata.bdi_trace && out.metadata.bdi_trace.cycles) || null;
@@ -528,16 +749,18 @@ function closeDrawer() { $('drawer').classList.remove('open'); }
 
 function move(key) {
   if (!current) return;
-  const boxes = current.plan.boxes;
-  if (!selectedBox) return select(boxes[0]);
+  const boxes = current.plan.boxes.filter(box => !box.ghost);
+  if (!boxes.length) return;
+  if (!selectedBox || selectedBox.ghost) return select(boxes[0]);
   const index = boxes.indexOf(selectedBox);
   if (key === 'ArrowRight' || key === 'ArrowLeft') return select(boxes[(index + (key === 'ArrowRight' ? 1 : boxes.length - 1)) % boxes.length]);
-  const vertical = boxes.filter(box => box.column === selectedBox.column && (key === 'ArrowDown' ? box.y > selectedBox.y : box.y < selectedBox.y));
-  if (vertical.length) select(vertical.reduce((best, box) => Math.abs(box.y - selectedBox.y) < Math.abs(best.y - selectedBox.y) ? box : best));
+  const candidates = boxes.filter(box => key === 'ArrowDown' ? box.y > selectedBox.y : box.y < selectedBox.y);
+  const score = box => Math.abs(box.y - selectedBox.y) * 4 + Math.abs(box.x - selectedBox.x);
+  if (candidates.length) select(candidates.reduce((best, box) => score(box) < score(best) ? box : best));
 }
 
 document.addEventListener('keydown', event => {
-  if (event.target.matches('input')) return;
+  if (event.target.matches('input') || event.metaKey || event.ctrlKey) return;
   if (event.key === 'Escape') closeDrawer();
   else if (event.key.startsWith('Arrow')) { event.preventDefault(); move(event.key); }
 });
@@ -574,7 +797,8 @@ async function openRun(run, nodeId) {
     store.set('lastPath', run.path);
     render(doc, run.name);
     renderList();
-    if (nodeId) { const box = current.plan.boxes.find(item => item.node.id === nodeId); if (box) select(box); }
+    const box = nodeId && findBox(nodeId);
+    if (box) select(box);
   } catch (error) { alert(`Não foi possível abrir ${run.path}: ${error.message}`); }
 }
 
@@ -659,6 +883,7 @@ const params = new URLSearchParams(location.search);
 const root = document.documentElement;
 if (params.get('theme')) root.dataset.theme = params.get('theme'); else if (store.get('theme')) root.dataset.theme = store.get('theme');
 activeTab = Math.max(0, Number(params.get('tab')) || 0);
+view = ['deps', 'timeline'].includes(params.get('view')) ? params.get('view') : (store.get('view') === 'timeline' ? 'timeline' : 'deps');
 $('theme').addEventListener('click', () => {
   const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   root.dataset.theme = dark ? 'light' : 'dark';

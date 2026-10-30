@@ -2,7 +2,6 @@ package workflow
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -99,21 +98,23 @@ func (e *Engine) execute(parent context.Context, root *pb.Task, definition *pb.W
 		statuses[step.StepId] = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_PENDING
 	}
 
-	for len(stepResults) < len(definition.Steps) {
-		progress := false
+	// Escalonamento por fila de prontos: um passo é despachado assim que suas
+	// dependências completam e há vaga (MaxParallelism); a conclusão de
+	// qualquer passo libera a vaga imediatamente, sem esperar os demais.
+	// A materialização (bindings) acontece aqui, no laço principal, para que
+	// nenhuma goroutine leia stepResults enquanto ele é escrito.
+	ready := make([]*pb.WorkflowStep, 0, len(definition.Steps))
+	executions := make(chan stepExecution, len(definition.Steps))
+	running := 0
+	for len(stepResults) < len(definition.Steps) && ctx.Err() == nil {
 		for _, step := range definition.Steps {
-			if statuses[step.StepId] != pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_PENDING {
-				continue
-			}
-			if dependencyFailed(step, statuses) {
+			if statuses[step.StepId] == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_PENDING && dependencyFailed(step, statuses) {
 				skipped := &pb.WorkflowStepResult{StepId: step.StepId, Status: pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_SKIPPED}
 				statuses[step.StepId], stepResults[step.StepId] = skipped.Status, skipped
 				_ = e.store.SaveStep(result.RunId, skipped)
 				e.log(result, root.TaskId, "STEP_SKIPPED", step.StepId, "", 0)
-				progress = true
 			}
 		}
-		ready := make([]*pb.WorkflowStep, 0)
 		for _, step := range definition.Steps {
 			if statuses[step.StepId] == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_PENDING && dependenciesHaveStatus(step, statuses, pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_COMPLETED) {
 				statuses[step.StepId] = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_READY
@@ -121,76 +122,53 @@ func (e *Engine) execute(parent context.Context, root *pb.Task, definition *pb.W
 				e.log(result, root.TaskId, "STEP_READY", step.StepId, "", 0)
 			}
 		}
-		if len(ready) == 0 {
-			if progress {
+		for len(ready) > 0 && running < e.options.MaxParallelism {
+			step := ready[0]
+			ready = ready[1:]
+			statuses[step.StepId] = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_RUNNING
+			task, bindingErr := materializeTask(root, result.RunId, step, stepResults)
+			if bindingErr != nil {
+				failure := workflowError(pb.ErrorCode_ERROR_CODE_INVALID_TASK, bindingErr.Error(), false)
+				e.record(result, root, stepExecution{step: step, result: &pb.WorkflowStepResult{StepId: step.StepId, Status: pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_FAILED, Result: failedTaskResult(&pb.Task{Trace: root.Trace}, failure)}}, statuses, stepResults)
 				continue
 			}
-			break
-		}
-		for start := 0; start < len(ready); start += e.options.MaxParallelism {
-			end := start + e.options.MaxParallelism
-			if end > len(ready) {
-				end = len(ready)
-			}
-			batch := ready[start:end]
-			executions := make(chan stepExecution, len(batch))
-			var wait sync.WaitGroup
-			for _, step := range batch {
-				statuses[step.StepId] = pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_RUNNING
-				wait.Add(1)
-				go func(step *pb.WorkflowStep) {
-					defer wait.Done()
-					task, bindingErr := materializeTask(root, result.RunId, step, stepResults)
-					if bindingErr != nil {
-						failure := workflowError(pb.ErrorCode_ERROR_CODE_INVALID_TASK, bindingErr.Error(), false)
-						executions <- stepExecution{step: step, result: &pb.WorkflowStepResult{StepId: step.StepId, Status: pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_FAILED, Result: failedTaskResult(&pb.Task{Trace: root.Trace}, failure)}}
-						return
-					}
-					e.log(result, task.TaskId, "TASK_CREATED", step.StepId, "", 0)
-					e.log(result, task.TaskId, "STEP_STARTED", step.StepId, "", 0)
-					startedAt := timestamppb.Now()
-					taskResult, failure := e.executor.Execute(ctx, task)
-					stepResult := classifyStepResult(step.StepId, task, taskResult, failure, ctx.Err())
-					if stepResult.Result != nil {
-						if stepResult.Result.StartedAt == nil {
-							stepResult.Result.StartedAt = startedAt
-						}
-						if stepResult.Result.CompletedAt == nil {
-							stepResult.Result.CompletedAt = timestamppb.Now()
-						}
-					}
-					executions <- stepExecution{step: step, task: task, result: stepResult}
-				}(step)
-			}
-			wait.Wait()
-			close(executions)
-			for execution := range executions {
-				stepResult := execution.result
-				statuses[execution.step.StepId], stepResults[execution.step.StepId] = stepResult.Status, stepResult
-				_ = e.store.SaveStep(result.RunId, stepResult)
-				taskID, agentID, attempt := root.TaskId, "", int32(0)
-				if execution.task != nil {
-					taskID, attempt = execution.task.TaskId, execution.task.Attempt
-				}
+			e.log(result, task.TaskId, "TASK_CREATED", step.StepId, "", 0)
+			e.log(result, task.TaskId, "STEP_STARTED", step.StepId, "", 0)
+			running++
+			go func(step *pb.WorkflowStep, task *pb.Task) {
+				startedAt := timestamppb.Now()
+				taskResult, failure := e.executor.Execute(ctx, task)
+				stepResult := classifyStepResult(step.StepId, task, taskResult, failure, ctx.Err())
 				if stepResult.Result != nil {
-					agentID = stepResult.Result.AgentId
+					if stepResult.Result.StartedAt == nil {
+						stepResult.Result.StartedAt = startedAt
+					}
+					if stepResult.Result.CompletedAt == nil {
+						stepResult.Result.CompletedAt = timestamppb.Now()
+					}
 				}
-				eventType := "STEP_FAILED"
-				if stepResult.Status == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_COMPLETED {
-					eventType = "STEP_COMPLETED"
-				}
-				if stepResult.Status == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_CANCELLED {
-					eventType = "STEP_CANCELLED"
-				}
-				e.log(result, taskID, eventType, execution.step.StepId, agentID, attempt)
-			}
-			if ctx.Err() != nil {
+				executions <- stepExecution{step: step, task: task, result: stepResult}
+			}(step, task)
+		}
+		if running == 0 {
+			if len(ready) == 0 {
 				break
 			}
+			continue
 		}
-		if ctx.Err() != nil {
-			break
+		select {
+		case execution := <-executions:
+			running--
+			e.record(result, root, execution, statuses, stepResults)
+		case <-ctx.Done():
 		}
+	}
+	// Passos ainda em execução após cancelamento ou prazo: o executor honra o
+	// contexto e devolve logo; seus resultados são classificados como CANCELLED.
+	for running > 0 {
+		execution := <-executions
+		running--
+		e.record(result, root, execution, statuses, stepResults)
 	}
 
 	if ctx.Err() != nil {
@@ -239,6 +217,28 @@ func (e *Engine) execute(parent context.Context, root *pb.Task, definition *pb.W
 	}
 	e.log(result, root.TaskId, eventType, definition.FinalStepId, "", 0)
 	return result, nil
+}
+
+// record guarda o resultado de um passo e emite o evento terminal dele.
+func (e *Engine) record(result *pb.WorkflowResult, root *pb.Task, execution stepExecution, statuses map[string]pb.WorkflowStepStatus, stepResults map[string]*pb.WorkflowStepResult) {
+	stepResult := execution.result
+	statuses[execution.step.StepId], stepResults[execution.step.StepId] = stepResult.Status, stepResult
+	_ = e.store.SaveStep(result.RunId, stepResult)
+	taskID, agentID, attempt := root.TaskId, "", int32(0)
+	if execution.task != nil {
+		taskID, attempt = execution.task.TaskId, execution.task.Attempt
+	}
+	if stepResult.Result != nil {
+		agentID = stepResult.Result.AgentId
+	}
+	eventType := "STEP_FAILED"
+	if stepResult.Status == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_COMPLETED {
+		eventType = "STEP_COMPLETED"
+	}
+	if stepResult.Status == pb.WorkflowStepStatus_WORKFLOW_STEP_STATUS_CANCELLED {
+		eventType = "STEP_CANCELLED"
+	}
+	e.log(result, taskID, eventType, execution.step.StepId, agentID, attempt)
 }
 
 func classifyStepResult(stepID string, task *pb.Task, taskResult *pb.TaskResult, failure *pb.ErrorInfo, contextError error) *pb.WorkflowStepResult {

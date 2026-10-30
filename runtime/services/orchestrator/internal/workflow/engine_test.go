@@ -232,3 +232,43 @@ func TestEngineContinuesIndependentBranchAndSkipsFailedDescendant(t *testing.T) 
 		t.Fatalf("blocked status = %v", result.StepResults[2].Status)
 	}
 }
+
+// Fila de prontos: um passo lento não segura os demais. Com paralelismo 2 e
+// quatro passos independentes, a conclusão de b deve liberar c enquanto a
+// ainda executa (nas ondas com barreira, c só começava depois de a).
+func TestEngineDispatchesNextReadyStepWhileAnotherIsStillRunning(t *testing.T) {
+	executor := &parallelExecutor{started: make(chan string, 8), release: make(chan struct{})}
+	definition := &pb.WorkflowDefinition{FinalStepId: "final", Steps: []*pb.WorkflowStep{step("slow", "echo"), step("b", "echo"), step("c", "echo"), step("final", "echo")}}
+	definition.Steps[3].DependsOn = []string{"slow", "b", "c"}
+	engine := NewEngineWithOptions(executor, NewValidator(DefaultValidationLimits()), NewInMemoryStore(), nil, EngineOptions{MaxParallelism: 2, TotalTimeout: 5 * time.Second})
+	done := make(chan *pb.WorkflowResult, 1)
+	go func() { result, _ := engine.Execute(context.Background(), &pb.Task{}, definition); done <- result }()
+	expectStarted := func(want string) {
+		t.Helper()
+		select {
+		case got := <-executor.started:
+			if got != want {
+				t.Fatalf("started %q, want %q", got, want)
+			}
+		case <-time.After(time.Second):
+			t.Fatalf("step %q did not start", want)
+		}
+	}
+	expectStarted("slow")
+	expectStarted("b")
+	executor.release <- struct{}{} // libera b (o primeiro a ler release é indefinido; ambos aguardam)
+	expectStarted("c")             // c começa com slow ainda em execução
+	executor.mu.Lock()
+	maximum := executor.maximum
+	executor.mu.Unlock()
+	if maximum != 2 {
+		t.Fatalf("maximum parallelism = %d, want 2", maximum)
+	}
+	executor.release <- struct{}{}
+	executor.release <- struct{}{}
+	expectStarted("final")
+	executor.release <- struct{}{}
+	if result := <-done; result.Status != pb.WorkflowStatus_WORKFLOW_STATUS_COMPLETED {
+		t.Fatalf("status = %v", result.Status)
+	}
+}

@@ -1,4 +1,4 @@
-"""Identificação da análise offline, usando somente a biblioteca padrão."""
+"""Proveniência da avaliação logística offline, usando somente a biblioteca padrão."""
 import hashlib
 from pathlib import Path
 import subprocess

@@ -8,7 +8,7 @@ import statistics
 import uuid
 
 from studies.scenarios.logistics.domain.simulation import evaluate_plan, plan_mission
-from studies.evidence import analysis_provenance
+from studies.scenarios.logistics.evaluation.provenance import analysis_provenance
 from studies.scenarios.logistics.evaluation.reporting import write_csv, write_chart
 
 

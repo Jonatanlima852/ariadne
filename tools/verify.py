@@ -32,7 +32,7 @@ def main(argv=None):
         print('\nDocker Compose ' + Compose.available(), flush=True)
         environment['ARIADNE_TEST_DOCKER'] = '1'
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'sdk/python/tests', '-q'])
-    run([sys.executable, '-m', 'unittest', 'studies.scenarios.logistics.tests.test_domain', 'studies.scenarios.logistics.tests.test_study', 'studies.scenarios.logistics.v2.tests.test_integration', 'studies.scenarios.logistics.v3.tests.test_agents', 'studies.scenarios.logistics.v3.tests.test_mission', 'studies.scenarios.routing.test_agents', 'studies.scenarios.routing.test_mission', 'studies.scenarios.fanout.tests.test_agents', 'studies.scenarios.fanout.tests.test_analysis', 'studies.scenarios.fanout.tests.test_mission', 'studies.test_layout', '-q'])
+    run([sys.executable, '-m', 'unittest', 'studies.scenarios.logistics.tests.test_domain', 'studies.scenarios.logistics.tests.test_study', 'studies.scenarios.logistics.v2.tests.test_integration', 'studies.scenarios.logistics.v3.tests.test_agents', 'studies.scenarios.logistics.v3.tests.test_mission', 'studies.scenarios.routing.test_agents', 'studies.scenarios.routing.test_mission', 'studies.scenarios.fanout.tests.test_agents', 'studies.scenarios.fanout.tests.test_analysis', 'studies.scenarios.fanout.tests.test_mission', 'studies.test_scenarios', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/runtime_metrics', '-q'])
 
     # Verifica a instalação mínima real, separada do ambiente de testes LLM.

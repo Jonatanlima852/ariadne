@@ -105,6 +105,9 @@ dependências reais, e novas chamadas podem gerar custo.
 
 O visualizador não executa cenários nem altera resultados. Na aba **Logística v2**,
 ele também compara as métricas já registradas por caso e configuração.
+Para missões (contrato 2.0.0), `make viewer` abre o
+[Mission Viewer](../tools/mission-viewer/README.md) com a lista das execuções
+de `.ariadne/runs` e dos estudos; clique numa para ver o grafo das rodadas.
 
 ## Logística com mais agentes
 

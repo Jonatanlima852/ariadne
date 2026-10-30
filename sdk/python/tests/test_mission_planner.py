@@ -136,3 +136,55 @@ class MissionPlanningAgentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StepPolicyTests(unittest.TestCase):
+    def test_plan_step_carries_optional_policies_and_validate_plan_keeps_them(self):
+        from ariadne_sdk.mission import plan_step, validate_plan
+
+        step = plan_step("map-1", "count", "count", deadline_ms=1500,
+                         retry_policy={"max_attempts": 2, "exclude_failed_agent": True},
+                         selection_policy="round_robin")
+        self.assertEqual(step["deadline_ms"], 1500)
+        self.assertEqual(step["retry_policy"], {"max_attempts": 2, "backoff_ms": 0, "exclude_failed_agent": True})
+        self.assertEqual(step["selection_policy"], "ROUND_ROBIN")
+        plain = plan_step("reduce", "merge", "merge", depends_on=["map-1"])
+        self.assertNotIn("deadline_ms", plain)
+        self.assertNotIn("retry_policy", plain)
+
+        plan = validate_plan({"workflow_id": "w", "final_step_id": "reduce", "steps": [step, plain]})
+        self.assertEqual(plan["steps"][0]["selection_policy"], "ROUND_ROBIN")
+        self.assertEqual(plan["steps"][0]["deadline_ms"], 1500)
+        self.assertNotIn("selection_policy", plan["steps"][1])
+
+    def test_validate_plan_rejects_bad_policies(self):
+        from ariadne_sdk.mission import plan_step, validate_plan
+
+        with self.assertRaises(ValueError):
+            plan_step("a", "c", "g", selection_policy="oracle")
+        with self.assertRaises(ValueError):
+            plan_step("a", "c", "g", retry_policy={"attempts": 2})
+        bad = plan_step("a", "c", "g")
+        bad["deadline_ms"] = -5
+        with self.assertRaises(ValueError):
+            validate_plan({"final_step_id": "a", "steps": [bad]})
+
+    def test_decision_to_response_maps_draft_policies(self):
+        from ariadne_sdk.llm import PlanBindingDraft, PlanDraft, PlanStepDraft, PlannerDecision, decision_to_response
+
+        decision = PlannerDecision(action="PLAN", summary="s", reason="", output_json="", context_update_json="",
+                                   plan=PlanDraft(workflow_id="w", final_step_id="b", steps=[
+                                       PlanStepDraft(step_id="a", type="T", goal="g", payload_json="{}",
+                                                     required_capabilities=["c"], depends_on=[], input_bindings=[],
+                                                     deadline_ms=900, max_attempts=3, exclude_failed_agent=True,
+                                                     selection_policy="least_loaded"),
+                                       PlanStepDraft(step_id="b", type="T", goal="g", payload_json="{}",
+                                                     required_capabilities=["c"], depends_on=["a"],
+                                                     input_bindings=[PlanBindingDraft(source_step_id="a", source_path="output", target_field="x")]),
+                                   ]))
+        response = decision_to_response(decision)
+        first, second = response["plan"]["steps"]
+        self.assertEqual(first["deadline_ms"], 900)
+        self.assertEqual(first["retry_policy"]["max_attempts"], 3)
+        self.assertEqual(first["selection_policy"], "LEAST_LOADED")
+        self.assertNotIn("deadline_ms", second)

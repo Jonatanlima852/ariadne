@@ -32,7 +32,43 @@ _PLAN_KEYS = {"workflow_id", "final_step_id", "steps"}
 _STEP_KEYS = {
     "step_id", "type", "goal", "payload", "required_capabilities",
     "depends_on", "input_bindings", "bdi_goal",
+    # políticas operacionais por passo (opcionais, contrato 2.0.0)
+    "deadline_ms", "retry_policy", "selection_policy",
 }
+_RETRY_KEYS = {"max_attempts", "backoff_ms", "exclude_failed_agent"}
+SELECTION_POLICIES = ("FIRST_AVAILABLE", "ROUND_ROBIN", "LEAST_LOADED", "RANDOM")
+
+
+def selection_policy_name(value) -> str:
+    """Normaliza "round_robin" / "SELECTION_POLICY_ROUND_ROBIN" para "ROUND_ROBIN"."""
+    name = str(value or "").strip().upper().removeprefix("SELECTION_POLICY_")
+    if name not in SELECTION_POLICIES:
+        raise ValueError(f"selection_policy must be one of {', '.join(SELECTION_POLICIES)}: {value!r}")
+    return name
+
+
+def step_policies(deadline_ms=0, retry_policy=None, selection_policy="") -> dict[str, Any]:
+    """Campos opcionais de política de um passo, só os que foram definidos."""
+    fields: dict[str, Any] = {}
+    if deadline_ms:
+        if int(deadline_ms) < 0:
+            raise ValueError("deadline_ms must not be negative")
+        fields["deadline_ms"] = int(deadline_ms)
+    if retry_policy:
+        unknown = set(retry_policy) - _RETRY_KEYS
+        if unknown:
+            raise ValueError("retry_policy has unknown fields: " + ", ".join(sorted(unknown)))
+        policy = {
+            "max_attempts": int(retry_policy.get("max_attempts", 0)),
+            "backoff_ms": int(retry_policy.get("backoff_ms", 0)),
+            "exclude_failed_agent": bool(retry_policy.get("exclude_failed_agent", False)),
+        }
+        if policy["max_attempts"] < 0 or policy["backoff_ms"] < 0:
+            raise ValueError("retry_policy must not be negative")
+        fields["retry_policy"] = policy
+    if selection_policy:
+        fields["selection_policy"] = selection_policy_name(selection_policy)
+    return fields
 _BINDING_KEYS = {"source_step_id", "source_path", "target_field"}
 
 
@@ -219,6 +255,8 @@ class MissionStep:
         self.result = message_to_dict(message.result) if message.HasField("result") else {}
         self.task_result = TaskResult.from_proto(message.result) if message.HasField("result") else None
         self.agent_id = self.task_result.agent_id if self.task_result else ""
+        self.agent_kind = self.task_result.agent_kind if self.task_result else "unknown"
+        self.attempts = list(self.task_result.attempts) if self.task_result else []
         self.output = dict(self.task_result.output) if self.task_result else {}
         self.error = self.task_result.error_message if self.task_result else None
 
@@ -485,9 +523,13 @@ class PlannerRequest:
 
 def plan_step(
     step_id, capability, goal, *, payload=None, depends_on=(), input_bindings=(),
-    type="MISSION_STEP", bdi_goal="",
+    type="MISSION_STEP", bdi_goal="", deadline_ms=0, retry_policy=None, selection_policy="",
 ) -> dict[str, Any]:
-    """Um passo no formato JSON aceito pelo orquestrador."""
+    """Um passo no formato JSON aceito pelo orquestrador.
+
+    ``deadline_ms``, ``retry_policy`` e ``selection_policy`` são opcionais:
+    quando omitidos, o laço de missão aplica os padrões da missão.
+    """
     capabilities = [capability] if isinstance(capability, str) else list(capability)
     return {
         "step_id": step_id,
@@ -498,6 +540,7 @@ def plan_step(
         "depends_on": list(depends_on),
         "input_bindings": [dict(binding) for binding in input_bindings],
         "bdi_goal": bdi_goal,
+        **step_policies(deadline_ms, retry_policy, selection_policy),
     }
 
 
@@ -545,6 +588,13 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
             if not isinstance(binding, Mapping) or set(binding) != _BINDING_KEYS:
                 raise ValueError(f"plan step {step_id} has an invalid input binding")
             bindings.append({key: str(binding[key]) for key in sorted(_BINDING_KEYS)})
+        retry = step.get("retry_policy")
+        if retry is not None and not isinstance(retry, Mapping):
+            raise ValueError(f"plan step {step_id} retry_policy must be an object")
+        try:
+            policies = step_policies(step.get("deadline_ms", 0) or 0, retry, step.get("selection_policy", "") or "")
+        except ValueError as error:
+            raise ValueError(f"plan step {step_id}: {error}") from error
         normalized_steps.append({
             "step_id": step_id,
             "type": str(step.get("type") or "MISSION_STEP"),
@@ -554,6 +604,7 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
             "depends_on": [str(item) for item in step.get("depends_on", ())],
             "input_bindings": bindings,
             "bdi_goal": str(step.get("bdi_goal", "") or ""),
+            **policies,
         })
     for step in normalized_steps:
         for dependency in step["depends_on"] + [b["source_step_id"] for b in step["input_bindings"]]:

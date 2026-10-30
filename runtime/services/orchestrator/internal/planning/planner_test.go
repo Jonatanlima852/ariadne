@@ -72,3 +72,40 @@ func TestIsPlanningTaskRequiresExplicitSingleEntryCapability(t *testing.T) {
 		t.Fatal("ambiguous task detected")
 	}
 }
+
+func TestDecodeDefinitionAcceptsPerStepPolicies(t *testing.T) {
+	output := validPlanOutput()
+	first := output["steps"].([]any)[0].(map[string]any)
+	first["deadline_ms"] = 1500
+	first["retry_policy"] = map[string]any{"max_attempts": 2, "backoff_ms": 10, "exclude_failed_agent": true}
+	first["selection_policy"] = "round_robin"
+	definition, err := DecodeDefinition(mustStruct(t, output))
+	if err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	template := definition.Steps[0].TaskTemplate
+	if template.DeadlineMs != 1500 || template.RetryPolicy == nil || template.RetryPolicy.MaxAttempts != 2 || !template.RetryPolicy.ExcludeFailedAgent || template.SelectionPolicy != pb.SelectionPolicy_SELECTION_POLICY_ROUND_ROBIN {
+		t.Fatalf("template policies = %v", template)
+	}
+	if other := definition.Steps[1].TaskTemplate; other.DeadlineMs != 0 || other.RetryPolicy != nil {
+		t.Fatalf("second step should keep defaults: %v", other)
+	}
+	first["selection_policy"] = "oracle"
+	if _, err := DecodeDefinition(mustStruct(t, output)); err == nil {
+		t.Fatal("unknown selection_policy accepted")
+	}
+	first["selection_policy"] = "SELECTION_POLICY_LEAST_LOADED"
+	first["deadline_ms"] = -1
+	if _, err := DecodeDefinition(mustStruct(t, output)); err == nil {
+		t.Fatal("negative deadline accepted")
+	}
+}
+
+func mustStruct(t *testing.T, value map[string]any) *structpb.Struct {
+	t.Helper()
+	encoded, err := structpb.NewStruct(value)
+	if err != nil {
+		t.Fatalf("struct: %v", err)
+	}
+	return encoded
+}

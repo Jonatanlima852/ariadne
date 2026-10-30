@@ -378,7 +378,7 @@ class PlannerProtocolTests(unittest.TestCase):
             (None, "requires a plan"),
             ({"steps": []}, "non-empty"),
             ({"steps": [plan_step("a", "x", "g")], "extra": 1}, "unknown fields"),
-            ({"steps": [{**plan_step("a", "x", "g"), "deadline_ms": 5}]}, "unknown fields"),
+            ({"steps": [{**plan_step("a", "x", "g"), "priority": 5}]}, "unknown fields"),
             ({"steps": [plan_step("a", [], "g")]}, "required_capabilities"),
             ({"steps": [plan_step("a", "x", "g", depends_on=["b"])]}, "unknown step b"),
             ({"steps": [plan_step("a", "x", "g")], "final_step_id": "z"}, "unknown step z"),

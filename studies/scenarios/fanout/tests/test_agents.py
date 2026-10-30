@@ -12,7 +12,7 @@ from studies.scenarios.fanout.agents import (
 )
 from studies.scenarios.fanout.domain import count_words, make_shards, merge_counts, top_words
 from studies.scenarios.fanout.mission import (
-    Settings, agents_for, configure_runtime, expected_total_words, mission_context, mission_for, settings_from_env,
+    Settings, agents_for, expected_total_words, mission_context, mission_for, settings_from_env,
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
@@ -159,9 +159,8 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(settings.flaky_delay_ms, 2000)
         self.assertEqual(settings.label, "fanout-k2-n5")
         self.assertEqual(settings_from_env({}).label, "fanout-k4-n8-flaky")
-        environment = {}
-        self.assertEqual(configure_runtime(settings, environment), "500ms")
-        self.assertEqual(environment["EXECUTION_TIMEOUT"], "500ms")
+        # O prazo de passo viaja no plano (deadline_ms), não no ambiente.
+        self.assertEqual(mission_context(settings)["step_deadline_ms"], 500)
 
     def test_shards_above_the_workflow_limit_are_rejected(self):
         with self.assertRaises(ValueError):
@@ -187,7 +186,7 @@ class SettingsTests(unittest.TestCase):
         with patch.dict(os.environ, {"FANOUT_WORKERS": "2", "FANOUT_SHARDS": "3", "FANOUT_FLAKY": "1",
                                      "FANOUT_STEP_DEADLINE_MS": "700"}):
             scenario = load_scenario(os.path.join(ROOT, "studies/scenarios/fanout/scenario.py"))
-            self.assertEqual(os.environ["EXECUTION_TIMEOUT"], "700ms")
+        self.assertEqual(scenario.mission.context["step_deadline_ms"], 700)
         self.assertEqual(scenario.name, "fanout-k2-n3-flaky")
         self.assertEqual([agent.agent_id for agent in scenario.agents],
                          ["planner", "counter-1", "counter-2", FLAKY_AGENT_ID, "reducer"])

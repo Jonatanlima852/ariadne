@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/proto"
@@ -45,6 +46,16 @@ type planStep struct {
 	DependsOn            []string       `json:"depends_on"`
 	InputBindings        []planBinding  `json:"input_bindings"`
 	BDIGoal              string         `json:"bdi_goal"`
+	// Políticas operacionais por passo (2.0.0): opcionais; quando ausentes,
+	// o laço de missão aplica os padrões da missão e o executor os seus.
+	DeadlineMs      int64      `json:"deadline_ms"`
+	RetryPolicy     *planRetry `json:"retry_policy"`
+	SelectionPolicy string     `json:"selection_policy"`
+}
+type planRetry struct {
+	MaxAttempts        int32 `json:"max_attempts"`
+	BackoffMs          int64 `json:"backoff_ms"`
+	ExcludeFailedAgent bool  `json:"exclude_failed_agent"`
 }
 type planBinding struct {
 	SourceStepID string `json:"source_step_id"`
@@ -124,12 +135,43 @@ func DecodeDefinition(output *structpb.Struct) (*pb.WorkflowDefinition, error) {
 		if declared.BDIGoal != "" {
 			step.TaskTemplate.Bdi = &pb.BdiExtension{Goal: declared.BDIGoal}
 		}
+		if declared.DeadlineMs < 0 {
+			return nil, fmt.Errorf("step %s deadline_ms must not be negative", declared.StepID)
+		}
+		step.TaskTemplate.DeadlineMs = declared.DeadlineMs
+		if declared.RetryPolicy != nil {
+			if declared.RetryPolicy.MaxAttempts < 0 || declared.RetryPolicy.BackoffMs < 0 {
+				return nil, fmt.Errorf("step %s retry_policy must not be negative", declared.StepID)
+			}
+			step.TaskTemplate.RetryPolicy = &pb.RetryPolicy{MaxAttempts: declared.RetryPolicy.MaxAttempts, BackoffMs: declared.RetryPolicy.BackoffMs, ExcludeFailedAgent: declared.RetryPolicy.ExcludeFailedAgent}
+		}
+		if declared.SelectionPolicy != "" {
+			policy, err := parseSelectionPolicy(declared.SelectionPolicy)
+			if err != nil {
+				return nil, fmt.Errorf("step %s: %w", declared.StepID, err)
+			}
+			step.TaskTemplate.SelectionPolicy = policy
+		}
 		for _, binding := range declared.InputBindings {
 			step.InputBindings = append(step.InputBindings, &pb.ResultBinding{SourceStepId: binding.SourceStepID, SourcePath: binding.SourcePath, TargetField: binding.TargetField})
 		}
 		definition.Steps = append(definition.Steps, step)
 	}
 	return definition, nil
+}
+
+// parseSelectionPolicy aceita "round_robin", "ROUND_ROBIN" ou
+// "SELECTION_POLICY_ROUND_ROBIN".
+func parseSelectionPolicy(name string) (pb.SelectionPolicy, error) {
+	normalized := strings.ToUpper(strings.TrimSpace(name))
+	if !strings.HasPrefix(normalized, "SELECTION_POLICY_") {
+		normalized = "SELECTION_POLICY_" + normalized
+	}
+	value, known := pb.SelectionPolicy_value[normalized]
+	if !known {
+		return 0, fmt.Errorf("unknown selection_policy %q", name)
+	}
+	return pb.SelectionPolicy(value), nil
 }
 
 func planningError(code pb.ErrorCode, message string) *pb.ErrorInfo {

@@ -116,6 +116,7 @@ def plan_round_one(request: PlannerRequest) -> PlannerResponse:
     dropped = shards[MAX_SHARDS:]
     shards = shards[:MAX_SHARDS]
     work_ms = int(context.get("work_ms", 0) or 0)
+    deadline_ms = int(context.get("step_deadline_ms", 0) or 0)
     steps, map_ids = [], []
     for item in shards:
         step_id = map_step_id(int(item["shard"]))
@@ -123,7 +124,7 @@ def plan_round_one(request: PlannerRequest) -> PlannerResponse:
         steps.append(plan_step(
             step_id, COUNT_CAPABILITY, f"Contar as palavras do fragmento {item['shard']}",
             payload={"shard": int(item["shard"]), "text": item["text"], "work_ms": work_ms},
-            type="MAP_COUNT",
+            type="MAP_COUNT", deadline_ms=deadline_ms,
         ))
     bindings = [{"source_step_id": sid, "source_path": "output", "target_field": f"shards.{sid}"}
                 for sid in map_ids]
@@ -131,7 +132,7 @@ def plan_round_one(request: PlannerRequest) -> PlannerResponse:
         REDUCE_STEP_ID, REDUCE_CAPABILITY, "Consolidar as contagens de todos os fragmentos",
         payload={"top_n": int(context.get("top_n", 5) or 5),
                  "expected_shards": [int(item["shard"]) for item in shards]},
-        depends_on=map_ids, input_bindings=bindings, type="REDUCE_COUNT",
+        depends_on=map_ids, input_bindings=bindings, type="REDUCE_COUNT", deadline_ms=deadline_ms,
     ))
     summary = f"{len(map_ids)} map steps in parallel, then reduce"
     if dropped:

@@ -14,7 +14,7 @@ except ImportError as error:
     raise ImportError("LLM support requires ariadne-sdk[llm]; in this checkout use uv sync --project sdk/python --extra llm") from error
 
 from ariadne_sdk.agent import Agent
-from ariadne_sdk.mission import DEFAULT_PLANNER_CAPABILITY, PlannerRequest, planner_response_from_json
+from ariadne_sdk.mission import DEFAULT_PLANNER_CAPABILITY, PlannerRequest, planner_response_from_json, step_policies
 from ariadne_sdk.models import Task, TaskResult
 
 log = logging.getLogger(__name__)
@@ -95,6 +95,11 @@ class PlanStepDraft(BaseModel):
     depends_on: list[str]
     input_bindings: list[PlanBindingDraft]
     bdi_goal: str = ""
+    # políticas opcionais por passo; 0 ou vazio = padrão da missão
+    deadline_ms: int = 0
+    max_attempts: int = 0
+    exclude_failed_agent: bool = False
+    selection_policy: str = ""
 
 
 class PlanDraft(BaseModel):
@@ -134,11 +139,16 @@ def decision_to_response(decision: PlannerDecision) -> dict:
                 raise LlmValidationError(f"step {step.step_id} payload_json is not valid JSON: {error}") from error
             if not isinstance(payload, dict):
                 raise LlmValidationError(f"step {step.step_id} payload_json must decode to an object")
+            retry = {"max_attempts": step.max_attempts, "exclude_failed_agent": step.exclude_failed_agent} if step.max_attempts else None
+            try:
+                policies = step_policies(step.deadline_ms, retry, step.selection_policy)
+            except ValueError as error:
+                raise LlmValidationError(f"step {step.step_id}: {error}") from error
             steps.append({
                 "step_id": step.step_id, "type": step.type, "goal": step.goal, "payload": payload,
                 "required_capabilities": step.required_capabilities, "depends_on": step.depends_on,
                 "input_bindings": [binding.model_dump() for binding in step.input_bindings],
-                "bdi_goal": step.bdi_goal,
+                "bdi_goal": step.bdi_goal, **policies,
             })
         plan = {"workflow_id": decision.plan.workflow_id,
                 "final_step_id": decision.plan.final_step_id, "steps": steps}
@@ -215,6 +225,8 @@ class LlmAgent(Agent):
 
     runtime_name = "python-sdk-openai"
     model = "gpt-5.6-luna"
+
+    default_kind = "llm"
 
     def __init__(self, model=None, openai_client=None, handlers=None,
                  prompt=None, output_schema=None, result_mapper=None, **kwargs):

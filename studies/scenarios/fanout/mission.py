@@ -87,23 +87,6 @@ def settings_from_env(environ=None) -> Settings:
     )
 
 
-def configure_runtime(settings: Settings, environ=None) -> str:
-    """Prazo de passo como ``EXECUTION_TIMEOUT`` do orquestrador.
-
-    O plano do planejador não transporta ``deadline_ms`` por passo (o
-    decodificador Go aceita só ``step_id``, ``type``, ``goal``, ``payload``,
-    ``required_capabilities``, ``depends_on``, ``input_bindings`` e
-    ``bdi_goal``); um passo sem prazo usa o prazo padrão do orquestrador, que
-    vem da variável ``EXECUTION_TIMEOUT``. ``./ariadne run`` inicia o
-    orquestrador com o ambiente do processo que carregou esta declaração, por
-    isso basta definir a variável aqui, antes de os serviços subirem.
-    """
-    env = os.environ if environ is None else environ
-    value = f"{settings.step_deadline_ms}ms"
-    env["EXECUTION_TIMEOUT"] = value
-    return value
-
-
 def agents_for(settings: Settings) -> list:
     agents = [planner()]
     agents.extend(shard_counter(f"counter-{index}") for index in range(1, settings.workers + 1))
@@ -119,6 +102,8 @@ def mission_context(settings: Settings) -> dict:
         "shard_count": settings.shards,
         "work_ms": settings.work_ms,
         "top_n": TOP_N,
+        # prazo que o planejador copia para cada passo do plano (deadline_ms)
+        "step_deadline_ms": settings.step_deadline_ms,
     }
 
 

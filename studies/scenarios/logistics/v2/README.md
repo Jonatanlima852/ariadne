@@ -11,7 +11,6 @@
 | `datasets/` | Casos fixos das duas suítes |
 | [benchmarks/](benchmarks/README.md) | Execução, arquivamento, análise e figuras |
 | `docs/` | Guias de estresse, variante enxuta e apresentação |
-| `tests/` | Verificações de estrutura e integração dos pacotes |
 | `experiments/` | Protocolos congelados das coletas |
 | [results/](results/README.md) | Evidências selecionadas e material de apresentação |
 
@@ -212,8 +211,8 @@ gráficos, histórico de ações e incidentes, prazos e consumo por agente.
 A interface apenas lê as evidências; não inicia episódios nem chama modelos.
 Uma única observação por caso não sustenta conclusões estatísticas. A coleta é local,
 sequencial e sem controle de aquecimento do provedor. A validação original foi feita executando o fluxo real e a demonstração de
-integração, incluindo recarga, incidentes e recuperação de carga. Após a
-organização dos pacotes, `tests/test_integration.py` acrescenta verificações de
+integração, incluindo recarga, incidentes e recuperação de carga.
+py` acrescenta verificações de
 carregamento das suítes, declaração dos agentes sem credenciais e integração
 entre proposta de demonstração, schema e transições. Essas verificações fazem
 parte de `make verify` e não medem qualidade de LLM.

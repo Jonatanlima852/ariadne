@@ -27,7 +27,6 @@ depois, com um simulador independente, sem iniciar serviços.
 | `analysis.py` | Avaliação offline das evidências |
 | `evaluation/` | Relatórios e proveniência usados pela análise |
 | `results/` | Coleta histórica preservada |
-| `tests/` | Testes de domínio e reprodução do estudo |
 
 ## Executar
 
@@ -144,16 +143,5 @@ genérica do SDK e a avaliação conserva uma busca de referência. A
 otimalidade agregada inclui rejeições corretas. Tokens podem não incluir
 tentativas que falharam antes de retornar metadados. As latências dos
 workflows não têm o mesmo escopo das tarefas simples da coleta histórica.
-
-## Verificar
-
-```sh
-uv run --project sdk/python --extra llm python -m unittest \
-  studies.scenarios.logistics.tests.test_domain studies.scenarios.logistics.tests.test_study -q
-```
-
-Com `ARIADNE_TEST_DOCKER=1`, inclui a integração híbrida em contêineres
-com cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
-experimental de uma LLM real.
 
 [Todos os estudos](../../README.md) · [Avaliação do TCC](../../../docs/evaluation.md) · [Proveniência](../../../docs/experiments.md#proveniência)

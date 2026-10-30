@@ -40,7 +40,6 @@ plano, rejeita ações inválidas e dispara incidentes antes da próxima ação.
 | `scenario.py` | Um caso como missão declarada; `./ariadne run` sobe planejador, entregadores e executor em contêineres |
 | [campaign.py](campaign.py) | Matriz de casos e configurações para `./ariadne campaign` |
 | [analysis.py](analysis.py) | Linhas por missão, verificação do provedor e comparação reutilizando o analisador da v2 |
-| `tests/` | Agentes sem runtime, laço imitado e integração em contêineres |
 
 ## Executar
 
@@ -86,8 +85,6 @@ substitutos.
 ## Limites
 
 Não há resultados reais da v3 registrados ainda. Em modo demo nada é medido
-sobre um modelo. Os testes em `tests/test_agents.py` não sobem nada;
-`tests/test_mission.py` roda as missões em contêineres com
-`ARIADNE_TEST_DOCKER=1`.
+sobre um modelo.
 
 [Estudo logístico](../README.md) · [Todos os estudos](../../../README.md)

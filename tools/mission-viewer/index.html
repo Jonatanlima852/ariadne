@@ -211,7 +211,7 @@
       <div id="welcome">
         <h2>Execuções de missão como um grafo ou uma linha do tempo</h2>
         <p>Em "Dependências", cada rodada mostra a chamada ao planejador seguida dos passos do plano, ligados por setas de dependência de dados. Em "Linha do tempo", cada agente é uma pista e cada chamada um bloco, com o orquestrador despachando e recebendo cada uma. Clique num quadro para ver a entrada e a saída daquela chamada exatamente como estão no JSON do contrato.</p>
-        <p>Com <code>make viewer</code> (ou <code>python3 tools/mission-viewer/serve.py</code>) a lista à esquerda traz as missões gravadas em <code>.ariadne</code> e nos resultados preservados dos estudos; escolha uma para desenhar. Sem o servidor, use "Abrir JSON", "Escolher pasta" ou arraste um arquivo.</p>
+        <p>Com <code>./ariadne viewer</code> (ou <code>python3 tools/mission-viewer/serve.py</code>) a lista à esquerda traz as missões gravadas em <code>.ariadne</code> e nos resultados preservados dos estudos; escolha uma para desenhar. Sem o servidor, use "Abrir JSON", "Escolher pasta" ou arraste um arquivo.</p>
       </div>
       <div id="stage"></div>
       <div id="zoom"><button data-z="out" title="Reduzir (−)">−</button><span class="level" id="zoom-level">100%</span><button data-z="in" title="Ampliar (+)">+</button><button data-z="reset" title="Tamanho real (tecla 0)">100%</button><button data-z="fit" title="Ajustar à janela (tecla F)">Ajustar</button></div>
@@ -1042,7 +1042,7 @@ window.addEventListener('drop', event => { event.preventDefault(); document.body
   }
   const last = store.get('lastPath'), remembered = indexed && runs.find(run => run.path === last);
   if (remembered) openRun(remembered, params.get('node'));
-  if (!indexed) $('hint').textContent = 'Sem servidor: rode make viewer para listar .ariadne, ou use as fontes no rodapé da lista.';
+  if (!indexed) $('hint').textContent = 'Sem servidor: rode ./ariadne viewer para listar .ariadne, ou use as fontes no rodapé da lista.';
 })();
 </script>
 </body>

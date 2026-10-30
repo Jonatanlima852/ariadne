@@ -13,7 +13,7 @@ contrato. Nada além disso: sem replay, sem gráficos, sem exportação.
 A fonte é sempre `.ariadne` deste repositório, mais os resultados
 preservados dos estudos; não é preciso escolher pasta.
 
-1. `make viewer` (ou `python3 tools/mission-viewer/serve.py`, da raiz do
+1. `./ariadne viewer` (ou `python3 tools/mission-viewer/serve.py`, da raiz do
    repositório). Um servidor de biblioteca padrão indexa
    `.ariadne/runs/*/mission-result.json`,
    `.ariadne/logistics-v3/*/missions/*.json`, `.ariadne/campaigns/**`,

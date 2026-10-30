@@ -17,6 +17,7 @@ escritas à mão.
 | `./ariadne logs [ID]` | Logs salvos de serviços e agentes |
 | `./ariadne stop [ID]` | Remove contêineres que uma interrupção abrupta tenha deixado |
 | `./ariadne doctor [--file ARQUIVO.py] [--llm]` | Confere Python, SDK, Docker, Compose, destino e, opcionalmente, descrição e extra LLM |
+| `./ariadne viewer [--root DIR] [--port N] [--no-browser]` | Abre o Mission Viewer com as missões de `.ariadne` e dos estudos |
 | `./ariadne verify` | Verificação integrada do checkout; use o extra `llm` |
 | `./ariadne help` | Ajuda |
 

@@ -39,6 +39,10 @@ def main(argv=None):
     campaign = commands.add_parser("campaign", help="coleta uma matriz de experimentos sem avaliar resultados")
     campaign.add_argument("file", type=Path)
     campaign.add_argument("--output", type=Path, default=Path(".ariadne/campaigns"))
+    viewer = commands.add_parser("viewer", help="abre o Mission Viewer com as missões gravadas em .ariadne e nos estudos")
+    viewer.add_argument("--root", action="append", type=Path, help="pasta com missões (repetível)")
+    viewer.add_argument("--port", type=positive, default=4180)
+    viewer.add_argument("--no-browser", action="store_true")
     commands.add_parser("help", help="mostra os comandos disponíveis")
     verify = commands.add_parser("verify", help="verifica SDK, runtime, estudos e ferramentas do checkout")
     verify.add_argument("--unit-only", action="store_true")
@@ -54,6 +58,16 @@ def main(argv=None):
 
     previous = signal.signal(signal.SIGTERM, interrupt)
     try:
+        if args.command == "viewer":
+            root = Path(os.getenv("ARIADNE_ROOT", Path(__file__).resolve().parents[4]))
+            script = root / "tools/mission-viewer/serve.py"
+            if not script.is_file():
+                raise ValueError("viewer requires a checkout; configure ARIADNE_ROOT")
+            options = ["--port", str(args.port)] + (["--no-browser"] if args.no_browser else [])
+            for folder in args.root or []:
+                options.extend(["--root", str(folder.resolve())])
+            os.chdir(root)
+            os.execv(sys.executable, [sys.executable, str(script), *options])
         if args.command == "doctor":
             from ariadne_sdk.doctor import diagnose
             return diagnose(output=args.output, source=args.file, llm=args.llm)

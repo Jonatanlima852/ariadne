@@ -70,7 +70,7 @@ e o [catálogo de cenários](scenarios.md).
 
 ## 5. Abrir a visualização
 
-`make viewer` abre o [Mission Viewer](../tools/mission-viewer/README.md) com as
+`./ariadne viewer` abre o [Mission Viewer](../tools/mission-viewer/README.md) com as
 missões de `.ariadne/runs`: grafo de dependências por rodada, linha do tempo por
 agente e, ao clicar num bloco, a entrada e a saída daquela chamada. Cenários de
 workflow (eco, workflow sequencial, falha) são lidos nos arquivos `result.json`

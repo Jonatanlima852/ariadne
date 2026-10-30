@@ -71,12 +71,6 @@ verify:
 test-go:
 	cd runtime && go test ./...
 
-# viewer — abre o Mission Viewer (temporário aqui; passará para ./ariadne)
-
-.PHONY: viewer
-viewer:
-	python3 tools/mission-viewer/serve.py $(VIEWER_ARGS)
-
 # help — lista os targets
 
 .PHONY: help
@@ -88,7 +82,6 @@ help:
 	@echo "  make build           Compila os servicos Go"
 	@echo "  make verify          Verifica contrato, Go, SDK, estudos e ferramentas"
 	@echo "  make test-go         Executa somente os testes Go"
-	@echo "  make viewer          Abre o Mission Viewer com as missoes de .ariadne e dos estudos"
 	@echo ""
-	@echo "Para executar cenarios, campanhas, status e logs: ./ariadne help"
+	@echo "Para executar cenarios, campanhas, status, logs e o Mission Viewer: ./ariadne help"
 	@echo ""

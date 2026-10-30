@@ -52,7 +52,7 @@ e reconhecer a resposta esperada. Depois, explore
 [workflows e recuperação](docs/experiments.md), [BDI declarativo](docs/bdi.md),
 as missões de [rotas](studies/scenarios/routing/README.md) e
 [fan-out](studies/scenarios/fanout/README.md) e o
-[estudo logístico](studies/scenarios/logistics/README.md). `make viewer` abre o
+[estudo logístico](studies/scenarios/logistics/README.md). `./ariadne viewer` abre o
 Mission Viewer com as missões gravadas, com grafo de dependências e linha do tempo.
 
 ## O que está implementado

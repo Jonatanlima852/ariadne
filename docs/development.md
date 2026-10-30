@@ -152,6 +152,6 @@ consulta URLs externas nem valida âncoras.
 O [Mission Viewer](../tools/mission-viewer/README.md) é uma página estática
 sem dependências: `tools/mission-viewer/index.html` e um servidor de índice em
 `serve.py`, só biblioteca padrão. Para mudar o desenho, edite o HTML e abra
-com `make viewer`.
+com `./ariadne viewer`.
 
 [Referência](reference.md) · [Índice](README.md)

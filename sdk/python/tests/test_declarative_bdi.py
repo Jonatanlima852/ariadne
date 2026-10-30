@@ -113,15 +113,15 @@ class DeclarativeBdiTests(unittest.TestCase):
     def test_meeting_example_uses_same_interface_and_handles_unavailable_people(self):
         namespace = runpy.run_path(str(Path(__file__).resolve().parents[3] / "studies/scenarios/meeting/scenario.py"))
         instance = namespace["scenario"].agents[0]
-        desire = {"participants": ["alice", "bob", "carol"], "duration": 1, "preferred": 13}
-        result = instance.handle(task({"meeting": desire}))
-        self.assertEqual(result.output["start"], 12)
-        self.assertEqual(result.metadata["selected_plan"], "start_12")
-        desire["participants"] = ["unknown"]
-        result = instance.handle(task({"meeting": desire}))
-        self.assertEqual(result.metadata["selected_plan"], "unavailable")
-        self.assertIsNone(result.output["start"])
-
+        request = {"participants": ["alice", "bob", "carol"], "duration_hours": 1, "preferred_start_hour": 13}
+        result = instance.handle(task(request))
+        self.assertEqual(result.output["start_hour"], 12)
+        self.assertEqual(result.metadata["selected_plan"], "earliest_full_slot")
+        self.assertEqual(result.metadata["bdi_trace"]["final_status"], "achieved")
+        # Uma reunião de nove horas com alice (ocupada às 9h) não cabe no expediente: resta o plano de recuo.
+        result = instance.handle(task({"participants": ["alice"], "duration_hours": 9, "preferred_start_hour": 9}))
+        self.assertEqual(result.metadata["selected_plan"], "no_feasible_slot")
+        self.assertIsNone(result.output["start_hour"])
 
 if __name__ == "__main__":
     unittest.main()

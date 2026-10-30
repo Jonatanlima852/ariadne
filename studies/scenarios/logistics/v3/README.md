@@ -27,7 +27,8 @@ plano, rejeita ações inválidas e dispara incidentes antes da próxima ação.
 | `agents/` | `planner` (LLM), `single_llm` (LLM), `delivery` (BDI), `execute` (determinístico), cada um com Dockerfile |
 | `mission.py` | Declaração da missão por caso/configuração e métricas do `MissionResult` |
 | `scenario.py` | Um caso como missão declarada; `./ariadne run` sobe planejador, entregadores e executor em contêineres |
-| [benchmarks/](benchmarks/run.py) | Coletor que chama o executor por observação, `analyze.py` reutilizando a v2 |
+| [campaign.py](campaign.py) | Matriz de casos e configurações para `./ariadne campaign` |
+| [analysis.py](analysis.py) | Linhas por missão, verificação do provedor e comparação reutilizando o analisador da v2 |
 | `tests/` | Agentes sem runtime, laço imitado e integração em contêineres |
 
 Da raiz, sem credencial (substitutos determinísticos; não mede um modelo):
@@ -41,14 +42,16 @@ Campanha real, com `OPENAI_API_KEY` (e `LLM_MODEL` opcional) exportadas no
 terminal; cada observação sobe e derruba sua própria topologia:
 
 ```sh
-uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run \
-  --suite stress --configurations ariadne-v3 single-llm-v3 --repeat 3
-python -m studies.scenarios.logistics.v3.benchmarks.analyze \
-  --input .ariadne/logistics-v3/<coleta>/results.json --output /tmp/logistics-v3-analysis --no-plots
+LOGISTICS_V3_CAMPAIGN_SUITE=stress LOGISTICS_V3_CAMPAIGN_REPEAT=3 \
+  ./ariadne campaign studies/scenarios/logistics/v3/campaign.py
+python -m studies.scenarios.logistics.v3.analysis \
+  studies/scenarios/logistics/v3/campaigns/campaign-<id> --no-plots
 ```
 
-Cada missão fica em `missions/<caso>-<configuração>-r<n>.json`, o
-`MissionResult` do contrato, legível no
+Com `LOGISTICS_V3_DEMO=1` a mesma campanha usa os substitutos determinísticos.
+
+Cada observação é uma pasta de execução comum, com o `MissionResult` do
+contrato em `mission-result.json`, legível no
 [visualizador de missão](../../../../tools/mission-viewer/README.md).
 Testes sem LLM: `tests/test_agents.py` não sobe nada; `tests/test_mission.py`
 roda as missões em contêineres com `ARIADNE_TEST_DOCKER=1`.

@@ -1,7 +1,7 @@
 """Missão logística v3: declaração por caso/configuração e métricas do resultado.
 
-Compartilhado pelo cenário declarativo (``scenario.py``), pelo coletor
-(``benchmarks/run.py``) e pelos testes. As métricas saem do ``MissionResult``
+Compartilhado pelo cenário declarativo (``scenario.py``), pela análise
+(``analysis.py``) e pelos testes. As métricas saem do ``MissionResult``
 do contrato (o JSON de ``mission-result.json``): estado final no contexto,
 rodadas, resultados do planejador e rastros BDI. Não há controlador de
 episódio em Python; o laço é o do orquestrador Go.

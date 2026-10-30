@@ -62,7 +62,7 @@ O que se compara, por caso e configuração: pedidos entregues e no prazo,
 ações rejeitadas, distância, energia, tempo real, rodadas, chamadas e tokens
 do planejador, ciclos de deliberação BDI, passos paralelos por rodada e
 reatribuições. Tudo sai do `MissionResult` de cada missão, salvo inteiro em
-`missions/` e legível no [visualizador de missão](../tools/mission-viewer/README.md).
+`mission-result.json` e legível no [visualizador de missão](../tools/mission-viewer/README.md).
 
 ```sh
 # sem credencial: substitutos determinísticos (não mede um modelo)
@@ -70,10 +70,10 @@ LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py
 
 # campanha real: cada observação sobe sua topologia em contêineres;
 # exporte OPENAI_API_KEY (e LLM_MODEL) no terminal, o executor repassa aos agentes
-uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run \
-  --suite stress --configurations ariadne-v3 single-llm-v3 --repeat 3
-python -m studies.scenarios.logistics.v3.benchmarks.analyze \
-  --input .ariadne/logistics-v3/<coleta>/results.json --output /tmp/logistics-v3-analysis --no-plots
+LOGISTICS_V3_CAMPAIGN_SUITE=stress LOGISTICS_V3_CAMPAIGN_REPEAT=3 \
+  ./ariadne campaign studies/scenarios/logistics/v3/campaign.py
+python -m studies.scenarios.logistics.v3.analysis \
+  studies/scenarios/logistics/v3/campaigns/campaign-<id> --no-plots
 ```
 
 Para avaliar: separe `execution_kind` demo de real; compare atendimento e
@@ -203,7 +203,7 @@ contêineres e termina com manifesto, eventos e logs:
 ```sh
 ./ariadne campaign studies/scenarios/basic_task/campaign.py
 ./ariadne campaign studies/scenarios/fanout/campaign.py
-uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run --demo --suite basic
+LOGISTICS_V3_DEMO=1 ./ariadne campaign studies/scenarios/logistics/v3/campaign.py
 ```
 
 Rotas, logística e saudação exigem `OPENAI_API_KEY` exportada quando não usam

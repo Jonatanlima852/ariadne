@@ -7,108 +7,240 @@
 <style>
   :root {
     color-scheme: light dark;
-    --bg: #f6f7f9; --panel: #ffffff; --ink: #1f2328; --muted: #6b7280; --line: #d0d4da;
-    --edge: #8a919c; --accent: #2563eb;
-    --completed: #2e9e5b; --failed: #d64545; --skipped: #9aa0a6; --cancelled: #e08a1e;
-    --timeout: #8b5cf6; --running: #3b82f6; --pending: #b4b9c0; --plan: #2563eb; --done: #2e9e5b; --abort: #d64545;
+    --bg: light-dark(#f3f4f6, #0e1116);
+    --surface: light-dark(#ffffff, #161a20);
+    --surface-2: light-dark(#f8f9fb, #1b2027);
+    --band: light-dark(#f6f7f9, #141920);
+    --ink: light-dark(#1a1f26, #e6e9ed);
+    --muted: light-dark(#667080, #96a0ac);
+    --line: light-dark(#e3e6eb, #272d36);
+    --line-strong: light-dark(#c8cdd5, #3a424d);
+    --edge: light-dark(#9aa3af, #5f6975);
+    --accent: light-dark(#2f6fed, #6a9bff);
+    --accent-soft: light-dark(#e9f0fe, #1b2a47);
+    --ok: light-dark(#1f9d55, #3ccf7a);
+    --err: light-dark(#d93a3a, #ff6b6b);
+    --warn: light-dark(#d9820f, #f2a93b);
+    --info: light-dark(#2f6fed, #6a9bff);
+    --violet: light-dark(#7c5cf0, #a68cff);
+    --gray: light-dark(#8a939e, #6e7883);
+    --shadow: light-dark(0 1px 2px rgba(16,24,40,.06), 0 1px 2px rgba(0,0,0,.5));
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #111417; --panel: #1a1e23; --ink: #e6e8eb; --muted: #9aa3ad; --line: #2e343b; --edge: #6b7480; }
-  }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  /* cores por estado: sufixo do enum do contrato ou ação do planejador */
+  .s-completed, .s-done { --c: var(--ok); } .s-failed, .s-abort, .s-aborted { --c: var(--err); }
+  .s-cancelled { --c: var(--warn); } .s-timeout { --c: var(--violet); } .s-skipped { --c: var(--gray); }
+  .s-running, .s-plan, .s-planning, .s-created { --c: var(--info); } .s-pending, .s-unknown { --c: var(--line-strong); }
+
   * { box-sizing: border-box; }
-  body { margin: 0; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
-  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
-  header h1 { font-size: 16px; margin: 0; }
-  header .muted { color: var(--muted); }
-  header label { cursor: pointer; color: var(--accent); }
-  header input[type=file] { display: none; }
-  #summary { width: 100%; display: flex; flex-wrap: wrap; gap: 4px 16px; }
-  #summary:empty { display: none; }
-  main { display: flex; height: calc(100vh - 57px); }
+  html, body { height: 100%; }
+  body { margin: 0; font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 6px 12px; transition: background .15s, border-color .15s; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 4px 8px; }
+  button.ghost:hover { color: var(--ink); background: var(--surface-2); }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--gray)); }
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 11px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+
+  /* topo */
+  #top { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  #top h1 { font-size: 15px; margin: 0 16px 0 0; font-weight: 650; }
+  #top .spacer { flex: 1; }
+  #hint { font-size: 12px; }
+  #top button.on { border-color: var(--accent); color: var(--accent); }
+  #runs.collapsed { display: none; }
+  #fallback { padding: 8px 12px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.8; }
+  #fallback input[type=file] { display: none; }
+  #summary .hint { width: 100%; font-size: 12px; color: var(--muted); }
+
+  /* três colunas: lista, grafo, gaveta */
+  #main { flex: 1; min-height: 0; display: flex; }
+  #runs { width: 336px; flex: none; border-right: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; }
+  #runs .tools { padding: 8px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; }
+  #runs input[type=search] { flex: 1; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); min-width: 0; }
+  #count { font-size: 12px; white-space: nowrap; }
+  #list { flex: 1; overflow: auto; }
+  #list .empty { padding: 24px 16px; color: var(--muted); font-size: 13px; }
+  .row { display: block; width: 100%; text-align: left; padding: 10px 12px 10px 16px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; border-left: 3px solid transparent; }
+  .row:hover { background: var(--surface-2); }
+  .row.active { background: var(--accent-soft); border-left-color: var(--accent); }
+  .row .goal { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; margin-bottom: 6px; }
+  .row .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .row .meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .row .path { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  #view { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  #summary { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 16px; display: none; gap: 4px 16px; align-items: center; flex-wrap: wrap; }
+  #summary.on { display: flex; }
+  #summary .goal { width: 100%; color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+  #summary .goal.open { -webkit-line-clamp: unset; }
+  #summary .stat { font-size: 13px; }
+  #summary .stat b { font-weight: 600; }
   #canvas { flex: 1; overflow: auto; padding: 16px; }
-  #empty { color: var(--muted); max-width: 480px; }
+  #welcome { max-width: 560px; color: var(--muted); margin: 48px auto; }
+  #welcome h2 { color: var(--ink); font-size: 18px; margin: 0 0 8px; }
+  #welcome ol { padding-left: 20px; }
+  #legend { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+  #legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--gray)); margin-right: 6px; vertical-align: -1px; }
+  #legend .seq::before { width: 18px; height: 0; border-top: 2px dashed var(--edge); background: none; border-radius: 0; vertical-align: 2px; }
+
+  /* grafo */
   svg { display: block; }
-  svg text { font: 12px/1.2 system-ui, sans-serif; fill: var(--ink); pointer-events: none; }
+  svg text { font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; fill: var(--ink); pointer-events: none; }
+  svg text.title { font-size: 13px; font-weight: 600; }
   svg text.small { font-size: 11px; fill: var(--muted); }
-  svg text.round { font-size: 13px; font-weight: 600; fill: var(--muted); }
-  .node rect { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; rx: 6; cursor: pointer; }
-  .node:hover rect, .node.selected rect { stroke: var(--accent); stroke-width: 2.5; }
-  .node .bar { stroke: none; rx: 0; }
-  .edge { fill: none; stroke: var(--edge); stroke-width: 1.5; }
-  .edge.sequence { stroke-dasharray: 5 4; }
-  .node .s-completed { fill: var(--completed); } .node .s-failed { fill: var(--failed); } .node .s-skipped { fill: var(--skipped); }
-  .node .s-cancelled { fill: var(--cancelled); } .node .s-timeout { fill: var(--timeout); } .node .s-running { fill: var(--running); }
-  .node .s-pending { fill: var(--pending); } .node .s-plan { fill: var(--plan); } .node .s-done { fill: var(--done); } .node .s-abort { fill: var(--abort); }
-  #legend { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12px; margin-bottom: 12px; }
-  #legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-  #panel { width: min(60vw, 900px); border-left: 1px solid var(--line); background: var(--panel); display: none; flex-direction: column; }
-  #panel.open { display: flex; }
-  #panel header { border-bottom: 1px solid var(--line); padding: 10px 14px; }
-  #panel header button { margin-left: auto; background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 4px; cursor: pointer; }
-  #views { display: flex; flex: 1; min-height: 0; }
-  #views section { flex: 1; min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--line); }
-  #views section:last-child { border-right: none; }
-  #views h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0; padding: 8px 12px; border-bottom: 1px solid var(--line); }
-  #views pre { flex: 1; margin: 0; padding: 12px; overflow: auto; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; }
-  body.dragging { outline: 3px dashed var(--accent); outline-offset: -3px; }
-  @media (max-width: 900px) { main { flex-direction: column; height: auto; } #panel { width: 100%; border-left: none; border-top: 1px solid var(--line); } #views { flex-direction: column; } #views section { border-right: none; border-bottom: 1px solid var(--line); } }
+  svg text.cap { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+  svg text.band { font-size: 12px; fill: var(--muted); }
+  svg text.band-title { font-size: 12.5px; font-weight: 600; }
+  svg text.chip { font-size: 11px; font-weight: 600; fill: var(--accent); }
+  svg text.chip.action { fill: #fff; }
+  svg text.badge { font-size: 10px; font-weight: 600; fill: #fff; }
+  .band-bg { fill: var(--band); stroke: var(--line); rx: 10; }
+  .chip-bg { fill: var(--accent-soft); rx: 4; }
+  .chip-bg.action { fill: var(--c); }
+  .node { cursor: pointer; }
+  .node .card { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; rx: 8; transition: stroke .15s; }
+  .node:hover .card { stroke: var(--accent); }
+  .node.selected .card { stroke: var(--accent); stroke-width: 2; }
+  .node .bar { fill: var(--c); }
+  .node .badge-bg { fill: var(--warn); rx: 4; }
+  .edge { fill: none; stroke: var(--edge); stroke-width: 1.5; transition: stroke .15s; }
+  .edge.sequence { stroke-dasharray: 6 5; }
+  .edge.active { stroke: var(--accent); stroke-width: 2; }
+
+  /* gaveta de detalhe */
+  #drawer { width: min(46vw, 760px); min-width: 380px; flex: none; border-left: 1px solid var(--line); background: var(--surface); display: none; flex-direction: column; }
+  #drawer.open { display: flex; }
+  #drawer header { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+  #drawer header h2 { font-size: 15px; margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #drawer header .line { width: 100%; font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  #tabs { display: flex; gap: 4px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); align-items: flex-end; }
+  #tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 6px 10px; }
+  #tabs button.on { color: var(--ink); border-bottom-color: var(--accent); }
+  #tabs .spacer { flex: 1; }
+  #copy { margin-bottom: 4px; }
+  #body { flex: 1; overflow: auto; padding: 12px 16px; font-family: var(--mono); font-size: 12px; line-height: 1.5; }
+  #body .none { color: var(--muted); font-family: inherit; }
+  .j-key { color: light-dark(#7a3e9d, #c792ea); } .j-str { color: light-dark(#1f7a3f, #8fd19e); white-space: pre-wrap; word-break: break-word; }
+  .j-num { color: light-dark(#1d5fd1, #82aaff); } .j-bool, .j-null { color: light-dark(#b2471d, #f78c6c); }
+  .j-children { padding-left: 16px; border-left: 1px solid var(--line); margin-left: 4px; }
+  details { display: inline; } details > summary { display: inline; cursor: pointer; list-style: none; color: var(--muted); }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; font-size: 10px; } details[open] > summary::before { content: "▾ "; }
+  details[open] > summary .j-hint { display: none; }
+  details > .j-children { display: block; }
+  .trace { font-family: inherit; }
+  .cycle { display: grid; grid-template-columns: 32px 1fr; gap: 0 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .cycle .n { color: var(--muted); } .cycle .act { font-family: var(--mono); }
+  .cycle .sub { color: var(--muted); font-size: 11px; }
+  .cycle .out { font-weight: 600; }
+  body.dragging::after { content: "Solte o JSON para abrir"; position: fixed; inset: 8px; border: 2px dashed var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--accent) 8%, transparent); display: grid; place-items: center; font-size: 18px; color: var(--accent); z-index: 9; pointer-events: none; }
+
+  @media (max-width: 900px) {
+    #main { flex-direction: column; }
+    #runs { width: 100%; max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--line); }
+    #drawer { position: fixed; inset: 0; width: 100%; min-width: 0; z-index: 5; }
+  }
 </style>
 </head>
 <body>
-<header>
+<header id="top">
+  <button id="toggle" title="Mostrar ou esconder a lista de execuções">☰ Lista</button>
   <h1>Mission Viewer</h1>
-  <label>Abrir JSON <input type="file" id="file" accept="application/json,.json"></label>
-  <span class="muted">ou arraste um <code>mission-result.json</code> para a página, ou use <code>?file=caminho.json</code></span>
-  <div id="summary"></div>
+  <span id="hint" class="muted"></span>
+  <button id="refresh" class="ghost" title="Reler o índice de missões no disco">Atualizar</button>
+  <span class="spacer"></span>
+  <button id="theme" class="ghost" title="Alternar tema">Tema</button>
 </header>
-<main>
-  <div id="canvas">
-    <div id="legend"></div>
-    <p id="empty">Carregue o JSON de um <code>MissionResult</code> salvo pelo SDK (<code>MissionResult.save</code>) ou de um <code>WorkflowResult</code>. Cada rodada mostra a chamada ao planejador seguida dos passos do plano; clique num quadro para ver a entrada e a saída exatamente como estão no JSON.</p>
-    <div id="graph"></div>
-  </div>
-  <aside id="panel">
-    <header><strong id="panel-title"></strong><span id="panel-sub" class="muted"></span><button id="close">Fechar</button></header>
-    <div id="views">
-      <section><h2 id="left-title">Entrada</h2><pre id="left"></pre></section>
-      <section><h2 id="right-title">Saída</h2><pre id="right"></pre></section>
-    </div>
+<div id="main">
+  <aside id="runs">
+    <div class="tools"><input type="search" id="filter" placeholder="Filtrar por objetivo, caso, estado…"><span id="count" class="muted"></span></div>
+    <div id="list"><div class="empty">Nenhuma missão carregada ainda.</div></div>
+    <div id="fallback" class="muted">Outras fontes: <button id="open-file" class="ghost">Abrir JSON</button><button id="pick" class="ghost">Escolher pasta</button> ou arraste um arquivo para a página.<input type="file" id="file" accept="application/json,.json"></div>
   </aside>
-</main>
+  <section id="view">
+    <div id="summary"></div>
+    <div id="canvas">
+      <div id="welcome">
+        <h2>Execuções de missão como um grafo</h2>
+        <p>Cada rodada mostra a chamada ao planejador seguida dos passos do plano, ligados por setas de dependência. Clique num quadro para ver a entrada e a saída daquela chamada exatamente como estão no JSON do contrato.</p>
+        <p>Com <code>make viewer</code> (ou <code>python3 tools/mission-viewer/serve.py</code>) a lista à esquerda traz as missões gravadas em <code>.ariadne</code> e nos resultados preservados dos estudos; escolha uma para desenhar. Sem o servidor, use "Abrir JSON", "Escolher pasta" ou arraste um arquivo.</p>
+      </div>
+      <div id="legend"></div>
+      <div id="graph"></div>
+    </div>
+  </section>
+  <aside id="drawer">
+    <header><h2 id="d-title"></h2><span id="d-status" class="pill"></span><button id="close" class="ghost">Fechar (Esc)</button><div id="d-line" class="line"></div></header>
+    <div id="tabs"></div>
+    <div id="body"></div>
+  </aside>
+</div>
 <script>
-// --- Modelo: do JSON do contrato para rodadas, nós e dependências -----------
-const STATUS_WORDS = ['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'running', 'pending'];
+'use strict';
+const $ = id => document.getElementById(id);
+const store = {
+  get(key) { try { return localStorage.getItem('mv.' + key); } catch { return null; } },
+  set(key, value) { try { localStorage.setItem('mv.' + key, value); } catch {} },
+};
 
-function statusClass(value) {
-  const name = String(value || '').toLowerCase();
-  return STATUS_WORDS.find(word => name.endsWith(word)) || 'pending';
+// --- Utilidades ----------------------------------------------------------------
+const STATUS_WORDS = ['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'running', 'pending', 'aborted', 'planning', 'created'];
+const statusWord = value => { const name = String(value || '').toLowerCase(); return STATUS_WORDS.find(word => name.endsWith(word)) || 'unknown'; };
+const actionWord = value => { const name = String(value || '').toLowerCase(); return ['plan', 'done', 'abort'].find(word => name.endsWith(word)) || 'unknown'; };
+const parseTime = text => { const ms = Date.parse(text || ''); return Number.isNaN(ms) ? null : ms; };
+const durationMs = (a, b) => { const start = parseTime(a), end = parseTime(b); return start !== null && end !== null ? end - start : null; };
+const fmtDuration = ms => ms === null || ms === undefined ? '' : ms < 1000 ? `${ms} ms` : ms < 60000 ? `${(ms / 1000).toFixed(1).replace('.', ',')} s` : `${Math.floor(ms / 60000)} min ${Math.round((ms % 60000) / 1000)} s`;
+const fmtDate = iso => { const ms = parseTime(iso); return ms === null ? '' : new Date(ms).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' }); };
+const clip = (text, max) => { text = String(text || ''); return text.length > max ? text.slice(0, max - 1) + '…' : text; };
+const scenarioFromSource = source => {
+  if (!source) return null;
+  const folder = String(source).replace(/\\/g, '/').replace(/\/[^/]*$/, '');
+  const match = folder.match(/\/studies\/scenarios\/(.+)$/);
+  return match ? match[1] : folder.split('/').pop();
+};
+
+// Resumo de uma missão para a lista (mesmos campos que serve.py produz).
+function summarize(doc, path, manifestSource) {
+  if (!doc || !Array.isArray(doc.rounds)) return null;
+  const request = doc.request || {}, metadata = request.metadata || {}, context = request.context || {};
+  const kase = context.case && typeof context.case === 'object' ? context.case : {};
+  return {
+    path, name: path.split('/').pop(), mission_id: doc.mission_id, status: doc.status,
+    goal: request.goal || doc.root_task_id || '', created_at: doc.created_at, completed_at: doc.completed_at,
+    duration_ms: durationMs(doc.created_at, doc.completed_at), rounds: doc.rounds.length,
+    case: metadata.case || kase.id, suite: metadata.suite || kase.suite, configuration: metadata.configuration,
+    scenario: scenarioFromSource(manifestSource) || metadata.study || (request.trace || {}).correlation_id,
+  };
 }
 
-function actionClass(value) {
-  const name = String(value || '').toLowerCase();
-  return ['plan', 'done', 'abort'].find(word => name.endsWith(word)) || 'pending';
-}
-
+// --- Modelo: do JSON do contrato para rodadas, nós e dependências ---------------
 function stepsFromWorkflow(result, plan) {
-  const dependencies = {};
-  for (const step of (plan && plan.steps) || []) dependencies[step.step_id] = step.depends_on || [];
-  const seen = new Set();
-  const nodes = [];
+  const planSteps = (plan && plan.steps) || [];
+  const byId = Object.fromEntries(planSteps.map(step => [step.step_id, step]));
+  const seen = new Set(), nodes = [];
   for (const item of (result && result.step_results) || []) {
     seen.add(item.step_id);
+    const task = item.task || null, output = item.result || null, planned = byId[item.step_id] || {};
     nodes.push({
-      id: item.step_id, kind: 'step', status: statusClass(item.status),
-      label: item.step_id, agent: item.result && item.result.agent_id,
-      depends: dependencies[item.step_id] || [], input: item.task || null, output: item.result || null,
+      id: item.step_id, kind: 'step', status: statusWord(item.status), label: item.step_id,
+      agent: output && output.agent_id, attempt: task && task.attempt,
+      capability: ((task && task.required_capabilities) || (planned.task_template && planned.task_template.required_capabilities) || []).join(', '),
+      duration: durationMs(output && output.started_at, output && output.completed_at),
+      depends: planned.depends_on || [], input: task, output,
     });
   }
-  // Passos planejados que nunca chegaram a executar (rodada abortada antes).
-  for (const step of (plan && plan.steps) || []) {
-    if (!seen.has(step.step_id)) nodes.push({
-      id: step.step_id, kind: 'step', status: 'pending', label: step.step_id,
-      depends: step.depends_on || [], input: step.task_template || null, output: null,
-    });
-  }
+  for (const step of planSteps) if (!seen.has(step.step_id)) nodes.push({
+    id: step.step_id, kind: 'step', status: 'pending', label: step.step_id, depends: step.depends_on || [],
+    capability: ((step.task_template && step.task_template.required_capabilities) || []).join(', '), input: step.task_template || null, output: null,
+  });
   return nodes;
 }
 
@@ -117,44 +249,41 @@ function normalize(doc) {
     const calls = doc.planner_calls || [];
     return {
       kind: 'mission', id: doc.mission_id, status: doc.status, goal: doc.request && doc.request.goal,
+      duration: durationMs(doc.created_at, doc.completed_at),
       rounds: doc.rounds.map((round, index) => {
         const call = calls.find(item => item.round === round.round) || calls[index] || {};
-        const response = call.response || (round.planner_result && round.planner_result.output) || null;
-        const planFromResponse = response && response.plan;
+        const result = round.planner_result || {};
+        const response = call.response || result.output || null;
+        const action = actionWord(round.action);
         return {
-          round: round.round, action: round.action, summary: round.planner_summary,
+          round: round.round, action, summary: round.planner_summary,
           planner: {
-            id: `round-${round.round}-planner`, kind: 'planner', status: actionClass(round.action),
-            label: `Rodada ${round.round}: ${String(round.action || '').replace('PLANNER_ACTION_', '')}`,
-            agent: round.planner_agent_id, input: (round.planner_task && round.planner_task.payload) || call.request || null, output: response,
-            failed: round.planner_result && statusClass(round.planner_result.status) === 'failed',
+            id: `round-${round.round}-planner`, kind: 'planner', action, label: 'Planejador',
+            status: statusWord(result.status) === 'failed' ? 'failed' : action,
+            agent: round.planner_agent_id, capability: ((round.planner_task && round.planner_task.required_capabilities) || []).join(', '),
+            duration: durationMs(result.started_at || round.started_at, result.completed_at || round.completed_at),
+            input: (round.planner_task && round.planner_task.payload) || call.request || null, output: response,
           },
-          steps: stepsFromWorkflow(round.result, round.plan || (planFromResponse ? { steps: planFromResponse.steps } : null)),
+          steps: stepsFromWorkflow(round.result, round.plan || (response && response.plan ? { steps: response.plan.steps } : null)),
         };
       }),
     };
   }
-  if (Array.isArray(doc.step_results)) {
-    return { kind: 'workflow', id: doc.workflow_id || doc.run_id, status: doc.status, goal: doc.root_task_id,
-             rounds: [{ round: 1, planner: null, steps: stepsFromWorkflow(doc, doc.definition || doc.plan) }] };
-  }
+  if (Array.isArray(doc.step_results)) return { kind: 'workflow', id: doc.workflow_id || doc.run_id, status: doc.status, goal: doc.root_task_id,
+    rounds: [{ round: 1, planner: null, steps: stepsFromWorkflow(doc, doc.definition || doc.plan) }] };
   if (doc.steps && typeof doc.steps === 'object') {
-    // result.json gravado pelo executor declarativo (ScenarioWorkflowResult.to_dict).
-    const steps = Object.entries(doc.steps).map(([id, step]) => ({
-      id, kind: 'step', status: statusClass(step.status), label: id, depends: [],
-      agent: step.result && step.result.agent_id, input: null, output: step.result,
-    }));
+    const steps = Object.entries(doc.steps).map(([id, step]) => ({ id, kind: 'step', status: statusWord(step.status), label: id, depends: [],
+      agent: step.result && step.result.agent_id, capability: '', input: null, output: step.result }));
     return { kind: 'workflow', id: doc.workflow_id, status: doc.status, goal: doc.root_task_id, rounds: [{ round: 1, planner: null, steps }] };
   }
   throw new Error('JSON não é um MissionResult (rounds) nem um WorkflowResult (step_results)');
 }
 
-// --- Layout: colunas por profundidade, linhas por paralelismo ---------------
-const BOX = { w: 190, h: 54, gapX: 56, gapY: 18, round: 44, left: 24, top: 12 };
+// --- Leiaute: colunas por profundidade, linhas por paralelismo, faixas por rodada --
+const G = { w: 232, h: 76, gapX: 64, gapY: 16, pad: 16, head: 40, gap: 24, margin: 16 };
 
 function depthOf(nodes) {
-  const byId = Object.fromEntries(nodes.map(node => [node.id, node]));
-  const memo = {};
+  const byId = Object.fromEntries(nodes.map(node => [node.id, node])), memo = {};
   const visit = (id, stack) => {
     if (memo[id] !== undefined) return memo[id];
     if (stack.has(id) || !byId[id]) return 1;
@@ -168,18 +297,16 @@ function depthOf(nodes) {
 }
 
 function layout(model) {
-  const boxes = [], edges = [];
-  let y = BOX.top, previousPlanner = null, width = 0;
+  const boxes = [], edges = [], bands = [];
+  let y = G.margin, previousPlanner = null, maxColumns = 1;
   for (const round of model.rounds) {
-    y += BOX.round;
-    const labelY = y - 14;
-    const depths = depthOf(round.steps);
-    const rows = {};
+    const top = y + G.head + G.pad, rows = {}, depths = depthOf(round.steps);
     const place = (node, column) => {
-      const row = (rows[column] = (rows[column] || 0) + 1) - 1;
-      const box = { node, x: BOX.left + column * (BOX.w + BOX.gapX), y: y + row * (BOX.h + BOX.gapY), labelY: column === 0 ? labelY : null, round: round.round };
+      const row = rows[column] = rows[column] || 0;
+      rows[column]++;
+      maxColumns = Math.max(maxColumns, column + 1);
+      const box = { node, column, row, x: G.margin + G.pad + column * (G.w + G.gapX), y: top + row * (G.h + G.gapY) };
       boxes.push(box);
-      width = Math.max(width, box.x + BOX.w);
       return box;
     };
     const offset = round.planner ? 1 : 0;
@@ -194,16 +321,19 @@ function layout(model) {
     if (previousPlanner && plannerBox) edges.push({ from: previousPlanner, to: plannerBox, kind: 'sequence' });
     previousPlanner = plannerBox;
     const rowCount = Math.max(1, ...Object.values(rows));
-    const first = boxes.find(box => box.round === round.round && box.labelY !== null);
-    if (first) first.roundLabel = `Rodada ${round.round}` + (round.summary ? ` — ${round.summary}` : '');
-    y += rowCount * (BOX.h + BOX.gapY) + 6;
+    const height = G.head + G.pad * 2 + rowCount * (G.h + G.gapY) - G.gapY;
+    bands.push({ round, x: G.margin, y, h: height });
+    y += height + G.gap;
   }
-  return { boxes, edges, width: width + BOX.left, height: y + BOX.top };
+  const width = G.margin * 2 + G.pad * 2 + maxColumns * (G.w + G.gapX) - G.gapX;
+  for (const band of bands) band.w = width - G.margin * 2;
+  return { boxes, edges, bands, width, height: y - G.gap + G.margin };
 }
 
-// --- Renderização SVG -------------------------------------------------------
+// --- Renderização SVG ------------------------------------------------------------
 const SVG = 'http://www.w3.org/2000/svg';
-let selected = null;
+let current = null;   // { model, plan, groups, paths, doc }
+let selectedBox = null;
 
 function el(name, attributes, text) {
   const node = document.createElementNS(SVG, name);
@@ -212,107 +342,354 @@ function el(name, attributes, text) {
   return node;
 }
 
-function clip(text, max) {
-  text = String(text || '');
-  return text.length > max ? text.slice(0, max - 1) + '…' : text;
-}
-
 function edgePath(edge) {
   const a = edge.from, b = edge.to;
   if (edge.kind === 'sequence') {
-    return `M ${a.x + 18} ${a.y + BOX.h} L ${b.x + 18} ${b.y - 4}`;
+    const sx = a.x + 14, sy = a.y + G.h, lx = a.x - 9, ty = b.y + G.h / 2;
+    return `M ${sx} ${sy} C ${sx} ${sy + 24}, ${lx} ${sy + 6}, ${lx} ${sy + 32} L ${lx} ${ty - 24} C ${lx} ${ty}, ${lx} ${ty}, ${b.x - 3} ${ty}`;
   }
-  const x1 = a.x + BOX.w, y1 = a.y + BOX.h / 2, x2 = b.x - 4, y2 = b.y + BOX.h / 2;
-  const mid = (x1 + x2) / 2;
+  const x1 = a.x + G.w, y1 = a.y + G.h / 2, x2 = b.x - 3, y2 = b.y + G.h / 2, mid = (x1 + x2) / 2;
   return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
 }
 
-function render(model) {
-  const plan = layout(model);
+function chip(parent, x, y, text, extraClass, color) {
+  const width = text.length * 6.6 + 16;
+  const bg = el('rect', { class: `chip-bg ${extraClass || ''}`, x, y, width, height: 20 });
+  if (color) bg.classList.add(color);
+  parent.appendChild(bg);
+  parent.appendChild(el('text', { class: `chip ${extraClass || ''}`, x: x + 8, y: y + 14 }, text));
+  return width;
+}
+
+function bandTitle(round) {
+  const steps = round.steps.length, plural = steps === 1 ? 'passo' : 'passos';
+  if (!round.planner) return `Rodada ${round.round}: ${steps} ${plural}`;
+  if (round.action === 'done') return `Rodada ${round.round}: o planejador encerrou a missão (DONE)`;
+  if (round.action === 'abort') return `Rodada ${round.round}: o planejador abortou a missão (ABORT)`;
+  return `Rodada ${round.round}: o planejador propôs ${steps} ${plural}`;
+}
+
+function renderBand(svg, band) {
+  svg.appendChild(el('rect', { class: 'band-bg', x: band.x, y: band.y, width: band.w, height: band.h }));
+  let x = band.x + G.pad;
+  if (band.round.planner) x += chip(svg, x, band.y + 10, band.round.action.toUpperCase(), 'action', `s-${band.round.action}`) + 12;
+  const title = bandTitle(band.round);
+  svg.appendChild(el('text', { class: 'band-title', x, y: band.y + 24 }, title));
+  x += title.length * 6.9 + 12;
+  if (band.round.summary) svg.appendChild(el('text', { class: 'band', x, y: band.y + 24 }, clip('· ' + band.round.summary, Math.max(20, (band.w - x) / 6.4))));
+}
+
+function renderNode(box) {
+  const node = box.node;
+  const group = el('g', { class: `node s-${node.status}`, transform: `translate(${box.x} ${box.y})`, tabindex: 0, 'data-id': node.id });
+  group.appendChild(el('rect', { class: 'card', width: G.w, height: G.h }));
+  group.appendChild(el('rect', { class: 'bar', x: 0, y: 0, width: 5, height: G.h, 'clip-path': 'url(#card-clip)' }));
+  group.appendChild(el('text', { class: 'title', x: 16, y: 24 }, clip(node.label, 24)));
+  group.appendChild(el('text', { class: 'cap', x: 16, y: 43 }, clip(node.kind === 'planner' ? node.action.toUpperCase() + (node.capability ? ' · ' + node.capability : '') : node.capability || node.status, 30)));
+  group.appendChild(el('text', { class: 'small', x: 16, y: 61 }, clip(node.agent || (node.kind === 'planner' ? '' : 'sem agente'), node.duration !== null && node.duration !== undefined ? 22 : 30)));
+  if (node.duration !== null && node.duration !== undefined) group.appendChild(el('text', { class: 'small', x: G.w - 12, y: 61, 'text-anchor': 'end' }, fmtDuration(node.duration)));
+  if (node.attempt > 1) {
+    const text = `${node.attempt}ª tentativa · reatribuído`, width = text.length * 5.6 + 12;
+    group.appendChild(el('rect', { class: 'badge-bg', x: G.w - width - 8, y: 8, width, height: 16 }));
+    group.appendChild(el('text', { class: 'badge', x: G.w - width - 2, y: 19.5 }, text));
+  }
+  group.addEventListener('click', () => select(box));
+  group.addEventListener('keydown', event => { if (event.key === 'Enter') select(box); });
+  return group;
+}
+
+function render(doc, name) {
+  const model = normalize(doc), plan = layout(model);
   const svg = el('svg', { width: plan.width, height: plan.height, viewBox: `0 0 ${plan.width} ${plan.height}` });
   const defs = el('defs', {});
-  const marker = el('marker', { id: 'arrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
-  marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: 'var(--edge)' }));
-  defs.appendChild(marker);
+  for (const [id, fill] of [['arrow', 'var(--edge)'], ['arrow-active', 'var(--accent)']]) {
+    const marker = el('marker', { id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
+    marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill }));
+    defs.appendChild(marker);
+  }
+  const clipPath = el('clipPath', { id: 'card-clip' });
+  clipPath.appendChild(el('rect', { width: G.w, height: G.h, rx: 8 }));
+  defs.appendChild(clipPath);
   svg.appendChild(defs);
-  for (const edge of plan.edges) svg.appendChild(el('path', { class: `edge ${edge.kind}`, d: edgePath(edge), 'marker-end': 'url(#arrow)' }));
-  for (const box of plan.boxes) {
-    if (box.roundLabel) svg.appendChild(el('text', { class: 'round', x: box.x + 34, y: box.labelY }, clip(box.roundLabel, 110)));
-    const group = el('g', { class: 'node', transform: `translate(${box.x} ${box.y})` });
-    group.appendChild(el('rect', { width: BOX.w, height: BOX.h }));
-    group.appendChild(el('rect', { class: `bar s-${box.node.status}`, x: 1, y: 1, width: 6, height: BOX.h - 2 }));
-    group.appendChild(el('text', { x: 14, y: 20 }, clip(box.node.label, 26)));
-    group.appendChild(el('text', { class: 'small', x: 14, y: 36 }, clip(box.node.agent || '', 28)));
-    group.appendChild(el('text', { class: 'small', x: 14, y: 49 }, box.node.kind === 'planner' ? 'planejador' : (box.node.failed ? 'falhou' : box.node.status)));
-    group.addEventListener('click', () => select(group, box.node));
-    svg.appendChild(group);
-  }
-  const graph = document.getElementById('graph');
-  graph.replaceChildren(svg);
-  document.getElementById('empty').style.display = 'none';
-  document.getElementById('legend').replaceChildren(...['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'pending'].map(status => {
-    const item = document.createElement('span');
-    const swatch = document.createElement('i');
-    swatch.className = `s-${status}`;
-    swatch.style.background = `var(--${status})`;
-    item.append(swatch, status);
-    return item;
-  }));
-  const summary = document.getElementById('summary');
+  for (const band of plan.bands) renderBand(svg, band);
+  const paths = plan.edges.map(edge => { const path = el('path', { class: `edge ${edge.kind}`, d: edgePath(edge), 'marker-end': 'url(#arrow)' }); svg.appendChild(path); return { edge, path }; });
+  const groups = new Map();
+  for (const box of plan.boxes) { const group = renderNode(box); groups.set(box, group); svg.appendChild(group); }
+  $('graph').replaceChildren(svg);
+  $('welcome').style.display = 'none';
+  $('legend').replaceChildren(...['completed', 'failed', 'skipped', 'cancelled', 'timeout', 'pending'].map(status => { const item = document.createElement('span'); item.className = `s-${status}`; item.textContent = status; return item; }),
+    Object.assign(document.createElement('span'), { className: 'seq', textContent: 'sequência das rodadas' }));
+  const summary = $('summary');
   summary.replaceChildren();
-  for (const [label, value] of [[model.kind === 'mission' ? 'Missão' : 'Workflow', model.id], ['Estado', model.status], ['Objetivo', model.goal]]) {
-    if (!value) continue;
+  const stat = (label, value, cls) => { if (!value) return; const span = document.createElement('span'); span.className = 'stat ' + (cls || ''); if (label) { const b = document.createElement('b'); b.textContent = label + ' '; span.appendChild(b); } span.append(value); summary.appendChild(span); };
+  stat(model.kind === 'mission' ? 'Missão' : 'Workflow', model.id, 'mono');
+  const pill = document.createElement('span'); pill.className = `pill s-${statusWord(model.status)}`; pill.textContent = statusWord(model.status); summary.appendChild(pill);
+  stat('Rodadas', String(model.rounds.length));
+  stat('Duração', fmtDuration(model.duration));
+  if (model.goal) { const goal = document.createElement('div'); goal.className = 'goal'; goal.textContent = model.goal; goal.title = 'Clique para expandir'; goal.addEventListener('click', () => goal.classList.toggle('open')); summary.appendChild(goal); }
+  if (model.kind === 'mission') summary.appendChild(Object.assign(document.createElement('div'), { className: 'hint', textContent: 'Cada rodada = uma chamada ao planejador seguida dos passos que ele propôs; a missão termina quando o planejador responde DONE.' }));
+  summary.classList.add('on');
+  document.title = `Mission Viewer — ${name}`;
+  current = { model, plan, groups, paths, doc };
+  selectedBox = null;
+  closeDrawer();
+}
+
+// --- Gaveta de detalhe: Entrada, Saída, Rastro -----------------------------------
+let tabs = [], activeTab = 0;
+
+function jsonTree(value, depth) {
+  const type = typeof value;
+  if (value === null || type !== 'object') {
     const span = document.createElement('span');
-    span.innerHTML = `<span class="muted">${label}:</span> `;
-    span.append(document.createTextNode(value));
-    summary.appendChild(span);
+    span.className = value === null ? 'j-null' : type === 'string' ? 'j-str' : type === 'number' ? 'j-num' : 'j-bool';
+    span.textContent = JSON.stringify(value);
+    return span;
   }
+  const isArray = Array.isArray(value), entries = isArray ? value.map((item, index) => [index, item]) : Object.entries(value);
+  const [open, close] = isArray ? ['[', ']'] : ['{', '}'];
+  if (!entries.length) return Object.assign(document.createElement('span'), { textContent: open + close });
+  const details = document.createElement('details');
+  details.open = depth < 2 || (depth < 4 && JSON.stringify(value).length < 600);
+  const summary = document.createElement('summary');
+  summary.append(open, Object.assign(document.createElement('span'), { className: 'j-hint', textContent: ` … ${entries.length} ${isArray ? 'itens' : 'chaves'} ${close}` }));
+  const children = document.createElement('div');
+  children.className = 'j-children';
+  for (const [key, item] of entries) {
+    const line = document.createElement('div');
+    if (!isArray) { const k = document.createElement('span'); k.className = 'j-key'; k.textContent = JSON.stringify(key); line.append(k, ': '); }
+    line.appendChild(jsonTree(item, depth + 1));
+    children.appendChild(line);
+  }
+  details.append(summary, children, close);
+  return details;
 }
 
-function select(group, node) {
-  if (selected) selected.classList.remove('selected');
-  selected = group;
+function traceView(cycles) {
+  const list = document.createElement('div');
+  list.className = 'trace';
+  for (const cycle of cycles) {
+    const row = document.createElement('div');
+    row.className = 'cycle';
+    const added = (cycle.beliefs_added || []).length, removed = (cycle.beliefs_removed || []).length;
+    row.innerHTML = '<span class="n"></span><div><div class="act"></div><div class="sub"></div></div>';
+    row.querySelector('.n').textContent = '#' + (cycle.cycle ?? '');
+    row.querySelector('.act').textContent = `${cycle.action || ''}  →  `;
+    row.querySelector('.act').appendChild(Object.assign(document.createElement('span'), { className: 'out', textContent: cycle.outcome || '' }));
+    row.querySelector('.sub').textContent = [cycle.goal && `objetivo ${cycle.goal}`, cycle.selected_plan && `plano ${cycle.selected_plan}`, (added || removed) && `crenças +${added} −${removed}`].filter(Boolean).join(' · ');
+    list.appendChild(row);
+  }
+  return list;
+}
+
+function showTab(index) {
+  activeTab = index;
+  for (const [i, button] of [...$('tabs').querySelectorAll('button.tab')].entries()) button.classList.toggle('on', i === index);
+  const tab = tabs[index], body = $('body');
+  if (!tab.value) body.replaceChildren(Object.assign(document.createElement('p'), { className: 'none', textContent: '(não registrado no JSON)' }));
+  else body.replaceChildren(tab.kind === 'trace' ? traceView(tab.value) : jsonTree(tab.value, 0));
+  body.scrollTop = 0;
+}
+
+function select(box) {
+  if (selectedBox) current.groups.get(selectedBox).classList.remove('selected');
+  selectedBox = box;
+  const group = current.groups.get(box);
   group.classList.add('selected');
-  const planner = node.kind === 'planner';
-  document.getElementById('panel-title').textContent = node.label;
-  document.getElementById('panel-sub').textContent = node.agent ? ` ${node.agent}` : '';
-  document.getElementById('left-title').textContent = planner ? 'Entrada: PlannerRequest' : 'Entrada: Task';
-  document.getElementById('right-title').textContent = planner ? 'Saída: PlannerResponse' : 'Saída: TaskResult';
-  document.getElementById('left').textContent = node.input ? JSON.stringify(node.input, null, 2) : '(não registrado no JSON)';
-  document.getElementById('right').textContent = node.output ? JSON.stringify(node.output, null, 2) : '(não registrado no JSON)';
-  document.getElementById('panel').classList.add('open');
+  for (const { edge, path } of current.paths) {
+    const active = edge.from === box || edge.to === box;
+    path.classList.toggle('active', active);
+    path.setAttribute('marker-end', active ? 'url(#arrow-active)' : 'url(#arrow)');
+  }
+  const node = box.node, planner = node.kind === 'planner';
+  $('d-title').textContent = planner ? `Planejador · rodada ${node.id.split('-')[1]}` : node.label;
+  const status = $('d-status'); status.className = `pill s-${node.status}`; status.textContent = planner ? node.action : node.status;
+  $('d-line').replaceChildren(...[node.agent && `agente ${node.agent}`, node.capability && `capacidade ${node.capability}`, node.attempt && `tentativa ${node.attempt}`, node.duration !== null && node.duration !== undefined && `duração ${fmtDuration(node.duration)}`]
+    .filter(Boolean).map(text => Object.assign(document.createElement('span'), { textContent: text })));
+  const out = node.output || {};
+  const cycles = (out.bdi && out.bdi.trace && out.bdi.trace.cycles) || (out.metadata && out.metadata.bdi_trace && out.metadata.bdi_trace.cycles) || null;
+  tabs = [
+    { label: planner ? 'Entrada · PlannerRequest' : 'Entrada · Task', value: node.input },
+    { label: planner ? 'Saída · PlannerResponse' : 'Saída · TaskResult', value: node.output },
+  ];
+  if (cycles && cycles.length) tabs.push({ label: `Rastro BDI · ${cycles.length} ciclos`, value: cycles, kind: 'trace' });
+  const bar = $('tabs');
+  bar.replaceChildren(...tabs.map((tab, index) => { const b = document.createElement('button'); b.className = 'tab'; b.textContent = tab.label; b.addEventListener('click', () => showTab(index)); return b; }),
+    Object.assign(document.createElement('span'), { className: 'spacer' }));
+  const copy = document.createElement('button'); copy.id = 'copy'; copy.className = 'ghost'; copy.textContent = 'Copiar JSON';
+  copy.addEventListener('click', () => navigator.clipboard.writeText(JSON.stringify(tabs[activeTab].value, null, 2)).then(() => { copy.textContent = 'Copiado'; setTimeout(() => copy.textContent = 'Copiar JSON', 1200); }));
+  bar.appendChild(copy);
+  showTab(Math.min(activeTab, tabs.length - 1));
+  $('drawer').classList.add('open');
+  group.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
-// --- Carregamento: arquivo, arrastar e soltar, ?file= -----------------------
-function load(text, name) {
+function closeDrawer() { $('drawer').classList.remove('open'); }
+
+function move(key) {
+  if (!current) return;
+  const boxes = current.plan.boxes;
+  if (!selectedBox) return select(boxes[0]);
+  const index = boxes.indexOf(selectedBox);
+  if (key === 'ArrowRight' || key === 'ArrowLeft') return select(boxes[(index + (key === 'ArrowRight' ? 1 : boxes.length - 1)) % boxes.length]);
+  const vertical = boxes.filter(box => box.column === selectedBox.column && (key === 'ArrowDown' ? box.y > selectedBox.y : box.y < selectedBox.y));
+  if (vertical.length) select(vertical.reduce((best, box) => Math.abs(box.y - selectedBox.y) < Math.abs(best.y - selectedBox.y) ? box : best));
+}
+
+document.addEventListener('keydown', event => {
+  if (event.target.matches('input')) return;
+  if (event.key === 'Escape') closeDrawer();
+  else if (event.key.startsWith('Arrow')) { event.preventDefault(); move(event.key); }
+});
+
+// --- Lista de execuções ------------------------------------------------------------
+let runs = [], activePath = null, serverMode = false;
+
+function renderList() {
+  const query = $('filter').value.trim().toLowerCase();
+  const list = $('list');
+  const visible = runs.filter(run => !query || [run.goal, run.case, run.configuration, run.scenario, run.status, run.path, run.mission_id].join(' ').toLowerCase().includes(query));
+  $('count').textContent = runs.length ? `${visible.length}/${runs.length}` : '';
+  if (!visible.length) return list.replaceChildren(Object.assign(document.createElement('div'), { className: 'empty', textContent: runs.length ? 'Nenhuma missão combina com o filtro.' : 'Nenhuma missão carregada ainda.' }));
+  list.replaceChildren(...visible.map(run => {
+    const row = document.createElement('button');
+    row.className = 'row' + (run.path === activePath ? ' active' : '');
+    const goal = document.createElement('div'); goal.className = 'goal'; goal.textContent = run.goal || run.mission_id || run.name; goal.title = run.goal || '';
+    const tags = document.createElement('div'); tags.className = 'tags';
+    const pill = document.createElement('span'); pill.className = `pill s-${statusWord(run.status)}`; pill.textContent = statusWord(run.status); tags.appendChild(pill);
+    for (const text of [run.case && (run.suite ? `${run.case} · ${run.suite}` : run.case), run.configuration, run.scenario]) if (text) tags.appendChild(Object.assign(document.createElement('span'), { className: 'chip', textContent: text }));
+    const meta = document.createElement('div'); meta.className = 'meta';
+    for (const text of [fmtDate(run.created_at), `${run.rounds} rodada${run.rounds === 1 ? '' : 's'}`, fmtDuration(run.duration_ms)]) if (text) meta.appendChild(Object.assign(document.createElement('span'), { textContent: text }));
+    const path = document.createElement('div'); path.className = 'path'; path.textContent = run.path; path.title = run.path;
+    row.append(goal, tags, meta, path);
+    row.addEventListener('click', () => openRun(run).then(() => setCollapsed(true)));
+    return row;
+  }));
+}
+
+async function openRun(run, nodeId) {
   try {
-    render(normalize(JSON.parse(text)));
-    document.title = `Mission Viewer — ${name}`;
-  } catch (error) {
-    alert(`Não foi possível ler ${name}: ${error.message}`);
+    const doc = run.doc || (run.handle ? JSON.parse(await (await run.handle.getFile()).text()) : await fetchJson(run.path));
+    activePath = run.path;
+    store.set('lastPath', run.path);
+    render(doc, run.name);
+    renderList();
+    if (nodeId) { const box = current.plan.boxes.find(item => item.node.id === nodeId); if (box) select(box); }
+  } catch (error) { alert(`Não foi possível abrir ${run.path}: ${error.message}`); }
+}
+
+async function fetchJson(path) {
+  const candidates = serverMode ? [`/api/file?path=${encodeURIComponent(path)}`, path] : [path];
+  let last = null;
+  for (const url of candidates) {
+    const response = await fetch(url);
+    if (response.ok) return response.json();
+    last = new Error(`HTTP ${response.status}`);
+  }
+  throw last;
+}
+
+function addRun(entry) {
+  runs = runs.filter(run => run.path !== entry.path).concat(entry);
+  runs.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')) || (b.mtime || 0) - (a.mtime || 0));
+}
+
+function loadText(text, name) {
+  try {
+    const doc = JSON.parse(text);
+    const entry = summarize(doc, name) || { path: name, name, goal: doc.root_task_id, status: doc.status, rounds: 1 };
+    entry.doc = doc;
+    addRun(entry);
+    openRun(entry);
+  } catch (error) { alert(`Não foi possível ler ${name}: ${error.message}`); }
+}
+
+const SKIP_DIRS = new Set(['.git', 'node_modules', '.venv', '__pycache__', 'cache', 'bin']);
+
+async function scanDirectory(dir, path, depth, out) {
+  const entries = [];
+  for await (const entry of dir.values()) entries.push(entry);
+  let manifestSource = null;
+  const manifest = entries.find(entry => entry.kind === 'file' && entry.name === 'manifest.json');
+  if (manifest) try { manifestSource = JSON.parse(await (await manifest.getFile()).text()).source; } catch {}
+  for (const entry of entries) {
+    const full = path ? `${path}/${entry.name}` : entry.name;
+    if (entry.kind === 'directory') { if (depth < 4 && !SKIP_DIRS.has(entry.name)) await scanDirectory(entry, full, depth + 1, out); continue; }
+    if (!entry.name.endsWith('.json') || !(entry.name === 'mission-result.json' || path.endsWith('missions') || depth === 0)) continue;
+    try {
+      const file = await entry.getFile();
+      const summary = summarize(JSON.parse(await file.text()), full, manifestSource);
+      if (summary) { summary.handle = entry; summary.mtime = file.lastModified; out.push(summary); }
+    } catch {}
   }
 }
 
-function readFile(file) {
-  if (file) file.text().then(text => load(text, file.name));
+async function pickDirectory() {
+  try {
+    const dir = await window.showDirectoryPicker();
+    $('hint').textContent = `Lendo ${dir.name}…`;
+    const found = [];
+    await scanDirectory(dir, dir.name, 0, found);
+    runs = runs.filter(run => run.doc);  // mantém só os arquivos abertos à mão
+    for (const entry of found) addRun(entry);
+    $('hint').textContent = `${found.length} missão(ões) em ${dir.name}`;
+    renderList();
+    const last = store.get('lastPath'), remembered = runs.find(run => run.path === last);
+    if (remembered) openRun(remembered);
+  } catch (error) { if (error.name !== 'AbortError') alert(`Não foi possível ler a pasta: ${error.message}`); }
 }
 
-document.getElementById('file').addEventListener('change', event => readFile(event.target.files[0]));
-document.getElementById('close').addEventListener('click', () => document.getElementById('panel').classList.remove('open'));
+async function loadIndex() {
+  try {
+    const response = await fetch('/api/runs', { cache: 'no-store' });
+    if (!response.ok) return false;
+    const index = await response.json();
+    serverMode = true;
+    runs = runs.filter(run => run.doc || run.handle);
+    for (const entry of index.runs) addRun(entry);
+    $('hint').textContent = `${index.runs.length} missão(ões) em ${index.roots.join(', ')}`;
+    $('refresh').style.display = '';
+    renderList();
+    return true;
+  } catch { return false; }
+}
+
+// --- Inicialização: tema, botões, arrastar e soltar, parâmetros da URL --------------
+const params = new URLSearchParams(location.search);
+const root = document.documentElement;
+if (params.get('theme')) root.dataset.theme = params.get('theme'); else if (store.get('theme')) root.dataset.theme = store.get('theme');
+activeTab = Math.max(0, Number(params.get('tab')) || 0);
+$('theme').addEventListener('click', () => {
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  store.set('theme', root.dataset.theme);
+});
+const setCollapsed = on => { $('runs').classList.toggle('collapsed', on); $('toggle').classList.toggle('on', !on); store.set('listCollapsed', on ? '1' : '0'); };
+$('toggle').addEventListener('click', () => setCollapsed(!$('runs').classList.contains('collapsed')));
+setCollapsed(store.get('listCollapsed') === '1');
+$('refresh').style.display = 'none';
+$('refresh').addEventListener('click', () => { $('hint').textContent = 'Relendo…'; loadIndex(); });
+if (window.showDirectoryPicker) $('pick').addEventListener('click', pickDirectory);
+else { $('pick').disabled = true; $('pick').title = 'Este navegador não permite escolher pastas (Safari/Firefox)'; }
+$('open-file').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', event => { const file = event.target.files[0]; if (file) file.text().then(text => loadText(text, file.name)); });
+$('filter').addEventListener('input', renderList);
+$('close').addEventListener('click', closeDrawer);
 window.addEventListener('dragover', event => { event.preventDefault(); document.body.classList.add('dragging'); });
 window.addEventListener('dragleave', () => document.body.classList.remove('dragging'));
-window.addEventListener('drop', event => {
-  event.preventDefault();
-  document.body.classList.remove('dragging');
-  readFile(event.dataTransfer.files[0]);
-});
-const requested = new URLSearchParams(location.search).get('file');
-if (requested) {
-  fetch(requested).then(response => {
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.text();
-  }).then(text => load(text, requested)).catch(error => alert(`Não foi possível carregar ${requested}: ${error.message}`));
-}
+window.addEventListener('drop', event => { event.preventDefault(); document.body.classList.remove('dragging'); const file = event.dataTransfer.files[0]; if (file) file.text().then(text => loadText(text, file.name)); });
+
+(async () => {
+  const indexed = await loadIndex();
+  const requested = params.get('file');
+  if (requested) {
+    const known = runs.find(run => run.path === requested);
+    return openRun(known || { path: requested, name: requested.split('/').pop() }, params.get('node'));
+  }
+  const last = store.get('lastPath'), remembered = indexed && runs.find(run => run.path === last);
+  if (remembered) openRun(remembered, params.get('node'));
+  if (!indexed) $('hint').textContent = 'Sem servidor: rode make viewer para listar .ariadne, ou use as fontes no rodapé da lista.';
+})();
 </script>
 </body>
 </html>

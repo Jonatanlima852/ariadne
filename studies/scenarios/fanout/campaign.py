@@ -28,6 +28,7 @@ campaign = Campaign(
     "scenario.py",
     matrix={"FANOUT_WORKERS": WORKERS, "FANOUT_FLAKY": [FLAKY]},
     repeat=REPEAT,
+    timeout=120,
     name="fanout-sweep",
     metadata={"study": "fanout", "workers": WORKERS, "flaky": FLAKY == "1"},
 )

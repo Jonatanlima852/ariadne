@@ -39,6 +39,7 @@ def main(argv=None):
     campaign = commands.add_parser("campaign", help="coleta uma matriz de experimentos sem avaliar resultados")
     campaign.add_argument("file", type=Path)
     campaign.add_argument("--output", type=Path, default=None, help="pasta das campanhas; padrão: campaigns/ ao lado do scenario.py nos estudos, senão .ariadne/campaigns")
+    campaign.add_argument("--timeout", type=positive, default=None, help="limite do RPC por amostra, em segundos; sobrepõe o da declaração")
     viewer = commands.add_parser("viewer", help="abre o Mission Viewer com as missões gravadas em .ariadne e nos estudos")
     viewer.add_argument("--root", action="append", type=Path, help="pasta com missões (repetível)")
     viewer.add_argument("--port", type=positive, default=4180)
@@ -83,7 +84,7 @@ def main(argv=None):
             return 0
         if args.command == "campaign":
             from ariadne_sdk.campaign import load_campaign, run_campaign
-            _, summary = run_campaign(load_campaign(args.file), output_root=args.output)
+            _, summary = run_campaign(load_campaign(args.file), output_root=args.output, timeout=args.timeout)
             return {"COMPLETED": 0, "CANCELLED": 130}.get(summary["status"], 1)
         if args.command in ("status", "logs", "stop"):
             from ariadne_sdk.runs import print_logs, print_status, read_summary, resolve_run

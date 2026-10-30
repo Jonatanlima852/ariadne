@@ -222,7 +222,9 @@ ao lado do `scenario.py` (ou em `.ariadne/campaigns` para arquivos externos),
 com `campaign.json` e um `runs/` com uma pasta de execução por observação. O exemplo
 [basic_task/campaign.py](../studies/scenarios/basic_task/campaign.py)
 repete o eco com uma topologia nova por observação. A matriz usa valores
-textuais e ordem de inserção; a repetição é o laço externo. A coleta é
+textuais e ordem de inserção; a repetição é o laço externo. `timeout`
+(segundos) limita o RPC de cada amostra, como `--timeout` em `run`; o padrão é
+60 e `./ariadne campaign --timeout` o sobrepõe. A coleta é
 sequencial, restaura o ambiente entre observações e cria uma execução
 independente por combinação. Não use a matriz para credenciais: seus valores
 são configuração pública e ficam registrados.

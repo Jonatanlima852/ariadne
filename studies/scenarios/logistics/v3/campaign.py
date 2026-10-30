@@ -36,6 +36,7 @@ campaign = Campaign(
     matrix={"LOGISTICS_V3_CASE": [case["id"] for case in load_cases(SUITE, CASES)],
             "LOGISTICS_V3_CONFIGURATION": CONFIGS},
     repeat=REPEAT,
+    timeout=3600,  # uma missão real pode passar de um minuto; o limite do RPC não altera os prazos do runtime
     name=f"logistics-v3-{SUITE}",
     metadata={"study": "logistics-v3", "suite": SUITE, "configurations": CONFIGS,
               "execution_kind": "deterministic-integration-demo" if os.getenv("LOGISTICS_V3_DEMO", "0") == "1" else "real-llm"},

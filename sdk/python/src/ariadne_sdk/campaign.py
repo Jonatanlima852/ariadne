@@ -21,6 +21,8 @@ class Campaign:
     repeat: int = 1
     name: str = "campaign"
     metadata: dict = field(default_factory=dict)
+    # Limite do RPC de cada amostra, em segundos; None usa o padrão do executor (60).
+    timeout: int | None = None
 
     def variants(self):
         if isinstance(self.repeat, bool) or not isinstance(self.repeat, int) or self.repeat < 1:
@@ -49,8 +51,10 @@ def load_campaign(source):
     experiment = Path(declaration.experiment)
     if not experiment.is_absolute():
         experiment = source.parent / experiment
+    if declaration.timeout is not None and (isinstance(declaration.timeout, bool) or not isinstance(declaration.timeout, int) or declaration.timeout <= 0):
+        raise ValueError("campaign timeout must be a positive integer of seconds")
     return Campaign(experiment.resolve(strict=True), declaration.matrix, declaration.repeat,
-                    declaration.name, declaration.metadata)
+                    declaration.name, declaration.metadata, declaration.timeout)
 
 
 @contextmanager
@@ -75,7 +79,7 @@ def default_output(source):
     return root / ".ariadne" / "campaigns"
 
 
-def run_campaign(campaign, *, output_root=None, runner=None):
+def run_campaign(campaign, *, output_root=None, runner=None, timeout=None):
     variants = campaign.variants()
     source = Path(campaign.experiment).resolve(strict=True)
     directory = (Path(output_root).resolve() if output_root else default_output(source)) / ('campaign-' + uuid.uuid4().hex)
@@ -83,6 +87,7 @@ def run_campaign(campaign, *, output_root=None, runner=None):
     manifest = {"schema_version": 2, "name": campaign.name, "metadata": campaign.metadata,
                 "experiment": str(source), "created_at": utc_now(), "matrix": campaign.matrix,
                 "repetitions": campaign.repeat, "planned_observations": len(variants) * campaign.repeat,
+                "rpc_timeout_seconds": timeout or campaign.timeout or 60,
                 "status": "RUNNING", "runs": []}
     def save():
         write_json(directory / 'campaign.json', manifest)
@@ -101,7 +106,8 @@ def run_campaign(campaign, *, output_root=None, runner=None):
                 save()
                 try:
                     with environment(parameters):
-                        _, summary = runner(source, output_root=directory / 'runs', execution_id=execution_id)
+                        options = {"task_timeout": timeout or campaign.timeout} if (timeout or campaign.timeout) else {}
+                        _, summary = runner(source, output_root=directory / 'runs', execution_id=execution_id, **options)
                     entry['status'] = summary['status']
                     if summary['status'] == 'CANCELLED':
                         raise KeyboardInterrupt

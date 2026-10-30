@@ -1,47 +1,46 @@
-"""Valida publicação e recebimento de MessageEnvelope correlacionado."""
+"""Dois agentes trocam um envelope pelo serviço de mensagens do runtime.
 
+Da raiz: ``./ariadne run studies/scenarios/messaging/scenario.py``. O agente
+``agent-a`` publica um pedido para ``agent-b``; numa etapa dependente,
+``agent-b`` recebe o envelope e devolve o que chegou, para comparar
+identificador, remetente, payload e correlação.
+"""
 import os
-import json
-from dataclasses import asdict
-import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / "sdk/python/src"))
-
-from ariadne_sdk import MessagingClient
+from ariadne_sdk import Agent, MessagingClient, Scenario, Step
 
 
-def main():
-    address = os.getenv("MESSAGING_ADDR", "localhost:55053")
-    with MessagingClient(address, "agent-a") as sender:
+def send(task):
+    with MessagingClient(os.environ["MESSAGING_ADDR"], "agent-a") as sender:
         message_id = sender.publish(
-            "agent-b",
-            message_type="REQUEST",
-            payload={"question": "ping"},
-            conversation_id="conversation-basic",
-            correlation_id="correlation-basic",
-            trace_id="trace-basic",
-            task_id="task-basic",
-            ttl_ms=5000,
+            "agent-b", message_type="REQUEST", payload={"question": task.goal},
+            conversation_id="conversation-basic", correlation_id=task.task_id,
+            trace_id=task.trace.get("trace_id", task.task_id), task_id=task.task_id, ttl_ms=5000,
         )
-    with MessagingClient(address, "agent-b") as receiver:
+    return {"message_id": message_id, "receiver_id": "agent-b"}
+
+
+def receive(task):
+    with MessagingClient(os.environ["MESSAGING_ADDR"], "agent-b") as receiver:
         message = next(receiver.stream())
-
-    assert message.message_id == message_id
-    assert message.sender_id == "agent-a"
-    assert message.receiver_id == "agent-b"
-    assert message.payload == {"question": "ping"}
-    assert message.conversation_id == "conversation-basic"
-    assert message.correlation_id == "correlation-basic"
-    assert message.trace_id == "trace-basic"
-    if report_path := os.getenv("SCENARIO_REPORT_PATH"):
-        Path(report_path).write_text(json.dumps(asdict(message), indent=2) + "\n")
-    print(
-        "CENÁRIO APROVADO "
-        f"message_id={message.message_id} trace_id={message.trace_id}"
-    )
+    return {
+        "message_id": message.message_id, "sender_id": message.sender_id,
+        "receiver_id": message.receiver_id, "payload": dict(message.payload),
+        "conversation_id": message.conversation_id, "correlation_id": message.correlation_id,
+        "matches_sent": message.message_id == task.payload.get("expected_message_id"),
+    }
 
 
-if __name__ == "__main__":
-    main()
+sent = Step("send-message", "ping", name="send")
+received = Step(
+    "receive-message", "Receba o envelope enviado", name="receive",
+    payload={"expected_message_id": sent.output["message_id"]},
+)
+
+scenario = Scenario(
+    agents=[
+        Agent(name="agent-a", capabilities=["send-message"], handler=send),
+        Agent(name="agent-b", capabilities=["receive-message"], handler=receive),
+    ],
+    tasks=[sent, received],
+)

@@ -19,6 +19,6 @@ O ID padrão é `planner-explainer-01`.
 
 Sem `ROUTING_DEMO`, o agente usa a OpenAI Responses API com `OPENAI_API_KEY`
 e `LLM_MODEL`. Dependências vêm do projeto `sdk/python` (extra `llm`) ou da
-imagem Docker. Execute módulos Python a partir da raiz do repositório.
+imagem genérica de agente usada por `./ariadne run`. Execute módulos Python a partir da raiz do repositório.
 
 [Cenário proprietário](../../README.md)

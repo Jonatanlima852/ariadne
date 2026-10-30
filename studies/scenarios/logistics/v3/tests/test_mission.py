@@ -1,7 +1,7 @@
-"""Integração real da missão v3 com os binários Go (ARIADNE_TEST_RUNTIME_DIR).
+"""Integração real da missão v3 em contêineres (ARIADNE_TEST_DOCKER=1).
 
 Usa LOGISTICS_V3_DEMO=1: substitutos determinísticos no lugar do modelo;
-nenhuma chamada LLM, nenhum Docker.
+nenhuma chamada LLM.
 """
 import json
 import os
@@ -16,15 +16,15 @@ from studies.scenarios.logistics.v3.domain.cases import find_case
 from studies.scenarios.logistics.v3.mission import episode_metrics
 
 ROOT = Path(__file__).resolve().parents[5]
-RUNTIME = os.getenv('ARIADNE_TEST_RUNTIME_DIR')
+DOCKER = os.getenv('ARIADNE_TEST_DOCKER')
 
 
 def run_case(case_id, configuration):
     with tempfile.TemporaryDirectory() as temporary:
         completed = subprocess.run(
             [sys.executable, '-m', 'ariadne_sdk', 'run', 'studies/scenarios/logistics/v3/scenario.py',
-             '--runtime-dir', str(Path(RUNTIME).resolve()), '--output', temporary, '--timeout', '300'],
-            cwd=ROOT, capture_output=True, text=True, timeout=400,
+             '--output', temporary, '--timeout', '300'],
+            cwd=ROOT, capture_output=True, text=True, timeout=600,
             env={**os.environ, 'LOGISTICS_V3_DEMO': '1', 'LOGISTICS_V3_CASE': case_id,
                  'LOGISTICS_V3_CONFIGURATION': configuration})
         if completed.returncode != 0:
@@ -33,7 +33,7 @@ def run_case(case_id, configuration):
         return (json.loads((run / 'manifest.json').read_text()), json.loads((run / 'mission-result.json').read_text()))
 
 
-@unittest.skipUnless(RUNTIME, 'set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration')
+@unittest.skipUnless(DOCKER, 'set ARIADNE_TEST_DOCKER=1 to run the real Docker integration')
 class LogisticsV3MissionIntegrationTests(unittest.TestCase):
     def test_cooperative_mission_replans_after_a_breakdown(self):
         case = find_case('vehicle-loss')

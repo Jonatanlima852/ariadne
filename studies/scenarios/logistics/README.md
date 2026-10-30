@@ -9,7 +9,7 @@ Os comandos abaixo preservam o estudo original (v1).
 
 Este diretório reúne a descrição, os agentes, o domínio, os dados e a avaliação
 offline. [scenario.py](scenario.py) declara os participantes e tarefas;
-o SDK administra processos e o runtime Go executa o workflow.
+o executor sobe agentes e serviços em contêineres e o runtime Go executa o workflow.
 [evaluate.py](evaluation/evaluate.py) analisa evidências depois, sem iniciar serviços.
 
 ## Mapa de leitura
@@ -20,9 +20,8 @@ o SDK administra processos e o runtime Go executa o workflow.
 | `domain/` | Simulação de referência e adaptação ao planejador do SDK |
 | `datasets/` | Mundo, casos fixos e carregamento de dados |
 | `agents/` | Interpretação LLM e planejamento BDI |
-| `benchmarks/` | Coleta de campanhas e comparação histórica |
+| `benchmarks/` | Campanha e coleta histórica preservada |
 | `evaluation/` | Avaliação offline, métricas e relatórios |
-| `docker/` | Topologia, cliente e adaptadores históricos |
 | `tests/` | Testes de domínio e reprodução do estudo |
 | [v2/](v2/README.md) | Estudo com múltiplos pedidos, incidentes e especialistas |
 
@@ -33,7 +32,7 @@ e `demonstrations/` para os substitutos usados na integração.
 
 ## Executar um caso
 
-Da raiz, com Go e uv:
+Da raiz, com Docker e uv:
 
 ```sh
 ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenarios/logistics/scenario.py
@@ -54,18 +53,16 @@ LOGISTICS_STRATEGY=llm-only ARIADNE_SDK_EXTRAS=llm ./ariadne run studies/scenari
 ```
 
 As estratégias com LLM exigem `OPENAI_API_KEY` exportada e acesso ao modelo
-configurado por `LLM_MODEL`. O executor local não lê `.env` automaticamente.
+configurado por `LLM_MODEL`; o executor repassa as duas aos contêineres e não lê `.env`.
 LLM-only recebe pedido natural e mundo;
 no híbrido, `interpret.output["mission"]` transfere a interpretação ao BDI.
 
 O mundo, os oito casos, os prompts logísticos e as regras foram preservados.
-Os consumidores Docker históricos reutilizam os agentes e domínio movidos;
-os adaptadores antigos de cliente estão em [legacy_client.py](docker/legacy_client.py).
 
 ## Coletar uma campanha
 
-Após a primeira execução preparar `.ariadne/bin`, colete os oito casos híbridos com
-duas repetições:
+Colete os oito casos híbridos com duas repetições (uma topologia em
+contêineres por observação):
 
 ```sh
 uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.benchmarks.campaign
@@ -80,8 +77,7 @@ uv run --project sdk/python --extra llm python -m studies.scenarios.logistics.be
 
 A campanha intercala estratégias por caso e repetição. Salva `campaign.json`
 e execuções em `.ariadne/campaigns/logistics-.../runs/`, com processos novos em cada
-observação. `--cases` seleciona IDs, `--runtime-dir` escolhe binários e `--output`
-escolhe a pasta de campanhas. Falhas e interrupções ficam registradas. Nenhuma
+observação. `--cases` seleciona IDs e `--output` escolhe a pasta de campanhas. Falhas e interrupções ficam registradas. Nenhuma
 figura é gerada durante a coleta.
 
 Essa política difere de `ariadne run --repeat N`, que reutiliza processos. Campanhas
@@ -133,8 +129,8 @@ uv run --project sdk/python --extra llm python -m unittest \
   studies.scenarios.logistics.tests.test_domain studies.scenarios.logistics.tests.test_study -q
 ```
 
-Com `ARIADNE_TEST_RUNTIME_DIR="$PWD/.ariadne/bin"`, inclui integração híbrida com Go real
-e cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
+Com `ARIADNE_TEST_DOCKER=1`, inclui a integração híbrida em contêineres
+com cliente LLM falso, identificado como `test-only`. Esse teste não é resultado
 experimental de uma LLM real.
 
 [Avaliação do TCC](../../../docs/evaluation.md) · [Interface declarativa](../../../docs/experiments.md)
@@ -142,7 +138,3 @@ experimental de uma LLM real.
 A coleta usa `ariadne_sdk.campaign`, compartilhado com outros estudos. Execuções
 registram revisão, pacotes e hashes de mundo/casos; a avaliação registra seu
 código e hashes das evidências. Veja [proveniência](../../../docs/consolidation.md).
-
-Os contêineres usam os mesmos agentes locais: `mission-planner` e
-`mission-assistant`. Não dependem dos agentes de rotas. A configuração
-operacional fica em [agents/serve.py](agents/serve.py).

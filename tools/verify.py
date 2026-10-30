@@ -1,4 +1,7 @@
-"""Verificação reproduzível do checkout, sem Docker ou chamadas LLM reais."""
+"""Verificação reproduzível do checkout, sem chamadas LLM reais.
+
+As integrações sobem serviços e agentes em contêineres; exigem Docker com Compose v2.
+"""
 import argparse
 import os
 from pathlib import Path
@@ -10,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--unit-only', action='store_true', help='omite build e integração com processos Go')
+    parser.add_argument('--unit-only', action='store_true', help='omite as integrações em contêineres Docker')
     parser.add_argument('--no-inspector', action='store_true', help='omite verificações do visualizador')
     args = parser.parse_args(argv)
     if not args.no_inspector:
@@ -19,7 +22,7 @@ def main(argv=None):
         if not node_supported(installed):
             raise SystemExit(f'Inspector exige Node {NODE_REQUIREMENT}; encontrado {installed}')
     environment = dict(os.environ)
-    environment.pop('ARIADNE_TEST_RUNTIME_DIR', None)
+    environment.pop('ARIADNE_TEST_DOCKER', None)
     environment['GOCACHE'] = str(ROOT / '.ariadne/cache/go')
     environment['ARIADNE_PYTHON'] = sys.executable
 
@@ -31,14 +34,11 @@ def main(argv=None):
     run([sys.executable, 'tools/check-doc-links.py'])
     run(['go', 'test', './...'], cwd=ROOT / 'runtime')
     if not args.unit_only:
-        binaries = ROOT / '.ariadne/bin'
-        binaries.mkdir(parents=True, exist_ok=True)
-        for service in ('registry', 'orchestrator', 'messaging'):
-            run(['go', 'build', '-o', binaries / f'ariadne-{service}', f'./services/{service}/cmd'], cwd=ROOT / 'runtime')
-        environment['ARIADNE_TEST_RUNTIME_DIR'] = str(binaries)
+        from ariadne_sdk.compose import Compose
+        print('\nDocker Compose ' + Compose.available(), flush=True)
+        environment['ARIADNE_TEST_DOCKER'] = '1'
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'sdk/python/tests', '-q'])
     run([sys.executable, '-m', 'unittest', 'studies.scenarios.logistics.tests.test_domain', 'studies.scenarios.logistics.tests.test_study', 'studies.scenarios.logistics.v2.tests.test_integration', 'studies.scenarios.logistics.v3.tests.test_agents', 'studies.scenarios.logistics.v3.tests.test_mission', 'studies.scenarios.routing.test_agents', 'studies.scenarios.routing.test_mission', 'studies.scenarios.fanout.tests.test_agents', 'studies.scenarios.fanout.tests.test_analysis', 'studies.scenarios.fanout.tests.test_mission', 'studies.test_layout', '-q'])
-    run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/launcher', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/runtime_metrics', '-q'])
 
     # Verifica a instalação mínima real, separada do ambiente de testes LLM.

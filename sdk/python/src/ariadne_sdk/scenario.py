@@ -18,6 +18,8 @@ class Scenario:
     metadata: dict = field(default_factory=dict)
     artifacts: Sequence[str] = field(default_factory=tuple)
     mission: Mission | None = None
+    # Variáveis de ambiente consultadas ao carregar a descrição; preenchido pelo loader.
+    environment: Sequence[str] = field(default_factory=tuple)
 
     def definition(self):
         if self.mission is not None:

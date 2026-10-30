@@ -1,4 +1,4 @@
-"""Integração real da missão de rotas com os binários Go: ARIADNE_TEST_RUNTIME_DIR=/.../.ariadne/bin.
+"""Integração real da missão de rotas em contêineres: ARIADNE_TEST_DOCKER=1.
 
 Usa o substituto determinístico (ROUTING_DEMO=1); nenhuma chamada LLM é feita.
 """
@@ -13,17 +13,17 @@ import unittest
 from studies.scenarios.routing.mission import check_mission
 
 ROOT = Path(__file__).resolve().parents[3]
-RUNTIME = os.getenv("ARIADNE_TEST_RUNTIME_DIR")
+DOCKER = os.getenv("ARIADNE_TEST_DOCKER")
 
 
-@unittest.skipUnless(RUNTIME, "set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration")
+@unittest.skipUnless(DOCKER, "set ARIADNE_TEST_DOCKER=1 to run the real Docker integration")
 class RoutingMissionIntegrationTests(unittest.TestCase):
     def test_mission_plans_routes_explains_and_finishes_in_two_rounds(self):
         with tempfile.TemporaryDirectory() as temporary:
             completed = subprocess.run(
                 [sys.executable, "-m", "ariadne_sdk", "run", "studies/scenarios/routing/scenario.py",
-                 "--runtime-dir", str(Path(RUNTIME).resolve()), "--output", temporary],
-                cwd=ROOT, capture_output=True, text=True, timeout=120,
+                 "--output", temporary],
+                cwd=ROOT, capture_output=True, text=True, timeout=300,
                 env={**os.environ, "ROUTING_DEMO": "1"},
             )
             self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)

@@ -1,6 +1,6 @@
 # Fan-out: paralelismo e reatribuição no laço de missão
 
-Estudo pequeno e determinístico, sem LLM e sem Docker, feito para mostrar na
+Estudo pequeno e determinístico, sem LLM, feito para mostrar na
 apresentação o runtime acionando vários agentes em paralelo e reatribuindo um
 passo quando o agente responsável não cumpre o prazo. Não é um benchmark de
 modelo nem de domínio: a tarefa (contar palavras de um texto dividido em N
@@ -30,14 +30,14 @@ disso e a configuração rejeita `FANOUT_SHARDS > 9`.
 
 ## Como executar
 
-Da raiz, com os binários Go em `.ariadne/bin` (`tools/verify.py` os compila):
+Da raiz (cada execução sobe seus contêineres):
 
 ```sh
 # uma missão com os padrões: K=4, N=8, contador lento ligado
-./ariadne run studies/scenarios/fanout/scenario.py --runtime-dir .ariadne/bin
+./ariadne run studies/scenarios/fanout/scenario.py
 
 # cinco repetições; cada amostra fica em results.jsonl, a última em mission-result.json
-./ariadne run studies/scenarios/fanout/scenario.py --runtime-dir .ariadne/bin --repeat 5
+./ariadne run studies/scenarios/fanout/scenario.py --repeat 5
 
 # varredura de K sem o contador lento (speedup), 3 repetições por K, e a análise
 uv run --project sdk/python python -m studies.scenarios.fanout.campaign \
@@ -57,7 +57,7 @@ quando a declaração é carregada, porque o plano de uma missão não transport
 
 A análise usa só a biblioteca padrão; com matplotlib disponível (por exemplo
 `uv run --with matplotlib ...`) as figuras saem também em PNG. Os testes
-estão em `tests/` (`test_mission.py` exige `ARIADNE_TEST_RUNTIME_DIR`).
+estão em `tests/` (`test_mission.py` exige `ARIADNE_TEST_DOCKER=1`).
 
 ## Como ler as figuras
 

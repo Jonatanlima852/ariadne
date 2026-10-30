@@ -10,7 +10,7 @@ Requisitos: uv, npm e Node `^20.19.0 || >=22.12.0`. O CI usa a versão de `.nvmr
 Da raiz do checkout:
 
 ```sh
-./ariadne doctor --local --inspector
+./ariadne doctor --inspector
 ./ariadne inspect
 ```
 

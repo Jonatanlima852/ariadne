@@ -1,4 +1,4 @@
-"""Consulta offline das evidências dos backends local e Docker."""
+"""Consulta offline das evidências de uma execução."""
 from collections import deque
 from pathlib import Path
 import re
@@ -24,7 +24,8 @@ def resolve_run(identifier, root):
 
 
 def backend(directory):
-    return "docker" if (directory / "control.yaml").is_file() else "local-processes"
+    path = directory / "backend"
+    return path.read_text().strip() if path.is_file() else "unknown"
 
 
 def print_status(directory):

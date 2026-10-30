@@ -7,12 +7,10 @@ portanto não representam medições de uso de CPU.
 ```sh
 ./ariadne run studies/scenarios/agent_selection/scenario.py
 POLICY=LEAST_LOADED ./ariadne run studies/scenarios/agent_selection/scenario.py
-sh studies/scenarios/agent_selection/benchmarks/run.sh
 ```
 
-A entrada [scenario.py](scenario.py) declara os agentes e tarefas locais.
-A demonstração local usa nove tarefas; o benchmark usa doze por política.
-O [benchmark B](benchmarks/README.md) compara as três políticas contra uma
-topologia Docker própria, aguardando a telemetria inicial. Nenhum usa LLM.
+A entrada [scenario.py](scenario.py) declara os três agentes e nove tarefas;
+`POLICY` escolhe a política. Os eventos `TASK_ASSIGNED` de `events.jsonl`
+mostram a distribuição. Nenhuma execução usa LLM.
 
 [Todos os estudos](../../README.md)

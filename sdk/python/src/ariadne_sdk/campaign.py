@@ -66,7 +66,7 @@ def environment(values):
                 os.environ[key] = value
 
 
-def run_campaign(campaign, *, output_root, runtime_dir=None, runtime_source=None, runner=None):
+def run_campaign(campaign, *, output_root, runner=None):
     variants = campaign.variants()
     source = Path(campaign.experiment).resolve(strict=True)
     directory = Path(output_root).resolve() / ('campaign-' + uuid.uuid4().hex)
@@ -92,8 +92,7 @@ def run_campaign(campaign, *, output_root, runtime_dir=None, runtime_source=None
                 save()
                 try:
                     with environment(parameters):
-                        _, summary = runner(source, output_root=directory / 'runs', runtime_dir=runtime_dir,
-                                            runtime_source=runtime_source, execution_id=execution_id)
+                        _, summary = runner(source, output_root=directory / 'runs', execution_id=execution_id)
                     entry['status'] = summary['status']
                     if summary['status'] == 'CANCELLED':
                         raise KeyboardInterrupt

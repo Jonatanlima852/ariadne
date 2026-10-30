@@ -2,9 +2,8 @@
 # Bootstrap do checkout. Semântica e argumentos pertencem à CLI Python.
 set -eu
 ARIADNE_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-ARIADNE_RUNTIME_SOURCE=${ARIADNE_RUNTIME_SOURCE:-"$ARIADNE_ROOT/runtime"}
 ARIADNE_RUNS_DIR=${ARIADNE_RUNS_DIR:-"$ARIADNE_ROOT/.ariadne/runs"}
-export ARIADNE_ROOT ARIADNE_RUNTIME_SOURCE ARIADNE_RUNS_DIR
+export ARIADNE_ROOT ARIADNE_RUNS_DIR
 if [ -n "${ARIADNE_PYTHON:-}" ]; then
     exec "$ARIADNE_PYTHON" -m ariadne_sdk "$@"
 fi

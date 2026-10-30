@@ -21,14 +21,14 @@ flowchart LR
 ```
 
 A comunicação usa gRPC e Protocol Buffers. O contrato `contract.v1` está na
-versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
+versão `2.0.0`; os stubs Go e Python estão incluídos no repositório.
 
 ## Escolha seu caminho
 
 | Quero… | Comece aqui |
 |---|---|
 | Declarar agentes e cenário em um arquivo | [Experimentos declarativos](docs/experiments.md) |
-| Experimentar sem chave de LLM | [Primeira execução](docs/quickstart.md) |
+| Rodar o primeiro cenário | [Primeira execução](docs/quickstart.md) |
 | Entender como funciona | [Arquitetura e conceitos](docs/architecture.md) |
 | Explorar cooperação, falhas e mensagens | [Catálogo de cenários](docs/scenarios.md) |
 | Desenvolver ou estender o projeto | [Guia de desenvolvimento](docs/development.md) |
@@ -37,26 +37,23 @@ versão `1.0.0`; os stubs Go e Python estão incluídos no repositório.
 
 ## Primeira experiência
 
-O caminho recomendado usa **Go e uv**, sem Docker nem chave de LLM:
+Há uma única forma de executar: `./ariadne run` sobe cada serviço Go e cada
+agente declarado em um contêiner Docker, aplica o cenário e remove tudo ao
+final. Requer **Docker com Compose v2 e uv**; não exige Go nem chave de LLM:
 
 ```sh
-./ariadne doctor --local --file studies/scenarios/basic_task/scenario.py
+./ariadne doctor --file studies/scenarios/basic_task/scenario.py
 ./ariadne run studies/scenarios/basic_task/scenario.py
 ./ariadne status
 ```
 
-Siga o [guia de primeira execução](docs/quickstart.md) para preparar o ambiente,
-reconhecer a resposta esperada e abrir o resultado no Inspector. O executor
-inicia os serviços e agentes, salva evidências e encerra seus processos.
-
-Depois, explore [workflows e recuperação](docs/experiments.md),
-[BDI declarativo](docs/bdi.md) e o [estudo logístico](studies/scenarios/logistics/README.md).
-Abra `./ariadne inspect` para explorar amostras, campanhas, avaliações e
-demonstrações registradas, com grafo e replay manual dos eventos.
-
-Como alternativa, com **uv e Docker Compose >=2.24.4**, use `./ariadne doctor`
-e `./ariadne demo`. O uv prepara o Python da CLI; Go não é necessário no host.
-Veja o [caminho Docker](docs/quickstart.md#alternativa-com-docker).
+Siga o [guia de primeira execução](docs/quickstart.md) para preparar o ambiente
+e reconhecer a resposta esperada. Depois, explore
+[workflows e recuperação](docs/experiments.md), [BDI declarativo](docs/bdi.md),
+as missões de [rotas](studies/scenarios/routing/README.md) e
+[fan-out](studies/scenarios/fanout/README.md) e o
+[estudo logístico](studies/scenarios/logistics/README.md). `make viewer` abre o
+Mission Viewer com as missões gravadas; `./ariadne inspect` abre o Inspector.
 
 ## O que está implementado
 
@@ -65,7 +62,8 @@ Veja o [caminho Docker](docs/quickstart.md#alternativa-com-docker).
 - Workflows com dependências, bindings de resultados, paralelismo e API assíncrona.
 - Mensageria em memória entre agentes.
 - SDK Python com `Agent`, `BdiAgent`, `LlmAgent` e `Scenario`.
-- Cenários organizados por assunto, benchmarks próprios e comparação logística LLM-only/híbrido.
+- Laço de missão (contrato 2.0.0): um planejador decide os passos de cada rodada.
+- Cenários organizados por assunto, com campanhas e análises próprias.
 
 É um protótipo de pesquisa para experimentos locais. Estado em memória,
 mensageria sem reentrega e dependência do provedor LLM são limites relevantes;

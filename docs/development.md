@@ -4,14 +4,14 @@
 
 | Atividade | Ferramentas |
 |---|---|
-| Cenários Docker via `./ariadne` | uv e Docker Compose >=2.24.4 |
-| SDK, scripts e cenários Python | uv e Python compatível com o projeto |
-| Compilar e testar o runtime localmente | Go 1.26.3 ou compatível com `runtime/go.mod` |
+| Executar cenários e campanhas (`./ariadne run`) | uv e Docker com Compose >=2.24.4 |
+| SDK, análises e testes unitários Python | uv e Python compatível com o projeto |
+| Testar o runtime Go fora dos contêineres | Go 1.26.3 ou compatível com `runtime/go.mod` |
 | Regenerar contrato | Go, protoc, plugins Go, uv e grpcio-tools |
 
 Os projetos Python declaram Python >=3.11. O SDK possui `.python-version` com
-3.14; uv pode selecionar ou baixar esse interpretador. Os Dockerfiles usam
-versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
+3.14; uv pode selecionar ou baixar esse interpretador. A imagem genérica de
+agente usa Python 3.12. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 [.python-version](../sdk/python/.python-version) e [go.mod](../runtime/go.mod).
 
 ## Mapa do repositório
@@ -20,18 +20,16 @@ versões próprias. Consulte [pyproject.toml](../sdk/python/pyproject.toml),
 |---|---|
 | `proto/` | [Contrato](../proto/contract/v1/contract.proto), versão e checksum |
 | `runtime/` | Módulo Go, serviços e stubs gerados |
-| `sdk/python/` | [API pública](../sdk/python/src/ariadne_sdk/__init__.py) e testes |
-| `studies/scenarios/*/agents/` | Mock, echo, falha, rotas BDI, agendador BDI e LLM |
-| `tools/clients/submit-task/` | [Cliente de tarefa simples](../tools/clients/submit-task/main.py) |
-| `studies/scenarios/*/docker/` | Scripts de integração e topologias de cada cenário |
+| `sdk/python/` | [API pública](../sdk/python/src/ariadne_sdk/__init__.py), [executor em contêineres](../sdk/python/src/ariadne_sdk/compose.py), [imagem do agente](../sdk/python/Dockerfile) e testes |
+| `runtime/services/*/Dockerfile` | Imagens dos três serviços Go |
+| `studies/scenarios/*/agents/` | Echo, falha, rotas BDI, agendador BDI e LLM |
 | `studies/scenarios/` | Cenários, regras, dados e avaliações próprios |
 | `studies/scenarios/logistics/` | [Estudo declarativo](../studies/scenarios/logistics/README.md), agentes, domínio, dataset e avaliação offline |
 | `studies/scenarios/logistics/v2/` | [Episódios com múltiplos pedidos](../studies/scenarios/logistics/v2/README.md), agentes especialistas e evidências preservadas |
 | `studies/scenarios/logistics/v2/benchmarks/` | [Campanhas, arquivamento e análise](../studies/scenarios/logistics/v2/benchmarks/README.md) da v2 |
 | `studies/scenarios/*/benchmarks/` | Campanhas, resultados selecionados e gráficos |
 | `tools/runtime_metrics/` | Algoritmo compartilhado de extração; resultados ficam nos cenários |
-| `tools/deploy/` | Compose básico |
-| `tools/launcher/` | [Executor e testes](../tools/launcher/README.md) da entrada `./ariadne` |
+| `tools/mission-viewer/` | [Mission Viewer](../tools/mission-viewer/README.md) das missões do contrato 2.0.0 |
 | `tools/inspector/` | [Visualizador React com API local](../tools/inspector/README.md) dos resultados de cenários |
 | `tools/inspector/scripts/` | [Exportação offline de fluxos e mídia](../tools/inspector/scripts/README.md) |
 | `docs/` | Documentação pública atual |
@@ -52,16 +50,16 @@ uv sync --project sdk/python --extra llm
 make verify
 ```
 
-A rotina cobre Go, SDK, integração real local, estudos, launcher, Inspector e
-instalação mínima sem dependências LLM. Usa clientes falsos para LLM e Docker;
-requer Go, uv e Node. `make test-go` mantém a verificação
+A rotina cobre Go, SDK, integração real em contêineres, estudos, Inspector e
+instalação mínima sem dependências LLM. Usa clientes falsos para LLM;
+requer Docker, Go, uv e Node. `--unit-only` omite as integrações em contêineres. `make test-go` mantém a verificação
 isolada de Go. O [guia de consolidação](consolidation.md) descreve as opções.
 Para alterações concorrentes do runtime, execute também `go test -race ./...`
 dentro de `runtime/`.
 
 ## Escrever lógica de agente
 
-Para autoria declarativa e execução gerenciada em processos locais, comece
+Para autoria declarativa e execução gerenciada em contêineres, comece
 por [experimentos em um arquivo](experiments.md). `Agent(handler=...)` e
 `Agent.handle()` podem devolver um dicionário, que o SDK adapta ao contrato.
 `start()`/`stop()` oferecem lifecycle explícito; `run()` permanece bloqueante.
@@ -97,9 +95,8 @@ assert result.output["greeting"] == "Olá, Ana!"
 ```
 
 `from_env()` constrói a instância; `run()` inicia a integração com o runtime.
-Para conectar um agente, configure Registry, host anunciado e porta conforme
-a topologia. O endereço anunciado deve ser alcançável pelo Orchestrator:
-`localhost` dentro de um contêiner aponta para esse próprio contêiner.
+Dentro de `./ariadne run`, o executor define Registry, host anunciado
+(`agent-N`) e porta de cada contêiner; o agente não precisa dessa configuração.
 
 `execute_task()` com protobuf permanece como interface legada usada por alguns
 exemplos. Para BDI, use `BdiAgent` com `Plan` (um ciclo, declarativo) ou com

@@ -6,7 +6,7 @@ as demais variáveis do estudo), guarda o diretório de evidências de cada
 execução e, ao final, chama ``analysis.py`` sobre todos eles para produzir a
 tabela e a figura de speedup.
 
-Uso, da raiz do repositório, com os binários Go em ``.ariadne/bin``:
+Uso, da raiz do repositório (cada execução sobe seus contêineres):
 
     uv run --project sdk/python python -m studies.scenarios.fanout.campaign \
         --workers 1 2 4 8 --repeat 3 --flaky 0 --output .ariadne/fanout/<nome>
@@ -29,10 +29,10 @@ SCENARIO = Path(__file__).resolve().parent / "scenario.py"
 _EVIDENCE = re.compile(r"^Evidências: (.+)$", re.MULTILINE)
 
 
-def run_once(workers, *, repeat, shards, flaky, runtime_dir, output, extra_env=None, timeout=120):
+def run_once(workers, *, repeat, shards, flaky, output, extra_env=None, timeout=120):
     environment = {**os.environ, "FANOUT_WORKERS": str(workers), "FANOUT_SHARDS": str(shards),
                    "FANOUT_FLAKY": "1" if flaky else "0", **(extra_env or {})}
-    command = [sys.executable, "-m", "ariadne_sdk", "run", str(SCENARIO), "--runtime-dir", str(runtime_dir),
+    command = [sys.executable, "-m", "ariadne_sdk", "run", str(SCENARIO),
                "--output", str(output), "--repeat", str(repeat), "--timeout", str(timeout)]
     print(f"> FANOUT_WORKERS={workers} FANOUT_SHARDS={shards} FANOUT_FLAKY={environment['FANOUT_FLAKY']} "
           + " ".join(command[1:]), flush=True)
@@ -55,7 +55,6 @@ def main(argv=None):
     parser.add_argument("--flaky", type=int, choices=(0, 1), default=0)
     parser.add_argument("--work-ms", type=int, default=None, help="FANOUT_WORK_MS")
     parser.add_argument("--step-deadline-ms", type=int, default=None, help="FANOUT_STEP_DEADLINE_MS")
-    parser.add_argument("--runtime-dir", type=Path, default=Path(os.getenv("ARIADNE_RUNTIME_DIR", ROOT / ".ariadne/bin")))
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--timeout", type=int, default=120, help="limite do RPC por amostra, em segundos")
     parser.add_argument("--no-figures", action="store_true")
@@ -68,7 +67,7 @@ def main(argv=None):
     if args.step_deadline_ms is not None:
         extra["FANOUT_STEP_DEADLINE_MS"] = str(args.step_deadline_ms)
     runs = [run_once(workers, repeat=args.repeat, shards=args.shards, flaky=bool(args.flaky),
-                     runtime_dir=args.runtime_dir.resolve(), output=output / "runs", extra_env=extra,
+                     output=output / "runs", extra_env=extra,
                      timeout=args.timeout)
             for workers in args.workers]
     from studies.scenarios.fanout.analysis import analyze_runs, write_outputs, markdown_report

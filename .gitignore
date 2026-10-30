@@ -1,14 +1,6 @@
 # ── Go ────────────────────────────────────────
-# Binários compilados
-runtime/bin/
 *.exe
 *.test
-
-# Cache de build e test
-runtime/.cache/
-
-# Vendor (dependências copiadas localmente — não usamos por ora)
-runtime/vendor/
 
 # Cobertura de testes
 *.out
@@ -77,6 +69,3 @@ Thumbs.db
 CLAUDE.md
 /internal-notes/
 /.ariadne/
-
-# Preserved local evidence from before the Ariadne rename
-/.tg/

@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import os
 from pathlib import Path
 import signal
 import sys
@@ -28,8 +29,11 @@ def main():
     sys.path[:0] = import_roots(args.source)
     scenario = load_scenario(args.source)
     agent = scenario.agents[args.index]
-    agent.host, agent.port, agent.registry_addr = "127.0.0.1", 0, args.registry
-    agent.listen_host = "127.0.0.1"
+    # O executor informa o nome do serviço Compose e a porta fixa do contêiner.
+    agent.host = os.getenv("ARIADNE_AGENT_HOST", "127.0.0.1")
+    agent.port = int(os.getenv("ARIADNE_AGENT_PORT", "0"))
+    agent.registry_addr = args.registry
+    agent.listen_host = "127.0.0.1" if agent.host == "127.0.0.1" else "[::]"
     events = EventLog(
         args.directory / f"agent-{args.index + 1}.jsonl",
         execution_id=args.directory.name, agent_id=agent.agent_id,
@@ -52,10 +56,9 @@ def main():
         if stopped.is_set():
             return 130
         agent.start()
-        events.emit("AGENT_READY", endpoint=f"127.0.0.1:{agent.port}")
-        write_json(args.directory / f"agent-{args.index + 1}.ready", {
-            "address": f"127.0.0.1:{agent.port}", "agent_id": agent.agent_id,
-        })
+        endpoint = f"{agent.host}:{agent.port}"
+        events.emit("AGENT_READY", endpoint=endpoint)
+        write_json(args.directory / f"agent-{args.index + 1}.ready", {"address": endpoint, "agent_id": agent.agent_id})
         stopped.wait()
     except Exception as error:
         events.emit("AGENT_ERROR", error=str(error), error_type=type(error).__name__)

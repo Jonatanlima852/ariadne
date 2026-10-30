@@ -1,15 +1,15 @@
 # Experimentos declarativos em um arquivo
 
 O arquivo Python descreve os agentes e o cenário. O SDK traduz as tarefas
-para o contrato; o executor inicia processos locais e o runtime Go realiza
-descoberta, seleção, workflows e recuperação. A avaliação consome os registros
+para o contrato; o executor sobe serviços e agentes em contêineres e o runtime
+Go realiza descoberta, seleção, workflows e recuperação. A avaliação consome os registros
 depois da execução, em código separado.
 
 ## Primeiro experimento
 
-No checkout, use Go compatível com `runtime/go.mod` e uv. Não é necessário
-Docker neste caminho. A primeira execução prepara o ambiente Python do SDK
-e compila os serviços Go; pode precisar baixar dependências.
+No checkout, use Docker com Compose v2 e uv. A primeira execução prepara o
+ambiente Python da CLI e constrói as imagens dos serviços Go e do agente
+genérico; pode precisar baixar dependências.
 
 O [estudo logístico](../studies/scenarios/logistics/README.md) usa essa mesma interface
 para BDI, LLM e híbrido, com coleta e avaliação offline em comandos separados.
@@ -37,10 +37,11 @@ uma variável `scenario`. Mantenha no nível superior apenas definições e
 configuração: o módulo é carregado pelo supervisor e novamente em cada processo
 de agente. Código sob `if __name__ == "__main__"` não é executado pelo loader.
 
-`run` inicia Registry, Orchestrator e Messaging em processos Go, mais um processo
-Python por agente. O sistema operacional escolhe portas livres. Os agentes são
-registrados depois que seus endpoints estão prontos. Ao final, inclusive em
-falha ou Ctrl+C, o executor encerra os processos e preserva as evidências.
+`run` sobe Registry, Orchestrator e Messaging em contêineres, mais um contêiner
+por agente, todos num projeto Compose exclusivo da execução. O Docker escolhe
+as portas publicadas no host. Os agentes são registrados depois que seus
+endpoints estão prontos. Ao final, inclusive em falha ou Ctrl+C, o executor
+remove os contêineres e preserva as evidências.
 
 O resultado esperado termina com `WORKFLOW_STATUS_COMPLETED` e `Estado:
 COMPLETED`. O terminal informa o diretório exclusivo em `.ariadne/runs/ariadne-...`.
@@ -62,13 +63,14 @@ aplica a mesma interface a agendas. Agentes maiores podem ser
 importados de módulos instalados ou vizinhos ao arquivo do experimento.
 
 Nomes/IDs de agentes devem ser únicos no cenário. A tarefa solicita uma
-capacidade; o runtime escolhe entre os agentes que a oferecem. O backend local
-configura host, porta e Registry automaticamente, sem depender de `AGENT_PORT`
-ou `AGENT_ID` globais.
+capacidade; o runtime escolhe entre os agentes que a oferecem. O executor
+configura host (`agent-N`), porta e Registry de cada contêiner, sem depender
+de `AGENT_PORT` ou `AGENT_ID` globais.
 
-O backend local herda o ambiente do terminal e não carrega `.env`
-automaticamente. Para agentes LLM, exporte as variáveis necessárias, incluindo
-`OPENAI_API_KEY`, antes de executar. Os exemplos echo, BDI, workflow, recuperação e reunião não usam LLM.
+O executor não carrega `.env`. As variáveis que a descrição leu ao ser
+carregada e as credenciais `OPENAI_API_KEY`, `OPENAI_BASE_URL` e `LLM_MODEL`
+são repassadas por nome aos contêineres de agente quando existirem no
+terminal. Para agentes LLM, exporte-as antes de executar. Os exemplos echo, BDI, workflow, recuperação e reunião não usam LLM.
 `studies/scenarios/greeting/scenario.py` exige o extra `llm` e usa o provedor apenas na execução.
 
 ## Dependências entre tarefas
@@ -116,32 +118,32 @@ ter desistido; `caller_active` registra essa condição quando o handler retorna
 Timeout não garante cancelamento de efeitos externos.
 
 `--repeat` executa o mesmo cenário sequencialmente, com novo trace e workflow
-por amostra. Os processos e o estado interno dos agentes são reutilizados.
+por amostra. Os contêineres e o estado interno dos agentes são reutilizados.
 Para amostras com estado inicial independente, faça execuções separadas.
 Falhas operacionais são preservadas e fazem o comando terminar com código 1;
 interrupção termina com código 130. Uma falha de domínio devolvida como sucesso
 pelo agente não é reinterpretada pelo executor.
 
-`--ready-timeout 30` limita cada espera de prontidão e `--timeout 60` limita
+`--ready-timeout 60` limita cada espera de prontidão e `--timeout 60` limita
 o RPC de cada amostra. Esses parâmetros não ampliam o limite interno do
-workflow. O preparo dos binários tem limite de 300 segundos por serviço.
+workflow. A construção das imagens tem limite de 30 minutos.
 
 ## Evidências e avaliação separada
 
 | Arquivo | Conteúdo |
 |---|---|
-| `manifest.json` | Descrição compilada, agentes, versão de schema, hash do arquivo e binários, ambiente e endereços |
+| `manifest.json` | Descrição compilada, agentes e serviços, imagens, variáveis repassadas por nome, proveniência e endereços publicados |
+| `compose.yaml`, `compose.log` | Topologia gerada e saída dos comandos Compose |
 | `experiment.py` | Cópia da descrição executada |
-| `execution.jsonl` | Ciclo do executor, processos e amostras, com interrupções e encerramentos forçados |
+| `execution.jsonl` | Ciclo do executor, comandos Compose e amostras, com interrupções |
 | `events.jsonl` | Eventos de tarefas e workflows emitidos pelo Orchestrator |
 | `message-events.jsonl` | Eventos do broker, se houver mensagens |
 | `agent-N.jsonl` | Entrada e resultado completo de cada tentativa, trace, duração do handler e eventos do agente |
-| `agent-N.log` | Logging e stdout/stderr do processo do agente |
-| `registry.log`, `orchestrator.log`, `messaging.log` | Logs JSON dos serviços Go |
+| `agent-N.log` | Log do contêiner do agente |
+| `registry.log`, `orchestrator.log`, `messaging.log` | Logs JSON dos contêineres dos serviços Go |
 | `results.jsonl` | Uma resposta por amostra, incluindo falhas de RPC |
 | `result.json` | Resposta da última amostra concluída, para inspeção rápida |
-| `summary.json`, `status`, `environment` | Estado e duração operacional, incluindo preparo e encerramento |
-| `build.log` | Saída da compilação, quando solicitada |
+| `summary.json`, `status`, `environment`, `backend` | Estado e duração operacional, incluindo preparo e encerramento |
 
 Correlacione agente e runtime por `task_id` e `trace_id`; distinga tentativas
 por `attempt`. O diretório identifica a execução e `sample` identifica a
@@ -165,35 +167,23 @@ sua proveniência. Isso identifica as entradas, mas não é um snapshot completo
 campanha acadêmica. Um processo encerrado à força pode ter entrada registrada
 sem resultado; use os eventos de encerramento para interpretar esse caso.
 
-## Uso fora do checkout
+## Onde o executor roda
 
-Com o SDK instalado no ambiente Python e os binários preparados:
+`./ariadne run` precisa do checkout: as imagens dos serviços Go e do agente
+genérico são construídas a partir de `runtime/` e `sdk/python/`, e o
+repositório é montado nos contêineres para que os agentes importem seu código.
+A CLI instalada como `ariadne` funciona da mesma forma quando `ARIADNE_ROOT`
+aponta para um checkout. O arquivo do experimento pode estar fora do
+repositório; sua pasta também é montada, somente leitura.
 
-```sh
-ariadne run /caminho/meu_experimento.py --runtime-dir /caminho/binarios
-```
-
-O diretório precisa conter `ariadne-registry`, `ariadne-orchestrator` e `ariadne-messaging`.
-`ARIADNE_RUNTIME_DIR` também configura esse caminho. No checkout, `./ariadne run` prepara
-os binários em `.ariadne/bin` e usa o cache Go. `--runtime-dir` evita a compilação.
 `--output /caminho/evidencias` muda a pasta que recebe diretórios de execução.
-
-Esta versão oferece o backend de processos locais. Não conecta a execução
-declarativa a um cluster externo nem gera contêineres; os fluxos Docker antigos
-continuam disponíveis. `./ariadne status` e `./ariadne logs` reconhecem ambos os backends,
-por ID ou caminho da execução. Sem argumento, usam a última execução iniciada
-no diretório compartilhado. Para processos locais, logs mostram as últimas
-100 linhas de cada arquivo `.log`/`.jsonl` e funcionam após o encerramento.
-`stop` continua controlando Docker; para interromper processos locais, use
-Ctrl+C no supervisor.
-
-O shell usa `.ariadne/runs` deste checkout mesmo quando invocado de outro diretório.
-`ARIADNE_RUNS_DIR` muda essa raiz. Para uma execução com `--output` personalizado,
-passe seu caminho a `status`/`logs` ou configure a mesma raiz. A CLI instalada
-também oferece `ariadne status --output PASTA` e `ariadne logs --output PASTA --tail 50`,
-com consulta offline das evidências salvas de ambos os backends.
-O Inspector pode listar o resultado de workflow salvo; a exploração dos logs
-por agente e das repetições usa os arquivos brutos.
+O shell usa `.ariadne/runs` deste checkout mesmo quando invocado de outro
+diretório; `ARIADNE_RUNS_DIR` muda essa raiz. `./ariadne status` e
+`./ariadne logs` aceitam o ID ou o caminho da execução e, sem argumento, usam
+a última execução iniciada. Os logs mostram as últimas 100 linhas de cada
+arquivo `.log`/`.jsonl` e funcionam após o encerramento. Ctrl+C interrompe a
+execução e remove os contêineres; `./ariadne stop ID` cobre o caso de uma
+interrupção abrupta do processo.
 
 [Índice](README.md) · [Desenvolvimento](development.md)
 

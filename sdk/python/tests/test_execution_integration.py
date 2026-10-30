@@ -1,4 +1,4 @@
-"""Integração real opt-in: ARIADNE_TEST_RUNTIME_DIR=/.../.ariadne/bin python -m unittest ..."""
+"""Integração real opt-in em contêineres: ARIADNE_TEST_DOCKER=1 python -m unittest ..."""
 
 import json
 import os
@@ -11,11 +11,11 @@ import tempfile
 import time
 import unittest
 
-RUNTIME = os.getenv("ARIADNE_TEST_RUNTIME_DIR")
+DOCKER = os.getenv("ARIADNE_TEST_DOCKER")
 ROOT = Path(__file__).resolve().parents[3]
 
 
-@unittest.skipUnless(RUNTIME, "set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration")
+@unittest.skipUnless(DOCKER, "set ARIADNE_TEST_DOCKER=1 to run the real Docker integration")
 class ExecutionIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -24,12 +24,11 @@ class ExecutionIntegrationTests(unittest.TestCase):
 
     def command(self, source, *options):
         return [sys.executable, "-m", "ariadne_sdk", "run", str(source),
-                "--runtime-dir", str(Path(RUNTIME).resolve()),
                 "--output", str(self.directory / "runs"), *options]
 
     def execute(self, source, *options, expected=0):
         completed = subprocess.run(self.command(source, *options), cwd=self.directory,
-                                   capture_output=True, text=True, timeout=60)
+                                   capture_output=True, text=True, timeout=300)
         self.assertEqual(completed.returncode, expected, completed.stdout + completed.stderr)
         run = next((self.directory / "runs").iterdir())
         self.assertEqual((run / "environment").read_text().strip(), "stopped")
@@ -39,10 +38,14 @@ class ExecutionIntegrationTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 with socket.create_connection((host, int(port)), timeout=0.2):
                     pass
-        for process in manifest.get("processes", []):
-            with self.assertRaises(ProcessLookupError):
-                os.kill(process["pid"], 0)
+        self.assertEqual(self.containers(manifest), [])
         return run
+
+    @staticmethod
+    def containers(manifest):
+        listed = subprocess.run(["docker", "compose", "--project-name", manifest["compose_project"], "ps", "--all", "--quiet"],
+                                capture_output=True, text=True, timeout=60)
+        return listed.stdout.split()
 
     def test_workflow_from_external_directory_repeats_and_preserves_traces(self):
         source = self.directory / "external.py"
@@ -140,7 +143,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
         with (self.directory / "console.log").open("w") as output:
             child = subprocess.Popen(self.command(source), stdout=output, stderr=subprocess.STDOUT)
         try:
-            deadline = time.monotonic() + 20
+            deadline = time.monotonic() + 120
             while time.monotonic() < deadline:
                 records = list((self.directory / "runs").glob("*/agent-1.jsonl"))
                 if records and "AGENT_TASK_STARTED" in records[0].read_text():
@@ -151,17 +154,15 @@ class ExecutionIntegrationTests(unittest.TestCase):
             else:
                 self.fail("agent did not receive task before timeout")
             child.send_signal(signal.SIGINT)
-            self.assertEqual(child.wait(timeout=15), 130)
+            self.assertEqual(child.wait(timeout=60), 130)
             run = records[0].parent
             self.assertEqual((run / "status").read_text().strip(), "CANCELLED")
             manifest = json.loads((run / "manifest.json").read_text())
-            for process in manifest["processes"]:
-                with self.assertRaises(ProcessLookupError):
-                    os.kill(process["pid"], 0)
+            self.assertEqual(self.containers(manifest), [])
         finally:
             if child.poll() is None:
                 child.send_signal(signal.SIGTERM)
-                child.wait(timeout=15)
+                child.wait(timeout=60)
 
     def test_two_simultaneous_experiments_have_distinct_ports(self):
         command = self.command(ROOT / "studies/scenarios/basic_task/scenario.py")
@@ -169,7 +170,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
             children = [subprocess.Popen(command, stdout=output, stderr=subprocess.STDOUT) for _ in range(2)]
         try:
             for child in children:
-                self.assertEqual(child.wait(timeout=45), 0, (self.directory / "parallel.log").read_text())
+                self.assertEqual(child.wait(timeout=300), 0, (self.directory / "parallel.log").read_text())
             manifests = [json.loads(path.read_text()) for path in (self.directory / "runs").glob("*/manifest.json")]
             self.assertEqual(len(manifests), 2)
             self.assertTrue(set(manifests[0]["addresses"].values()).isdisjoint(manifests[1]["addresses"].values()))
@@ -177,7 +178,7 @@ class ExecutionIntegrationTests(unittest.TestCase):
             for child in children:
                 if child.poll() is None:
                     child.terminate()
-                    child.wait(timeout=15)
+                    child.wait(timeout=60)
 
 
 if __name__ == "__main__":

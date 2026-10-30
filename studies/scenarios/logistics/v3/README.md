@@ -26,10 +26,9 @@ plano, rejeita ações inválidas e dispara incidentes antes da próxima ação.
 | `domain/` | Adaptadores do domínio da v2 ao laço de missão e leitura dos casos |
 | `agents/` | `planner` (LLM), `single_llm` (LLM), `delivery` (BDI), `execute` (determinístico), cada um com Dockerfile |
 | `mission.py` | Declaração da missão por caso/configuração e métricas do `MissionResult` |
-| `scenario.py` | Um caso como missão declarada com processos locais |
-| [benchmarks/](benchmarks/run.py) | Coletor contra o Compose, `analyze.py` reutilizando a v2 |
-| [docker/](docker/README.md) | Topologia: Registry, Orchestrator, 2 planejadores LLM, 3 entregadores, executor |
-| `tests/` | Agentes sem runtime, laço imitado e integração com os binários Go |
+| `scenario.py` | Um caso como missão declarada; `./ariadne run` sobe planejador, entregadores e executor em contêineres |
+| [benchmarks/](benchmarks/run.py) | Coletor que chama o executor por observação, `analyze.py` reutilizando a v2 |
+| `tests/` | Agentes sem runtime, laço imitado e integração em contêineres |
 
 Da raiz, sem credencial (substitutos determinísticos; não mede um modelo):
 
@@ -38,11 +37,10 @@ LOGISTICS_V3_DEMO=1 LOGISTICS_V3_CASE=vehicle-loss ./ariadne run studies/scenari
 LOGISTICS_V3_DEMO=1 LOGISTICS_V3_CONFIGURATION=single-llm-v3 ./ariadne run studies/scenarios/logistics/v3/scenario.py
 ```
 
-Campanha real, com `.env` contendo `OPENAI_API_KEY` (e `LLM_MODEL` opcional):
+Campanha real, com `OPENAI_API_KEY` (e `LLM_MODEL` opcional) exportadas no
+terminal; cada observação sobe e derruba sua própria topologia:
 
 ```sh
-LOGISTICS_V3_DEMO=0 docker compose --env-file .env \
-  -f studies/scenarios/logistics/v3/docker/compose.yaml up --build --wait -d
 uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run \
   --suite stress --configurations ariadne-v3 single-llm-v3 --repeat 3
 python -m studies.scenarios.logistics.v3.benchmarks.analyze \
@@ -52,7 +50,7 @@ python -m studies.scenarios.logistics.v3.benchmarks.analyze \
 Cada missão fica em `missions/<caso>-<configuração>-r<n>.json`, o
 `MissionResult` do contrato, legível no
 [visualizador de missão](../../../../tools/mission-viewer/README.md).
-Testes sem LLM e sem Docker: `tests/test_agents.py`; com os binários Go,
-`ARIADNE_TEST_RUNTIME_DIR=.ariadne/bin` e `tests/test_mission.py`.
+Testes sem LLM: `tests/test_agents.py` não sobe nada; `tests/test_mission.py`
+roda as missões em contêineres com `ARIADNE_TEST_DOCKER=1`.
 
 [Estudo logístico](../README.md)

@@ -6,14 +6,13 @@
 |---|---|
 | `domain/` | Estado, contratos e regras do domínio |
 | `execution/` | Controle dos episódios e variante enxuta |
-| `agents/` | Especialistas, contratos de execução e Dockerfiles |
+| `agents/` | Especialistas e contratos de execução |
 | `demonstrations/` | Substitutos determinísticos para integração |
 | `datasets/` | Casos fixos das duas suítes |
 | [benchmarks/](benchmarks/README.md) | Execução, arquivamento, análise e figuras |
 | `docs/` | Guias de estresse, variante enxuta e apresentação |
 | `tests/` | Verificações de estrutura e integração dos pacotes |
 | `experiments/` | Protocolos congelados das coletas |
-| [docker/](docker/README.md) | Topologia e instruções de execução |
 | [results/](results/README.md) | Evidências selecionadas e material de apresentação |
 
 Novas coletas ficam em `.ariadne/logistics-v2/`. Os caminhos dos resultados
@@ -31,12 +30,17 @@ observações: tempo médio 17,8 vezes menor e 94,4% menos tokens nos 29 pares
 com uso conhecido, com maior atendimento agregado.
 
 Cada especialista tem seu próprio diretório `agents/<nome>/`, com declaração
-em `main.py` e um `Dockerfile`. O [Compose](docker/compose.yaml) inicia um contêiner
-por agente, além de Registry e Orchestrator. Single LLM possui seu próprio
-contêiner. O controlador Python apenas envia tarefas pelo SDK; não instancia
-agentes dentro de seu processo e não altera o núcleo do framework.
+em `main.py`. Na coleta, cada agente rodava em um contêiner, além de Registry e
+Orchestrator; o controlador Python apenas enviava tarefas pelo SDK.
 
-Da raiz, com Docker Compose e o SDK Python disponíveis:
+**Estudo histórico.** A v2 não é mais executável: sua topologia Compose e os
+Dockerfiles por agente foram removidos quando o repositório passou a ter uma
+única forma de execução (`./ariadne run`, que gera a topologia a partir de um
+`scenario.py`). O laço de episódio da v2 vive num controlador Python, fora
+desse modelo; a [v3](../v3/README.md) executa o mesmo domínio como missão e é
+a versão corrente. O código, os casos e os resultados preservados continuam
+aqui para leitura e análise. Os comandos abaixo documentam como a coleta foi
+feita e exigem a topologia removida (disponível no histórico do Git):
 
 ```sh
 # Serviços e agentes, cada um em seu contêiner:
@@ -79,7 +83,7 @@ O cliente aceita `--orchestrator-addr` (padrão `localhost:55052`),
 `--registry-addr` (padrão `localhost:55051`), `--max-rounds` (20), `--output`,
 `--cases` e `--configurations single-llm ariadne`. As portas publicadas podem ser
 alteradas por `LOGISTICS_V2_ORCHESTRATOR_PORT` e `LOGISTICS_V2_REGISTRY_PORT`.
-Mais detalhes operacionais em [docker/README.md](docker/README.md).
+A topologia e seu guia operacional ficam no histórico do Git.
 
 A [configuração híbrida enxuta](docs/lean.md), `ariadne-lean`, mantém oito agentes
 (um LLM e sete BDI) e preserva a equipe original como configuração separada.

@@ -1,7 +1,8 @@
-"""Executor local de descrições Python sobre os serviços Go reais."""
+"""Executor de descrições Python: serviços Go e agentes em contêineres Docker."""
 
 from __future__ import annotations
 
+from collections.abc import MutableMapping
 import hashlib
 import json
 import os
@@ -10,7 +11,6 @@ import platform
 import runpy
 import shutil
 import signal
-import subprocess
 import sys
 import time
 import uuid
@@ -19,12 +19,11 @@ import grpc
 
 from contract.v1 import contract_pb2 as pb, contract_pb2_grpc as rpc
 from ariadne_sdk.agent import Agent
+from ariadne_sdk.compose import SERVICES, Compose, compose_document, forwarded_names, repository_root
 from ariadne_sdk.evidence import EventLog, utc_now, write_json
 from ariadne_sdk.provenance import capture
 from ariadne_sdk.scenario import Scenario
 from ariadne_sdk.client import RuntimeClient
-
-SERVICES = ("registry", "orchestrator", "messaging")
 
 
 def import_roots(source):
@@ -36,14 +35,51 @@ def import_roots(source):
     return list(dict.fromkeys((str(directory), str(root))))
 
 
+class _EnvironmentRecorder(MutableMapping):
+    """Anota quais variáveis a descrição consultou, para repassá-las aos contêineres."""
+
+    def __init__(self, target):
+        self.target, self.read = target, set()
+
+    def __getitem__(self, key):
+        self.read.add(key)
+        return self.target[key]
+
+    def get(self, key, default=None):
+        self.read.add(key)
+        return self.target.get(key, default)
+
+    def __contains__(self, key):
+        self.read.add(key)
+        return key in self.target
+
+    def __setitem__(self, key, value):
+        self.target[key] = value
+
+    def __delitem__(self, key):
+        del self.target[key]
+
+    def __iter__(self):
+        return iter(self.target)
+
+    def __len__(self):
+        return len(self.target)
+
+    def copy(self):
+        return dict(self.target)
+
+
 def load_scenario(source):
     """Carrega a variável pública `scenario`; não invoca callbacks de execução."""
     source = Path(source).resolve(strict=True)
     previous_path = sys.path[:]
+    recorder = _EnvironmentRecorder(os.environ)
+    os.environ = recorder
     try:
         sys.path[:0] = import_roots(source)
         namespace = runpy.run_path(str(source), run_name="__ariadne_experiment__")
     finally:
+        os.environ = recorder.target
         sys.path[:] = previous_path
     scenario = namespace.get("scenario")
     if not isinstance(scenario, Scenario) or scenario.tasks is None:
@@ -76,105 +112,37 @@ def load_scenario(source):
         artifacts.append(path)
     # Preserva a origem quando outro arquivo reutiliza uma descrição carregada.
     scenario.artifacts = tuple(dict.fromkeys(artifacts))
+    scenario.environment = tuple(sorted(name for name in recorder.read if isinstance(name, str) and name in os.environ))
     return scenario
 
 
-class Processes:
-    """Possui somente os processos desta execução, incluindo startup parcial."""
-
-    def __init__(self, directory, events=None):
-        self.directory = directory
-        self.children = []
-        self.events = events
-
-    def start(self, command, name, *, env=None, cwd=None):
-        with (self.directory / f"{name}.log").open("ab") as output:
-            child = subprocess.Popen(
-                command, stdout=output, stderr=subprocess.STDOUT,
-                stdin=subprocess.DEVNULL, env=env, cwd=cwd,
-                start_new_session=(os.name == "posix"),
-            )
-        self.children.append((name, child))
-        if self.events:
-            self.events.emit("PROCESS_STARTED", process=name, pid=child.pid)
-        return child
-
-    def check(self):
-        for name, child in self.children:
-            if child.poll() is not None:
-                raise RuntimeError(f"{name} exited with {child.returncode}; see {name}.log")
-
-    @staticmethod
-    def signal(child, signum):
-        try:
-            if os.name == "posix":
-                os.killpg(child.pid, signum)
-            elif child.poll() is None:
-                child.terminate() if signum == signal.SIGTERM else child.kill()
-        except ProcessLookupError:
-            pass
-
-    def stop(self):
-        # Agents unregister while Registry is still alive.
-        for _, child in reversed(self.children):
-            forced = False
-            if child.poll() is None:
-                self.signal(child, signal.SIGTERM)
-                try:
-                    child.wait(timeout=4)
-                except subprocess.TimeoutExpired:
-                    forced = True
-                    self.signal(child, signal.SIGKILL)
-                    child.wait(timeout=3)
-            # Reap any subprocesses left in the managed process group.
-            if os.name == "posix":
-                self.signal(child, signal.SIGKILL)
-            if self.events:
-                self.events.emit("PROCESS_STOPPED", pid=child.pid, exit_code=child.returncode, forced=forced)
-
-
-def wait_ready(processes, path, timeout, *, agent=False):
+def wait_ready(compose, path, timeout, *, address=None):
+    """Espera o arquivo de prontidão escrito pelo contêiner e, depois, o canal gRPC."""
     deadline = time.monotonic() + timeout
+    checked = time.monotonic()
     while not path.exists():
-        processes.check()
+        if time.monotonic() - checked >= 1:
+            compose.check()
+            checked = time.monotonic()
         if time.monotonic() >= deadline:
+            compose.check()
             raise TimeoutError(f"startup timed out waiting for {path.name}")
         time.sleep(0.05)
-    address = json.loads(path.read_text())["address"] if agent else path.read_text().strip()
+    address = address or json.loads(path.read_text())["address"]
     with grpc.insecure_channel(address) as channel:
         ready = grpc.channel_ready_future(channel)
         try:
             while True:
-                processes.check()
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     raise TimeoutError(f"gRPC not ready: {address}")
                 try:
-                    ready.result(timeout=min(0.2, remaining))
+                    ready.result(timeout=min(0.5, remaining))
                     return address
                 except grpc.FutureTimeoutError:
-                    pass
+                    compose.check()
         finally:
             ready.cancel()
-
-
-def build_runtime(source, destination, processes):
-    if shutil.which("go") is None:
-        raise RuntimeError("Go is required to prepare the runtime; alternatively use --runtime-dir")
-    destination.mkdir(parents=True, exist_ok=True)
-    for service in SERVICES:
-        binary = destination / f"ariadne-{service}"
-        child = processes.start(
-            ["go", "build", "-o", str(binary), f"./services/{service}/cmd"],
-            "build", cwd=source,
-        )
-        try:
-            code = child.wait(timeout=300)
-        except subprocess.TimeoutExpired as error:
-            raise TimeoutError("Go build timed out; see build.log") from error
-        if code:
-            raise RuntimeError("could not build Go runtime; see build.log")
-        processes.children.remove(("build", child))
 
 
 def run_mission_sample(client, mission, *, rpc_timeout=None):
@@ -187,32 +155,34 @@ def run_mission_sample(client, mission, *, rpc_timeout=None):
     )
 
 
-def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None,
-                   ready_timeout=30, task_timeout=60, repeat=1, execution_id=None):
+def run_experiment(source, *, output_root, ready_timeout=60, task_timeout=60, repeat=1, execution_id=None):
     source = Path(source).resolve(strict=True)
     scenario = load_scenario(source)
     provenance = capture(source, scenario.artifacts)
     execution_id = execution_id or ("ariadne-" + uuid.uuid4().hex)
     if not execution_id.startswith("ariadne-") or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-" for c in execution_id):
         raise ValueError("invalid execution_id")
+    root = repository_root()
     directory = Path(output_root).resolve() / execution_id
     directory.mkdir(parents=True)
     print(f"Experimento: {scenario.name}\nEvidências: {directory}", flush=True)
     events = EventLog(directory / "execution.jsonl", execution_id=directory.name)
-    processes = Processes(directory, events)
+    compose = Compose(directory, execution_id.lower(), events)
     started = time.monotonic()
     summary = {"scenario": scenario.name, "started_at": utc_now(), "status": "RUNNING"}
     definition = scenario.definition()
     manifest = {
-        "schema_version": 1, "execution_id": directory.name, "backend": "local-processes",
+        "schema_version": 2, "execution_id": directory.name, "backend": "docker-compose",
+        "compose_project": compose.project, "repository_root": str(root),
         "source": str(source), "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
         "python": sys.version, "platform": platform.platform(), "contract_version": "2.0.0",
         "repeat": repeat, "ready_timeout_seconds": ready_timeout, "rpc_timeout_seconds": task_timeout,
         "metadata": scenario.metadata,
         "provenance": provenance,
-        "agents": [{"agent_id": agent.agent_id, "capabilities": agent.capabilities}
-                   for agent in scenario.agents], "steps": definition,
+        "agents": [{"agent_id": agent.agent_id, "capabilities": agent.capabilities, "service": f"agent-{index + 1}"}
+                   for index, agent in enumerate(scenario.agents)], "steps": definition,
         "mission": scenario.mission.to_dict() if scenario.mission is not None else None,
+        "forwarded_environment": forwarded_names(scenario),
     }
     write_json(directory / "manifest.json", manifest)
     # Keep the authored description with its evidence; never copy environment files.
@@ -221,48 +191,39 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
     (directory / "status").write_text("RUNNING\n")
     (directory / "environment").write_text("starting\n")
     write_json(directory / "summary.json", summary)
-    (directory / "backend").write_text("local-processes\n")
+    (directory / "backend").write_text("docker-compose\n")
     latest = directory.parent.parent / f"latest.{directory.name}"
     latest.write_text(directory.name + "\n")
     latest.replace(directory.parent.parent / "latest")
     events.emit("EXPERIMENT_STARTED")
+    services = [*SERVICES, *(f"agent-{index + 1}" for index in range(len(scenario.agents)))]
     try:
-        if runtime_source is not None:
-            runtime_source = Path(runtime_source).resolve(strict=True)
-            runtime_dir = Path(output_root).resolve().parent / "bin"
-            print("Preparando runtime Go (cache de compilação reutilizado)…", flush=True)
-            build_runtime(runtime_source, runtime_dir, processes)
-        if runtime_dir is None:
-            raise ValueError("provide --runtime-dir or ARIADNE_RUNTIME_DIR with ariadne-registry, ariadne-orchestrator, ariadne-messaging")
-        runtime_dir = Path(runtime_dir).resolve(strict=True)
-        binaries = {service: runtime_dir / f"ariadne-{service}" for service in SERVICES}
-        for binary in binaries.values():
-            if not binary.is_file() or not os.access(binary, os.X_OK):
-                raise ValueError(f"runtime executable not found: {binary}")
-        manifest["binaries_sha256"] = {
-            name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in binaries.items()
-        }
+        manifest["compose_version"] = Compose.available()
+        compose.write(compose_document(root=root, directory=directory, source=source, scenario=scenario))
+        print("Preparando imagens (a primeira vez pode demorar)…", flush=True)
+        compose.build()
+        print("Iniciando serviços e agentes em contêineres…", flush=True)
+        compose.up(*SERVICES)
         addresses = {}
-        for service, binary in binaries.items():
-            ready_file = directory / f"{service}.ready"
-            env = {**os.environ, "ARIADNE_JSON_LOGS": "1", "ARIADNE_READY_FILE": str(ready_file)}
-            if service == "registry":
-                env["REGISTRY_ADDR"] = "127.0.0.1:0"
-            else:
-                env["REGISTRY_ADDR"] = addresses["registry"]
-                env[f"{service.upper()}_ADDR"] = "127.0.0.1:0"
-                env["EVENTS_PATH"] = str(directory / ("events.jsonl" if service == "orchestrator" else "message-events.jsonl"))
-            processes.start([str(binary)], service, env=env)
-            addresses[service] = wait_ready(processes, ready_file, ready_timeout)
+        for service in SERVICES:
+            published = compose.port(service, {"registry": 50051, "orchestrator": 50052, "messaging": 50053}[service])
+            addresses[service] = wait_ready(compose, directory / f"{service}.ready", ready_timeout, address=published)
         manifest["addresses"] = addresses
         write_json(directory / "manifest.json", manifest)
-        env = {**os.environ, **{f"{name.upper()}_ADDR": addr for name, addr in addresses.items()}}
+        compose.up(*(f"agent-{index + 1}" for index in range(len(scenario.agents))))
         for index, agent in enumerate(scenario.agents):
-            processes.start([
-                sys.executable, "-m", "ariadne_sdk.worker", str(source), str(index),
-                addresses["registry"], str(directory),
-            ], f"agent-{index + 1}", env=env)
-            endpoint = wait_ready(processes, directory / f"agent-{index + 1}.ready", ready_timeout, agent=True)
+            ready_file = directory / f"agent-{index + 1}.ready"
+            deadline = time.monotonic() + ready_timeout
+            checked = time.monotonic()
+            while not ready_file.exists():
+                if time.monotonic() - checked >= 1:
+                    compose.check()
+                    checked = time.monotonic()
+                if time.monotonic() >= deadline:
+                    compose.check()
+                    raise TimeoutError(f"startup timed out waiting for {ready_file.name}")
+                time.sleep(0.05)
+            endpoint = json.loads(ready_file.read_text())["address"]
             with grpc.insecure_channel(addresses["registry"]) as channel:
                 registered = rpc.RegistryServiceStub(channel).GetAgent(
                     pb.GetAgentRequest(agent_id=agent.agent_id), timeout=ready_timeout,
@@ -270,14 +231,14 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
             if (registered.endpoint.address != endpoint or
                     set(agent.capabilities) != {c.capability_id for c in registered.capabilities}):
                 raise RuntimeError(f"registration differs from declaration: {agent.agent_id}")
-        manifest["processes"] = [{"name": name, "pid": child.pid} for name, child in processes.children]
+        manifest["images"] = compose.images()
         write_json(directory / "manifest.json", manifest)
         (directory / "environment").write_text("running\n")
         events.emit("EXPERIMENT_READY", addresses=addresses)
         print("Runtime e agentes prontos. Executando cenário…", flush=True)
         failed = False
         for sample in range(1, repeat + 1):
-            processes.check()
+            compose.check()
             with RuntimeClient(scenario.name, addresses["orchestrator"]) as client:
                 events.emit("SAMPLE_STARTED", sample=sample, trace_id=client.trace_id)
                 sample_start = time.perf_counter()
@@ -320,11 +281,19 @@ def run_experiment(source, *, output_root, runtime_dir=None, runtime_source=None
         # Finish cleanup even if another Ctrl+C arrives.
         handlers = {sig: signal.signal(sig, signal.SIG_IGN) for sig in (signal.SIGINT, signal.SIGTERM)}
         try:
-            processes.stop()
+            if compose.file.is_file():
+                compose.save_logs(services)
+                if compose.down() == 0:
+                    (directory / "environment").write_text("stopped\n")
+                else:
+                    (directory / "environment").write_text("cleanup-failed\n")
+                    summary.setdefault("error", f"could not remove containers; run: ./ariadne stop {directory.name}")
+            else:
+                (directory / "environment").write_text("stopped\n")
         finally:
             for sig, handler in handlers.items():
                 signal.signal(sig, handler)
-        (directory / "environment").write_text("stopped\n")
+        write_json(directory / "manifest.json", manifest)
         summary.update(completed_at=utc_now(), elapsed_ms=(time.monotonic() - started) * 1000)
         write_json(directory / "summary.json", summary)
         (directory / "status").write_text(summary["status"] + "\n")

@@ -1,6 +1,6 @@
-"""Integração real com os binários Go (ARIADNE_TEST_RUNTIME_DIR): paralelismo e reatribuição.
+"""Integração real em contêineres (ARIADNE_TEST_DOCKER=1): paralelismo e reatribuição.
 
-Sem LLM e sem Docker. K=4, N=8, contador lento ligado: a missão deve
+Sem LLM. K=4, N=8, contador lento ligado: a missão deve
 completar, um passo deve estourar o prazo no contador lento e terminar em
 outro contador, e o rastro deve estar completo.
 """
@@ -17,18 +17,18 @@ from studies.scenarios.fanout.analysis import analyze_sample, read_jsonl
 from studies.scenarios.fanout.mission import Settings, check_mission
 
 ROOT = Path(__file__).resolve().parents[4]
-RUNTIME = os.getenv("ARIADNE_TEST_RUNTIME_DIR")
+DOCKER = os.getenv("ARIADNE_TEST_DOCKER")
 
 
-@unittest.skipUnless(RUNTIME, "set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration")
+@unittest.skipUnless(DOCKER, "set ARIADNE_TEST_DOCKER=1 to run the real Docker integration")
 class FanoutMissionIntegrationTests(unittest.TestCase):
     def test_parallel_maps_with_timeout_and_reassignment(self):
         settings = Settings(workers=4, shards=8, flaky=True, step_deadline_ms=1500, work_ms=300)
         with tempfile.TemporaryDirectory() as temporary:
             completed = subprocess.run(
                 [sys.executable, "-m", "ariadne_sdk", "run", "studies/scenarios/fanout/scenario.py",
-                 "--runtime-dir", str(Path(RUNTIME).resolve()), "--output", temporary, "--timeout", "120"],
-                cwd=ROOT, capture_output=True, text=True, timeout=180,
+                 "--output", temporary, "--timeout", "120"],
+                cwd=ROOT, capture_output=True, text=True, timeout=400,
                 env={**os.environ, "FANOUT_WORKERS": "4", "FANOUT_SHARDS": "8", "FANOUT_FLAKY": "1",
                      "FANOUT_STEP_DEADLINE_MS": "1500", "FANOUT_WORK_MS": "300"},
             )

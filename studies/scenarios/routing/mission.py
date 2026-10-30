@@ -1,7 +1,6 @@
 """Missão de rotas: objetivo, contexto e verificação do resultado.
 
-Compartilhado pela declaração (``scenario.py``), pelo cliente Docker
-(``docker/scenario.py``), pelo benchmark e pelo teste de integração. A
+Compartilhado pela declaração (``scenario.py``) e pelo teste de integração. A
 verificação lê o JSON do contrato salvo em ``mission-result.json``.
 """
 from studies.scenarios.routing.agents.route_planner.main import DEFAULT_GRAPH

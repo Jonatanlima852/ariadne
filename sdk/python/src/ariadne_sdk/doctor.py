@@ -1,4 +1,4 @@
-"""Diagnóstico local sem instalar dependências, compilar ou iniciar serviços."""
+"""Diagnóstico sem instalar dependências, construir imagens ou iniciar contêineres."""
 import importlib.util
 import os
 from pathlib import Path
@@ -9,6 +9,7 @@ import sys
 
 
 NODE_REQUIREMENT = "^20.19.0 || >=22.12.0"
+COMPOSE_REQUIREMENT = (2, 24, 4)
 
 
 def version_tuple(value):
@@ -23,13 +24,14 @@ def node_supported(value):
     return (version[0] == 20 and version >= (20, 19, 0)) or version >= (22, 12, 0)
 
 
+def compose_supported(value):
+    return version_tuple(value) >= COMPOSE_REQUIREMENT
+
+
 def tool_version(tool, *arguments):
     if not shutil.which(tool):
         raise ValueError(f"{tool} não encontrado no PATH")
-    return subprocess.check_output(
-        [tool, *arguments], text=True, stderr=subprocess.STDOUT, timeout=10,
-        env={**os.environ, "GOTOOLCHAIN": "local"},
-    ).strip()
+    return subprocess.check_output([tool, *arguments], text=True, stderr=subprocess.STDOUT, timeout=20).strip()
 
 
 def writable_destination(path):
@@ -39,8 +41,7 @@ def writable_destination(path):
     return path.is_dir() and os.access(path, os.W_OK | os.X_OK)
 
 
-def diagnose(*, runtime_source=None, runtime_dir=None, output=".ariadne/runs",
-             source=None, llm=False, inspector=False):
+def diagnose(*, output=".ariadne/runs", source=None, llm=False, inspector=False):
     checks = []
 
     def check(label, operation):
@@ -60,33 +61,21 @@ def diagnose(*, runtime_source=None, runtime_dir=None, output=".ariadne/runs",
         check(package, lambda package=package: require(
             importlib.util.find_spec(package) is not None,
             "prepare o SDK com uv sync --project sdk/python", "disponível"))
+    check("Docker", lambda: tool_version("docker", "version", "--format", "{{.Server.Version}}"))
 
-    if runtime_dir is not None:
-        for service in ("registry", "orchestrator", "messaging"):
-            binary = Path(runtime_dir) / f"ariadne-{service}"
-            check(service, lambda binary=binary: require(
-                binary.is_file() and os.access(binary, os.X_OK),
-                f"executável ausente: {binary}; prepare o runtime ou ajuste --runtime-dir", str(binary)))
-    else:
-        def go():
-            if runtime_source is None:
-                raise ValueError("informe --runtime-dir ou --runtime-source; no checkout use ./ariadne")
-            module = Path(runtime_source) / "go.mod"
-            match = re.search(r"^go\s+(\S+)", module.read_text(), re.MULTILINE)
-            if not match:
-                raise ValueError(f"versão Go ausente em {module}")
-            installed = tool_version("go", "version")
-            return require(version_tuple(installed) >= version_tuple(match[1]),
-                           f"instale Go >={match[1]}; encontrado {installed}", installed)
-        check("Runtime Go", go)
-
+    def compose():
+        installed = tool_version("docker", "compose", "version", "--short")
+        return require(compose_supported(installed),
+                       f"use Docker Compose >={'.'.join(map(str, COMPOSE_REQUIREMENT))}; encontrado {installed}", installed)
+    check("Docker Compose", compose)
     check("Destino de evidências", lambda: require(writable_destination(output),
           f"diretório sem acesso de escrita ou caminho bloqueado: {output}", str(Path(output).resolve())))
     if source is not None:
         def description():
             from ariadne_sdk.execution import load_scenario
             scenario = load_scenario(source)
-            return f"{scenario.name}: {len(scenario.agents)} agentes, {len(scenario.tasks)} etapas"
+            shape = "1 missão" if scenario.mission is not None else f"{len(scenario.tasks)} etapas"
+            return f"{scenario.name}: {len(scenario.agents)} agentes, {shape}"
         check("Descrição", description)
     if llm:
         for package in ("openai", "pydantic"):
@@ -94,7 +83,8 @@ def diagnose(*, runtime_source=None, runtime_dir=None, output=".ariadne/runs",
                 importlib.util.find_spec(package) is not None,
                 "use ARIADNE_SDK_EXTRAS=llm ou instale ariadne-sdk[llm]", "disponível"))
         check("Credencial LLM", lambda: require(bool(os.getenv("OPENAI_API_KEY", "").strip()),
-              "exporte OPENAI_API_KEY no terminal; o executor local não lê .env", "presente (não validada no provedor)"))
+              "exporte OPENAI_API_KEY no terminal; o executor repassa a variável aos contêineres e não lê .env",
+              "presente (não validada no provedor)"))
     if inspector:
         def node():
             installed = tool_version("node", "--version")
@@ -104,5 +94,5 @@ def diagnose(*, runtime_source=None, runtime_dir=None, output=".ariadne/runs",
         check("uv para API do Inspector", lambda: tool_version("uv", "--version"))
     for label, ok, detail in checks:
         print(f"{'OK' if ok else 'FALHA'} · {label}: {detail}")
-    print("Diagnóstico local concluído. Não verifica rede, acesso ao modelo ou prontidão dos serviços.")
+    print("Diagnóstico concluído. Não constrói imagens nem verifica rede ou acesso ao modelo.")
     return 0 if all(ok for _, ok, _ in checks) else 1

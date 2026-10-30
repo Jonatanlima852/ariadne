@@ -1,8 +1,7 @@
 # Organização, autoria e reprodução
 
-O caminho principal é: declarar um experimento, coletar evidências pelo SDK e
-runtime, avaliar essas evidências no estudo. Os exemplos Docker permanecem para
-reprodução e demonstração das APIs de baixo nível.
+O caminho é um só: declarar um experimento, coletar evidências pelo SDK e
+runtime em contêineres, avaliar essas evidências no estudo.
 
 ## Organização
 
@@ -12,18 +11,17 @@ reprodução e demonstração das APIs de baixo nível.
 | `runtime/` | Serviços Go |
 | `sdk/python/` | Autoria, clientes, executor e coleta de campanhas |
 | `studies/scenarios/` | Todos os cenários, seus domínios e avaliações |
-| `studies/scenarios/*/docker/` | Cenários de integração Docker |
 | `studies/scenarios/*/agents/` | Agentes pertencentes ao cenário |
 | `studies/scenarios/logistics/` | Domínio, dados, experimentos e avaliação logística |
 | `studies/scenarios/*/benchmarks/` | Campanhas e resultados de cada assunto |
 | `tools/runtime_metrics/` | Avaliação de eventos do runtime |
-| `tools/` | Deploy, backend Docker, verificação e Inspector |
+| `tools/` | Verificação, métricas, Mission Viewer e Inspector |
 | `docs/` | Guias públicos |
 
 Os antigos `examples/` e `studies/logistics/` foram reunidos em
-`studies/scenarios/`. Agentes ficam em `studies/scenarios/*/agents/` e o cliente
-de submissão em `tools/clients/`. Benchmarks e métricas pertencem ao cenário
-correspondente; apenas o cálculo genérico de métricas permanece em `tools/`.
+`studies/scenarios/`. Agentes ficam em `studies/scenarios/*/agents/`.
+Benchmarks e métricas pertencem ao cenário correspondente; apenas o cálculo
+genérico de métricas permanece em `tools/`.
 Os arquivos de evidência preservam os caminhos registrados na coleta original.
 
 Na logística, `scenario.py` é a entrada do estudo original. O código é separado
@@ -99,7 +97,7 @@ campaign = Campaign(
 ```
 
 O caminho do experimento é relativo ao arquivo da campanha. Execute com
-`ARIADNE_SDK_EXTRAS=llm ./ariadne campaign arquivo.py --runtime-dir .ariadne/bin`. O exemplo
+`ARIADNE_SDK_EXTRAS=llm ./ariadne campaign arquivo.py`. O exemplo
 [studies/scenarios/basic_task/benchmarks/campaign.py](../studies/scenarios/basic_task/benchmarks/campaign.py) repete o echo com processos novos.
 A matriz usa valores textuais e ordem de inserção; a repetição é o laço externo.
 A coleta é sequencial, restaura o ambiente entre observações e cria uma execução
@@ -134,9 +132,9 @@ si só, suficiente para reconstruir o código.
 ## CLI e verificação
 
 `./ariadne` é um bootstrap curto para a mesma CLI Python instalada como `ariadne`. Parsing,
-status, logs, validação e execução estão no SDK. O backend Docker está isolado
-em `tools/launcher/docker.sh`. Os comandos Docker e `verify` precisam do checkout;
-configure `ARIADNE_ROOT` quando necessário. `ARIADNE_PYTHON` permite usar um Python com o
+status, logs, validação e execução estão no SDK; a geração do Compose fica em
+`ariadne_sdk/compose.py`. `run` e `verify` precisam do checkout, porque as
+imagens são construídas a partir dele; configure `ARIADNE_ROOT` quando necessário. `ARIADNE_PYTHON` permite usar um Python com o
 SDK já instalado; por padrão o bootstrap usa uv. `ARIADNE_SDK_EXTRAS=llm` inclui o extra.
 
 `check` também detecta limite de etapas/profundidade, políticas desconhecidas e
@@ -149,13 +147,13 @@ make verify
 ARIADNE_SDK_EXTRAS=llm ./ariadne verify
 ```
 
-A verificação inclui contrato, Go, SDK, integrações locais, logística com provedor
-falso, launcher com Docker falso, métricas, links locais e Inspector (parser,
-API e build React/Vite com `npm ci`). Também instala o SDK mínimo em um ambiente separado e verifica que OpenAI/Pydantic não são dependências
+A verificação inclui contrato, Go, SDK, integrações em contêineres, logística com
+provedor falso, métricas, links locais e Inspector (parser, API e build
+React/Vite com `npm ci`). Também instala o SDK mínimo em um ambiente separado e verifica que OpenAI/Pydantic não são dependências
 obrigatórias. Requer Go, uv, npm e Node `^20.19.0 || >=22.12.0`; pode baixar
 dependências na primeira execução.
-Não faz chamadas LLM reais nem precisa do daemon Docker. `--unit-only` omite
-as integrações de processos; `--no-inspector` omite o visualizador.
+Não faz chamadas LLM reais. `--unit-only` omite as integrações em
+contêineres; `--no-inspector` omite o visualizador.
 
 A mesma rotina está em [.github/workflows/verify.yml](../.github/workflows/verify.yml).
 Resultados de CI só existem depois que o workflow for executado pelo GitHub.
@@ -170,7 +168,6 @@ O comando é `./ariadne` no checkout ou `ariadne` quando instalado. O pacote é
 `ariadne/runtime` e os binários são `ariadne-registry`, `ariadne-orchestrator`
 e `ariadne-messaging`.
 
-A renomeação não reescreve evidências anteriores: a pasta local `.tg/` e os
-resultados publicados conservam seus dados. Para inspecionar uma execução
-antiga, forneça seu caminho a `./ariadne status` ou `./ariadne logs`; o avaliador
-aceita os caminhos históricos. Os comandos e variáveis antigos não são aliases.
+A renomeação não reescreve evidências anteriores: os resultados publicados
+conservam seus dados. Para inspecionar uma execução antiga, forneça seu caminho
+a `./ariadne status` ou `./ariadne logs`; o avaliador aceita os caminhos históricos.

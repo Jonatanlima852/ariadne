@@ -1,4 +1,4 @@
-"""Integração real opt-in da missão: ARIADNE_TEST_RUNTIME_DIR=/.../.ariadne/bin."""
+"""Integração real opt-in da missão em contêineres: ARIADNE_TEST_DOCKER=1."""
 
 import json
 import os
@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 
-RUNTIME = os.getenv("ARIADNE_TEST_RUNTIME_DIR")
+DOCKER = os.getenv("ARIADNE_TEST_DOCKER")
 
 EXPERIMENT = '''
 from ariadne_sdk import Agent, Mission, PlannerRequest, PlannerResponse, Scenario, plan_step
@@ -39,7 +39,7 @@ scenario = Scenario(
 '''
 
 
-@unittest.skipUnless(RUNTIME, "set ARIADNE_TEST_RUNTIME_DIR to run real Go/Python integration")
+@unittest.skipUnless(DOCKER, "set ARIADNE_TEST_DOCKER=1 to run the real Docker integration")
 class MissionIntegrationTests(unittest.TestCase):
     def test_declared_mission_runs_two_rounds_and_saves_contract_json(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -47,9 +47,8 @@ class MissionIntegrationTests(unittest.TestCase):
             source = directory / "mission_experiment.py"
             source.write_text(EXPERIMENT)
             completed = subprocess.run(
-                [sys.executable, "-m", "ariadne_sdk", "run", str(source),
-                 "--runtime-dir", str(Path(RUNTIME).resolve()), "--output", str(directory / "runs")],
-                cwd=directory, capture_output=True, text=True, timeout=90,
+                [sys.executable, "-m", "ariadne_sdk", "run", str(source), "--output", str(directory / "runs")],
+                cwd=directory, capture_output=True, text=True, timeout=300,
             )
             self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
             run = next((directory / "runs").iterdir())

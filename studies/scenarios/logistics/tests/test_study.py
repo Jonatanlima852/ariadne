@@ -130,7 +130,7 @@ class StudyTests(unittest.TestCase):
             else:
                 self.assertEqual(result.output["mission"], case["mission"])
 
-    @unittest.skipUnless(os.getenv("ARIADNE_TEST_RUNTIME_DIR"), "requires real local runtime binaries")
+    @unittest.skipUnless(os.getenv("ARIADNE_TEST_DOCKER"), "requires Docker; set ARIADNE_TEST_DOCKER=1")
     def test_hybrid_through_runtime_with_explicit_fake_provider(self):
         from ariadne_sdk.execution import run_experiment
         experiment = (Path(__file__).resolve().parents[1] / "scenario.py").resolve()
@@ -146,8 +146,7 @@ class StudyTests(unittest.TestCase):
                 f"    scenario = load_scenario({str(experiment)!r})\n"
                 "    scenario.agents[0]._openai = FakeClient()\n"
             )
-            run, summary = run_experiment(source, output_root=directory / "runs",
-                                          runtime_dir=os.environ["ARIADNE_TEST_RUNTIME_DIR"])
+            run, summary = run_experiment(source, output_root=directory / "runs")
             self.assertEqual(summary["status"], "COMPLETED")
             rows = evaluate_run(run)
             self.assertTrue(rows[0]["evaluation"]["valid"])

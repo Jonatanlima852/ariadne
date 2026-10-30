@@ -32,11 +32,10 @@ agentes. O contrato e a implementação de referência são o centro da contribu
 - O cliente genérico não apresenta workflows; use os scripts ou `RuntimeClient`.
 - A suíte A–D inclui chamadas LLM e exige credencial mesmo contendo casos
   determinísticos. Os cenários individuais sem LLM continuam disponíveis.
-- Os runners de benchmarks reutilizam um volume de eventos. Uma nova coleta
-  deve começar em ambiente isolado ou com limpeza deliberada após preservar dados.
-  Os cenários via `./ariadne` já usam volumes e diretórios exclusivos por execução;
-  isso não altera o comportamento dos runners de benchmark.
-- Dependências instaladas por alguns Dockerfiles não seguem os locks locais.
+- Cada execução usa projeto Compose, portas e diretório exclusivos; repetições
+  com `--repeat` reutilizam os mesmos contêineres e o estado interno dos agentes.
+- A imagem genérica de agente instala as dependências do SDK com versões
+  fixas, mas não a partir do `uv.lock`.
 - Os resultados logísticos publicados cobrem oito casos, duas repetições e um
   modelo. Não estabelecem generalização para outros domínios ou modelos.
 - O avaliador logístico compartilha regras de domínio com o BDI. A execução

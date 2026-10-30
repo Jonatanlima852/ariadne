@@ -14,17 +14,17 @@ a última execução iniciada, não necessariamente a que está sendo apresentad
 
 ```sh
 ./ariadne doctor
-./ariadne demo
-./ariadne scenario workflow-sequential
-./ariadne scenario failure-reassignment
+./ariadne run studies/scenarios/basic_task/scenario.py
+./ariadne run studies/scenarios/sequential_workflow/scenario.py
+./ariadne run studies/scenarios/failure_reassignment/scenario.py
+./ariadne run studies/scenarios/fanout/scenario.py
 ```
 
-Inicie a API e o frontend conforme o
-[guia do visualizador](../tools/inspector/README.md), abra
-`http://127.0.0.1:4173` e escolha uma das execuções listadas de `.ariadne/runs`.
+Abra `make viewer` para as missões ou o [Inspector](../tools/inspector/README.md)
+para os workflows e escolha uma das execuções listadas de `.ariadne/runs`.
 
-Para apresentar sem Docker, escolha um item no catálogo **Demonstrações**.
-Ele mostra registros reais incluídos no repositório e identificados como exemplos.
+Para apresentar sem executar nada, escolha um item no catálogo **Demonstrações**
+do Inspector. Ele mostra registros reais incluídos no repositório e identificados como exemplos.
 Para outros cenários, preserve previamente as pastas de resultados. Diga
 explicitamente quando estiver mostrando uma execução registrada.
 
@@ -35,10 +35,10 @@ Os tempos abaixo são uma sugestão de fala, não estimativas de execução ou b
 | Tempo | O que explicar ou fazer | Evidência a mostrar |
 |---|---|---|
 | 0–2 min | Problema, objetivo e contribuição: contrato comum, runtime e SDK | Diagrama da [arquitetura](architecture.md) e serviços do [contrato](../proto/contract/v1/contract.proto) |
-| 2–4 min | Uma tarefa solicita uma capacidade; o runtime encontra e aciona um agente | `./ariadne demo`; resultado com `execution-simulator-01` e trace |
-| 4–6 min | O runtime também coordena etapas com dependências | Resultado de `workflow-sequential`, saídas `first` e `second`; definição no [script](../studies/scenarios/sequential_workflow/docker/scenario.py) |
+| 2–4 min | Uma tarefa solicita uma capacidade; o runtime encontra e aciona um agente | `./ariadne run studies/scenarios/basic_task/scenario.py`; resultado com `echo` e trace |
+| 4–6 min | O runtime também coordena etapas com dependências | Resultado do workflow sequencial, saídas `first` e `second`; definição no [scenario.py](../studies/scenarios/sequential_workflow/scenario.py) |
 | 6–8 min | Uma tentativa pode falhar e a política permitir nova atribuição | Visualizador do cenário de falha: `TASK_ASSIGNED`, `TASK_TIMEOUT`, `TASK_REASSIGNED`, `TASK_COMPLETED` |
-| 8–11 min | A mesma interface integra interpretação LLM e planejamento BDI | Fluxo heterogêneo na arquitetura e, se preparado, relatório de `heterogeneous-route` ou `logistics-mission` |
+| 8–11 min | A mesma interface integra interpretação LLM e planejamento BDI | Missão de [rotas](../studies/scenarios/routing/README.md) ou [logística v3](../studies/scenarios/logistics/v3/README.md) no Mission Viewer |
 | 11–15 min | Resultados do estudo de caso, alcance e próximos problemas | Tabela e artefatos da [avaliação](evaluation.md), acompanhados das [limitações](limitations.md) |
 
 Para uma conversa curta, use problema → exemplo de recuperação → arquitetura

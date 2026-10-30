@@ -21,13 +21,12 @@ do repositório, salvo indicação explícita.
 - [BDI declarativo e planejamento](bdi.md): entradas, planos, seleção e busca genérica no SDK.
 
 - [Experimentos declarativos](experiments.md): agentes e cenário em um arquivo,
-  execução local pelo runtime Go e evidências brutas para avaliação separada.
+  execução em contêineres pelo runtime Go e evidências brutas para avaliação separada.
 - [Estudo logístico](../studies/scenarios/logistics/README.md): descrição de LLM-only e híbrido,
   coleta de campanhas e avaliação offline com gráficos.
 
-- [Primeira execução](quickstart.md): requisitos, comandos Docker, resultado e diagnóstico.
-- [Executor ariadne](cli.md): comandos, isolamento, prazos e arquivos de resultado.
-- [Execução manual](manual-execution.md): Compose básico e cliente no host.
+- [Primeira execução](quickstart.md): requisitos, primeiro comando, resultado e diagnóstico.
+- [Executor ariadne](cli.md): comandos, o que `run` faz nos contêineres e arquivos de resultado.
 - [Arquitetura e conceitos](architecture.md): responsabilidades, fluxos e glossário.
 - [Catálogo de cenários](scenarios.md): objetivos, requisitos e resultados esperados.
 - [Desenvolvimento](development.md): mapa do código, ambiente, SDK e verificações.

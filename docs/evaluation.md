@@ -16,13 +16,14 @@ eventos e resultados, sem recalcular métricas dos benchmarks.
 
 1. Leia a [arquitetura](architecture.md) e a separação entre runtime e agentes.
 2. Execute a [tarefa básica](quickstart.md) para conferir a integração.
-3. Observe [workflow](../studies/scenarios/sequential_workflow/docker/README.md) e
-   [reassignment](../studies/scenarios/failure_reassignment/docker/README.md) sem LLM.
-4. Execute a [rota heterogênea](../studies/scenarios/routing/docker/README.md),
-   caso haja credencial e acesso ao provedor.
+3. Observe [workflow](../studies/scenarios/sequential_workflow/README.md) e
+   [reassignment](../studies/scenarios/failure_reassignment/README.md) sem LLM.
+4. Execute a [rota heterogênea](../studies/scenarios/routing/README.md) e o
+   [fan-out](../studies/scenarios/fanout/README.md); a rota usa o modelo real
+   caso haja credencial, ou o substituto com `ROUTING_DEMO=1`.
 5. Consulte os resultados logísticos já registrados e suas limitações.
 
-Ler os artefatos selecionados não exige Docker nem chamadas externas. Uma nova
+Ler os artefatos selecionados não exige executar nada nem chamadas externas. Uma nova
 coleta LLM é uma nova observação: não se espera igualdade exata de latências e
 respostas com a execução publicada.
 
@@ -31,8 +32,8 @@ respostas com a execução publicada.
 | Pergunta | Onde conferir | Alcance |
 |---|---|---|
 | Agentes heterogêneos cooperam pelo contrato? | [Cenário de rota](../studies/scenarios/routing/scenario.py) e [contrato](../proto/contract/v1/contract.proto) | Agentes BDI-like e LLM utilizados nos exemplos |
-| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/docker/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
-| Políticas alteram a distribuição? | [Seleção de agentes, caso B](../studies/scenarios/agent_selection/benchmarks/run.py) | Três agentes com carga reportada configurada |
+| O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
+| Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `POLICY` | Três agentes com carga reportada configurada |
 | O híbrido melhora propriedades do plano? | [Resultados logísticos](../studies/scenarios/logistics/benchmarks/results/logistics-20261004T-final-v2/logistics-summary.csv) | Mundo, dataset, modelo e amostra utilizados |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
@@ -67,9 +68,8 @@ reatribuições. Tudo sai do `MissionResult` de cada missão, salvo inteiro em
 # sem credencial: substitutos determinísticos (não mede um modelo)
 LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py
 
-# campanha real em contêineres (credencial só nos contêineres LLM)
-LOGISTICS_V3_DEMO=0 docker compose --env-file .env \
-  -f studies/scenarios/logistics/v3/docker/compose.yaml up --build --wait -d
+# campanha real: cada observação sobe sua topologia em contêineres;
+# exporte OPENAI_API_KEY (e LLM_MODEL) no terminal, o executor repassa aos agentes
 uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run \
   --suite stress --configurations ariadne-v3 single-llm-v3 --repeat 3
 python -m studies.scenarios.logistics.v3.benchmarks.analyze \
@@ -85,7 +85,7 @@ resultados reais da v3 registrados ainda; as tabelas abaixo são históricas.
 ## Paralelismo, reatribuição e rastro
 
 O [estudo de fan-out](../studies/scenarios/fanout/README.md) isola três
-propriedades do runtime sem LLM e sem Docker: a execução paralela de passos
+propriedades do runtime sem LLM: a execução paralela de passos
 independentes de uma missão, a reatribuição de um passo cujo agente não
 cumpriu o prazo e a completude do rastro de eventos. A missão conta as
 palavras de um texto dividido em N fragmentos: um planejador determinístico
@@ -172,8 +172,7 @@ Na interface declarativa, `./ariadne run arquivo.py --repeat N` preserva as amos
 brutas e logs correlacionados. A avaliação e os gráficos são feitos depois,
 em código separado. O [guia de experimentos](experiments.md) descreve os
 arquivos, os escopos de duração e a reutilização de estado entre repetições.
-Os artefatos publicados permanecem intactos. Os runners abaixo foram ajustados
-para a avaliação atual: não executam mais BDI isolado nem a comparação do caso E.
+Os artefatos publicados permanecem intactos. A coleta não executa BDI isolado nem a comparação do caso E.
 
 O caminho atual do estudo está em [studies/scenarios/logistics](../studies/scenarios/logistics/README.md):
 
@@ -190,37 +189,23 @@ manifestos e escreve em uma pasta nova; não inicia agentes. No novo caminho,
 todas as estratégias usam workflows, portanto os escopos de latência diferem
 da campanha histórica. Consistência fica indefinida quando há uma só observação.
 
-### Benchmarks por assunto
+### Campanhas por assunto
 
-A antiga suíte A–D foi distribuída entre os cenários. Cada comando usa sua
-própria topologia Docker e exporta resultados em `benchmarks/results/<data>/`:
-
-```sh
-sh studies/scenarios/basic_task/benchmarks/run.sh
-sh studies/scenarios/agent_selection/benchmarks/run.sh
-sh studies/scenarios/routing/benchmarks/run.sh
-sh studies/scenarios/failure_reassignment/benchmarks/run.sh
-LOGISTICS_REPETITIONS=2 sh studies/scenarios/logistics/benchmarks/run.sh
-```
-
-Todos exigem Docker/Compose, Python e uv. Apenas rotas (C) e logística exigem
-acesso LLM: configure OPENAI_API_KEY e, opcionalmente, LLM_MODEL. Para logística,
-crie `.env`; `BENCHMARK_ENV_FILE` permite selecionar outro arquivo. O antigo
-caso E e BDI isolado não fazem parte da avaliação atual. C e D usam uma amostra.
-
-As topologias usam a porta 54052 por padrão: execute uma por vez ou configure
-BENCHMARK_ORCHESTRATOR_PORT. Os volumes são preservados e os eventos escritos
-em append; salvar em pasta datada não isola eventos de campanhas anteriores.
-Após preservar os dados anteriores, remova deliberadamente o volume da
-respectiva topologia antes da nova coleta, por exemplo:
+Cada cenário coleta pela mesma interface: `./ariadne campaign arquivo.py` para
+uma matriz de execuções independentes, ou o coletor do estudo, que chama o
+mesmo executor por observação. Cada observação sobe sua própria topologia em
+contêineres e termina com manifesto, eventos e logs:
 
 ```sh
-docker compose -f studies/scenarios/basic_task/benchmarks/compose.yaml down -v
+./ariadne campaign studies/scenarios/basic_task/benchmarks/campaign.py
+uv run --project sdk/python python -m studies.scenarios.fanout.campaign --workers 1 2 4 8 --repeat 3
+uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run --demo --suite basic
 ```
 
-Registre commit, configuração, versões e condições da máquina: os runners
-Docker não produzem um manifesto completo. Para coletas com manifesto, use
-as campanhas declarativas descritas acima.
+Rotas, logística e saudação exigem `OPENAI_API_KEY` exportada quando não usam
+a variável de demonstração; as demais não chamam LLM. A antiga suíte A–D em
+Docker, sem manifesto, foi removida; seus rótulos permanecem apenas nas
+evidências históricas.
 
 ## Interpretar e apresentar
 

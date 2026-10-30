@@ -4,7 +4,7 @@ Execute os módulos a partir da raiz do repositório:
 
 | Módulo | Responsabilidade |
 |---|---|
-| `run` | Executar casos contra os agentes registrados no runtime Docker |
+| `run` | Cliente histórico dos casos contra os agentes da v2 (topologia removida) |
 | `archive` | Reproduzir transições, conferir métricas e preservar uma coleta |
 | `analyze` | Exportar CSV, Markdown e gráficos de resultados existentes |
 | `summary_slide` | Gerar a figura de resumo de uma coleta real pareada |
@@ -16,7 +16,7 @@ python3 -m studies.scenarios.logistics.v2.benchmarks.analyze \
   --output /tmp/logistics-analysis --no-plots
 ```
 
-`run` precisa dos serviços descritos no [guia Docker](../docker/README.md).
+`run` precisava da topologia Compose da v2, removida; veja a nota de estudo histórico no [README](../README.md).
 `analyze --no-plots` usa somente a biblioteca padrão; gráficos e
 `summary_slide` requerem matplotlib. `archive` usa o SDK e verifica o histórico
 antes de gravar, recusando sobrescrever uma coleção existente.

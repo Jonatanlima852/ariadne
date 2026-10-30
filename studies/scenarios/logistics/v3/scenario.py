@@ -1,4 +1,4 @@
-"""Um caso da logística v3 como missão declarada, com processos locais.
+"""Um caso da logística v3 como missão declarada; cada agente num contêiner.
 
 Da raiz:  LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py
 Variáveis: LOGISTICS_V3_CASE (padrão ``easy``), LOGISTICS_V3_CONFIGURATION

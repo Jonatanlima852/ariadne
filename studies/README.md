@@ -22,10 +22,12 @@ A arquitetura do agente (BDI ou LLM) e o modo de execução não definem cenári
 ```text
 scenarios/<assunto>/
   README.md          # pergunta estudada e como executar
-  scenario.py        # entrada principal
+  scenario.py        # entrada única: agentes e tarefa ou missão
   agents/            # agentes deste cenário, quando houver
-  benchmarks/        # campanhas e coletores deste assunto
-  results/           # coletas preservadas, com README por data
+  runs/              # execuções locais (ignorado pelo git)
+  campaigns/         # campanhas locais (ignorado pelo git)
+  campaign.py        # opcional: matriz e repetições para ./ariadne campaign
+  analysis.py        # opcional: análise das evidências, python -m studies.scenarios.<assunto>.analysis
 ```
 
 Crie apenas as pastas necessárias. Arquivos de domínio, regras e dados ficam

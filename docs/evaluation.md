@@ -201,7 +201,7 @@ mesmo executor por observação. Cada observação sobe sua própria topologia e
 contêineres e termina com manifesto, eventos e logs:
 
 ```sh
-./ariadne campaign studies/scenarios/basic_task/benchmarks/campaign.py
+./ariadne campaign studies/scenarios/basic_task/campaign.py
 uv run --project sdk/python python -m studies.scenarios.fanout.campaign --workers 1 2 4 8 --repeat 3
 uv run --project sdk/python python -m studies.scenarios.logistics.v3.benchmarks.run --demo --suite basic
 ```

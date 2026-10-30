@@ -9,6 +9,7 @@ import signal
 import sys
 import uuid
 
+from ariadne_sdk.compose import repository_root
 from ariadne_sdk.evidence import utc_now, write_json
 from ariadne_sdk.execution import import_roots, run_experiment
 
@@ -66,10 +67,18 @@ def environment(values):
                 os.environ[key] = value
 
 
-def run_campaign(campaign, *, output_root, runner=None):
+def default_output(source):
+    """Cenários do repositório gravam em ``campaigns/`` ao lado do ``scenario.py``; os demais em ``.ariadne/campaigns``."""
+    root = repository_root()
+    if Path(source).resolve().is_relative_to(root / "studies" / "scenarios"):
+        return Path(source).resolve().parent / "campaigns"
+    return root / ".ariadne" / "campaigns"
+
+
+def run_campaign(campaign, *, output_root=None, runner=None):
     variants = campaign.variants()
     source = Path(campaign.experiment).resolve(strict=True)
-    directory = Path(output_root).resolve() / ('campaign-' + uuid.uuid4().hex)
+    directory = (Path(output_root).resolve() if output_root else default_output(source)) / ('campaign-' + uuid.uuid4().hex)
     directory.mkdir(parents=True)
     manifest = {"schema_version": 2, "name": campaign.name, "metadata": campaign.metadata,
                 "experiment": str(source), "created_at": utc_now(), "matrix": campaign.matrix,

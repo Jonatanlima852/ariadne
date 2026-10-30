@@ -12,7 +12,7 @@ escritas à mão.
 |---|---|
 | `./ariadne run ARQUIVO.py` | Constrói as imagens se necessário, sobe serviços e agentes em contêineres, aplica o cenário e remove tudo |
 | `./ariadne check ARQUIVO.py` | Valida a descrição sem iniciar contêineres |
-| `./ariadne campaign ARQUIVO.py` | Coleta uma matriz de execuções independentes, uma topologia por observação |
+| `./ariadne campaign ARQUIVO.py` | Coleta uma matriz de execuções independentes, uma topologia por observação, em `campaigns/` ao lado do cenário |
 | `./ariadne status [ID]` | Estado salvo e localização dos resultados |
 | `./ariadne logs [ID]` | Logs salvos de serviços e agentes |
 | `./ariadne stop [ID]` | Remove contêineres que uma interrupção abrupta tenha deixado |

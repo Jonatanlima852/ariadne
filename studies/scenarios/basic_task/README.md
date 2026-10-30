@@ -13,7 +13,7 @@ Da raiz do repositório:
 A definição está em [scenario.py](scenario.py). O SDK registra os resultados e
 eventos em `runs/`, ao lado deste README.
 
-Campanha de repetições independentes: `./ariadne campaign studies/scenarios/basic_task/benchmarks/campaign.py`.
+Campanha de repetições independentes: `./ariadne campaign studies/scenarios/basic_task/campaign.py`.
 
 Este cenário determinístico demonstra um comportamento funcional; não mede,
 isoladamente, a qualidade de raciocínio de uma LLM.

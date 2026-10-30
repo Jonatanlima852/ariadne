@@ -217,8 +217,10 @@ campaign = Campaign(
 ```
 
 O caminho do experimento é relativo ao arquivo da campanha. Execute com
-`./ariadne campaign arquivo.py`. O exemplo
-[basic_task/benchmarks/campaign.py](../studies/scenarios/basic_task/benchmarks/campaign.py)
+`./ariadne campaign arquivo.py`; a campanha é gravada em `campaigns/campaign-<id>/`
+ao lado do `scenario.py` (ou em `.ariadne/campaigns` para arquivos externos),
+com `campaign.json` e um `runs/` com uma pasta de execução por observação. O exemplo
+[basic_task/campaign.py](../studies/scenarios/basic_task/campaign.py)
 repete o eco com uma topologia nova por observação. A matriz usa valores
 textuais e ordem de inserção; a repetição é o laço externo. A coleta é
 sequencial, restaura o ambiente entre observações e cria uma execução

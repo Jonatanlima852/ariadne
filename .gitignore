@@ -32,6 +32,7 @@ node_modules/
 
 # Execuções locais ficam ao lado de cada scenario.py; coletas preservadas vão para results/.
 studies/scenarios/**/runs/
+studies/scenarios/**/campaigns/
 
 # Resultados locais pertencem a cada cenário.
 studies/scenarios/*/runtime_metrics/results/*

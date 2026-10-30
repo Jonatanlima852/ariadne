@@ -1,6 +1,7 @@
 .git
 .ariadne
 studies/scenarios/**/runs
+studies/scenarios/**/campaigns
 .env
 **/.env
 **/.env.*

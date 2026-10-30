@@ -38,7 +38,7 @@ def main(argv=None):
             inspect.add_argument("--tail", type=positive, default=100)
     campaign = commands.add_parser("campaign", help="coleta uma matriz de experimentos sem avaliar resultados")
     campaign.add_argument("file", type=Path)
-    campaign.add_argument("--output", type=Path, default=Path(".ariadne/campaigns"))
+    campaign.add_argument("--output", type=Path, default=None, help="pasta das campanhas; padrão: campaigns/ ao lado do scenario.py nos estudos, senão .ariadne/campaigns")
     viewer = commands.add_parser("viewer", help="abre o Mission Viewer com as missões gravadas em .ariadne e nos estudos")
     viewer.add_argument("--root", action="append", type=Path, help="pasta com missões (repetível)")
     viewer.add_argument("--port", type=positive, default=4180)

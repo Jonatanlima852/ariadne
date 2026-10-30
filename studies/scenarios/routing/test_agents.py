@@ -69,9 +69,9 @@ class RoutePlannerTests(unittest.TestCase):
 
 class PlannerExplainerTests(unittest.TestCase):
     def test_substitute_plans_route_then_explain_and_finishes_from_history(self):
-        with patch.dict(os.environ, {"AGENT_ID": "custom-planner", "AGENT_PORT": "61234", "ROUTING_DEMO": "1"}):
+        with patch.dict(os.environ, {"ROUTING_DEMO": "1"}):
             agent = planner_explainer()
-        self.assertEqual((agent.agent_id, agent.port), ("custom-planner", 61234))
+        self.assertEqual(agent.agent_id, "planner-explainer-01")
         self.assertEqual(agent.capabilities, ["mission-planning", "explanation"])
 
         first = agent.handle(planner_request())

@@ -12,7 +12,6 @@ from ariadne_sdk.plans import InputError
 from studies.scenarios.logistics.v2.agents.energy_manager.main import energy_search
 from studies.scenarios.logistics.v2.domain.planning import energy_to_charger, path
 from studies.scenarios.logistics.v2.domain.world import edge, execute, weight
-from studies.scenarios.logistics.v3.agents.common import serve
 from studies.scenarios.logistics.v3.domain.adapters import DELIVERY_CAPABILITY, WorldView, pending_orders, restore_integers
 
 
@@ -383,7 +382,3 @@ def make_agent(**options):
     configuration = dict(name='delivery', capabilities=[DELIVERY_CAPABILITY],
                          beliefs=beliefs_from_task, goal=goal_from_task, plans=PLANS, max_cycles=80)
     return DeliveryAgent(**(configuration | options))
-
-
-if __name__ == '__main__':
-    serve(make_agent)

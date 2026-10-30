@@ -14,7 +14,7 @@ from ariadne_sdk.llm import LlmCapability
 from studies.scenarios.logistics.v2.agents.single_llm.main import INSTRUCTION
 from studies.scenarios.logistics.v2.domain.models import Proposal, action_mapper
 from studies.scenarios.logistics.v2.domain.world import RULES
-from studies.scenarios.logistics.v3.agents.common import DemoClient, demo_enabled, llm_runtime, mark_demo, serve
+from studies.scenarios.logistics.v3.agents.common import DemoClient, demo_enabled, llm_runtime, mark_demo
 from studies.scenarios.logistics.v3.domain.adapters import (
     EXECUTE_STEP_ID, SINGLE_LLM_CAPABILITY, all_delivered, execute_step, metrics, pending_orders, restore_integers,
 )
@@ -89,7 +89,3 @@ class SingleLlmPlanner(LlmAgent):
 
 def make_agent(**options):
     return SingleLlmPlanner(**options)
-
-
-if __name__ == '__main__':
-    serve(make_agent)

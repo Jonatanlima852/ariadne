@@ -58,8 +58,8 @@ Exceções são convertidas para os erros do contrato.
 Classes que implementam `Agent.handle`, `BdiAgent` e `LlmAgent` usam o mesmo
 executor. Veja [fixture de seleção BDI](../sdk/python/tests/fixtures/route_choice.py), que declara um agente BDI sem
 subclasse, com dois planos e seleção de menor custo. A [referência BDI](bdi.md)
-explica `Input`, `Plan` e planejamento genérico; [agendamento](../studies/scenarios/meeting/scenario.py)
-aplica a mesma interface a agendas. Agentes maiores podem ser
+explica `Input`, `Plan`, `GoalPlan` e planejamento genérico; o [agendamento](../studies/scenarios/meeting/scenario.py)
+aplica o ciclo de deliberação a agendas. Agentes maiores podem ser
 importados de módulos instalados ou vizinhos ao arquivo do experimento.
 
 Nomes/IDs de agentes devem ser únicos no cenário. A tarefa solicita uma

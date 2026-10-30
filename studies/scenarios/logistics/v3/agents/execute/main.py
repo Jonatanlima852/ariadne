@@ -9,7 +9,6 @@ orquestrador, e é assim que o planejador vê o novo estado e os incidentes.
 """
 from ariadne_sdk import Agent
 from studies.scenarios.logistics.v2.domain.world import execute
-from studies.scenarios.logistics.v3.agents.common import serve
 from studies.scenarios.logistics.v3.domain.adapters import (
     EXECUTE_CAPABILITY, all_delivered, metrics, pending_orders, restore_integers,
 )
@@ -60,7 +59,3 @@ def execute_round(task):
 def make_agent(**options):
     configuration = dict(name='execute', capabilities=[EXECUTE_CAPABILITY], handler=execute_round)
     return Agent(**(configuration | options))
-
-
-if __name__ == '__main__':
-    serve(make_agent)

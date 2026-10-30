@@ -14,16 +14,6 @@ def llm_runtime(demo):
     return 'logistics-v3-demo' if demo else 'logistics-v3-llm'
 
 
-def serve(factory):
-    """Processo de um agente; AGENT_ID distingue réplicas da mesma capacidade."""
-    options = dict(host=os.getenv('AGENT_HOST', 'localhost'),
-                   port=int(os.getenv('AGENT_PORT', '60051')),
-                   registry_addr=os.getenv('REGISTRY_ADDR', 'localhost:50051'))
-    if os.getenv('AGENT_ID'):
-        options['agent_id'] = os.environ['AGENT_ID']
-    factory(**options).run()
-
-
 class DemoClient:
     """Substituto determinístico do cliente OpenAI, só para integração.
 

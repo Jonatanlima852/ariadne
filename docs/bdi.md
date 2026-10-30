@@ -23,8 +23,9 @@ scenario = Scenario(agents=[agent], tasks=[
 
 Salve como um arquivo Python e execute com `./ariadne run caminho.py`. Este exemplo
 apenas compõe uma rota; restrições e disponibilidade de conexões são regras do
-domínio. Consulte a [fixture de seleção de planos](../sdk/python/tests/fixtures/route_choice.py),
-[agendamento](../studies/scenarios/meeting/scenario.py) e o [entregador da logística v3](../studies/scenarios/logistics/v3/agents/delivery/main.py).
+domínio. Consulte a [fixture de seleção de planos](../sdk/python/tests/fixtures/route_choice.py).
+Os cenários do repositório usam o modo deliberativo (`GoalPlan`): [agendamento](../studies/scenarios/meeting/agents/meeting_scheduler/main.py),
+[rotas](../studies/scenarios/routing/agents/route_planner/main.py) e o [entregador da logística v3](../studies/scenarios/logistics/v3/agents/delivery/main.py).
 
 ## Entradas e estado
 

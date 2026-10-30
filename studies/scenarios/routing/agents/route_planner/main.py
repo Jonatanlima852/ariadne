@@ -4,7 +4,6 @@ As crenças nascem do payload da tarefa (mapa, origem, destino, limite de
 escalas) e morrem com ela. O objetivo é sempre ``plan_route``; dois planos o
 atendem, e o ciclo de deliberação escolhe entre eles pelo custo estimado.
 """
-import os
 
 from ariadne_sdk import BdiAgent, GoalPlan, SearchProblem, act, observe, uniform_cost_search
 from ariadne_sdk.plans import InputError
@@ -90,15 +89,7 @@ PLANS = [
 
 def route_planner(**options):
     configuration = dict(
-        agent_id=os.getenv("AGENT_ID", "route-planner-01"),
-        name=os.getenv("AGENT_NAME", "Route Planner"),
-        port=int(os.getenv("AGENT_PORT", "60054")),
-        capabilities=["route-planning"],
-        runtime="python-sdk-bdi",
-        beliefs=perceive, goal="plan_route", plans=PLANS,
+        agent_id="route-planner-01", name="Route Planner", capabilities=["route-planning"],
+        runtime="python-sdk-bdi", beliefs=perceive, goal="plan_route", plans=PLANS,
     )
-    return BdiAgent.from_env(**(configuration | options))
-
-
-if __name__ == "__main__":
-    route_planner().run()
+    return BdiAgent(**(configuration | options))

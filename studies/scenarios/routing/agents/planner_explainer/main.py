@@ -15,18 +15,11 @@ def planner_explainer(demo=None, **options):
         demo = os.getenv("ROUTING_DEMO", "0") == "1"
     handlers = capabilities()
     configuration = dict(
-        agent_id=os.getenv("AGENT_ID", "planner-explainer-01"),
-        name=os.getenv("AGENT_NAME", "Planner and Explainer"),
-        port=int(os.getenv("AGENT_PORT", "60056")),
-        capabilities=[handler.name for handler in handlers],
-        handlers=handlers,
+        agent_id="planner-explainer-01", name="Planner and Explainer",
+        capabilities=[handler.name for handler in handlers], handlers=handlers,
     )
     if demo:
         from studies.scenarios.routing.agents.planner_explainer.substitute import DemoClient, DemoLlmAgent
         configuration.update(openai_client=DemoClient(), runtime="python-sdk-demo")
-        return DemoLlmAgent.from_env(**(configuration | options))
-    return LlmAgent.from_env(**(configuration | options))
-
-
-if __name__ == "__main__":
-    planner_explainer().run()
+        return DemoLlmAgent(**(configuration | options))
+    return LlmAgent(**(configuration | options))

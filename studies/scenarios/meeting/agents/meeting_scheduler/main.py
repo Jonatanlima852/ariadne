@@ -5,8 +5,6 @@ participantes possam se reunir, o mais perto possível do horário
 preferido". Nem sempre existe solução perfeita: os planos avaliam
 compromissos (quórum parcial, desvio de horário) pelo custo.
 """
-import os
-
 from ariadne_sdk import BdiAgent
 from ariadne_sdk.plans import InputError
 
@@ -30,17 +28,8 @@ def desire(task):
 
 
 def meeting_scheduler(**options):
-    agent_id = os.getenv("AGENT_ID", "meeting-scheduler-01")
     configuration = dict(
-        agent_id=agent_id,
-        name=os.getenv("AGENT_NAME", f"Meeting Scheduler Agent ({agent_id})"),
-        port=int(os.getenv("AGENT_PORT", "60055")),
-        capabilities=[os.getenv("CAPABILITY", "meeting-scheduling")],
-        runtime="python-sdk-bdi",
-        beliefs={"calendars": CALENDARS}, goal=desire, plans=PLANS,
+        agent_id="meeting-scheduler-01", name="Meeting Scheduler Agent", capabilities=["meeting-scheduling"],
+        runtime="python-sdk-bdi", beliefs={"calendars": CALENDARS}, goal=desire, plans=PLANS,
     )
-    return BdiAgent.from_env(**(configuration | options))
-
-
-if __name__ == "__main__":
-    meeting_scheduler().run()
+    return BdiAgent(**(configuration | options))

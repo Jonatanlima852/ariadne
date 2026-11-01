@@ -22,6 +22,8 @@ do repositório, salvo indicação explícita.
   execução em contêineres pelo runtime Go e evidências brutas para avaliação separada.
 - [Estudo logístico](../studies/scenarios/logistics/README.md): v3 como missão do runtime,
   campanha, análise e a v2 histórica.
+- [Cenário de incêndio florestal](../studies/scenarios/wildfire/README.md): comandante LLM com
+  drones BDI contra um piloto LLM, com curvas de área queimada e quadros da grade.
 
 - [Primeira execução](quickstart.md): requisitos, primeiro comando, resultado e diagnóstico.
 - [Executor ariadne](cli.md): comandos, o que `run` faz nos contêineres e arquivos de resultado.

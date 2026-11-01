@@ -35,6 +35,7 @@ respostas com a execução publicada.
 | O runtime recupera uma tarefa após timeout? | [Cenário de falha](../studies/scenarios/failure_reassignment/scenario.py), eventos e [testes do executor](../runtime/services/orchestrator/internal/execution/executor_test.go) | Recuperação conforme retry e existência de alternativa |
 | Políticas alteram a distribuição? | [Seleção de agentes](../studies/scenarios/agent_selection/scenario.py) com `AGENT_SELECTION_POLICY` | Três agentes com carga reportada configurada |
 | A cooperação heterogênea atende melhor que um único LLM? | [Confirmação da v2](../studies/scenarios/logistics/v2/results/stress-lean/README.md), histórica; [v3](../studies/scenarios/logistics/v3/README.md) em coleta | Mesmos casos e modelo; a v2 mediu coordenação fora do runtime |
+| O mesmo LLM contém melhor um incêndio comandando drones BDI do que pilotando cada drone? | [Cenário wildfire](../studies/scenarios/wildfire/README.md): mesma vista, mesmo modelo, mesmo vocabulário de ações; campanha e análise próprias | Mundo discreto e determinístico; sem resultados reais preservados ainda |
 | Qual é o overhead do runtime? | Requer comparação controlada da mesma tarefa com e sem runtime | O caso E compara fluxos diferentes e não isola esse custo |
 
 Os testes automatizados verificam comportamentos específicos. Eles não
@@ -81,6 +82,48 @@ prazo antes de custos; leia rodadas e rejeições junto com os incidentes de
 cada caso; use `comparison.md` da coleta para as colunas que o analisador da
 v2 não cobre (rodadas, ciclos BDI, paralelismo, reatribuições). Não há
 resultados reais da v3 registrados ainda; as tabelas abaixo são históricas.
+
+## Incêndio florestal: comandante LLM e drones BDI contra um piloto LLM
+
+O [cenário wildfire](../studies/scenarios/wildfire/README.md) foi desenhado
+para que o efeito da arquitetura apareça numa figura. Uma grade pega fogo, o
+vento espalha as chamas, drones com água e bateria apagam focos e
+reabastecem em bases, e o rádio anuncia em linguagem natural fatos que a
+telemetria não mostra (uma base destruída, um hospital a proteger). As duas
+configurações usam o mesmo modelo, a mesma vista e o mesmo vocabulário de
+ações, como missões do contrato 2.0.0 com um tique por rodada:
+
+- `ariadne`: um comandante LLM (`mission-planning`) dá a cada drone uma meta
+  e às crenças compartilhadas o que só o rádio informa; cada drone é um
+  agente BDI deliberativo (`wildfire-drone`, passos em paralelo) com reserva
+  de bateria por construção; um mundo determinístico (`wildfire-world`)
+  aplica, rejeita, espalha o fogo e dispara o rádio.
+- `single-llm`: o mesmo modelo pilota cada drone com ações concretas, num
+  único passo `world` por rodada.
+
+O que se compara, por caso e configuração: células em cinzas ao final e por
+tique, focos restantes, estruturas perdidas (inclusive as anunciadas só pelo
+rádio), drones perdidos, ações rejeitadas e ociosas, reação ao alerta,
+rodadas, chamadas e tokens do modelo, ciclos BDI e tempo de parede. Tudo sai
+do `mission-result.json`; a análise desenha a curva de área queimada por
+caso, uma tira de quadros da grade por missão e barras de resumo.
+
+```sh
+# sem credencial: substitutos determinísticos (não mede um modelo)
+WILDFIRE_DEMO=1 ./ariadne run studies/scenarios/wildfire/scenario.py
+
+# campanha real: exporte OPENAI_API_KEY (e LLM_MODEL) no terminal
+WILDFIRE_CAMPAIGN_SUITE=all WILDFIRE_CAMPAIGN_REPEAT=3 \
+  ./ariadne campaign studies/scenarios/wildfire/campaign.py
+uv run --project sdk/python --extra llm python -m studies.scenarios.wildfire.analysis \
+  studies/scenarios/wildfire/campaigns/campaign-<id>
+```
+
+Para avaliar: separe `execution_kind` demo de real; compare área queimada e
+estruturas antes de custos; leia rejeições junto com o rádio de cada caso
+(uma rejeição ao reabastecer é o sinal de que o alerta não foi traduzido);
+use a varredura `WILDFIRE_CAMPAIGN_DRONES` para ver como cada configuração
+escala com o número de drones. Não há resultados reais preservados ainda.
 
 ## Paralelismo, reatribuição e rastro
 

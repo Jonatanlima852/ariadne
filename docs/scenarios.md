@@ -2,7 +2,7 @@
 
 Todos os cenários são declarações `scenario.py` executadas por
 `./ariadne run`, que sobe serviços e agentes em contêineres. Comece pelos
-casos determinísticos; só rotas, logística e saudação podem chamar um modelo.
+casos determinísticos; só rotas, logística, incêndio e saudação podem chamar um modelo.
 Execute da raiz do repositório.
 
 | Cenário | O que observar | Comando | Resultado esperado |
@@ -17,6 +17,7 @@ Execute da raiz do repositório.
 | [Rota heterogênea](../studies/scenarios/routing/README.md) | Missão: planejador LLM, rota BDI deliberativa e explicação LLM | `ROUTING_DEMO=1 ./ariadne run studies/scenarios/routing/scenario.py` (sem chave) | Rota `A → B → D`, distância 25, `MissionResult` em JSON |
 | [Fan-out](../studies/scenarios/fanout/README.md) | N passos de mapa em paralelo, prazo estourado e reatribuição | `./ariadne run studies/scenarios/fanout/scenario.py` | `MISSION_STATUS_COMPLETED`, um passo reatribuído |
 | [Logística v3](../studies/scenarios/logistics/v3/README.md) | Missão com planejador LLM, entregadores BDI e executor | `LOGISTICS_V3_DEMO=1 ./ariadne run studies/scenarios/logistics/v3/scenario.py` | Pedidos entregues, incidentes tratados em novas rodadas |
+| [Incêndio florestal](../studies/scenarios/wildfire/README.md) | Missão com comandante LLM, drones BDI em paralelo e mundo determinístico, contra um piloto LLM | `WILDFIRE_DEMO=1 ./ariadne run studies/scenarios/wildfire/scenario.py` | Focos apagados antes do horizonte; estado final e rastros BDI no `mission-result.json` |
 
 O resumo aparece no terminal; o resultado estruturado fica em `result.json`
 (e `mission-result.json` para missões) dentro do diretório da execução.
@@ -26,11 +27,11 @@ O resumo aparece no terminal; o resultado estruturado fica em `result.json`
 - Para estudar o runtime: tarefa simples, workflow e falha.
 - Para estudar comunicação iniciada por agentes: mensageria.
 - Para observar o raciocínio BDI: agendamento.
-- Para observar o laço de missão sem credencial: rotas com `ROUTING_DEMO=1`
-  e logística v3 com `LOGISTICS_V3_DEMO=1`.
+- Para observar o laço de missão sem credencial: rotas com `ROUTING_DEMO=1`,
+  logística v3 com `LOGISTICS_V3_DEMO=1` e incêndio com `WILDFIRE_DEMO=1`.
 - Para ver paralelismo e reatribuição num Gantt: fan-out.
 - Para observar interoperabilidade LLM/BDI com um modelo real: exporte
-  `OPENAI_API_KEY` e rode rotas ou logística v3 sem a variável de demonstração.
+  `OPENAI_API_KEY` e rode rotas, logística v3 ou incêndio sem a variável de demonstração.
 - Para comparar resultados sistematicamente: [guia de avaliação](evaluation.md).
 
 Cada execução cria um projeto Compose exclusivo, sem portas fixas; duas

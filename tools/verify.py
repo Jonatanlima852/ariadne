@@ -33,6 +33,8 @@ def main(argv=None):
         environment['ARIADNE_TEST_DOCKER'] = '1'
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'sdk/python/tests', '-q'])
     run([sys.executable, '-m', 'unittest', 'studies.scenarios.routing.test_agents', 'studies.scenarios.routing.test_mission', '-q'])
+    run([sys.executable, '-m', 'unittest', 'studies.scenarios.wildfire.test_world', 'studies.scenarios.wildfire.test_agents',
+         'studies.scenarios.wildfire.test_mission', '-q'])
     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/runtime_metrics', '-q'])
 
     # Verifica a instalação mínima real, separada do ambiente de testes LLM.

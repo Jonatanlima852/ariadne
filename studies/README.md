@@ -16,6 +16,7 @@ A arquitetura do agente (BDI ou LLM) e o modo de execução não definem cenári
 | [Rotas](scenarios/routing/README.md) | Missão didática: planejador LLM → BDI deliberativo → explicação LLM |
 | [Logística](scenarios/logistics/README.md) | Pedidos, veículos, prazos e incidentes; planejador LLM com entregadores BDI contra um único LLM (v3) |
 | [Fan-out](scenarios/fanout/README.md) | Paralelismo de passos, reatribuição após prazo e completude do rastro; determinístico, sem LLM |
+| [Incêndio florestal](scenarios/wildfire/README.md) | Grade em chamas, vento, bases e rádio; comandante LLM com drones BDI contra um piloto LLM, com figuras da grade |
 
 ## Estrutura de um cenário
 
